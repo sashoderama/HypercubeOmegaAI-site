@@ -1,125 +1,532 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>OmegaHyperCubeAI</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Fira+Code&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="OmegaHyperCubeAI: Quantum-grade AGI cybersecurity platform with self-healing LLMs, DAG-based reasoning, memory-driven evolution, and zero cloud dependency.">
+  <meta property="og:title" content="OmegaHyperCubeAI - Quantum AGI Cybersecurity">
+  <meta property="og:description" content="Autonomous, quantum-powered, self-evolving intelligence for next-gen cyber defense.">
+  <meta property="og:image" content="https://omegahypercube.ai/assets/og-image.png">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#00ff95">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="OmegaHyperCubeAI Architect">
+  <title>OmegaHyperCubeAI - Quantum AGI Cyber Defense</title>
+  <link rel="icon" type="image/png" href="/assets/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Fira+Code:wght@400;600&family=Roboto+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
-    body {
+    :root {
+      --main-color: #00ff95;
+      --accent-color: #00ffcc;
+      --bg: #000000;
+      --fg: #d0ffd8;
+      --dim: #1a1a1a;
+      --error: #ff4d4d;
+      --warning: #ffcc00;
+      --shadow-glow: 0 0 15px var(--main-color);
+      --transition-speed: 0.6s;
+    }
+    * {
+      box-sizing: border-box;
       margin: 0;
-      background-color: #000;
-      color: #d0ffd8;
-      font-family: 'Fira Code', monospace;
+      padding: 0;
+    }
+    body {
+      background-color: var(--bg);
+      color: var(--fg);
+      font-family: 'Fira Code', 'Roboto Mono', monospace;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      position: relative;
+    }
+    ::selection {
+      background: var(--main-color);
+      color: var(--bg);
     }
     header {
-      background: linear-gradient(to right, #001010, #002020);
+      background: linear-gradient(135deg, #001010 0%, #002020 100%);
       text-align: center;
-      padding: 4rem 1rem;
-      border-bottom: 3px solid #00ff95;
+      padding: 5rem 1rem;
+      border-bottom: 4px solid var(--main-color);
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(0, 255, 149, 0.2), transparent);
+      animation: pulse 8s infinite;
     }
     header h1 {
-      font-size: 2.8rem;
-      color: #00ff95;
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      color: var(--main-color);
       font-family: 'Orbitron', sans-serif;
+      text-shadow: var(--shadow-glow);
+      animation: neon-flicker 3s infinite alternate;
+    }
+    header p {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      margin: 0.5rem 0;
+      color: var(--accent-color);
     }
     section {
-      max-width: 900px;
-      margin: auto;
-      padding: 2.5rem 1.5rem;
-      border-bottom: 1px solid #111;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+      border-bottom: 1px solid var(--dim);
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
+    }
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
     section h2 {
-      color: #00ffcc;
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-      border-left: 4px solid #00ff95;
-      padding-left: 1rem;
+      color: var(--accent-color);
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      margin-bottom: 1.5rem;
+      border-left: 6px solid var(--main-color);
+      padding-left: 1.2rem;
+      font-family: 'Orbitron', sans-serif;
+      text-transform: uppercase;
     }
     ul {
-      padding-left: 2rem;
-      line-height: 1.6;
+      padding-left: 2.5rem;
+      line-height: 1.8;
+      list-style: none;
+    }
+    ul li {
+      position: relative;
+      margin-bottom: 1rem;
+      padding-left: 1.5rem;
+    }
+    ul li::before {
+      content: '▹';
+      color: var(--main-color);
+      position: absolute;
+      left: 0;
+      font-size: 1.2rem;
     }
     pre {
       background-color: #0f0f0f;
-      padding: 1rem;
+      padding: 1.5rem;
       font-size: 0.95rem;
-      color: #00ffcc;
-      border-left: 4px solid #00ff95;
-      border-radius: 8px;
+      color: var(--accent-color);
+      border-left: 6px solid var(--main-color);
+      border-radius: 10px;
+      overflow-x: auto;
+      position: relative;
+      box-shadow: var(--shadow-glow);
+      transition: transform 0.3s ease;
+    }
+    pre:hover {
+      transform: scale(1.02);
     }
     .button {
-      display: inline-block;
-      background: #00ff95;
-      color: #000;
-      padding: 1rem 2rem;
-      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--main-color);
+      color: var(--bg);
+      padding: 1rem 2.5rem;
+      font-weight: 600;
       text-decoration: none;
-      border-radius: 6px;
-      box-shadow: 0 0 12px #00ff95;
+      border-radius: 8px;
+      box-shadow: var(--shadow-glow);
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    .button:hover {
+      background: var(--accent-color);
+      transform: translateY(-3px);
     }
     footer {
       text-align: center;
       font-size: 0.9rem;
       color: #888;
-      padding: 2rem 1rem;
-      background-color: #000;
+      padding: 3rem 1rem;
+      background: linear-gradient(to top, #000, #001010);
+      position: relative;
+    }
+    footer::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--main-color);
+      animation: scanline 5s infinite linear;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      max-width: 700px;
+      margin: 2rem auto;
+      position: relative;
+    }
+    input, textarea {
+      background-color: #111;
+      color: var(--accent-color);
+      border: 2px solid var(--main-color);
+      padding: 1rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 1rem;
+      border-radius: 8px;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: var(--shadow-glow);
+    }
+    input[type="submit"] {
+      background-color: var(--main-color);
+      color: var(--bg);
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: var(--shadow-glow);
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+    input[type="submit"]:hover {
+      background: var(--accent-color);
+      transform: translateY(-3px);
+    }
+    .typing-highlight {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      position: relative;
+      min-height: 200px;
+    }
+    .error-message {
+      color: var(--error);
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      display: none;
+    }
+    .canvas-container {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      margin: 2rem 0;
+      border: 2px solid var(--main-color);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    #dag-visualizer {
+      width: 100%;
+      height: 100%;
+    }
+    .tooltip {
+      position: absolute;
+      background: var(--dim);
+      color: var(--fg);
+      padding: 0.5rem;
+      border-radius: 5px;
+      font-size: 0.9rem;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .tooltip.active {
+      opacity: 1;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: var(--dim);
+      padding: 2rem;
+      border-radius: 10px;
+      max-width: 600px;
+      color: var(--fg);
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: var(--main-color);
+    }
+    @keyframes neon-flicker {
+      0%, 100% { text-shadow: var(--shadow-glow); }
+      50% { text-shadow: 0 0 25px var(--main-color); }
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 0.2; }
+      50% { transform: scale(1.2); opacity: 0.4; }
+      100% { transform: scale(1); opacity: 0.2; }
+    }
+    @keyframes scanline {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    @media (max-width: 768px) {
+      header h1 { font-size: 2rem; }
+      section { padding: 2rem 1rem; }
+      .canvas-container { height: 300px; }
     }
   </style>
 </head>
 <body>
+  <header>
+    <h1>OmegaHyperCubeAI</h1>
+    <p><em>Quantum AGI Cyber Defense Stack</em></p>
+    <p>Autonomous · Self-Healing · Memory-Aware · Ethics-Filtered</p>
+    <nav>
+      <a href="#core" class="button"><i class="fas fa-brain"></i> Core</a>
+      <a href="#pitch" class="button"><i class="fas fa-file-alt"></i> Pitch</a>
+      <a href="#demo" class="button"><i class="fas fa-code"></i> Demo</a>
+      <a href="#contact" class="button"><i class="fas fa-envelope"></i> Contact</a>
+    </nav>
+  </header>
 
-<header>
-  <h1>OmegaHyperCubeAI</h1>
-  <p><em>Quantum AGI Cyber Defense Stack</em></p>
-</header>
+  <section id="core">
+    <h2>🧬 Core Intelligence</h2>
+    <ul>
+      <li><strong>Recursive DAG Executor</strong> — Entropy-sorted quantum logic routing with Qiskit-optimized graph traversal.</li>
+      <li><strong>ThoughtPlugin Reactor</strong> — Deep plugin-chained reasoning with dynamic module loading and GPU acceleration.</li>
+      <li><strong>Healing Sandbox</strong> — Automated patch simulation with rollback, stress-tested in isolated containers.</li>
+      <li><strong>Quantum Memory Engine</strong> — CuPy-enhanced memory graphs with temporal decay and context-aware retrieval.</li>
+      <li><strong>Ethics Firewall</strong> — Neural moral filter with real-time code auditing and violation logging.</li>
+      <li><strong>Polymorphic Payload Generator</strong> — GAN-driven obfuscation with entropy-based mutation profiles.</li>
+      <li><strong>Emergent Personality Matrix</strong> — Adaptive conversational model with memory-linked reflection.</li>
+    </ul>
+    <div class="canvas-container">
+      <canvas id="dag-visualizer"></canvas>
+    </div>
+  </section>
 
-<section>
-  <h2>🧬 Core Intelligence</h2>
-  <ul>
-    <li><strong>Recursive DAG Executor</strong> — entropy-sorted quantum logic routing</li>
-    <li><strong>ThoughtPlugin Reactor</strong> — deep plugin-chained reasoning</li>
-    <li><strong>Healing Sandbox</strong> — automated patch simulation + rollback</li>
-    <li><strong>Quantum Memory Engine</strong> — vector graph recall + CuPy clustering</li>
-    <li><strong>Ethics Firewall</strong> — real-time neural moral filtering</li>
-  </ul>
-</section>
+  <section id="pitch">
+    <h2>📄 Pitch Deck</h2>
+    <p>Explore our full AGI architecture, market insights, and licensing terms.</p>
+    <a href="/assets/pitch_deck.pdf" class="button" download><i class="fas fa-download"></i> Download Pitch Deck</a>
+  </section>
 
-<section>
-  <h2>📄 Pitch Deck</h2>
-  <p>Access our full AGI strategic + technical breakdown:</p>
-  <a href="pitch_deck.pdf" class="button">📥 Download Pitch Deck</a>
-</section>
+  <section id="demo">
+    <h2>👁️ AGI Patch Simulation (Typing Demo)</h2>
+    <pre><code id="typing-code" class="typing-highlight">// OmegaHyperCubeAI :: Quantum-Healing Engine
+import asyncio
+import cupy as cp
+from qiskit import QuantumCircuit
+from typing import Dict, Any
 
-<section>
-  <h2>👁️ AGI Patch Simulation</h2>
-  <pre><code id="typing-code">// Recursive Self-Healing AI Loop
-async def execute_with_healing(code: str):
-  for attempt in range(30):
-    try:
-      exec(code)
-      return {"success": True}
-    except Exception as e:
-      code = llm_generate_patch(code, str(e))
-  return {"success": False}
-  </code></pre>
-</section>
+class QuantumHealingEngine:
+    def __init__(self, sandbox_config: Dict[str, Any]):
+        self.sandbox = Sandbox(config=sandbox_config)
+        self.ethics = EthicsFirewall()
+        self.memory = QuantumMemoryGraph()
+    
+    async def execute_with_healing(self, code: str, max_attempts: int = 30) -> Dict[str, Any]:
+        self.memory.store_context(code)
+        for attempt in range(max_attempts):
+            try:
+                result = await self.sandbox.execute(code)
+                self.memory.log_success(result)
+                return {"success": True, "result": result}
+            except Exception as e:
+                patch = await self._generate_patch(code, str(e))
+                if not self.ethics.verify(patch):
+                    self.memory.log_violation(e)
+                    return {"success": False, "error": "Ethics violation"}
+                code = await self._verify_patch_integrity(patch)
+                self.memory.update_context(code)
+        return {"success": False, "error": "Max attempts reached"}
 
-<section>
-  <h2>💎 Why OmegaHyperCubeAI Is Different</h2>
-  <ul>
-    <li><strong>🧠 Autonomous AGI Architecture:</strong> A full DAG + LLM system with self-healing + ethics firewall</li>
-    <li><strong>⚛️ Quantum DAG Executor:</strong> Real Qiskit logic + entropy-ranked signal routing</li>
-    <li><strong>🧬 GAN/Transformer Code Evolution:</strong> Obfuscated, entropy-tuned payload generation</li>
-    <li><strong>🧪 Stealth Sandbox:</strong> 30 retries, rollback, ethics enforcement on live code</li>
-    <li><strong>🧠 Emergent Memory:</strong> Logs + recalls interactions. Becomes an evolving mind</li>
-    <li><strong>🖥️ GUI-Class Interface:</strong> Full PyQt5 UI with DAG visualizer, GPU monitor, plugins</li>
-  </ul>
-</section>
+    async def _generate_patch(self, code: str, error: str) -> str:
+        llm = LLMPlugin(entropy_weight=0.8)
+        return await llm.generate_patch(code, error)
 
-<footer>
-  <p>© 2024 OmegaHyperCubeAI — Self-Evolving Intelligence</p>
-</footer>
+    async def _verify_patch_integrity(self, patch: str) -> str:
+        verifier = CodeVerifier()
+        return await verifier.scan(patch)
+</code></pre>
+  </section>
 
+  <section id="contact">
+    <h2>📬 Contact the Architect</h2>
+    <form id="contact-form" action="https://formspree.io/f/xleqrdzn" method="POST">
+      <input type="text" name="name" placeholder="Your name" required>
+      <p class="error-message" id="name-error">Name is required</p>
+      <input type="email" name="_replyto" placeholder="Your email" required>
+      <p class="error-message" id="email-error">Valid email is required</p>
+      <textarea name="message" rows="6" placeholder="Tell us your idea, partnership, or request..." required></textarea>
+      <p class="error-message" id="message-error">Message is required</p>
+      <input type="submit" value="Send Message">
+    </form>
+  </section>
+
+  <section>
+    <h2>💎 Why OmegaHyperCubeAI Is Different</h2>
+    <ul>
+      <li><strong>🧠 Autonomous AGI Architecture:</strong> Recursive, memory-linked intelligence with no external API reliance.</li>
+      <li><strong>⚛️ Quantum DAG Execution:</strong> Real-time entropy-prioritized routing with Qiskit + CuPy acceleration.</li>
+      <li><strong>🧬 GAN-Based Payload Mutation:</strong> Polymorphic payloads with entropy-driven obfuscation profiles.</li>
+      <li><strong>🧠 Emergent Personality + Memory:</strong> Context-aware, reflective intelligence with long-term memory.</li>
+      <li><strong>🖥️ Fully GUI-Driven:</strong> Interactive DAG visualizer, sandbox UI, plugin loader, and GPU monitoring.</li>
+      <li><strong>🚫 Zero Cloud Lock-In:</strong> Fully offline-capable LLM stack with local Qiskit integration.</li>
+      <li><strong>🔒 Hardened Security:</strong> End-to-end encryption for data, real-time threat detection, and sandbox isolation.</li>
+    </ul>
+  </section>
+
+  <div class="modal" id="success-modal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeModal()">&times;</span>
+      <h2>Message Sent!</h2>
+      <p>Your message has been successfully sent to the OmegaHyperCubeAI Architect.</p>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 OmegaHyperCubeAI — Recursive Self-Evolving Intelligence</p>
+    <p><a href="/privacy" class="button">Privacy Policy</a> | <a href="/terms" class="button">Terms of Service</a></p>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script>
+    // Typing Animation
+    const codeElement = document.getElementById('typing-code');
+    const originalText = codeElement.textContent.trim();
+    codeElement.textContent = '';
+    let i = 0;
+    function typeCode() {
+      if (i < originalText.length) {
+        codeElement.textContent += originalText.charAt(i);
+        i++;
+        setTimeout(typeCode, 10);
+      }
+    }
+    window.addEventListener('load', typeCode);
+
+    // Scroll Animation
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    document.querySelectorAll('section').forEach(section => observer.observe(section));
+
+    // Form Validation
+    const form = document.getElementById('contact-form');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = form.querySelector('input[name="name"]').value;
+      const email = form.querySelector('input[name="_replyto"]').value;
+      const message = form.querySelector('textarea[name="message"]').value;
+      let valid = true;
+
+      document.getElementById('name-error').style.display = name ? 'none' : 'block';
+      document.getElementById('email-error').style.display = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? 'none' : 'block';
+      document.getElementById('message-error').style.display = message ? 'none' : 'block';
+
+      if (name && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && message) {
+        try {
+          const response = await fetch(form.action, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, _replyto: email, message })
+          });
+          if (response.ok) {
+            document.getElementById('success-modal').style.display = 'flex';
+            form.reset();
+          }
+        } catch (error) {
+          console.error('Form submission failed:', error);
+        }
+      }
+    });
+
+    // Modal Close
+    function closeModal() {
+      document.getElementById('success-modal').style.display = 'none';
+    }
+
+    // DAG Visualizer (Three.js)
+    const canvas = document.getElementById('dag-visualizer');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+
+    const nodes = [];
+    const edges = [];
+    for (let i = 0; i < 10; i++) {
+      const geometry = new THREE.SphereGeometry(0.5, 32, 32);
+      const material = new THREE.MeshBasicMaterial({ color: 0x00ff95 });
+      const node = new THREE.Mesh(geometry, material);
+      node.position.set(Math.random() * 10 - 5, Math.random() * 10 - 5, Math.random() * 10 - 5);
+      scene.add(node);
+      nodes.push(node);
+    }
+    for (let i = 0; i < nodes.length - 1; i++) {
+      const geometry = new THREE.BufferGeometry().setFromPoints([
+        nodes[i].position,
+        nodes[i + 1].position
+      ]);
+      const material = new THREE.LineBasicMaterial({ color: 0x00ffcc });
+      const edge = new THREE.Line(geometry, material);
+      scene.add(edge);
+      edges.push(edge);
+    }
+
+    camera.position.z = 15;
+    function animate() {
+      requestAnimationFrame(animate);
+      nodes.forEach(node => {
+        node.rotation.x += 0.01;
+        node.rotation.y += 0.01;
+      });
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Tooltip for Interactive Elements
+    const tooltip = document.createElement('div');
+    tooltip.classList.add('tooltip');
+    document.body.appendChild(tooltip);
+    document.querySelectorAll('.button, li').forEach(elem => {
+      elem.addEventListener('mousemove', (e) => {
+        tooltip.classList.add('active');
+        tooltip.textContent = elem.textContent.slice(0, 50) + '...';
+        tooltip.style.left = `${e.pageX + 10}px`;
+        tooltip.style.top = `${e.pageY + 10}px`;
+      });
+      elem.addEventListener('mouseleave', () => {
+        tooltip.classList.remove('active');
+      });
+    });
+
+    // Lazy Loading for Performance
+    document.querySelectorAll('img').forEach(img => {
+      img.setAttribute('loading', 'lazy');
+    });
+
+    // Service Worker for Offline Support
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(err => console.error('Service Worker registration failed:', err));
+      });
+    }
+  </script>
 </body>
 </html>
