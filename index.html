@@ -13,13 +13,13 @@
       --fg: #d0ffd8;
       --dim: #1a1a1a;
     }
-    * { box-sizing: border-box; }
     body {
       margin: 0;
       background-color: var(--bg);
       color: var(--fg);
       font-family: 'Fira Code', monospace;
       scroll-behavior: smooth;
+      padding: 0 2rem;
     }
     header {
       background: linear-gradient(to right, #001010, #002020);
@@ -31,6 +31,7 @@
       font-size: 2.8rem;
       color: var(--main-color);
       font-family: 'Orbitron', sans-serif;
+      margin-bottom: 0.5rem;
     }
     header p {
       color: #88ffe2;
@@ -41,15 +42,8 @@
     section {
       max-width: 900px;
       margin: auto;
-      padding: 2.5rem 1.5rem;
+      padding: 2.5rem 0;
       border-bottom: 1px solid #111;
-      opacity: 0;
-      transform: translateY(40px);
-      transition: 0.6s ease-in-out;
-    }
-    section.visible {
-      opacity: 1;
-      transform: translateY(0);
     }
     section h2 {
       color: var(--accent-color);
@@ -60,7 +54,7 @@
     }
     ul {
       padding-left: 2rem;
-      line-height: 1.6;
+      line-height: 1.7;
     }
     .button {
       display: inline-block;
@@ -75,7 +69,7 @@
       transition: 0.3s ease;
     }
     .button:hover {
-      background: #00ddaa;
+      background: #00ddb0;
       box-shadow: 0 0 18px var(--accent-color);
     }
     footer {
@@ -87,12 +81,13 @@
     }
     pre {
       background-color: #0f0f0f;
-      padding: 1rem;
-      border-left: 4px solid var(--main-color);
+      padding: 1.5rem;
+      border-left: 5px solid var(--main-color);
       overflow-x: auto;
-      font-size: 0.95rem;
+      font-size: 1rem;
       color: #00ffcc;
       border-radius: 8px;
+      white-space: pre-wrap;
     }
     form {
       display: flex;
@@ -123,10 +118,8 @@
       box-shadow: 0 0 25px #00ff95;
       margin-top: 1rem;
     }
-    @media screen and (max-width: 768px) {
-      header h1 { font-size: 2rem; }
-      section { padding: 2rem 1rem; }
-    }
+    .success { color: #00ff95; display: none; font-weight: bold; }
+    .error { color: red; display: none; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -140,11 +133,11 @@
 <section>
   <h2>🧬 Core Intelligence</h2>
   <ul>
-    <li><strong>Recursive DAG Executor</strong> — entropy-sorted quantum logic routing</li>
-    <li><strong>ThoughtPlugin Reactor</strong> — deep plugin-chained reasoning</li>
-    <li><strong>Healing Sandbox</strong> — automated patch simulation + rollback</li>
-    <li><strong>Quantum Memory Engine</strong> — vector graph recall + CuPy clustering</li>
-    <li><strong>Ethics Firewall</strong> — real-time neural moral filtering</li>
+    <li><strong>Recursive DAG Executor</strong> — Entropy-sorted quantum logic routing</li>
+    <li><strong>ThoughtPlugin Reactor</strong> — Deep plugin-chained reasoning</li>
+    <li><strong>Healing Sandbox</strong> — Automated patch simulation + rollback</li>
+    <li><strong>Quantum Memory Engine</strong> — Vector graph recall + CuPy clustering</li>
+    <li><strong>Ethics Firewall</strong> — Real-time neural moral filtering</li>
   </ul>
 </section>
 
@@ -162,31 +155,61 @@
 
 <section>
   <h2>👁️ AGI Patch Simulation</h2>
-  <pre><code id="typing-code">// Recursive Self-Healing AI Loop
-async def execute_with_healing(code: str):
-  for attempt in range(30):
-    try:
-      exec(code)
-      return {"success": True}
-    except Exception as e:
-      code = llm_generate_patch(code, str(e))
-  return {"success": False}
+  <pre><code id="typing-code">
+// OmegaHyperCubeAI :: Autonomous Patch Engine
+class OmegaHyperCubeAI:
+  def __init__(self):
+    self.memory = QuantumMemoryEngine()
+    self.sandbox = HealingSandbox(max_attempts=30)
+    self.ethics = EthicsFirewall(threshold=0.95)
+    self.dag = DAGExecutor(entropy_weighted=True)
+
+  async def execute(self, code):
+    for attempt in range(self.sandbox.max_attempts):
+      try:
+        exec(code)
+        return {"success": True, "attempt": attempt}
+      except Exception as e:
+        patch = llm_generate_patch(code, str(e))
+        if not self.ethics.verify(patch):
+          return {"error": "ethics violation"}
+        code = patch
+    return {"error": "max retries reached"}
   </code></pre>
 </section>
 
 <section>
+  <h2>🧠 System Intelligence Modules</h2>
+  <ul>
+    <li><strong>🧠 Neural JIT Compiler</strong> — Real-time TorchScript-based transformation of logic</li>
+    <li><strong>⚗️ QuantumMemoryOptimizer</strong> — FFT + CuPy + noise-layered optimization</li>
+    <li><strong>🧬 Exploit AutoSurgeon</strong> — LLM Transformer-driven patch healing</li>
+    <li><strong>🦠 PolymorphicPayloadGenerator</strong> — GAN-style entropy payload mutation</li>
+    <li><strong>🎭 ProtocolChameleon</strong> — Morph payloads into HTTP, DNS, SMTP, RTSP</li>
+    <li><strong>🧪 StealthScheduler</strong> — Timing modulation via entropy-based Markov chains</li>
+    <li><strong>🧫 DAG Fuzzing Engine</strong> — DEAP + DAG-based exploit generator</li>
+    <li><strong>📜 CodeSynthesizer</strong> — Async `.py` streaming with validation logic</li>
+    <li><strong>🧠 SafeLLM Sandbox</strong> — Memory-aware sandbox with retries + ethics + rollback</li>
+    <li><strong>🧠 SteganographicProtocol</strong> — LSB encoding in PNGs, reversible and detectable</li>
+    <li><strong>🧠 MemorySeed</strong> — Persistent memory graphs + AGI dialogue emergence</li>
+    <li><strong>🖥️ GUI: Hypercube Core</strong> — Qt-based DAG, GPU, sandbox, and LLM interface</li>
+  </ul>
+</section>
+
+<section>
   <h2>📬 Contact</h2>
-  <p>Securely message the OmegaHyperCubeAI architect:</p>
-  <form action="https://formspree.io/f/xleqrdzn" method="POST">
+  <form id="contact-form" action="https://formspree.io/f/xleqrdzn" method="POST">
     <input type="text" name="name" placeholder="Your name" required />
     <input type="email" name="_replyto" placeholder="Your email" required />
-    <textarea name="message" rows="5" placeholder="Your message or interest..."></textarea>
+    <textarea name="message" rows="5" placeholder="Your message or interest..." required></textarea>
     <input type="submit" value="Send Message" />
+    <div class="success" id="form-success">✅ Message sent successfully!</div>
+    <div class="error" id="form-error">❌ Failed to send. Try again.</div>
   </form>
 </section>
 
 <footer>
-  <p>© 2024 OmegaHyperCubeAI — Self-Improving Autonomous Intelligence</p>
+  <p>© 2025 OmegaHyperCubeAI — Recursive Self-Evolving Intelligence</p>
 </footer>
 
 <script>
@@ -198,18 +221,33 @@ async def execute_with_healing(code: str):
     if (i < originalText.length) {
       codeElement.textContent += originalText.charAt(i);
       i++;
-      setTimeout(typeCode, 12);
+      setTimeout(typeCode, 10);
     }
   }
   window.addEventListener("load", typeCode);
 
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) entry.target.classList.add('visible');
+  // Form submit handler
+  const form = document.getElementById("contact-form");
+  form.addEventListener("submit", function(e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+    fetch(form.action, {
+      method: "POST",
+      body: formData,
+      headers: { 'Accept': 'application/json' }
+    }).then(response => {
+      if (response.ok) {
+        document.getElementById("form-success").style.display = "block";
+        document.getElementById("form-error").style.display = "none";
+        form.reset();
+      } else {
+        throw new Error("Form error");
+      }
+    }).catch(() => {
+      document.getElementById("form-success").style.display = "none";
+      document.getElementById("form-error").style.display = "block";
     });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll("section").forEach(section => observer.observe(section));
+  });
 </script>
 
 </body>
