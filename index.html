@@ -3,121 +3,208 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HypercubeOmegaAI – Autonomous AGI Defense</title>
+  <title>HypercubeOmegaAI – AGI Defense Engine</title>
   <style>
     body {
-      background-color: #0a0a0a;
-      color: #e5e5e5;
-      font-family: 'Segoe UI', sans-serif;
-      line-height: 1.6;
-      margin: 0;
-      padding: 0;
-    }
-    header {
       background-color: #000;
+      color: #00ff95;
+      font-family: monospace;
+      line-height: 1.7;
+      margin: 0;
       padding: 2rem;
-      text-align: center;
-      border-bottom: 2px solid #00ffc3;
     }
-    h1 {
-      color: #00ffc3;
-      margin-bottom: 0.5rem;
+    h1, h2 {
+      color: #00ff95;
     }
-    h2 {
-      color: #ffffff;
-      border-left: 5px solid #00ffc3;
-      padding-left: 0.5rem;
-      margin-top: 2rem;
+    ul {
+      padding-left: 2rem;
     }
-    p, ul {
-      padding: 0 2rem;
-    }
-    ul li {
-      margin-bottom: 0.4rem;
+    section {
+      padding: 2rem 0;
+      border-bottom: 1px solid #222;
     }
     .button {
-      display: inline-block;
-      margin: 1.5rem 2rem;
-      padding: 1rem 2rem;
-      background: #00ffc3;
+      background: #00ff95;
       color: #000;
       font-weight: bold;
+      padding: 1rem 2rem;
       text-decoration: none;
-      border-radius: 8px;
-      transition: background 0.2s ease;
+      border-radius: 6px;
+      margin-top: 1rem;
+      display: inline-block;
+      box-shadow: 0 0 12px #00ff95;
+      transition: 0.3s ease;
     }
     .button:hover {
-      background: #00ddb0;
+      background-color: #00ddb0;
+      box-shadow: 0 0 18px #00ddb0;
+    }
+    pre {
+      background-color: #111;
+      padding: 1.5rem;
+      font-size: 1rem;
+      color: #00ffcc;
+      border-left: 5px solid #00ff95;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      border-radius: 8px;
+    }
+    form {
+      background-color: #111;
+      border: 1px solid #00ff95;
+      padding: 1rem;
+      border-radius: 8px;
+      max-width: 600px;
+    }
+    input, textarea {
+      width: 100%;
+      background-color: #000;
+      border: 1px solid #00ff95;
+      color: #00ff95;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      font-family: monospace;
+      border-radius: 5px;
+    }
+    input[type="submit"] {
+      background-color: #00ff95;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .success, .error {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    .success { color: #00ff95; }
+    .error { color: #ff4444; }
+    nav {
+      margin-bottom: 2rem;
+    }
+    nav a {
+      color: #00ff95;
+      text-decoration: none;
+      margin-right: 1rem;
+      font-weight: bold;
+    }
+    nav a:hover {
+      color: #00ddb0;
     }
     footer {
       text-align: center;
       font-size: 0.9rem;
       color: #888;
-      padding: 2rem;
       margin-top: 3rem;
+      padding-top: 2rem;
       border-top: 1px solid #222;
-    }
-    .section {
-      max-width: 900px;
-      margin: auto;
-      padding: 2rem;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>HypercubeOmegaAI</h1>
-    <p><em>Autonomous AGI Cybersecurity Engine</em></p>
-    <p>Quantum-Informed · Ethics-Enforced · Self-Healing</p>
-  </header>
+  <h1>HypercubeOmegaAI</h1>
+  <p><strong>Autonomous AGI Cybersecurity Stack</strong><br>
+  Quantum-Informed · Ethics-Enforced · Self-Healing</p>
 
-  <section class="section">
+  <nav>
+    <a href="#overview">Overview</a>
+    <a href="#features">Features</a>
+    <a href="#pitch">Pitch</a>
+    <a href="#demo">Demo</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <section id="overview">
     <h2>🚀 What Is It?</h2>
     <p>
-      HypercubeOmegaAI is a fully modular, self-healing AGI prototype built for autonomous cybersecurity, exploit detection,
-      and defense operations. It operates via quantum-prioritized recursive reasoning, ethical memory, and plugin-based intelligence loops.
+      HypercubeOmegaAI is a modular, self-healing AGI engine built for autonomous cyber defense, zero-day patching, and quantum-enhanced decision-making.
     </p>
   </section>
 
-  <section class="section">
+  <section id="features">
     <h2>🧠 Core Features</h2>
     <ul>
-      <li>92.7% zero-day recall (benchmark tested)</li>
-      <li>Quantum-prioritized DAG task executor</li>
-      <li>RecursiveThoughtEngine with plugin reactor</li>
-      <li>CuPy/NumPy hybrid memory with entropy-based recall</li>
-      <li>HealingSandbox with retry logic + rollback</li>
-      <li>GAN-based payload generation + mutation</li>
-      <li>EthicsEnforcer with neural pattern validation</li>
+      <li>Quantum DAG Executor with entropy prioritization</li>
+      <li>GAN-driven Payload Mutator with obfuscation</li>
+      <li>SafeLLM Sandbox with 30 retries + ethics firewall</li>
+      <li>Neuroplastic Evolution with DEAP + reinforcement</li>
+      <li>CuPy Memory Engine with cosine recall</li>
     </ul>
   </section>
 
-  <section class="section">
-    <h2>📦 What You Get</h2>
-    <ul>
-      <li>50+ Python modules: DAG, memory, ethics, GAN, LLM interface</li>
-      <li>Simulation-ready GUI (no GPU required)</li>
-      <li>Pitch deck, architecture docs, licensing terms</li>
-      <li>Offline-ready, self-contained, extensible AGI infrastructure</li>
-    </ul>
-  </section>
-
-  <section class="section">
+  <section id="pitch">
     <h2>📄 Pitch Deck</h2>
-    <p>Full AGI overview, architecture, and licensing strategy:</p>
     <a class="button" href="pitch_deck.pdf" download>📥 Download Pitch Deck</a>
   </section>
 
-  <section class="section">
-    <h2>📫 Contact</h2>
-    <p>For demo access, licensing, or acquisition discussions:</p>
-    <p><strong>Email:</strong> <a href="mailto:sashoderama@gmail.com">sashoderama@gmail.com</a></p>
+  <section id="demo">
+    <h2>👁️ AGI Patch Simulation (Typing Demo)</h2>
+    <pre id="typing-code">// OmegaHyperCubeAI :: Self-Healing Engine</pre>
+  </section>
+
+  <section id="contact">
+    <h2>📬 Contact</h2>
+    <form id="contact-form" action="https://formspree.io/f/xleqrdzn" method="POST">
+      <input type="text" name="name" placeholder="Your name" required />
+      <input type="email" name="_replyto" placeholder="Your email" required />
+      <textarea name="message" rows="5" placeholder="Your message..." required></textarea>
+      <input type="submit" value="Send Message" />
+      <div class="success" id="form-success" style="display:none;">✅ Message sent successfully!</div>
+      <div class="error" id="form-error" style="display:none;">❌ Failed to send. Try again.</div>
+    </form>
   </section>
 
   <footer>
-    <p>© 2025 HypercubeOmegaAI | Built from the Future. Available Today.</p>
+    <p>© 2025 HypercubeOmegaAI – Recursive Self-Evolving Intelligence</p>
   </footer>
+
+  <script>
+    // Typing animation
+    const code = [
+      "async def execute_with_healing(code: str):",
+      "    for attempt in range(30):",
+      "        try:",
+      "            exec(code)",
+      "            return {'success': True}",
+      "        except Exception as e:",
+      "            patch = llm_generate_patch(code, str(e))",
+      "            code = verify_patch_integrity(patch)",
+      "    return {'success': False}"
+    ].join("\\n");
+
+    let i = 0;
+    const el = document.getElementById("typing-code");
+    function type() {
+      if (i < code.length) {
+        el.textContent += code[i++];
+        setTimeout(type, 10);
+      }
+    }
+    window.onload = type;
+
+    // Contact form feedback
+    const form = document.getElementById("contact-form");
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+      fetch(form.action, {
+        method: "POST",
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      }).then(response => {
+        if (response.ok) {
+          document.getElementById("form-success").style.display = "block";
+          document.getElementById("form-error").style.display = "none";
+          form.reset();
+        } else {
+          throw new Error("Form error");
+        }
+      }).catch(() => {
+        document.getElementById("form-success").style.display = "none";
+        document.getElementById("form-error").style.display = "block";
+      });
+    });
+  </script>
 
 </body>
 </html>
