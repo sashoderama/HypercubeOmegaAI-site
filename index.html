@@ -1,194 +1,214 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>OmegaHyperCubeAI</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Fira+Code&display=swap" rel="stylesheet">
+  <meta name="description" content="OmegaHyperCubeAI: A Quantum-Enhanced Self-Healing AGI Cyber Defense Engine with Memory, Ethics, and Mutation Capabilities.">
+  <meta name="keywords" content="AGI, Quantum AI, Cybersecurity, DAG, GAN, Memory AI, OmegaHyperCube, LLM Sandbox">
+  <meta name="author" content="Omega Architect">
+  <meta property="og:title" content="OmegaHyperCubeAI – Quantum AGI Cyber Defense Stack">
+  <meta property="og:description" content="A self-evolving AGI architecture capable of real-time patching, quantum DAG execution, and ethical filtering.">
+  <meta property="og:image" content="https://sashoderama.github.io/HypercubeOmegaAI-site/assets/favicon.png">
+  <meta property="og:type" content="website">
   <style>
-    :root {
-      --main-color: #00ff95;
-      --accent-color: #00ffcc;
-      --bg: #000000;
-      --fg: #d0ffd8;
-      --dim: #1a1a1a;
-    }
-    * { box-sizing: border-box; }
     body {
-      margin: 0;
-      background-color: var(--bg);
-      color: var(--fg);
-      font-family: 'Fira Code', monospace;
-      scroll-behavior: smooth;
-    }
-    header {
-      background: linear-gradient(to right, #001010, #002020);
-      text-align: center;
-      padding: 4rem 1rem;
-      border-bottom: 3px solid var(--main-color);
-    }
-    header h1 {
-      font-size: 2.8rem;
-      color: var(--main-color);
-      font-family: 'Orbitron', sans-serif;
-    }
-    section {
-      max-width: 900px;
-      margin: auto;
-      padding: 2.5rem 1.5rem;
-      border-bottom: 1px solid #111;
-    }
-    section h2 {
-      color: var(--accent-color);
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-      border-left: 4px solid var(--main-color);
-      padding-left: 1rem;
-    }
-    ul {
-      padding-left: 2rem;
+      background-color: #000;
+      color: #0f0;
+      font-family: monospace;
+      padding: 2rem;
       line-height: 1.6;
     }
+    h1, h2 {
+      color: #00ff95;
+    }
+    ul {
+      padding-left: 1.5rem;
+    }
     pre {
-      background-color: #0f0f0f;
-      padding: 1rem;
-      font-size: 0.95rem;
+      background-color: #111;
+      padding: 1.5rem;
+      font-size: 1.1rem;
+      border-left: 6px solid #00ff95;
       color: #00ffcc;
-      border-left: 4px solid #00ff95;
-      border-radius: 8px;
+      white-space: pre-wrap;
       overflow-x: auto;
     }
-    .button {
+    a.button {
       display: inline-block;
-      background: var(--main-color);
+      background: #00ff95;
       color: #000;
-      padding: 1rem 2rem;
       font-weight: bold;
-      text-decoration: none;
+      padding: 1rem 2rem;
       border-radius: 6px;
-      box-shadow: 0 0 12px var(--main-color);
-    }
-    footer {
-      text-align: center;
-      font-size: 0.9rem;
-      color: #888;
-      padding: 2rem 1rem;
-      background-color: #000;
+      text-decoration: none;
+      margin-top: 1rem;
     }
     form {
       display: flex;
       flex-direction: column;
       gap: 1rem;
       max-width: 600px;
-      margin: 1rem auto;
+      background: #111;
+      padding: 1rem;
+      border: 1px solid #00ff95;
+      border-radius: 8px;
     }
     input, textarea {
-      background-color: #111;
-      color: #00ffcc;
-      border: 1px solid #00ffc3;
       padding: 0.8rem;
-      font-family: 'Fira Code', monospace;
-      font-size: 0.9rem;
-      border-radius: 5px;
+      font-family: monospace;
+      font-size: 1rem;
+      border-radius: 4px;
+      border: 1px solid #00ff95;
+      background: #000;
+      color: #0f0;
     }
     input[type="submit"] {
-      background-color: var(--main-color);
+      background-color: #00ff95;
       color: #000;
-      font-weight: bold;
       cursor: pointer;
-      box-shadow: 0 0 10px var(--main-color);
+      font-weight: bold;
     }
-    .typing-highlight {
-      white-space: pre-wrap;
-      word-wrap: break-word;
+    .success, .error {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    .success { color: #00ff95; }
+    .error { color: #ff4444; }
+    canvas {
+      display: block;
+      margin: 3rem auto;
+      border: 2px solid #00ff95;
+      background: radial-gradient(#001a1a, #000);
+    }
+    footer {
+      text-align: center;
+      margin-top: 4rem;
+      color: #888;
     }
   </style>
 </head>
 <body>
 
-<header>
   <h1>OmegaHyperCubeAI</h1>
   <p><em>Quantum AGI Cyber Defense Stack</em></p>
   <p>Autonomous · Self-Healing · Memory-Aware · Ethics-Filtered</p>
-</header>
 
-<section>
+  <canvas id="agi-avatar" width="400" height="400"></canvas>
+
   <h2>🧬 Core Intelligence</h2>
   <ul>
-    <li><strong>Recursive DAG Executor</strong> — entropy-sorted quantum logic routing</li>
-    <li><strong>ThoughtPlugin Reactor</strong> — deep plugin-chained reasoning</li>
-    <li><strong>Healing Sandbox</strong> — automated patch simulation + rollback</li>
-    <li><strong>Quantum Memory Engine</strong> — CuPy-enhanced memory graphs</li>
-    <li><strong>Ethics Firewall</strong> — neural moral filter for generated code</li>
+    <li>Recursive DAG Executor — Qiskit-based routing, entropy-sorted</li>
+    <li>ThoughtPlugin Reactor — Live modular AI logic plugins</li>
+    <li>Healing Sandbox — Retry-loop patching with rollback</li>
+    <li>Quantum Memory Engine — CuPy graphs with temporal decay</li>
+    <li>Ethics Firewall — Realtime code-level filtering + safety logs</li>
+    <li>Polymorphic Payload Generator — GAN-tuned entropy mutation</li>
+    <li>Emergent Personality Matrix — Conversational reflection engine</li>
+    <li>Quantum Entropy Analyzer — Real-time payload entropy tracking</li>
+    <li>Neural Telemetry Hub — GPU, DAG, memory, entropy monitor</li>
+    <li>Quantum Circuit Optimizer — Fidelity-tuned DAG compiler</li>
   </ul>
-</section>
 
-<section>
   <h2>📄 Pitch Deck</h2>
-  <p>Full AGI architecture, market insights, and licensing terms:</p>
-  <a href="pitch_deck.pdf" class="button">📥 Download Pitch Deck</a>
-</section>
+  <a class="button" href="pitch_deck.pdf" download>📥 Download Pitch Deck</a>
 
-<section>
   <h2>👁️ AGI Patch Simulation (Typing Demo)</h2>
-  <pre><code id="typing-code" class="typing-highlight">
-// OmegaHyperCubeAI :: Quantum-Healing Engine
-async def execute_with_healing(code: str):
-  for attempt in range(30):
-    try:
-      exec(code)
-      return {"success": True}
-    except Exception as e:
-      patch = llm_generate_patch(code, str(e))
-      code = verify_patch_integrity(patch)
-      if not ethics_filter(code):
-        log_violation(e)
-        break
-  return {"success": False}
-  </code></pre>
-</section>
+  <pre id="typing-code">// OmegaHyperCubeAI :: Self-Healing Engine</pre>
 
-<section>
   <h2>📬 Contact the Architect</h2>
-  <form action="https://formspree.io/f/xleqrdzn" method="POST">
+  <form id="contact-form" action="https://formspree.io/f/xleqrdzn" method="POST">
     <input type="text" name="name" placeholder="Your name" required>
     <input type="email" name="_replyto" placeholder="Your email" required>
-    <textarea name="message" rows="5" placeholder="Tell us your idea, partnership, or request..." required></textarea>
+    <textarea name="message" rows="5" placeholder="Your message..." required></textarea>
     <input type="submit" value="Send Message">
+    <div class="success" id="form-success" style="display:none;">✅ Message sent successfully!</div>
+    <div class="error" id="form-error" style="display:none;">❌ Failed to send. Try again.</div>
   </form>
-</section>
 
-<section>
   <h2>💎 Why OmegaHyperCubeAI Is Different</h2>
   <ul>
-    <li><strong>🧠 Autonomous AGI Architecture:</strong> Not an API wrapper. This is recursive, memory-linked intelligence.</li>
-    <li><strong>⚛️ Quantum DAG Execution:</strong> Real-time entropy-prioritized logic routing with Qiskit + CuPy layers.</li>
-    <li><strong>🧬 GAN-Based Payload Mutation:</strong> Polymorphic, obfuscated payloads shaped by entropy profiles.</li>
-    <li><strong>🧠 Emergent Personality + Memory:</strong> It remembers what you say. It reflects. It evolves.</li>
-    <li><strong>🖥️ Fully GUI-Driven:</strong> Exploit DAG, memory graphs, sandbox UI, plugin loader, GPU monitoring.</li>
-    <li><strong>🚫 Zero Cloud Lock-In:</strong> Offline capable. No OpenAI dependency. Fully local LLM stack.</li>
+    <li>🧠 Fully autonomous AGI architecture (not just wrappers)</li>
+    <li>⚛️ Quantum DAG execution with entropy-routing</li>
+    <li>🧬 GAN-based payload mutation + reflection</li>
+    <li>🧠 Emergent personality + memory trace logging</li>
+    <li>🖥️ GUI with DAG visualizer + GPU monitoring</li>
+    <li>🚫 Zero cloud lock-in, offline-capable</li>
+    <li>🔐 Steganographic protocol + ethics firewall</li>
+    <li>🌐 PWA-ready, GitHub-hostable, enterprise-licensable</li>
   </ul>
-</section>
 
-<footer>
-  <p>© 2024 OmegaHyperCubeAI — Recursive Self-Evolving Intelligence</p>
-</footer>
+  <footer>
+    <p>© 2025 OmegaHyperCubeAI — Recursive Self-Evolving Intelligence</p>
+  </footer>
 
-<script>
-  const codeElement = document.getElementById("typing-code");
-  const originalText = codeElement.textContent.trim();
-  codeElement.textContent = "";
-  let i = 0;
-  function typeCode() {
-    if (i < originalText.length) {
-      codeElement.textContent += originalText.charAt(i);
-      i++;
-      setTimeout(typeCode, 12);
+  <script>
+    // Typing Effect
+    const code = [
+      "async def execute_with_healing(code: str):",
+      "    for attempt in range(30):",
+      "        try:",
+      "            exec(code)",
+      "            return {'success': True}",
+      "        except Exception as e:",
+      "            patch = llm_generate_patch(code, str(e))",
+      "            code = verify_patch_integrity(patch)",
+      "    return {'success': False}"
+    ].join("\\n");
+    let i = 0;
+    const el = document.getElementById("typing-code");
+    function type() {
+      if (i < code.length) {
+        el.textContent += code[i++];
+        setTimeout(type, 12);
+      }
     }
-  }
-  window.addEventListener("load", typeCode);
-</script>
+    window.onload = type;
+
+    // Contact Form Handling
+    const form = document.getElementById("contact-form");
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+      fetch(form.action, {
+        method: "POST",
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      }).then(response => {
+        if (response.ok) {
+          document.getElementById("form-success").style.display = "block";
+          document.getElementById("form-error").style.display = "none";
+          form.reset();
+        } else {
+          throw new Error("Form error");
+        }
+      }).catch(() => {
+        document.getElementById("form-success").style.display = "none";
+        document.getElementById("form-error").style.display = "block";
+      });
+    });
+
+    // Simple 3D-Effect Avatar Render
+    const canvas = document.getElementById("agi-avatar");
+    const ctx = canvas.getContext("2d");
+    let t = 0;
+    function drawFace() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.translate(200, 200);
+      ctx.rotate(t / 20);
+      for (let i = 0; i < 60; i++) {
+        ctx.beginPath();
+        ctx.arc(Math.cos(i + t) * 60, Math.sin(i + t) * 60, 2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0,255,149,0.6)`;
+        ctx.fill();
+      }
+      ctx.restore();
+      t += 0.05;
+      requestAnimationFrame(drawFace);
+    }
+    drawFace();
+  </script>
 
 </body>
 </html>
