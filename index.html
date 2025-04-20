@@ -3,135 +3,202 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HypercubeOmegaAI</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Open+Sans&display=swap" rel="stylesheet">
+  <title>OmegaHyperCubeAI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Fira+Code&display=swap" rel="stylesheet">
   <style>
     :root {
-      --main-color: #00ffc3;
-      --bg: #0b0b0b;
-      --fg: #e0e0e0;
-      --accent: #111;
+      --main-color: #00ff95;
+      --accent-color: #00ffcc;
+      --bg: #000000;
+      --fg: #d0ffd8;
+      --dim: #202020;
     }
+
     body {
       margin: 0;
-      font-family: 'Open Sans', sans-serif;
       background-color: var(--bg);
       color: var(--fg);
+      font-family: 'Fira Code', monospace;
     }
+
     header {
-      background-color: var(--accent);
-      padding: 3rem 2rem;
+      background: linear-gradient(to right, #001010, #002020);
       text-align: center;
-      border-bottom: 2px solid var(--main-color);
+      padding: 3rem 1rem;
+      border-bottom: 3px solid var(--main-color);
     }
+
     header h1 {
-      font-family: 'Orbitron', sans-serif;
       font-size: 2.8rem;
       color: var(--main-color);
-      margin: 0 0 0.5rem;
+      font-family: 'Orbitron', sans-serif;
+      margin-bottom: 0.5rem;
     }
+
     header p {
-      font-size: 1.2rem;
-      color: #aaa;
+      color: #88ffe2;
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: auto;
     }
+
     section {
       max-width: 900px;
       margin: auto;
-      padding: 2rem;
-      border-bottom: 1px solid #222;
+      padding: 2rem 1.5rem;
+      border-bottom: 1px solid #111;
     }
+
     section h2 {
+      color: var(--accent-color);
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
       border-left: 4px solid var(--main-color);
       padding-left: 1rem;
-      font-size: 1.5rem;
     }
+
     ul {
       padding-left: 2rem;
+      line-height: 1.7;
     }
+
     .button {
       display: inline-block;
-      margin: 1.5rem 0;
-      padding: 1rem 2rem;
       background: var(--main-color);
       color: #000;
+      padding: 1rem 2rem;
       font-weight: bold;
       text-decoration: none;
-      border-radius: 5px;
-      transition: 0.2s ease;
+      border-radius: 6px;
+      margin-top: 1rem;
+      box-shadow: 0 0 12px var(--main-color);
+      transition: 0.3s ease;
     }
+
     .button:hover {
-      background: #00ddb0;
+      background: #00ddaa;
+      box-shadow: 0 0 18px var(--accent-color);
     }
+
     footer {
       text-align: center;
-      padding: 2rem;
       font-size: 0.9rem;
       color: #888;
+      padding: 2rem 1rem;
       background-color: #000;
     }
-    @media (max-width: 600px) {
+
+    pre {
+      background-color: #0f0f0f;
+      padding: 1rem;
+      border-left: 4px solid var(--main-color);
+      overflow-x: auto;
+      font-size: 0.95rem;
+      color: #00ffcc;
+      border-radius: 8px;
+    }
+
+    @media screen and (max-width: 768px) {
       header h1 {
         font-size: 2rem;
       }
       section {
-        padding: 1rem;
+        padding: 1.5rem 1rem;
       }
     }
   </style>
 </head>
+
 <body>
 
   <header>
-    <h1>HypercubeOmegaAI</h1>
-    <p><em>Autonomous AGI Defense Engine</em></p>
-    <p>Quantum-Informed · Ethics-Enforced · Self-Healing</p>
+    <h1>OmegaHyperCubeAI</h1>
+    <p><em>Quantum-Driven AGI Cyber Intelligence Stack</em></p>
+    <p>Recursive Defense · Ethics Filtered · Autonomously Evolving</p>
   </header>
 
   <section>
-    <h2>🚀 Overview</h2>
+    <h2>🚀 Mission</h2>
     <p>
-      HypercubeOmegaAI is a next-generation AGI prototype designed for autonomous cybersecurity and exploit neutralization. It operates with quantum-informed recursion, ethics-governed memory, and plugin-triggered reasoning — built for defense, infrastructure, and AI security integration.
+      OmegaHyperCubeAI is an AGI-class prototype engineered for autonomous cyber defense. 
+      Designed with quantum-prioritized reasoning, memory graph recursion, and ethical filtering,
+      it operates as a fully modular self-improving intelligence engine.
     </p>
   </section>
 
   <section>
-    <h2>🧠 Core Technologies</h2>
+    <h2>🧠 Core Capabilities</h2>
     <ul>
-      <li><strong>DAG Executor</strong> — Quantum-prioritized, entropy-weighted task execution</li>
-      <li><strong>RecursiveThoughtEngine</strong> — Self-evolving chain of reasoning with plugin reactor</li>
-      <li><strong>Self-Healing Sandbox</strong> — Auto-repair system with 30 retry loops + rollback</li>
-      <li><strong>UnifiedQuantumMemory</strong> — CuPy/Numpy hybrid vector database with graph recall</li>
-      <li><strong>EthicsEnforcer</strong> — Pattern firewall with AI-based moral filters</li>
-      <li><strong>Neuroplasticity Engine</strong> — GAN + genetic architecture optimizer</li>
+      <li><strong>DAG Executor</strong> – Entropy-aware, quantum-prioritized task graph execution</li>
+      <li><strong>RecursiveThoughtEngine</strong> – Plugin-based recursive AI logic expansion</li>
+      <li><strong>Self-Healing Sandbox</strong> – 30-retry patch loop with automatic rollback</li>
+      <li><strong>Quantum Memory Engine</strong> – CuPy/Numpy hybrid memory with clustering + cosine recall</li>
+      <li><strong>EthicsEnforcer</strong> – Live neural rule engine for moral policy control</li>
+      <li><strong>Neuroplasticity Evolution</strong> – GAN + DEAP genetic optimization of architecture</li>
     </ul>
   </section>
 
   <section>
-    <h2>📦 What's Included</h2>
+    <h2>📦 What You Get</h2>
     <ul>
-      <li>50+ Python modules: core AGI, DAGs, sandbox, ethics, quantum reasoning</li>
-      <li>Simulation-ready GUI and CLI demo</li>
-      <li>Pitch deck + full architectural documentation</li>
-      <li>Available for licensing or full IP acquisition</li>
+      <li>50+ Python modules with clean AGI layering: memory, DAG, inference, ethics, sandbox</li>
+      <li>GUI + CLI simulation interfaces (non-GPU demo included)</li>
+      <li>Documentation, architecture diagrams, system diagrams</li>
+      <li>Pitch Deck PDF (ready for investment or acquisition)</li>
     </ul>
   </section>
 
   <section>
-    <h2>📥 Pitch Deck</h2>
-    <p>Learn how HypercubeOmegaAI can disrupt cybersecurity, defense AI, and AGI architecture design.</p>
-    <a href="pitch_deck.pdf" class="button">📄 Download Pitch Deck</a>
+    <h2>🎯 Acquisition Options</h2>
+    <ul>
+      <li>Exclusive Licensing</li>
+      <li>Full IP Transfer</li>
+      <li>R&D Partnership with optional founder consulting</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>📄 Pitch Access</h2>
+    <p>Download the full technical + business overview below:</p>
+    <a href="pitch_deck.pdf" class="button">📥 Download Pitch Deck</a>
   </section>
 
   <section>
     <h2>📫 Contact</h2>
-    <p>
-      Interested in a demo, license, or acquisition conversation?<br>
-      <strong>Email:</strong> <a href="mailto:sashoderama@example.com">sashoderama@example.com</a>
-    </p>
+    <p>Request live demo, licensing details, or advisory:</p>
+    <p><strong>Email:</strong> <a href="mailto:sashoderama@example.com">sashoderama@example.com</a></p>
   </section>
 
+  <section>
+    <h2>👁️ AGI Self-Healing Simulation</h2>
+    <pre><code id="typing-code">// Recursive Patch Loop – Simulated AI Autonomy
+async def execute_with_healing(code: str):
+    for attempt in range(30):
+        try:
+            exec(code)
+            return {"success": True}
+        except Exception as e:
+            code = llm_generate_patch(code, str(e))
+    return {"success": False"}</code></pre>
+  </section>
+
+  <script>
+    const codeElement = document.getElementById("typing-code");
+    const originalText = codeElement.textContent.trim();
+    codeElement.textContent = "";
+    let i = 0;
+    function typeCode() {
+      if (i < originalText.length) {
+        codeElement.textContent += originalText.charAt(i);
+        i++;
+        setTimeout(typeCode, 12);
+      }
+    }
+    window.addEventListener("load", typeCode);
+  </script>
+
   <footer>
-    <p>© 2024 HypercubeOmegaAI · Built from the future. Available today.</p>
+    <p>© 2024 OmegaHyperCubeAI – Built from the Future, Operating in the Present.</p>
   </footer>
 
 </body>
