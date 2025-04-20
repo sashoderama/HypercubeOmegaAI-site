@@ -6,14 +6,16 @@
   <meta name="description" content="OmegaHyperCubeAI: Quantum-grade AGI cybersecurity platform with self-healing LLMs, DAG-based reasoning, memory-driven evolution, and zero cloud dependency.">
   <meta property="og:title" content="OmegaHyperCubeAI - Quantum AGI Cybersecurity">
   <meta property="og:description" content="Autonomous, quantum-powered, self-evolving intelligence for next-gen cyber defense.">
-  <meta property="og:image" content="https://omegahypercube.ai/assets/og-image.png">
+  <meta property="og:image" content="https://omegahypercube.ai/assets/agi-face.png">
   <meta property="og:type" content="website">
   <meta name="theme-color" content="#00ff95">
   <meta name="robots" content="index, follow">
   <meta name="author" content="OmegaHyperCubeAI Architect">
+  <meta name="keywords" content="AGI, quantum computing, cybersecurity, self-healing, autonomous AI">
   <title>OmegaHyperCubeAI - Quantum AGI Cyber Defense</title>
   <link rel="icon" type="image/png" href="/assets/favicon.png">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Fira+Code:wght@400;600&family=Roboto+Mono&display=swap" rel="stylesheet">
+  <link rel="manifest" href="/manifest.json">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Fira+Code:wght@400;600;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     :root {
@@ -24,13 +26,16 @@
       --dim: #1a1a1a;
       --error: #ff4d4d;
       --warning: #ffcc00;
-      --shadow-glow: 0 0 15px var(--main-color);
-      --transition-speed: 0.6s;
+      --shadow-glow: 0 0 20px var(--main-color);
+      --transition-speed: 0.8s;
+      --pulse-speed: 6s;
+      --neon-intensity: 0 0 30px var(--main-color);
     }
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      scroll-margin-top: 80px;
     }
     body {
       background-color: var(--bg);
@@ -39,6 +44,7 @@
       scroll-behavior: smooth;
       overflow-x: hidden;
       position: relative;
+      line-height: 1.6;
     }
     ::selection {
       background: var(--main-color);
@@ -47,10 +53,11 @@
     header {
       background: linear-gradient(135deg, #001010 0%, #002020 100%);
       text-align: center;
-      padding: 5rem 1rem;
-      border-bottom: 4px solid var(--main-color);
+      padding: 6rem 1rem;
+      border-bottom: 5px solid var(--main-color);
       position: relative;
       overflow: hidden;
+      z-index: 1;
     }
     header::before {
       content: '';
@@ -59,28 +66,37 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle, rgba(0, 255, 149, 0.2), transparent);
-      animation: pulse 8s infinite;
+      background: radial-gradient(circle, rgba(0, 255, 149, 0.3), transparent);
+      animation: pulse var(--pulse-speed) infinite;
     }
     header h1 {
-      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-size: clamp(3rem, 6vw, 4rem);
       color: var(--main-color);
       font-family: 'Orbitron', sans-serif;
-      text-shadow: var(--shadow-glow);
-      animation: neon-flicker 3s infinite alternate;
+      text-shadow: var(--neon-intensity);
+      animation: neon-flicker 2.5s infinite alternate;
+      letter-spacing: 2px;
     }
     header p {
-      font-size: clamp(1rem, 2vw, 1.2rem);
-      margin: 0.5rem 0;
+      font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+      margin: 0.8rem 0;
       color: var(--accent-color);
+      font-weight: 600;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
     }
     section {
-      max-width: 1000px;
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 3rem 2rem;
-      border-bottom: 1px solid var(--dim);
+      padding: 4rem 2.5rem;
+      border-bottom: 2px solid var(--dim);
       opacity: 0;
-      transform: translateY(50px);
+      transform: translateY(60px);
       transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
     }
     section.visible {
@@ -89,69 +105,111 @@
     }
     section h2 {
       color: var(--accent-color);
-      font-size: clamp(1.5rem, 3vw, 2rem);
-      margin-bottom: 1.5rem;
-      border-left: 6px solid var(--main-color);
-      padding-left: 1.2rem;
+      font-size: clamp(1.8rem, 3.5vw, 2.2rem);
+      margin-bottom: 2rem;
+      border-left: 8px solid var(--main-color);
+      padding-left: 1.5rem;
       font-family: 'Orbitron', sans-serif;
       text-transform: uppercase;
+      text-shadow: var(--shadow-glow);
     }
     ul {
-      padding-left: 2.5rem;
-      line-height: 1.8;
+      padding-left: 3rem;
+      line-height: 2;
       list-style: none;
     }
     ul li {
       position: relative;
-      margin-bottom: 1rem;
-      padding-left: 1.5rem;
+      margin-bottom: 1.5rem;
+      padding-left: 2rem;
+      font-size: 1.1rem;
     }
     ul li::before {
       content: '▹';
       color: var(--main-color);
       position: absolute;
       left: 0;
-      font-size: 1.2rem;
+      font-size: 1.4rem;
+      animation: pulse 4s infinite;
     }
     pre {
       background-color: #0f0f0f;
-      padding: 1.5rem;
-      font-size: 0.95rem;
+      padding: 2rem;
+      font-size: 1rem;
       color: var(--accent-color);
-      border-left: 6px solid var(--main-color);
-      border-radius: 10px;
+      border-left: 8px solid var(--main-color);
+      border-radius: 12px;
       overflow-x: auto;
       position: relative;
-      box-shadow: var(--shadow-glow);
-      transition: transform 0.3s ease;
+      box-shadow: var(--neon-intensity);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
     }
     pre:hover {
-      transform: scale(1.02);
+      transform: scale(1.03);
+      box-shadow: 0 0 40px var(--main-color);
+    }
+    .typing-highlight {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      position: relative;
+      min-height: 300px;
+      background: linear-gradient(45deg, #0f0f0f, #1a1a1a);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: inset 0 0 20px rgba(0, 255, 149, 0.2);
+    }
+    .typing-cursor::after {
+      content: '|';
+      color: var(--main-color);
+      animation: blink 0.7s infinite;
+      margin-left: 2px;
+    }
+    .typing-glow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(0, 255, 149, 0.3), transparent);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .typing-glow.active {
+      opacity: 1;
     }
     .button {
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.8rem;
       background: var(--main-color);
       color: var(--bg);
-      padding: 1rem 2.5rem;
-      font-weight: 600;
+      padding: 1.2rem 3rem;
+      font-weight: 700;
       text-decoration: none;
-      border-radius: 8px;
-      box-shadow: var(--shadow-glow);
-      transition: background 0.3s ease, transform 0.3s ease;
+      border-radius: 10px;
+      box-shadow: var(--neon-intensity);
+      transition: background 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease;
+      font-family: 'Orbitron', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
     .button:hover {
       background: var(--accent-color);
-      transform: translateY(-3px);
+      transform: translateY(-5px);
+      box-shadow: 0 0 40px var(--accent-color);
+    }
+    .button:active {
+      transform: translateY(0);
     }
     footer {
       text-align: center;
-      font-size: 0.9rem;
+      font-size: 1rem;
       color: #888;
-      padding: 3rem 1rem;
+      padding: 4rem 1rem;
       background: linear-gradient(to top, #000, #001010);
       position: relative;
+      z-index: 1;
     }
     footer::after {
       content: '';
@@ -159,67 +217,73 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 2px;
+      height: 3px;
       background: var(--main-color);
-      animation: scanline 5s infinite linear;
+      animation: scanline 4s infinite linear;
+    }
+    footer a {
+      margin: 0 1rem;
     }
     form {
       display: flex;
       flex-direction: column;
-      gap: 1.2rem;
-      max-width: 700px;
-      margin: 2rem auto;
+      gap: 1.5rem;
+      max-width: 800px;
+      margin: 2.5rem auto;
       position: relative;
+      padding: 2rem;
+      background: var(--dim);
+      border-radius: 12px;
+      box-shadow: var(--shadow-glow);
     }
     input, textarea {
       background-color: #111;
       color: var(--accent-color);
-      border: 2px solid var(--main-color);
-      padding: 1rem;
+      border: 3px solid var(--main-color);
+      padding: 1.2rem;
       font-family: 'Fira Code', monospace;
-      font-size: 1rem;
-      border-radius: 8px;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      font-size: 1.1rem;
+      border-radius: 10px;
+      transition: border-color 0.4s ease, box-shadow 0.4s ease;
     }
     input:focus, textarea:focus {
       outline: none;
       border-color: var(--accent-color);
-      box-shadow: var(--shadow-glow);
+      box-shadow: var(--neon-intensity);
     }
     input[type="submit"] {
       background-color: var(--main-color);
       color: var(--bg);
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
-      box-shadow: var(--shadow-glow);
-      transition: background 0.3s ease, transform 0.3s ease;
+      box-shadow: var(--neon-intensity);
+      transition: background 0.4s ease, transform 0.4s ease;
+      font-family: 'Orbitron', sans-serif;
+      text-transform: uppercase;
     }
     input[type="submit"]:hover {
       background: var(--accent-color);
-      transform: translateY(-3px);
-    }
-    .typing-highlight {
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      position: relative;
-      min-height: 200px;
+      transform: translateY(-5px);
     }
     .error-message {
       color: var(--error);
-      font-size: 0.9rem;
-      margin-top: 0.5rem;
+      font-size: 0.95rem;
+      margin-top: 0.6rem;
       display: none;
+      font-weight: 600;
     }
     .canvas-container {
       position: relative;
       width: 100%;
-      height: 400px;
-      margin: 2rem 0;
-      border: 2px solid var(--main-color);
-      border-radius: 10px;
+      height: 500px;
+      margin: 3rem 0;
+      border: 3px solid var(--main-color);
+      border-radius: 15px;
       overflow: hidden;
+      box-shadow: var(--neon-intensity);
+      background: radial-gradient(circle, rgba(0, 255, 149, 0.1), transparent);
     }
-    #dag-visualizer {
+    #agi-face {
       width: 100%;
       height: 100%;
     }
@@ -227,15 +291,17 @@
       position: absolute;
       background: var(--dim);
       color: var(--fg);
-      padding: 0.5rem;
-      border-radius: 5px;
-      font-size: 0.9rem;
+      padding: 0.8rem;
+      border-radius: 8px;
+      font-size: 1rem;
       pointer-events: none;
       opacity: 0;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      box-shadow: var(--shadow-glow);
     }
     .tooltip.active {
       opacity: 1;
+      transform: translateY(-10px);
     }
     .modal {
       display: none;
@@ -244,44 +310,70 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.9);
       justify-content: center;
       align-items: center;
-      z-index: 1000;
+      z-index: 2000;
+      backdrop-filter: blur(5px);
     }
     .modal-content {
       background: var(--dim);
-      padding: 2rem;
-      border-radius: 10px;
-      max-width: 600px;
+      padding: 3rem;
+      border-radius: 15px;
+      max-width: 700px;
       color: var(--fg);
       position: relative;
+      box-shadow: var(--neon-intensity);
+      text-align: center;
     }
     .modal-close {
       position: absolute;
-      top: 1rem;
-      right: 1rem;
+      top: 1.5rem;
+      right: 1.5rem;
       cursor: pointer;
-      font-size: 1.5rem;
+      font-size: 2rem;
       color: var(--main-color);
+      transition: color 0.3s ease;
+    }
+    .modal-close:hover {
+      color: var(--accent-color);
+    }
+    .modal h2 {
+      color: var(--accent-color);
+      font-family: 'Orbitron', sans-serif;
+      margin-bottom: 1rem;
     }
     @keyframes neon-flicker {
-      0%, 100% { text-shadow: var(--shadow-glow); }
-      50% { text-shadow: 0 0 25px var(--main-color); }
+      0%, 100% { text-shadow: var(--neon-intensity); }
+      50% { text-shadow: 0 0 50px var(--main-color); }
     }
     @keyframes pulse {
-      0% { transform: scale(1); opacity: 0.2; }
-      50% { transform: scale(1.2); opacity: 0.4; }
-      100% { transform: scale(1); opacity: 0.2; }
+      0% { transform: scale(1); opacity: 0.3; }
+      50% { transform: scale(1.3); opacity: 0.5; }
+      100% { transform: scale(1); opacity: 0.3; }
     }
     @keyframes scanline {
       0% { transform: translateX(-100%); }
       100% { transform: translateX(100%); }
     }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
     @media (max-width: 768px) {
+      header { padding: 4rem 1rem; }
+      header h1 { font-size: 2.5rem; }
+      section { padding: 3rem 1.5rem; }
+      .canvas-container { height: 350px; }
+      nav { flex-direction: column; gap: 0.8rem; }
+      form { padding: 1.5rem; }
+      pre { font-size: 0.9rem; padding: 1.5rem; }
+    }
+    @media (max-width: 480px) {
       header h1 { font-size: 2rem; }
-      section { padding: 2rem 1rem; }
-      .canvas-container { height: 300px; }
+      section h2 { font-size: 1.5rem; }
+      .button { padding: 0.8rem 2rem; }
+      .canvas-container { height: 250px; }
     }
   </style>
 </head>
@@ -291,242 +383,375 @@
     <p><em>Quantum AGI Cyber Defense Stack</em></p>
     <p>Autonomous · Self-Healing · Memory-Aware · Ethics-Filtered</p>
     <nav>
-      <a href="#core" class="button"><i class="fas fa-brain"></i> Core</a>
-      <a href="#pitch" class="button"><i class="fas fa-file-alt"></i> Pitch</a>
-      <a href="#demo" class="button"><i class="fas fa-code"></i> Demo</a>
-      <a href="#contact" class="button"><i class="fas fa-envelope"></i> Contact</a>
+      <a href="#core" class="button" data-tooltip="Explore Core Intelligence"><i class="fas fa-brain"></i> Core</a>
+      <a href="#pitch" class="button" data-tooltip="Download Pitch Deck"><i class="fas fa-file-alt"></i> Pitch</a>
+      <a href="#demo" class="button" data-tooltip="View AGI Patch Simulation"><i class="fas fa-code"></i> Demo</a>
+      <a href="#contact" class="button" data-tooltip="Contact the Architect"><i class="fas fa-envelope"></i> Contact</a>
     </nav>
   </header>
 
   <section id="core">
     <h2>🧬 Core Intelligence</h2>
     <ul>
-      <li><strong>Recursive DAG Executor</strong> — Entropy-sorted quantum logic routing with Qiskit-optimized graph traversal.</li>
-      <li><strong>ThoughtPlugin Reactor</strong> — Deep plugin-chained reasoning with dynamic module loading and GPU acceleration.</li>
-      <li><strong>Healing Sandbox</strong> — Automated patch simulation with rollback, stress-tested in isolated containers.</li>
-      <li><strong>Quantum Memory Engine</strong> — CuPy-enhanced memory graphs with temporal decay and context-aware retrieval.</li>
-      <li><strong>Ethics Firewall</strong> — Neural moral filter with real-time code auditing and violation logging.</li>
-      <li><strong>Polymorphic Payload Generator</strong> — GAN-driven obfuscation with entropy-based mutation profiles.</li>
-      <li><strong>Emergent Personality Matrix</strong> — Adaptive conversational model with memory-linked reflection.</li>
+      <li><strong>Recursive DAG Executor</strong> — Entropy-sorted quantum logic routing with Qiskit-optimized graph traversal and real-time optimization.</li>
+      <li><strong>ThoughtPlugin Reactor</strong> — Deep plugin-chained reasoning with dynamic module loading, GPU acceleration, and adaptive plugin prioritization.</li>
+      <li><strong>Healing Sandbox</strong> — Automated patch simulation with rollback, stress-tested in isolated containers with fault-tolerant recovery.</li>
+      <li><strong>Quantum Memory Engine</strong> — CuPy-enhanced memory graphs with temporal decay, context-aware retrieval, and cross-session persistence.</li>
+      <li><strong>Ethics Firewall</strong> — Neural moral filter with real-time code auditing, violation logging, and dynamic rule updates.</li>
+      <li><strong>Polymorphic Payload Generator</strong> — GAN-driven obfuscation with entropy-based mutation profiles and adversarial training.</li>
+      <li><strong>Emergent Personality Matrix</strong> — Adaptive conversational model with memory-linked reflection and emotional resonance simulation.</li>
+      <li><strong>Quantum Entropy Analyzer</strong> — Real-time entropy profiling for threat detection and payload optimization.</li>
     </ul>
     <div class="canvas-container">
-      <canvas id="dag-visualizer"></canvas>
+      <canvas id="agi-face"></canvas>
     </div>
   </section>
 
   <section id="pitch">
     <h2>📄 Pitch Deck</h2>
-    <p>Explore our full AGI architecture, market insights, and licensing terms.</p>
-    <a href="/assets/pitch_deck.pdf" class="button" download><i class="fas fa-download"></i> Download Pitch Deck</a>
+    <p>Discover our full AGI architecture, market insights, competitive analysis, and licensing terms.</p>
+    <a href="/assets/pitch_deck.pdf" class="button" download data-tooltip="Download Pitch Deck PDF"><i class="fas fa-download"></i> Download Pitch Deck</a>
   </section>
 
   <section id="demo">
-    <h2>👁️ AGI Patch Simulation (Typing Demo)</h2>
-    <pre><code id="typing-code" class="typing-highlight">// OmegaHyperCubeAI :: Quantum-Healing Engine
-import asyncio
-import cupy as cp
-from qiskit import QuantumCircuit
-from typing import Dict, Any
-
-class QuantumHealingEngine:
-    def __init__(self, sandbox_config: Dict[str, Any]):
-        self.sandbox = Sandbox(config=sandbox_config)
-        self.ethics = EthicsFirewall()
-        self.memory = QuantumMemoryGraph()
-    
-    async def execute_with_healing(self, code: str, max_attempts: int = 30) -> Dict[str, Any]:
-        self.memory.store_context(code)
-        for attempt in range(max_attempts):
-            try:
-                result = await self.sandbox.execute(code)
-                self.memory.log_success(result)
-                return {"success": True, "result": result}
-            except Exception as e:
-                patch = await self._generate_patch(code, str(e))
-                if not self.ethics.verify(patch):
-                    self.memory.log_violation(e)
-                    return {"success": False, "error": "Ethics violation"}
-                code = await self._verify_patch_integrity(patch)
-                self.memory.update_context(code)
-        return {"success": False, "error": "Max attempts reached"}
-
-    async def _generate_patch(self, code: str, error: str) -> str:
-        llm = LLMPlugin(entropy_weight=0.8)
-        return await llm.generate_patch(code, error)
-
-    async def _verify_patch_integrity(self, patch: str) -> str:
-        verifier = CodeVerifier()
-        return await verifier.scan(patch)
-</code></pre>
+    <h2>👁️ AGI Patch Simulation</h2>
+    <pre><code id="typing-code" class="typing-highlight"></code></pre>
+    <div class="typing-glow" id="typing-glow"></div>
   </section>
 
   <section id="contact">
     <h2>📬 Contact the Architect</h2>
     <form id="contact-form" action="https://formspree.io/f/xleqrdzn" method="POST">
-      <input type="text" name="name" placeholder="Your name" required>
-      <p class="error-message" id="name-error">Name is required</p>
-      <input type="email" name="_replyto" placeholder="Your email" required>
-      <p class="error-message" id="email-error">Valid email is required</p>
-      <textarea name="message" rows="6" placeholder="Tell us your idea, partnership, or request..." required></textarea>
-      <p class="error-message" id="message-error">Message is required</p>
-      <input type="submit" value="Send Message">
+      <input type="text" name="name" placeholder="Your name" required aria-label="Your name">
+      <p class="error-message" id="name-error">Please enter a valid name (at least 2 characters)</p>
+      <input type="email" name="_replyto" placeholder="Your email" required aria-label="Your email">
+      <p class="error-message" id="email-error">Please enter a valid email address</p>
+      <textarea name="message" rows="7" placeholder="Tell us your idea, partnership, or request..." required aria-label="Your message"></textarea>
+      <p class="error-message" id="message-error">Please enter a message (at least 10 characters)</p>
+      <input type="submit" value="Send Message" data-tooltip="Submit your message">
     </form>
   </section>
 
   <section>
     <h2>💎 Why OmegaHyperCubeAI Is Different</h2>
     <ul>
-      <li><strong>🧠 Autonomous AGI Architecture:</strong> Recursive, memory-linked intelligence with no external API reliance.</li>
-      <li><strong>⚛️ Quantum DAG Execution:</strong> Real-time entropy-prioritized routing with Qiskit + CuPy acceleration.</li>
-      <li><strong>🧬 GAN-Based Payload Mutation:</strong> Polymorphic payloads with entropy-driven obfuscation profiles.</li>
-      <li><strong>🧠 Emergent Personality + Memory:</strong> Context-aware, reflective intelligence with long-term memory.</li>
-      <li><strong>🖥️ Fully GUI-Driven:</strong> Interactive DAG visualizer, sandbox UI, plugin loader, and GPU monitoring.</li>
-      <li><strong>🚫 Zero Cloud Lock-In:</strong> Fully offline-capable LLM stack with local Qiskit integration.</li>
-      <li><strong>🔒 Hardened Security:</strong> End-to-end encryption for data, real-time threat detection, and sandbox isolation.</li>
+      <li><strong>🧠 Autonomous AGI Architecture:</strong> Fully recursive, memory-linked intelligence with zero reliance on external APIs.</li>
+      <li><strong>⚛️ Quantum DAG Execution:</strong> Real-time entropy-prioritized routing with Qiskit + CuPy acceleration and dynamic graph optimization.</li>
+      <li><strong>🧬 GAN-Based Payload Mutation:</strong> Polymorphic payloads with entropy-driven obfuscation and adversarial robustness.</li>
+      <li><strong>🧠 Emergent Personality + Memory:</strong> Context-aware, reflective intelligence with persistent memory and emotional simulation.</li>
+      <li><strong>🖥️ Fully GUI-Driven:</strong> Interactive sandbox UI, plugin loader, GPU monitoring, and real-time telemetry dashboards.</li>
+      <li><strong>🚫 Zero Cloud Lock-In:</strong> Offline-capable LLM stack with local Qiskit integration and containerized deployment.</li>
+      <li><strong>🔒 Hardened Security:</strong> End-to-end encryption, real-time threat detection, sandbox isolation, and quantum-resistant cryptography.</li>
+      <li><strong>🌌 Scalable Quantum Integration:</strong> Modular architecture for seamless integration with future quantum hardware.</li>
     </ul>
   </section>
 
   <div class="modal" id="success-modal">
     <div class="modal-content">
-      <span class="modal-close" onclick="closeModal()">&times;</span>
-      <h2>Message Sent!</h2>
-      <p>Your message has been successfully sent to the OmegaHyperCubeAI Architect.</p>
+      <span class="modal-close" onclick="closeModal()">×</span>
+      <h2>Message Sent Successfully!</h2>
+      <p>Your message has been securely transmitted to the OmegaHyperCubeAI Architect. Expect a response within 24-48 hours.</p>
+    </div>
+  </div>
+
+  <div class="modal" id="error-modal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeModal('error-modal')">×</span>
+      <h2>Submission Failed</h2>
+      <p>An error occurred while sending your message. Please try again or contact support.</p>
     </div>
   </div>
 
   <footer>
     <p>© 2025 OmegaHyperCubeAI — Recursive Self-Evolving Intelligence</p>
-    <p><a href="/privacy" class="button">Privacy Policy</a> | <a href="/terms" class="button">Terms of Service</a></p>
+    <p>
+      <a href="/privacy" class="button" data-tooltip="View Privacy Policy"><i class="fas fa-shield-alt"></i> Privacy Policy</a> |
+      <a href="/terms" class="button" data-tooltip="View Terms of Service"><i class="fas fa-file-contract"></i> Terms of Service</a> |
+      <a href="/support" class="button" data-tooltip="Contact Support"><i class="fas fa-headset"></i> Support</a>
+    </p>
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script>
-    // Typing Animation
+    // Enhanced Typing Animation
     const codeElement = document.getElementById('typing-code');
-    const originalText = codeElement.textContent.trim();
+    const glowElement = document.getElementById('typing-glow');
+    const codeText = `// OmegaHyperCubeAI :: Quantum-Healing Engine
+import asyncio
+import cupy as cp
+from qiskit import QuantumCircuit
+from typing import Dict, Any, Optional
+import numpy as np
+from dataclasses import dataclass
+
+@dataclass
+class SandboxConfig:
+    isolation_level: str
+    max_memory: int
+    timeout: float
+
+class QuantumHealingEngine:
+    def __init__(self, sandbox_config: Dict[str, Any]):
+        self.sandbox = Sandbox(config=SandboxConfig(**sandbox_config))
+        self.ethics = EthicsFirewall(model='neural-moral-v2')
+        self.memory = QuantumMemoryGraph(nodes=1000, decay_rate=0.1)
+        self.entropy_analyzer = EntropyAnalyzer(threshold=0.85)
+    
+    async def execute_with_healing(self, code: str, max_attempts: int = 50) -> Dict[str, Any]:
+        self.memory.store_context(code, timestamp=Date.now())
+        entropy_score = self.entropy_analyzer.analyze(code)
+        if entropy_score > 0.9:
+            return {"success": False, "error": "High entropy detected"}
+        
+        for attempt in range(max_attempts):
+            try:
+                result = await self.sandbox.execute(code, timeout=10.0)
+                self.memory.log_success(result, attempt)
+                return {"success": True, "result": result, "attempts": attempt + 1}
+            except Exception as e:
+                patch = await self._generate_patch(code, str(e))
+                if not self.ethics.verify(patch, confidence=0.95):
+                    self.memory.log_violation(e, severity='critical')
+                    return {"success": False, "error": "Ethics violation detected"}
+                code = await self._verify_patch_integrity(patch)
+                self.memory.update_context(code, entropy_score)
+        return {"success": False, "error": "Max attempts reached", "attempts": max_attempts}
+
+    async def _generate_patch(self, code: str, error: str) -> str:
+        llm = LLMPlugin(entropy_weight=0.8, model='quantum-llm-v3')
+        patch = await llm.generate_patch(code, error, max_tokens=1000)
+        return self._sanitize_patch(patch)
+
+    async def _verify_patch_integrity(self, patch: str) -> str:
+        verifier = CodeVerifier(rules=['no_exec', 'no_import_os'])
+        verified_patch = await verifier.scan(patch)
+        return verified_patch if verified_patch else patch
+
+    def _sanitize_patch(self, patch: str) -> str:
+        return patch.replace('__import__', '').replace('eval', '')
+`.trim();
+
     codeElement.textContent = '';
-    let i = 0;
+    let typingIndex = 0;
     function typeCode() {
-      if (i < originalText.length) {
-        codeElement.textContent += originalText.charAt(i);
-        i++;
-        setTimeout(typeCode, 10);
+      if (typingIndex < codeText.length) {
+        codeElement.textContent = codeText.slice(0, typingIndex + 1);
+        codeElement.classList.add('typing-cursor');
+        glowElement.classList.add('active');
+        typingIndex++;
+        const speed = Math.random() * 20 + 5;
+        setTimeout(typeCode, speed);
+      } else {
+        codeElement.classList.remove('typing-cursor');
+        glowElement.classList.remove('active');
+        setTimeout(() => {
+          typingIndex = 0;
+          codeElement.textContent = '';
+          typeCode();
+        }, 5000);
       }
     }
-    window.addEventListener('load', typeCode);
+    window.addEventListener('load', () => {
+      gsap.from(codeElement, { opacity: 0, y: 50, duration: 1, ease: 'power3.out' });
+      typeCode();
+    });
 
     // Scroll Animation
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
+          gsap.from(entry.target, { opacity: 0, y: 60, duration: 1, ease: 'power3.out' });
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.2 });
+    }, { threshold: 0.3 });
     document.querySelectorAll('section').forEach(section => observer.observe(section));
 
-    // Form Validation
+    // Functional Buttons
+    document.querySelectorAll('.button[href]').forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        const href = button.getAttribute('href');
+        if (href.startsWith('#')) {
+          const target = document.querySelector(href);
+          if (target) {
+            window.scrollTo({
+              top: target.offsetTop,
+              behavior: 'smooth'
+            });
+          }
+        } else if (href.includes('pitch_deck.pdf')) {
+          const link = document.createElement('a');
+          link.href = href;
+          link.download = 'OmegaHyperCubeAI_Pitch_Deck.pdf';
+          link.click();
+        } else {
+          window.open(href, '_blank', 'noopener,noreferrer');
+        }
+      });
+    });
+
+    // Form Submission
     const form = document.getElementById('contact-form');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const name = form.querySelector('input[name="name"]').value;
-      const email = form.querySelector('input[name="_replyto"]').value;
-      const message = form.querySelector('textarea[name="message"]').value;
+      const nameInput = form.querySelector('input[name="name"]');
+      const emailInput = form.querySelector('input[name="_replyto"]');
+      const messageInput = form.querySelector('textarea[name="message"]');
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+      const message = messageInput.value.trim();
       let valid = true;
 
-      document.getElementById('name-error').style.display = name ? 'none' : 'block';
-      document.getElementById('email-error').style.display = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? 'none' : 'block';
-      document.getElementById('message-error').style.display = message ? 'none' : 'block';
+      const nameError = document.getElementById('name-error');
+      const emailError = document.getElementById('email-error');
+      const messageError = document.getElementById('message-error');
 
-      if (name && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && message) {
+      nameError.style.display = name.length >= 2 ? 'none' : 'block';
+      emailError.style.display = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? 'none' : 'block';
+      messageError.style.display = message.length >= 10 ? 'none' : 'block';
+
+      if (name.length < 2 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || message.length < 10) {
+        valid = false;
+      }
+
+      if (valid) {
         try {
           const response = await fetch(form.action, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, _replyto: email, message })
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ name, _replyto: email, message, _subject: 'OmegaHyperCubeAI Contact Form Submission' })
           });
           if (response.ok) {
             document.getElementById('success-modal').style.display = 'flex';
             form.reset();
+            gsap.from('#success-modal .modal-content', { scale: 0.8, opacity: 0, duration: 0.5, ease: 'back.out' });
+          } else {
+            throw new Error('Server responded with an error');
           }
         } catch (error) {
           console.error('Form submission failed:', error);
+          document.getElementById('error-modal').style.display = 'flex';
+          gsap.from('#error-modal .modal-content', { scale: 0.8, opacity: 0, duration: 0.5, ease: 'back.out' });
         }
       }
     });
 
     // Modal Close
-    function closeModal() {
-      document.getElementById('success-modal').style.display = 'none';
+    function closeModal(modalId = 'success-modal') {
+      const modal = document.getElementById(modalId);
+      gsap.to(`#${modalId} .modal-content`, {
+        scale: 0.8,
+        opacity: 0,
+        duration: 0.3,
+        ease: 'power2.in',
+        onComplete: () => {
+          modal.style.display = 'none';
+        }
+      });
     }
 
-    // DAG Visualizer (Three.js)
-    const canvas = document.getElementById('dag-visualizer');
+    // AGI Face Visualizer (Three.js)
+    const canvas = document.getElementById('agi-face');
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
 
-    const nodes = [];
-    const edges = [];
-    for (let i = 0; i < 10; i++) {
-      const geometry = new THREE.SphereGeometry(0.5, 32, 32);
-      const material = new THREE.MeshBasicMaterial({ color: 0x00ff95 });
-      const node = new THREE.Mesh(geometry, material);
-      node.position.set(Math.random() * 10 - 5, Math.random() * 10 - 5, Math.random() * 10 - 5);
-      scene.add(node);
-      nodes.push(node);
-    }
-    for (let i = 0; i < nodes.length - 1; i++) {
-      const geometry = new THREE.BufferGeometry().setFromPoints([
-        nodes[i].position,
-        nodes[i + 1].position
-      ]);
-      const material = new THREE.LineBasicMaterial({ color: 0x00ffcc });
-      const edge = new THREE.Line(geometry, material);
-      scene.add(edge);
-      edges.push(edge);
-    }
+    const geometry = new THREE.TorusKnotGeometry(2, 0.5, 100, 16);
+    const material = new THREE.MeshPhongMaterial({
+      color: 0x00ff95,
+      shininess: 100,
+      wireframe: true,
+      emissive: 0x00ffcc,
+      emissiveIntensity: 0.5
+    });
+    const agiFace = new THREE.Mesh(geometry, material);
+    scene.add(agiFace);
 
-    camera.position.z = 15;
+    const light = new THREE.PointLight(0xffffff, 1, 100);
+    light.position.set(10, 10, 10);
+    scene.add(light);
+    const ambientLight = new THREE.AmbientLight(0x404040);
+    scene.add(ambientLight);
+
+    camera.position.z = 10;
+    let time = 0;
     function animate() {
       requestAnimationFrame(animate);
-      nodes.forEach(node => {
-        node.rotation.x += 0.01;
-        node.rotation.y += 0.01;
-      });
+      time += 0.01;
+      agiFace.rotation.x = Math.sin(time) * 0.5;
+      agiFace.rotation.y = Math.cos(time) * 0.5;
+      agiFace.scale.set(
+        1 + Math.sin(time * 2) * 0.1,
+        1 + Math.cos(time * 2) * 0.1,
+        1 + Math.sin(time * 2) * 0.1
+      );
+      material.emissiveIntensity = 0.5 + Math.sin(time * 3) * 0.3;
       renderer.render(scene, camera);
     }
     animate();
 
-    // Tooltip for Interactive Elements
+    // Interactive AGI Face
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      const y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      gsap.to(agiFace.rotation, {
+        x: y * 0.5,
+        y: x * 0.5,
+        duration: 0.5,
+        ease: 'power2.out'
+      });
+    });
+
+    // Tooltips
     const tooltip = document.createElement('div');
     tooltip.classList.add('tooltip');
     document.body.appendChild(tooltip);
-    document.querySelectorAll('.button, li').forEach(elem => {
+    document.querySelectorAll('[data-tooltip]').forEach(elem => {
       elem.addEventListener('mousemove', (e) => {
         tooltip.classList.add('active');
-        tooltip.textContent = elem.textContent.slice(0, 50) + '...';
-        tooltip.style.left = `${e.pageX + 10}px`;
-        tooltip.style.top = `${e.pageY + 10}px`;
+        tooltip.textContent = elem.dataset.tooltip;
+        tooltip.style.left = `${e.pageX + 15}px`;
+        tooltip.style.top = `${e.pageY + 15}px`;
       });
       elem.addEventListener('mouseleave', () => {
         tooltip.classList.remove('active');
       });
     });
 
-    // Lazy Loading for Performance
+    // Lazy Loading
     document.querySelectorAll('img').forEach(img => {
       img.setAttribute('loading', 'lazy');
     });
 
-    // Service Worker for Offline Support
+    // Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').catch(err => console.error('Service Worker registration failed:', err));
       });
     }
+
+    // Resize Handler
+    window.addEventListener('resize', () => {
+      camera.aspect = canvas.clientWidth / canvas.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    });
+
+    // Keyboard Accessibility
+    document.querySelectorAll('.button, input[type="submit"]').forEach(elem => {
+      elem.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          elem.click();
+        }
+      });
+    });
   </script>
 </body>
 </html>
