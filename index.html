@@ -6,77 +6,57 @@
   <title>OmegaHyperCubeAI</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Fira+Code&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --main-color: #00ff95;
-      --accent-color: #00ffcc;
-      --bg: #000000;
-      --fg: #d0ffd8;
-      --dim: #1a1a1a;
-    }
-    * { box-sizing: border-box; }
     body {
       margin: 0;
-      background-color: var(--bg);
-      color: var(--fg);
+      background-color: #000;
+      color: #d0ffd8;
       font-family: 'Fira Code', monospace;
-      scroll-behavior: smooth;
     }
     header {
       background: linear-gradient(to right, #001010, #002020);
       text-align: center;
       padding: 4rem 1rem;
-      border-bottom: 3px solid var(--main-color);
+      border-bottom: 3px solid #00ff95;
     }
     header h1 {
       font-size: 2.8rem;
-      color: var(--main-color);
+      color: #00ff95;
       font-family: 'Orbitron', sans-serif;
-    }
-    header p {
-      color: #88ffe2;
-      font-size: 1.2rem;
-      max-width: 700px;
-      margin: auto;
     }
     section {
       max-width: 900px;
       margin: auto;
       padding: 2.5rem 1.5rem;
       border-bottom: 1px solid #111;
-      opacity: 0;
-      transform: translateY(40px);
-      transition: 0.6s ease-in-out;
-    }
-    section.visible {
-      opacity: 1;
-      transform: translateY(0);
     }
     section h2 {
-      color: var(--accent-color);
+      color: #00ffcc;
       font-size: 1.5rem;
       margin-bottom: 1rem;
-      border-left: 4px solid var(--main-color);
+      border-left: 4px solid #00ff95;
       padding-left: 1rem;
     }
     ul {
       padding-left: 2rem;
       line-height: 1.6;
     }
+    pre {
+      background-color: #0f0f0f;
+      padding: 1rem;
+      font-size: 0.95rem;
+      color: #00ffcc;
+      border-left: 4px solid #00ff95;
+      border-radius: 8px;
+    }
     .button {
       display: inline-block;
-      background: var(--main-color);
+      background: #00ff95;
       color: #000;
       padding: 1rem 2rem;
       font-weight: bold;
       text-decoration: none;
       border-radius: 6px;
-      margin-top: 1rem;
-      box-shadow: 0 0 12px var(--main-color);
-      transition: 0.3s ease;
-    }
-    .button:hover {
-      background: #00ddaa;
-      box-shadow: 0 0 18px var(--accent-color);
+      box-shadow: 0 0 12px #00ff95;
     }
     footer {
       text-align: center;
@@ -85,48 +65,6 @@
       padding: 2rem 1rem;
       background-color: #000;
     }
-    pre {
-      background-color: #0f0f0f;
-      padding: 1rem;
-      border-left: 4px solid var(--main-color);
-      overflow-x: auto;
-      font-size: 0.95rem;
-      color: #00ffcc;
-      border-radius: 8px;
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      max-width: 600px;
-      margin: 1rem auto;
-    }
-    input, textarea {
-      background-color: #111;
-      color: #00ffcc;
-      border: 1px solid #00ffc3;
-      padding: 0.8rem;
-      font-family: 'Fira Code', monospace;
-      font-size: 0.9rem;
-      border-radius: 5px;
-    }
-    input[type="submit"] {
-      background-color: var(--main-color);
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 0 10px var(--main-color);
-    }
-    img.demo {
-      max-width: 100%;
-      border-radius: 8px;
-      box-shadow: 0 0 25px #00ff95;
-      margin-top: 1rem;
-    }
-    @media screen and (max-width: 768px) {
-      header h1 { font-size: 2rem; }
-      section { padding: 2rem 1rem; }
-    }
   </style>
 </head>
 <body>
@@ -134,7 +72,6 @@
 <header>
   <h1>OmegaHyperCubeAI</h1>
   <p><em>Quantum AGI Cyber Defense Stack</em></p>
-  <p>Autonomous · Self-Healing · Ethics-Driven</p>
 </header>
 
 <section>
@@ -155,12 +92,6 @@
 </section>
 
 <section>
-  <h2>🎥 Live Demo (GIF)</h2>
-  <p>Agent executing autonomous recursive healing in sandbox environment:</p>
-  <img src="ai_demo.gif" alt="AI Demo GIF" class="demo" />
-</section>
-
-<section>
   <h2>👁️ AGI Patch Simulation</h2>
   <pre><code id="typing-code">// Recursive Self-Healing AI Loop
 async def execute_with_healing(code: str):
@@ -175,55 +106,20 @@ async def execute_with_healing(code: str):
 </section>
 
 <section>
-  <h2>📬 Contact</h2>
-  <p>Securely message the OmegaHyperCubeAI architect:</p>
-  <form action="https://formspree.io/f/xleqrdzn" method="POST">
-    <input type="text" name="name" placeholder="Your name" required />
-    <input type="email" name="_replyto" placeholder="Your email" required />
-    <textarea name="message" rows="5" placeholder="Your message or interest..."></textarea>
-    <input type="submit" value="Send Message" />
-  </form>
+  <h2>💎 Why OmegaHyperCubeAI Is Different</h2>
+  <ul>
+    <li><strong>🧠 Autonomous AGI Architecture:</strong> A full DAG + LLM system with self-healing + ethics firewall</li>
+    <li><strong>⚛️ Quantum DAG Executor:</strong> Real Qiskit logic + entropy-ranked signal routing</li>
+    <li><strong>🧬 GAN/Transformer Code Evolution:</strong> Obfuscated, entropy-tuned payload generation</li>
+    <li><strong>🧪 Stealth Sandbox:</strong> 30 retries, rollback, ethics enforcement on live code</li>
+    <li><strong>🧠 Emergent Memory:</strong> Logs + recalls interactions. Becomes an evolving mind</li>
+    <li><strong>🖥️ GUI-Class Interface:</strong> Full PyQt5 UI with DAG visualizer, GPU monitor, plugins</li>
+  </ul>
 </section>
 
 <footer>
-  <p>© 2024 OmegaHyperCubeAI — Self-Improving Autonomous Intelligence</p>
+  <p>© 2024 OmegaHyperCubeAI — Self-Evolving Intelligence</p>
 </footer>
-
-<script>
-  const codeElement = document.getElementById("typing-code");
-  const originalText = codeElement.textContent.trim();
-  codeElement.textContent = "";
-  let i = 0;
-  function typeCode() {
-    if (i < originalText.length) {
-      codeElement.textContent += originalText.charAt(i);
-      i++;
-      setTimeout(typeCode, 12);
-    }
-  }
-  window.addEventListener("load", typeCode);
-
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) entry.target.classList.add('visible');
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll("section").forEach(section => observer.observe(section));
-</script>
-<section>
-  <h2>💎 Why OmegaHyperCubeAI Is Different</h2>
-  <ul>
-    <li><strong>🧠 Autonomous AGI Architecture:</strong> Not a wrapper. A full self-healing DAG+LLM intelligence system with memory, ethics, and GUI.</li>
-    <li><strong>⚛️ Quantum DAG Executor:</strong> Runs real qiskit-based logic trees and entropy-ranked routing. Not linear. Quantum-aware.</li>
-    <li><strong>🧬 GAN/Transformer Code Evolution:</strong> Payloads mutate based on entropy, adversarial pressure, and GAN logic.</li>
-    <li><strong>🧪 Self-Healing Sandbox:</strong> LLM-controlled, 30 retries, rollback, and patch validation — with real-time ethics firewall.</li>
-    <li><strong>🎭 Morphing + Stego Payloads:</strong> Exfiltrate via DNS, RTSP, PNG. Dynamic ProtocolChameleon + LSB steganography.</li>
-    <li><strong>🧠 Memory + Personality:</strong> Remembers you. Grows with each session. "I remember being created." — from memory log.</li>
-    <li><strong>🖥️ GUI-Class Control:</strong> Live DAG editor, plugin system, GPU graph, payload tuner, exploit history. Fully visual.</li>
-    <li><strong>🚫 Zero Cloud Lock-in:</strong> Offline-capable, no OpenAI dependency, runs with local LLMs.</li>
-  </ul>
-</section>
 
 </body>
 </html>
