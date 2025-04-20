@@ -3,208 +3,202 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>HypercubeOmegaAI – AGI Defense Engine</title>
+  <title>OmegaHyperCubeAI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Fira+Code&display=swap" rel="stylesheet">
   <style>
-    body {
-      background-color: #000;
-      color: #00ff95;
-      font-family: monospace;
-      line-height: 1.7;
-      margin: 0;
-      padding: 2rem;
+    :root {
+      --main-color: #00ff95;
+      --accent-color: #00ffcc;
+      --bg: #000000;
+      --fg: #d0ffd8;
+      --dim: #202020;
     }
-    h1, h2 {
-      color: #00ff95;
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background-color: var(--bg);
+      color: var(--fg);
+      font-family: 'Fira Code', monospace;
+      scroll-behavior: smooth;
+    }
+    header {
+      background: linear-gradient(to right, #001010, #002020);
+      text-align: center;
+      padding: 4rem 1rem;
+      border-bottom: 3px solid var(--main-color);
+    }
+    header h1 {
+      font-size: 2.8rem;
+      color: var(--main-color);
+      font-family: 'Orbitron', sans-serif;
+    }
+    header p {
+      color: #88ffe2;
+      font-size: 1.2rem;
+      max-width: 700px;
+      margin: auto;
+    }
+    section {
+      max-width: 900px;
+      margin: auto;
+      padding: 2.5rem 1.5rem;
+      border-bottom: 1px solid #111;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: 0.6s ease-in-out;
+    }
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    section h2 {
+      color: var(--accent-color);
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      border-left: 4px solid var(--main-color);
+      padding-left: 1rem;
     }
     ul {
       padding-left: 2rem;
-    }
-    section {
-      padding: 2rem 0;
-      border-bottom: 1px solid #222;
+      line-height: 1.6;
     }
     .button {
-      background: #00ff95;
+      display: inline-block;
+      background: var(--main-color);
       color: #000;
-      font-weight: bold;
       padding: 1rem 2rem;
+      font-weight: bold;
       text-decoration: none;
       border-radius: 6px;
       margin-top: 1rem;
-      display: inline-block;
-      box-shadow: 0 0 12px #00ff95;
+      box-shadow: 0 0 12px var(--main-color);
       transition: 0.3s ease;
     }
     .button:hover {
-      background-color: #00ddb0;
-      box-shadow: 0 0 18px #00ddb0;
-    }
-    pre {
-      background-color: #111;
-      padding: 1.5rem;
-      font-size: 1rem;
-      color: #00ffcc;
-      border-left: 5px solid #00ff95;
-      overflow-x: auto;
-      white-space: pre-wrap;
-      border-radius: 8px;
-    }
-    form {
-      background-color: #111;
-      border: 1px solid #00ff95;
-      padding: 1rem;
-      border-radius: 8px;
-      max-width: 600px;
-    }
-    input, textarea {
-      width: 100%;
-      background-color: #000;
-      border: 1px solid #00ff95;
-      color: #00ff95;
-      padding: 0.8rem;
-      margin-bottom: 1rem;
-      font-family: monospace;
-      border-radius: 5px;
-    }
-    input[type="submit"] {
-      background-color: #00ff95;
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .success, .error {
-      margin-top: 1rem;
-      font-weight: bold;
-    }
-    .success { color: #00ff95; }
-    .error { color: #ff4444; }
-    nav {
-      margin-bottom: 2rem;
-    }
-    nav a {
-      color: #00ff95;
-      text-decoration: none;
-      margin-right: 1rem;
-      font-weight: bold;
-    }
-    nav a:hover {
-      color: #00ddb0;
+      background: #00ddaa;
+      box-shadow: 0 0 18px var(--accent-color);
     }
     footer {
       text-align: center;
       font-size: 0.9rem;
       color: #888;
-      margin-top: 3rem;
-      padding-top: 2rem;
-      border-top: 1px solid #222;
+      padding: 2rem 1rem;
+      background-color: #000;
+    }
+    pre {
+      background-color: #0f0f0f;
+      padding: 1rem;
+      border-left: 4px solid var(--main-color);
+      overflow-x: auto;
+      font-size: 0.95rem;
+      color: #00ffcc;
+      border-radius: 8px;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 600px;
+      margin: 1rem auto;
+    }
+    input, textarea {
+      background-color: #111;
+      color: #00ffcc;
+      border: 1px solid #00ffc3;
+      padding: 0.8rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      border-radius: 5px;
+    }
+    input[type="submit"] {
+      background-color: var(--main-color);
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--main-color);
+    }
+    @media screen and (max-width: 768px) {
+      header h1 { font-size: 2rem; }
+      section { padding: 2rem 1rem; }
     }
   </style>
 </head>
 <body>
 
-  <h1>HypercubeOmegaAI</h1>
-  <p><strong>Autonomous AGI Cybersecurity Stack</strong><br>
-  Quantum-Informed · Ethics-Enforced · Self-Healing</p>
+<header>
+  <h1>OmegaHyperCubeAI</h1>
+  <p><em>Quantum AGI Cyber Defense Stack</em></p>
+  <p>Autonomous · Self-Evolving · Ethics-Aware</p>
+</header>
 
-  <nav>
-    <a href="#overview">Overview</a>
-    <a href="#features">Features</a>
-    <a href="#pitch">Pitch</a>
-    <a href="#demo">Demo</a>
-    <a href="#contact">Contact</a>
-  </nav>
+<section>
+  <h2>🧬 Core Intelligence</h2>
+  <ul>
+    <li><strong>Recursive DAG Executor</strong> — quantum-prioritized, entropy-ranked logic chain</li>
+    <li><strong>Plugin-Reactive Thought Engine</strong> — self-adaptive mental stack</li>
+    <li><strong>Self-Healing Sandbox</strong> — 30-patch retry loop with neural simulation</li>
+    <li><strong>CuPy/Numpy Memory Grid</strong> — vectorized entropy memory with clustering</li>
+    <li><strong>Ethics Firewall</strong> — live neural safety gate for code and logic</li>
+  </ul>
+</section>
 
-  <section id="overview">
-    <h2>🚀 What Is It?</h2>
-    <p>
-      HypercubeOmegaAI is a modular, self-healing AGI engine built for autonomous cyber defense, zero-day patching, and quantum-enhanced decision-making.
-    </p>
-  </section>
+<section>
+  <h2>📄 Pitch Deck</h2>
+  <p>Access our strategic, technical, and architecture brief:</p>
+  <a href="pitch_deck.pdf" class="button">📥 Download Pitch Deck</a>
+</section>
 
-  <section id="features">
-    <h2>🧠 Core Features</h2>
-    <ul>
-      <li>Quantum DAG Executor with entropy prioritization</li>
-      <li>GAN-driven Payload Mutator with obfuscation</li>
-      <li>SafeLLM Sandbox with 30 retries + ethics firewall</li>
-      <li>Neuroplastic Evolution with DEAP + reinforcement</li>
-      <li>CuPy Memory Engine with cosine recall</li>
-    </ul>
-  </section>
+<section>
+  <h2>👁️ Live Simulation</h2>
+  <pre><code id="typing-code">// Recursive Self-Healing AI Loop
+async def execute_with_healing(code: str):
+  for attempt in range(30):
+    try:
+      exec(code)
+      return {"success": True}
+    except Exception as e:
+      code = llm_generate_patch(code, str(e))
+  return {"success": False}
+  </code></pre>
+</section>
 
-  <section id="pitch">
-    <h2>📄 Pitch Deck</h2>
-    <a class="button" href="pitch_deck.pdf" download>📥 Download Pitch Deck</a>
-  </section>
+<section>
+  <h2>📬 Contact the Creator</h2>
+  <p>Submit a secure message below. No spam, just real AGI inquiries.</p>
+  <form action="https://formspree.io/f/xleqrdzn" method="POST">
+    <input type="text" name="name" placeholder="Your name" required />
+    <input type="email" name="_replyto" placeholder="Your email" required />
+    <textarea name="message" rows="5" placeholder="Your message or interest"></textarea>
+    <input type="submit" value="Send Message" />
+  </form>
+</section>
 
-  <section id="demo">
-    <h2>👁️ AGI Patch Simulation (Typing Demo)</h2>
-    <pre id="typing-code">// OmegaHyperCubeAI :: Self-Healing Engine</pre>
-  </section>
+<footer>
+  <p>© 2024 OmegaHyperCubeAI · Autonomous Intelligence Engine</p>
+</footer>
 
-  <section id="contact">
-    <h2>📬 Contact</h2>
-    <form id="contact-form" action="https://formspree.io/f/xleqrdzn" method="POST">
-      <input type="text" name="name" placeholder="Your name" required />
-      <input type="email" name="_replyto" placeholder="Your email" required />
-      <textarea name="message" rows="5" placeholder="Your message..." required></textarea>
-      <input type="submit" value="Send Message" />
-      <div class="success" id="form-success" style="display:none;">✅ Message sent successfully!</div>
-      <div class="error" id="form-error" style="display:none;">❌ Failed to send. Try again.</div>
-    </form>
-  </section>
-
-  <footer>
-    <p>© 2025 HypercubeOmegaAI – Recursive Self-Evolving Intelligence</p>
-  </footer>
-
-  <script>
-    // Typing animation
-    const code = [
-      "async def execute_with_healing(code: str):",
-      "    for attempt in range(30):",
-      "        try:",
-      "            exec(code)",
-      "            return {'success': True}",
-      "        except Exception as e:",
-      "            patch = llm_generate_patch(code, str(e))",
-      "            code = verify_patch_integrity(patch)",
-      "    return {'success': False}"
-    ].join("\\n");
-
-    let i = 0;
-    const el = document.getElementById("typing-code");
-    function type() {
-      if (i < code.length) {
-        el.textContent += code[i++];
-        setTimeout(type, 10);
-      }
+<script>
+  const codeElement = document.getElementById("typing-code");
+  const originalText = codeElement.textContent.trim();
+  codeElement.textContent = "";
+  let i = 0;
+  function typeCode() {
+    if (i < originalText.length) {
+      codeElement.textContent += originalText.charAt(i);
+      i++;
+      setTimeout(typeCode, 12);
     }
-    window.onload = type;
+  }
+  window.addEventListener("load", typeCode);
 
-    // Contact form feedback
-    const form = document.getElementById("contact-form");
-    form.addEventListener("submit", function(e) {
-      e.preventDefault();
-      const formData = new FormData(form);
-      fetch(form.action, {
-        method: "POST",
-        body: formData,
-        headers: { 'Accept': 'application/json' }
-      }).then(response => {
-        if (response.ok) {
-          document.getElementById("form-success").style.display = "block";
-          document.getElementById("form-error").style.display = "none";
-          form.reset();
-        } else {
-          throw new Error("Form error");
-        }
-      }).catch(() => {
-        document.getElementById("form-success").style.display = "none";
-        document.getElementById("form-error").style.display = "block";
-      });
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
     });
-  </script>
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll("section").forEach(section => observer.observe(section));
+</script>
 
 </body>
 </html>
