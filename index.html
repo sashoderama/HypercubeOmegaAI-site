@@ -28,16 +28,16 @@
       border-bottom: 3px solid var(--main-color);
     }
     header h1 {
-      font-size: 2.8rem;
+      font-size: 3.5rem;
       color: var(--main-color);
       font-family: 'Orbitron', sans-serif;
-      margin-bottom: 0.5rem;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 20px var(--main-color);
     }
     header p {
-      color: #88ffe2;
+      color: var(--accent-color);
       font-size: 1.2rem;
-      max-width: 700px;
-      margin: auto;
+      margin-top: 0.5rem;
     }
     section {
       max-width: 900px;
@@ -56,12 +56,22 @@
       padding-left: 2rem;
       line-height: 1.7;
     }
+    pre {
+      background-color: #0f0f0f;
+      padding: 1.5rem;
+      font-size: 1rem;
+      color: #00ffcc;
+      border-left: 5px solid var(--main-color);
+      border-radius: 8px;
+      white-space: pre-wrap;
+      overflow-x: auto;
+    }
     .button {
       display: inline-block;
       background: var(--main-color);
       color: #000;
-      padding: 1rem 2rem;
       font-weight: bold;
+      padding: 1rem 2rem;
       text-decoration: none;
       border-radius: 6px;
       margin-top: 1rem;
@@ -72,54 +82,12 @@
       background: #00ddb0;
       box-shadow: 0 0 18px var(--accent-color);
     }
-    footer {
-      text-align: center;
-      font-size: 0.9rem;
-      color: #888;
-      padding: 2rem 1rem;
-      background-color: #000;
-    }
-    pre {
-      background-color: #0f0f0f;
-      padding: 1.5rem;
-      border-left: 5px solid var(--main-color);
-      overflow-x: auto;
-      font-size: 1rem;
-      color: #00ffcc;
-      border-radius: 8px;
-      white-space: pre-wrap;
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      max-width: 600px;
-      margin: 1rem auto;
-    }
-    input, textarea {
-      background-color: #111;
-      color: #00ffcc;
-      border: 1px solid #00ffc3;
-      padding: 0.8rem;
-      font-family: 'Fira Code', monospace;
-      font-size: 0.9rem;
-      border-radius: 5px;
-    }
-    input[type="submit"] {
-      background-color: var(--main-color);
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 0 10px var(--main-color);
-    }
     img.demo {
       max-width: 100%;
       border-radius: 8px;
-      box-shadow: 0 0 25px #00ff95;
+      box-shadow: 0 0 25px var(--main-color);
       margin-top: 1rem;
     }
-    .success { color: #00ff95; display: none; font-weight: bold; }
-    .error { color: red; display: none; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -127,81 +95,84 @@
 <header>
   <h1>OmegaHyperCubeAI</h1>
   <p><em>Quantum AGI Cyber Defense Stack</em></p>
-  <p>Autonomous · Self-Healing · Ethics-Driven</p>
+  <p>Autonomous · Self-Healing · Ethics-Driven · Memory-Aware</p>
 </header>
 
 <section>
-  <h2>🧬 Core Intelligence</h2>
+  <h2>🚀 What Is It?</h2>
+  <p>
+    OmegaHyperCubeAI is a fully modular AGI engine designed to heal, mutate, and reflect in real time. It combines quantum DAG logic, GAN payload mutation, ethical filters, and memory-aware LLM control to create the most advanced self-evolving cyber defense system in the world.
+  </p>
+</section>
+
+<section>
+  <h2>🧠 Quantum-Prioritized Core Intelligence</h2>
   <ul>
-    <li><strong>Recursive DAG Executor</strong> — Entropy-sorted quantum logic routing</li>
-    <li><strong>ThoughtPlugin Reactor</strong> — Deep plugin-chained reasoning</li>
-    <li><strong>Healing Sandbox</strong> — Automated patch simulation + rollback</li>
-    <li><strong>Quantum Memory Engine</strong> — Vector graph recall + CuPy clustering</li>
-    <li><strong>Ethics Firewall</strong> — Real-time neural moral filtering</li>
+    <li><strong>⚛️ DAG Executor</strong> — Qiskit-enhanced entropy-weighted reasoning</li>
+    <li><strong>🧬 PolymorphicPayloadGenerator</strong> — GAN + transformer ensemble mutation logic</li>
+    <li><strong>🧠 MemorySeed</strong> — Remembers previous patch cycles + personality emergence</li>
+    <li><strong>📜 CodeSynthesizer</strong> — Async `.py` generator with LLM validation stream</li>
+    <li><strong>🛡️ EthicsFirewall</strong> — Real-time output filter with violation classifier</li>
+    <li><strong>🖥️ GUI Core</strong> — Visual DAG executor, sandbox shell, GPU/entropy monitor</li>
   </ul>
 </section>
 
 <section>
   <h2>📄 Pitch Deck</h2>
-  <p>Access our full AGI strategic + technical breakdown:</p>
-  <a href="pitch_deck.pdf" class="button">📥 Download Pitch Deck</a>
+  <a href="pitch_deck.pdf" class="button" download>📥 Download Full Pitch</a>
 </section>
 
 <section>
-  <h2>🎥 Live Demo (GIF)</h2>
-  <p>Agent executing autonomous recursive healing in sandbox environment:</p>
-  <img src="ai_demo.gif" alt="AI Demo GIF" class="demo" />
-</section>
-
-<section>
-  <h2>👁️ AGI Patch Simulation</h2>
+  <h2>💻 AGI Code Execution Simulation</h2>
   <pre><code id="typing-code">
-// OmegaHyperCubeAI :: Autonomous Patch Engine
+// OmegaHyperCubeAI - Quantum-Aware Self-Healing AI
 class OmegaHyperCubeAI:
   def __init__(self):
-    self.memory = QuantumMemoryEngine()
-    self.sandbox = HealingSandbox(max_attempts=30)
-    self.ethics = EthicsFirewall(threshold=0.95)
-    self.dag = DAGExecutor(entropy_weighted=True)
+    self.memory = QuantumMemoryEngine(decay=0.02)
+    self.sandbox = HealingSandbox(retries=30)
+    self.ethics = EthicsFirewall(model='neural-moral-v4')
+    self.generator = CodeSynthesizer()
+    self.mutator = PolymorphicPayloadGenerator()
 
-  async def execute(self, code):
-    for attempt in range(self.sandbox.max_attempts):
+  async def defend(self, code: str):
+    for attempt in range(self.sandbox.retries):
       try:
         exec(code)
-        return {"success": True, "attempt": attempt}
+        self.memory.log_success(code)
+        return {"status": "patched"}
       except Exception as e:
-        patch = llm_generate_patch(code, str(e))
-        if not self.ethics.verify(patch):
-          return {"error": "ethics violation"}
+        patch = await self.generator.autopatch(code, str(e))
+        if not self.ethics.validate(patch): return {"error": "ethics violation"}
         code = patch
-    return {"error": "max retries reached"}
+        self.memory.update(code)
+    return {"error": "max attempts reached"}
   </code></pre>
 </section>
 
 <section>
   <h2>🧠 System Intelligence Modules</h2>
   <ul>
-    <li><strong>🧠 Neural JIT Compiler</strong> — Real-time TorchScript-based transformation of logic</li>
-    <li><strong>⚗️ QuantumMemoryOptimizer</strong> — FFT + CuPy + noise-layered optimization</li>
-    <li><strong>🧬 Exploit AutoSurgeon</strong> — LLM Transformer-driven patch healing</li>
-    <li><strong>🦠 PolymorphicPayloadGenerator</strong> — GAN-style entropy payload mutation</li>
-    <li><strong>🎭 ProtocolChameleon</strong> — Morph payloads into HTTP, DNS, SMTP, RTSP</li>
-    <li><strong>🧪 StealthScheduler</strong> — Timing modulation via entropy-based Markov chains</li>
-    <li><strong>🧫 DAG Fuzzing Engine</strong> — DEAP + DAG-based exploit generator</li>
-    <li><strong>📜 CodeSynthesizer</strong> — Async `.py` streaming with validation logic</li>
-    <li><strong>🧠 SafeLLM Sandbox</strong> — Memory-aware sandbox with retries + ethics + rollback</li>
-    <li><strong>🧠 SteganographicProtocol</strong> — LSB encoding in PNGs, reversible and detectable</li>
-    <li><strong>🧠 MemorySeed</strong> — Persistent memory graphs + AGI dialogue emergence</li>
-    <li><strong>🖥️ GUI: Hypercube Core</strong> — Qt-based DAG, GPU, sandbox, and LLM interface</li>
+    <li><strong>Neural JIT Compiler</strong> — Real-time TorchScript mutation of unsafe code logic into validated, optimized Python bytecode.</li>
+    <li><strong>QuantumMemoryOptimizer</strong> — FFT-enhanced CuPy tensor memory tuned via entropy and noise control.</li>
+    <li><strong>Exploit AutoSurgeon</strong> — LLM-guided transformer that fixes broken code using adversarial training data and structural heuristics.</li>
+    <li><strong>PolymorphicPayloadGenerator</strong> — Generates payloads with GAN-obfuscation, entropy distortion, and timing shrouds.</li>
+    <li><strong>ProtocolChameleon</strong> — Encodes payloads dynamically into HTTP, DNS, SMTP, RTSP traffic channels with stealth switching.</li>
+    <li><strong>StealthScheduler</strong> — Evades timing heuristics with Markov-modulated runtime shuffling and variable loop cycles.</li>
+    <li><strong>DAG Fuzzing Engine</strong> — DEAP + Qiskit-enabled DAG structure mutator to simulate advanced memory exploits.</li>
+    <li><strong>CodeSynthesizer</strong> — Async token-stream `.py` patch creator with entropy-based rollback decision engine.</li>
+    <li><strong>SafeLLM Sandbox</strong> — Real-time validation looped through GPU LLM with rollback, retries, and memory injection.</li>
+    <li><strong>SteganographicProtocol</strong> — PNG/LSB encoding logic for data exfiltration with neural watermarking.</li>
+    <li><strong>MemorySeed</strong> — Persistent AGI logs linked to identity traces, execution context, and error memory.</li>
+    <li><strong>GUI: Hypercube Core</strong> — PyQt5 UI stack for plugin loading, DAG editing, LLM console, and entropy graphs.</li>
   </ul>
 </section>
 
 <section>
-  <h2>📬 Contact</h2>
+  <h2>📬 Contact the Architect</h2>
   <form id="contact-form" action="https://formspree.io/f/xleqrdzn" method="POST">
     <input type="text" name="name" placeholder="Your name" required />
     <input type="email" name="_replyto" placeholder="Your email" required />
-    <textarea name="message" rows="5" placeholder="Your message or interest..." required></textarea>
+    <textarea name="message" rows="5" placeholder="Your message..." required></textarea>
     <input type="submit" value="Send Message" />
     <div class="success" id="form-success">✅ Message sent successfully!</div>
     <div class="error" id="form-error">❌ Failed to send. Try again.</div>
@@ -209,10 +180,11 @@ class OmegaHyperCubeAI:
 </section>
 
 <footer>
-  <p>© 2025 OmegaHyperCubeAI — Recursive Self-Evolving Intelligence</p>
+  <p>© 2025 OmegaHyperCubeAI — Autonomous, Evolving, Unstoppable.</p>
 </footer>
 
 <script>
+  // Typing effect
   const codeElement = document.getElementById("typing-code");
   const originalText = codeElement.textContent.trim();
   codeElement.textContent = "";
@@ -226,7 +198,7 @@ class OmegaHyperCubeAI:
   }
   window.addEventListener("load", typeCode);
 
-  // Form submit handler
+  // Form handler
   const form = document.getElementById("contact-form");
   form.addEventListener("submit", function(e) {
     e.preventDefault();
