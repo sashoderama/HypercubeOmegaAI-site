@@ -4,6 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>OmegaHyperCubeAI</title>
+
+  <!-- SEO & Social Metadata -->
+  <meta name="description" content="OmegaHyperCubeAI is a quantum-powered AGI defense system with self-healing, ethical LLMs, memory-linked sandboxing, and real-time anomaly response.">
+  <meta name="keywords" content="AGI, artificial intelligence, OpenAI, ChatGPT, quantum AI, self-healing AI, cybersecurity, DAG, sandbox, LLM defense, memory engine, red team, AGI startup">
+  <meta name="author" content="Omega Architect">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="OmegaHyperCubeAI – Autonomous AGI Defense">
+  <meta property="og:description" content="A self-evolving AGI that detects, heals, adapts and protects in real-time.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://sashoderama.github.io/HypercubeOmegaAI-site/assets/og-image.png">
+  <meta property="og:url" content="https://sashoderama.github.io/HypercubeOmegaAI-site">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="OmegaHyperCubeAI – Autonomous AGI Defense Engine">
+  <meta name="twitter:description" content="Quantum DAGs. Ethical LLMs. Fully self-healing. Built from the future.">
+  <meta name="twitter:image" content="https://sashoderama.github.io/HypercubeOmegaAI-site/assets/og-image.png">
+
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Fira+Code&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -82,6 +98,13 @@
       background: #00ddb0;
       box-shadow: 0 0 18px var(--accent-color);
     }
+    .success, .error {
+      margin-top: 1rem;
+      font-weight: bold;
+      display: none;
+    }
+    .success { color: #00ff95; }
+    .error { color: #ff4444; }
     img.demo {
       max-width: 100%;
       border-radius: 8px;
@@ -95,31 +118,26 @@
 <header>
   <h1>OmegaHyperCubeAI</h1>
   <p><em>Quantum AGI Cyber Defense Stack</em></p>
-  <p>Autonomous · Self-Healing · Ethics-Driven · Memory-Aware</p>
+  <p>Autonomous • Self-Healing • Ethics-Driven • Memory-Aware</p>
 </header>
 
 <section>
-  <h2>🚀 What Is It?</h2>
+  <h2>🧠 What Is OmegaHyperCubeAI?</h2>
   <p>
-    OmegaHyperCubeAI is a fully modular AGI engine designed to heal, mutate, and reflect in real time. It combines quantum DAG logic, GAN payload mutation, ethical filters, and memory-aware LLM control to create the most advanced self-evolving cyber defense system in the world.
+    A fully autonomous AGI defense engine that evolves against cyber threats in real-time. OmegaHyperCubeAI combines:
   </p>
-</section>
-
-<section>
-  <h2>🧠 Quantum-Prioritized Core Intelligence</h2>
   <ul>
-    <li><strong>⚛️ DAG Executor</strong> — Qiskit-enhanced entropy-weighted reasoning</li>
-    <li><strong>🧬 PolymorphicPayloadGenerator</strong> — GAN + transformer ensemble mutation logic</li>
-    <li><strong>🧠 MemorySeed</strong> — Remembers previous patch cycles + personality emergence</li>
-    <li><strong>📜 CodeSynthesizer</strong> — Async `.py` generator with LLM validation stream</li>
-    <li><strong>🛡️ EthicsFirewall</strong> — Real-time output filter with violation classifier</li>
-    <li><strong>🖥️ GUI Core</strong> — Visual DAG executor, sandbox shell, GPU/entropy monitor</li>
+    <li>Quantum DAG reasoning</li>
+    <li>Self-healing sandbox patching</li>
+    <li>Ethical LLM filtering</li>
+    <li>Memory-linked self-reflection</li>
+    <li>GPU-visualized GUI intelligence execution</li>
   </ul>
 </section>
 
 <section>
   <h2>📄 Pitch Deck</h2>
-  <a href="pitch_deck.pdf" class="button" download>📥 Download Full Pitch</a>
+  <a class="button" href="pitch_deck.pdf" download>📥 Download Full Pitch</a>
 </section>
 
 <section>
@@ -128,47 +146,41 @@
 // OmegaHyperCubeAI - Quantum-Aware Self-Healing AI
 class OmegaHyperCubeAI:
   def __init__(self):
-    self.memory = QuantumMemoryEngine(decay=0.02)
+    self.memory = QuantumMemoryEngine()
     self.sandbox = HealingSandbox(retries=30)
-    self.ethics = EthicsFirewall(model='neural-moral-v4')
+    self.ethics = EthicsFirewall()
     self.generator = CodeSynthesizer()
-    self.mutator = PolymorphicPayloadGenerator()
 
-  async def defend(self, code: str):
+  async def defend(self, code):
     for attempt in range(self.sandbox.retries):
       try:
         exec(code)
-        self.memory.log_success(code)
-        return {"status": "patched"}
+        return {"status": "clean"}
       except Exception as e:
-        patch = await self.generator.autopatch(code, str(e))
-        if not self.ethics.validate(patch): return {"error": "ethics violation"}
+        patch = await self.generator.generate_patch(code, str(e))
+        if not self.ethics.approve(patch): return {"error": "blocked by ethics"}
         code = patch
-        self.memory.update(code)
     return {"error": "max attempts reached"}
   </code></pre>
 </section>
 
 <section>
-  <h2>🧠 System Intelligence Modules</h2>
+  <h2>🛡️ System Intelligence Modules</h2>
   <ul>
-    <li><strong>Neural JIT Compiler</strong> — Real-time TorchScript mutation of unsafe code logic into validated, optimized Python bytecode.</li>
-    <li><strong>QuantumMemoryOptimizer</strong> — FFT-enhanced CuPy tensor memory tuned via entropy and noise control.</li>
-    <li><strong>Exploit AutoSurgeon</strong> — LLM-guided transformer that fixes broken code using adversarial training data and structural heuristics.</li>
-    <li><strong>PolymorphicPayloadGenerator</strong> — Generates payloads with GAN-obfuscation, entropy distortion, and timing shrouds.</li>
-    <li><strong>ProtocolChameleon</strong> — Encodes payloads dynamically into HTTP, DNS, SMTP, RTSP traffic channels with stealth switching.</li>
-    <li><strong>StealthScheduler</strong> — Evades timing heuristics with Markov-modulated runtime shuffling and variable loop cycles.</li>
-    <li><strong>DAG Fuzzing Engine</strong> — DEAP + Qiskit-enabled DAG structure mutator to simulate advanced memory exploits.</li>
-    <li><strong>CodeSynthesizer</strong> — Async token-stream `.py` patch creator with entropy-based rollback decision engine.</li>
-    <li><strong>SafeLLM Sandbox</strong> — Real-time validation looped through GPU LLM with rollback, retries, and memory injection.</li>
-    <li><strong>SteganographicProtocol</strong> — PNG/LSB encoding logic for data exfiltration with neural watermarking.</li>
-    <li><strong>MemorySeed</strong> — Persistent AGI logs linked to identity traces, execution context, and error memory.</li>
-    <li><strong>GUI: Hypercube Core</strong> — PyQt5 UI stack for plugin loading, DAG editing, LLM console, and entropy graphs.</li>
+    <li><strong>Neural JIT Compiler</strong> — Converts runtime LLM output into safe, TorchScript-validated Python logic.</li>
+    <li><strong>QuantumMemoryOptimizer</strong> — FFT-powered CuPy graph optimizer for entropy-balanced memory graphs.</li>
+    <li><strong>Self-Healing Sandbox</strong> — Retry-safe, ethics-enforced sandbox that heals code up to 30x per loop.</li>
+    <li><strong>Recursive DAG Engine</strong> — Entropy-weighted DAG reasoning for multi-agent execution paths.</li>
+    <li><strong>Ethical Firewall</strong> — Filters every token with real-time neural moral scoring.</li>
+    <li><strong>Quantum Entropy Analyzer</strong> — Classifies code, memory, and LLM outputs based on volatility.</li>
+    <li><strong>Secure MemorySeed</strong> — Traceable memory graphs that log, reflect, and evolve independently.</li>
+    <li><strong>GUI: Hypercube Core</strong> — PyQt5 dashboard with DAG editor, GPU monitor, agent loader, and sandbox console.</li>
   </ul>
 </section>
 
 <section>
   <h2>📬 Contact the Architect</h2>
+  <p>Request live demo access, AGI integration support, or licensing details:</p>
   <form id="contact-form" action="https://formspree.io/f/xleqrdzn" method="POST">
     <input type="text" name="name" placeholder="Your name" required />
     <input type="email" name="_replyto" placeholder="Your email" required />
@@ -180,25 +192,26 @@ class OmegaHyperCubeAI:
 </section>
 
 <footer>
-  <p>© 2025 OmegaHyperCubeAI — Autonomous, Evolving, Unstoppable.</p>
+  <p>© 2025 OmegaHyperCubeAI — Quantum-Evolved Defense Intelligence</p>
 </footer>
 
 <script>
-  // Typing effect
+  // Glitch-typed AGI simulation code
   const codeElement = document.getElementById("typing-code");
   const originalText = codeElement.textContent.trim();
   codeElement.textContent = "";
   let i = 0;
+
   function typeCode() {
     if (i < originalText.length) {
       codeElement.textContent += originalText.charAt(i);
       i++;
-      setTimeout(typeCode, 10);
+      setTimeout(typeCode, Math.random() * 15 + 10);
     }
   }
   window.addEventListener("load", typeCode);
 
-  // Form handler
+  // Contact Form: AJAX post with success/error feedback
   const form = document.getElementById("contact-form");
   form.addEventListener("submit", function(e) {
     e.preventDefault();
@@ -213,7 +226,7 @@ class OmegaHyperCubeAI:
         document.getElementById("form-error").style.display = "none";
         form.reset();
       } else {
-        throw new Error("Form error");
+        throw new Error("Failed");
       }
     }).catch(() => {
       document.getElementById("form-success").style.display = "none";
