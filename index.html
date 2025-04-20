@@ -11,57 +11,57 @@
       --accent-color: #00ffcc;
       --bg: #000000;
       --fg: #d0ffd8;
-      --dim: #202020;
+      --dim: #1a1a1a;
     }
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       background-color: var(--bg);
       color: var(--fg);
       font-family: 'Fira Code', monospace;
+      scroll-behavior: smooth;
     }
-
     header {
       background: linear-gradient(to right, #001010, #002020);
       text-align: center;
-      padding: 3rem 1rem;
+      padding: 4rem 1rem;
       border-bottom: 3px solid var(--main-color);
     }
-
     header h1 {
       font-size: 2.8rem;
       color: var(--main-color);
       font-family: 'Orbitron', sans-serif;
-      margin-bottom: 0.5rem;
     }
-
     header p {
       color: #88ffe2;
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       max-width: 700px;
       margin: auto;
     }
-
     section {
       max-width: 900px;
       margin: auto;
-      padding: 2rem 1.5rem;
+      padding: 2.5rem 1.5rem;
       border-bottom: 1px solid #111;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: 0.6s ease-in-out;
     }
-
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
     section h2 {
       color: var(--accent-color);
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       margin-bottom: 1rem;
       border-left: 4px solid var(--main-color);
       padding-left: 1rem;
     }
-
     ul {
       padding-left: 2rem;
-      line-height: 1.7;
+      line-height: 1.6;
     }
-
     .button {
       display: inline-block;
       background: var(--main-color);
@@ -74,12 +74,10 @@
       box-shadow: 0 0 12px var(--main-color);
       transition: 0.3s ease;
     }
-
     .button:hover {
       background: #00ddaa;
       box-shadow: 0 0 18px var(--accent-color);
     }
-
     footer {
       text-align: center;
       font-size: 0.9rem;
@@ -87,7 +85,6 @@
       padding: 2rem 1rem;
       background-color: #000;
     }
-
     pre {
       background-color: #0f0f0f;
       padding: 1rem;
@@ -97,109 +94,123 @@
       color: #00ffcc;
       border-radius: 8px;
     }
-
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 600px;
+      margin: 1rem auto;
+    }
+    input, textarea {
+      background-color: #111;
+      color: #00ffcc;
+      border: 1px solid #00ffc3;
+      padding: 0.8rem;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      border-radius: 5px;
+    }
+    input[type="submit"] {
+      background-color: var(--main-color);
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--main-color);
+    }
+    img.demo {
+      max-width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 0 25px #00ff95;
+      margin-top: 1rem;
+    }
     @media screen and (max-width: 768px) {
-      header h1 {
-        font-size: 2rem;
-      }
-      section {
-        padding: 1.5rem 1rem;
-      }
+      header h1 { font-size: 2rem; }
+      section { padding: 2rem 1rem; }
     }
   </style>
 </head>
-
 <body>
 
-  <header>
-    <h1>OmegaHyperCubeAI</h1>
-    <p><em>Quantum-Driven AGI Cyber Intelligence Stack</em></p>
-    <p>Recursive Defense · Ethics Filtered · Autonomously Evolving</p>
-  </header>
+<header>
+  <h1>OmegaHyperCubeAI</h1>
+  <p><em>Quantum AGI Cyber Defense Stack</em></p>
+  <p>Autonomous · Self-Healing · Ethics-Driven</p>
+</header>
 
-  <section>
-    <h2>🚀 Mission</h2>
-    <p>
-      OmegaHyperCubeAI is an AGI-class prototype engineered for autonomous cyber defense. 
-      Designed with quantum-prioritized reasoning, memory graph recursion, and ethical filtering,
-      it operates as a fully modular self-improving intelligence engine.
-    </p>
-  </section>
+<section>
+  <h2>🧬 Core Intelligence</h2>
+  <ul>
+    <li><strong>Recursive DAG Executor</strong> — entropy-sorted quantum logic routing</li>
+    <li><strong>ThoughtPlugin Reactor</strong> — deep plugin-chained reasoning</li>
+    <li><strong>Healing Sandbox</strong> — automated patch simulation + rollback</li>
+    <li><strong>Quantum Memory Engine</strong> — vector graph recall + CuPy clustering</li>
+    <li><strong>Ethics Firewall</strong> — real-time neural moral filtering</li>
+  </ul>
+</section>
 
-  <section>
-    <h2>🧠 Core Capabilities</h2>
-    <ul>
-      <li><strong>DAG Executor</strong> – Entropy-aware, quantum-prioritized task graph execution</li>
-      <li><strong>RecursiveThoughtEngine</strong> – Plugin-based recursive AI logic expansion</li>
-      <li><strong>Self-Healing Sandbox</strong> – 30-retry patch loop with automatic rollback</li>
-      <li><strong>Quantum Memory Engine</strong> – CuPy/Numpy hybrid memory with clustering + cosine recall</li>
-      <li><strong>EthicsEnforcer</strong> – Live neural rule engine for moral policy control</li>
-      <li><strong>Neuroplasticity Evolution</strong> – GAN + DEAP genetic optimization of architecture</li>
-    </ul>
-  </section>
+<section>
+  <h2>📄 Pitch Deck</h2>
+  <p>Access our full AGI strategic + technical breakdown:</p>
+  <a href="pitch_deck.pdf" class="button">📥 Download Pitch Deck</a>
+</section>
 
-  <section>
-    <h2>📦 What You Get</h2>
-    <ul>
-      <li>50+ Python modules with clean AGI layering: memory, DAG, inference, ethics, sandbox</li>
-      <li>GUI + CLI simulation interfaces (non-GPU demo included)</li>
-      <li>Documentation, architecture diagrams, system diagrams</li>
-      <li>Pitch Deck PDF (ready for investment or acquisition)</li>
-    </ul>
-  </section>
+<section>
+  <h2>🎥 Live Demo (GIF)</h2>
+  <p>Agent executing autonomous recursive healing in sandbox environment:</p>
+  <img src="ai_demo.gif" alt="AI Demo GIF" class="demo" />
+</section>
 
-  <section>
-    <h2>🎯 Acquisition Options</h2>
-    <ul>
-      <li>Exclusive Licensing</li>
-      <li>Full IP Transfer</li>
-      <li>R&D Partnership with optional founder consulting</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>📄 Pitch Access</h2>
-    <p>Download the full technical + business overview below:</p>
-    <a href="pitch_deck.pdf" class="button">📥 Download Pitch Deck</a>
-  </section>
-
-  <section>
-    <h2>📫 Contact</h2>
-    <p>Request live demo, licensing details, or advisory:</p>
-    <p><strong>Email:</strong> <a href="mailto:sashoderama@example.com">sashoderama@example.com</a></p>
-  </section>
-
-  <section>
-    <h2>👁️ AGI Self-Healing Simulation</h2>
-    <pre><code id="typing-code">// Recursive Patch Loop – Simulated AI Autonomy
+<section>
+  <h2>👁️ AGI Patch Simulation</h2>
+  <pre><code id="typing-code">// Recursive Self-Healing AI Loop
 async def execute_with_healing(code: str):
-    for attempt in range(30):
-        try:
-            exec(code)
-            return {"success": True}
-        except Exception as e:
-            code = llm_generate_patch(code, str(e))
-    return {"success": False"}</code></pre>
-  </section>
+  for attempt in range(30):
+    try:
+      exec(code)
+      return {"success": True}
+    except Exception as e:
+      code = llm_generate_patch(code, str(e))
+  return {"success": False}
+  </code></pre>
+</section>
 
-  <script>
-    const codeElement = document.getElementById("typing-code");
-    const originalText = codeElement.textContent.trim();
-    codeElement.textContent = "";
-    let i = 0;
-    function typeCode() {
-      if (i < originalText.length) {
-        codeElement.textContent += originalText.charAt(i);
-        i++;
-        setTimeout(typeCode, 12);
-      }
+<section>
+  <h2>📬 Contact</h2>
+  <p>Securely message the OmegaHyperCubeAI architect:</p>
+  <form action="https://formspree.io/f/xleqrdzn" method="POST">
+    <input type="text" name="name" placeholder="Your name" required />
+    <input type="email" name="_replyto" placeholder="Your email" required />
+    <textarea name="message" rows="5" placeholder="Your message or interest..."></textarea>
+    <input type="submit" value="Send Message" />
+  </form>
+</section>
+
+<footer>
+  <p>© 2024 OmegaHyperCubeAI — Self-Improving Autonomous Intelligence</p>
+</footer>
+
+<script>
+  const codeElement = document.getElementById("typing-code");
+  const originalText = codeElement.textContent.trim();
+  codeElement.textContent = "";
+  let i = 0;
+  function typeCode() {
+    if (i < originalText.length) {
+      codeElement.textContent += originalText.charAt(i);
+      i++;
+      setTimeout(typeCode, 12);
     }
-    window.addEventListener("load", typeCode);
-  </script>
+  }
+  window.addEventListener("load", typeCode);
 
-  <footer>
-    <p>© 2024 OmegaHyperCubeAI – Built from the Future, Operating in the Present.</p>
-  </footer>
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll("section").forEach(section => observer.observe(section));
+</script>
 
 </body>
 </html>
