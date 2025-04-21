@@ -94,6 +94,7 @@
       border: 1px solid #2d2f45;
       position: relative;
       overflow: hidden;
+      color: var(--fg);
     }
     pre::after {
       content: '';
@@ -104,12 +105,135 @@
     }
     code {
       font-family: var(--font-mono);
-      font-size: 0.9rem;
+      font-size: 1.2rem;
       line-height: 1.6;
+    }
+    .sneak-peek pre {
+      font-size: 1.4rem;
+      padding: 3rem;
     }
     .keyword { color: #7d6fff; }
     .function { color: #00f7ff; }
     .string { color: #6fffad; }
+    .comment { color: #666; }
+    .variable { color: #e0f2fe; }
+    .number { color: #ff6b6b; }
+
+    /* Sneak & Peek Styles */
+    .sneak-peek-terminal {
+      background: #0a0a0a;
+      color: #ccc;
+      padding: 4rem 1.5rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .sneak-heading {
+      color: #999;
+      font-size: 1.2rem;
+      text-align: center;
+      letter-spacing: 1.5px;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+
+    .crt-terminal {
+      background: #000;
+      border: none; /* Removed additional framing */
+      border-radius: 10px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      line-height: 1.6;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(0,0,0,0.7) inset;
+      transition: transform 0.3s ease;
+    }
+    .crt-terminal:hover {
+      transform: perspective(800px) rotateX(1deg); /* Cursor Drag Zoom */
+      box-shadow: 0 0 30px #7d6fff33 inset;
+    }
+    .crt-terminal:active {
+      transform: scale(1.03) rotateX(2deg); /* Enhanced zoom on click */
+    }
+
+    .crt-terminal::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(to bottom, rgba(255,255,255,0.015) 0px, transparent 2px, rgba(255,255,255,0.01) 3px);
+      pointer-events: none;
+      animation: scanline 3s linear infinite;
+    }
+    @keyframes scanline {
+      0% { transform: translateY(-100%); }
+      100% { transform: translateY(100%); }
+    }
+
+    .crt-terminal code::after {
+      content: '█';
+      display: inline-block;
+      margin-left: 2px;
+      color: #888;
+      animation: blink 0.9s steps(1) infinite;
+    }
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    .glitch-on {
+      display: inline-block;
+      animation: glitchFlicker 0.8s infinite;
+      color: #aaa;
+      text-shadow:
+        0 0 2px #7d6fff88,
+        0 0 5px #00f7ff55;
+    }
+    @keyframes glitchFlicker {
+      0%   { transform: translateX(0); opacity: 1; }
+      20%  { transform: translateX(-0.5px); opacity: 0.85; }
+      40%  { transform: translateX(0.5px); opacity: 0.65; }
+      60%  { transform: translateX(-0.3px); opacity: 0.8; }
+      80%  { transform: translateX(0.3px); opacity: 0.95; }
+      100% { transform: translateX(0); opacity: 1; }
+    }
+
+    .glitch-hover-zone:hover .glitch-on {
+      filter: blur(0.8px) brightness(1.4);
+      text-shadow:
+        0 0 4px #ffffff22,
+        0 0 8px #7d6fff66,
+        0 0 10px #00f7ff44;
+    }
+
+    /* DNA Glitch Trails */
+    .tail-trail {
+      position: absolute;
+      pointer-events: none;
+      opacity: 0.5;
+      animation: tailTrail 0.5s ease-out forwards;
+    }
+    @keyframes tailTrail {
+      0%   { transform: scale(1) translateX(0); opacity: 1; }
+      100% { transform: scale(1.2) translateX(1px); opacity: 0; }
+    }
+
+    /* AI Commentary */
+    .ai-comment {
+      color: #666;
+      font-style: italic;
+    }
+
+    /* Fade-In Effect */
+    .fade-in-section > * {
+      opacity: 0;
+    }
+    .fade-in-section.visible > * {
+      animation: fadeIn 1s ease-in forwards;
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
 
     /* Cyber Button */
     .btn {
@@ -151,9 +275,49 @@
       pointer-events: none;
     }
 
+    /* Simulation Styles */
+    #simulation {
+      background: #000;
+      color: var(--fg);
+      font-family: var(--font-mono);
+      padding: 1em;
+      position: relative;
+      white-space: pre;
+      font-size: 1rem;
+    }
+
+    /* Contact Form */
+    #contactForm input[type="submit"] {
+      background: linear-gradient(45deg, var(--accent), var(--accent2));
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      color: #000;
+      font-weight: 700;
+      cursor: pointer;
+      transition: box-shadow 0.3s ease;
+    }
+    #contactForm input[type="submit"]:hover {
+      box-shadow: 0 0 20px var(--accent);
+    }
+
+    /* System Architecture Note */
+    .under-hood {
+      font-style: italic;
+      color: var(--accent);
+      text-shadow: 0 0 10px var(--accent);
+      animation: glow 2s infinite alternate;
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 10px var(--accent); }
+      to { text-shadow: 0 0 20px var(--accent); }
+    }
+
     @media (max-width: 768px) {
       .card { margin: 1rem; padding: 1.5rem; }
       header { padding: 4rem 1rem; }
+      .sneak-peek pre { font-size: 1.2rem; padding: 2rem; }
+      pre, code { font-size: 1rem; }
     }
   </style>
 </head>
@@ -169,35 +333,56 @@
   <div class="cyber-line"></div>
 </header>
 
-<!-- Defense Modules -->
-<section>
-  <div class="card">
-    <h2>Quantum Defense Core</h2>
-    <div class="grid">
-      <div class="module">
-        <h3>Neural JIT Compiler</h3>
-        <p>Real-time TorchScript mutation engine with CUDA-aware optimization</p>
-      </div>
-      <!-- Add more modules -->
-    </div>
+<!-- SNEAK & PEEK Section with Enhanced Glitch Effect and Larger Code Block -->
+<section class="sneak-peek-terminal">
+  <h2 class="sneak-heading">SNEAK & PEEK · SYSTEM TRACE</h2>
+  <div class="crt-terminal glitch-hover-zone">
+    <pre id="sneakpeek-output"><code contenteditable="true"></code></pre>
   </div>
 </section>
 
-<!-- Live Code Matrix -->
+<!-- Simulation Section -->
 <section>
   <div class="card">
-    <pre><code>
-<span class="keyword">class</span> <span class="function">QuantumDefense</span>:
-    <span class="keyword">def</span> <span class="function">__init__</span>(self):
-        self.hypercube = HyperCube(dimensions=256)
-        self.entropy_threshold = 0.92
-        
-    <span class="keyword">async</span> <span class="keyword">def</span> <span class="function">analyze</span>(self, payload: bytes):
-        <span class="keyword">with</span> autocast():
-            tensor = self._process(payload)
-            prediction = self.model(tensor)
-            <span class="keyword">return</span> self._quantum_decision(prediction)
-    </code></pre>
+    <h2>Autonomous AGI Defense Simulation</h2>
+    <pre id="simulation"></pre>
+  </div>
+</section>
+
+<!-- System Architecture Section with Fade-In Effect -->
+<section>
+  <div class="card fade-in-section">
+    <h2>System Architecture</h2>
+    <p>HypercubeOmegaAI is an autonomous cyber-AGI platform with the following key components:</p>
+    <ul>
+      <li><strong>Code Self-Healing Engine:</strong> Autonomous engine that executes, detects errors, and automatically fixes code. Features include a sandbox for safe execution, up to 30 repair attempts, simulation model for success prediction, rollback system, and integrated ethical checks.</li>
+      <li><strong>Hybrid Quantum-Classical Processing:</strong> Combines classical neural networks with quantum simulations for enhanced intelligence. Includes quantum-neural integration, adaptive learning, and gradient scaling.</li>
+      <li><strong>Meta-Learning:</strong> System that rebuilds itself based on performance. Features dynamic architecture adaptation, hypernetwork for parameter generation, and continuous optimization meta-cycle.</li>
+      <li><strong>Cognitive Architecture:</strong> Real AGI core that self-improves step by step. Includes recursive self-improvement, neural plasticity, and multi-layer self-analytical cycles.</li>
+      <li><strong>Ethical Assurance System:</strong> Ensures the AI model never crosses ethical boundaries. Features content security, recognition of prohibited patterns, neural ethics evaluation, and continuous learning of ethical boundaries.</li>
+    </ul>
+    <p>Key AI capabilities include:</p>
+    <ul>
+      <li><strong>Autonomous Exploit Synthesis:</strong> Generates and tests new attacks for simulation and defense. Combines neural networks and genetic algorithms with a quantum engine for mutations.</li>
+      <li><strong>Distributed Task Management:</strong> Neural prioritized execution with adaptive GPU memory management and automatic CUDA cache optimization.</li>
+      <li><strong>Quantum-Informed Reasoning:</strong> Quantum states influence neuron activation, hybrid tensor representation, and improved pattern recognition.</li>
+      <li><strong>Self-Monitoring and Diagnostics:</strong> Intelligent resource usage with automatic batch size determination and dynamic load balancing.</li>
+    </ul>
+    <p>The system also features advanced security and defense mechanisms:</p>
+    <ul>
+      <li><strong>Forensic-Ready Architecture:</strong> Immutable logging in a quantum-secure database, cryptographic hashing of neural states, and tamper-resistant graph structure.</li>
+      <li><strong>Adaptive Threat Response:</strong> 0.5-second SLA for attack response, automatically generated DAG-synthesized defenses, and honeypot template injection.</li>
+      <li><strong>Neuromorphic Security:</strong> Continuous learning against adversarial examples and behavior analysis.</li>
+    </ul>
+    <p>Performance and efficiency are ensured through:</p>
+    <ul>
+      <li><strong>Scalability:</strong> Over 1000 agents working in parallel with synchronization and automatic scaling.</li>
+      <li><strong>Computational Efficiency:</strong> FP16 tensors for speed, checkpointing for GPU load reduction, and dynamic removal of non-central neurons.</li>
+      <li><strong>Self-Learning Metrics:</strong> Meta learning rate of 0.00015, optimization on 50-batch basis, and parameter updates taking only 4ms.</li>
+      <li><strong>Resource Management:</strong> Intelligent batch size determination and CUDA memory defragmentation.</li>
+      <li><strong>Crash Recovery:</strong> Rollback up to 1000 steps, neural state verification, and distributed consensus recovery.</li>
+    </ul>
+    <p class="under-hood">and much more under the hood...</p>
   </div>
 </section>
 
@@ -205,14 +390,16 @@
 <section>
   <div class="card">
     <h2>Initiate Connection</h2>
-    <form id="quantumForm">
-      <input type="text" placeholder="Operator ID" required>
-      <input type="email" placeholder="Quantum Channel" required>
-      <textarea rows="5" placeholder="Encrypted Message"></textarea>
-      <button type="submit" class="btn">Transmit</button>
+    <form id="contactForm" action="https://formspree.io/f/xvoenjwd" method="POST">
+      <input type="text" name="name" placeholder="Name" required />
+      <input type="email" name="email" placeholder="Email" required />
+      <textarea name="message" placeholder="Message..." required></textarea>
+      <input type="submit" value="Send Message" />
     </form>
   </div>
 </section>
+
+<audio id="clickSound" src="https://assets.mixkit.co/sfx/preview/mixkit-technology-interface-bleep-1310.mp3" preload="auto"></audio>
 
 <script>
 // Particle Network
@@ -258,13 +445,284 @@ function animate() {
 window.addEventListener('resize', init);
 init();
 
-// Cyber Glitch Effect
+// Cyber Glitch Effect for Headers
 document.querySelectorAll('h1, h2').forEach(el => {
   el.addEventListener('mouseover', () => {
     el.style.textShadow = `0 0 20px ${Math.random() > 0.5 ? '#7d6fff' : '#00f7ff'}`;
     setTimeout(() => el.style.textShadow = 'var(--neon)', 100);
   });
 });
+
+// Form Handling
+const f = document.getElementById('contactForm');
+f.addEventListener('submit', e => {
+  e.preventDefault();
+  fetch(f.action, {
+    method: 'POST',
+    body: new FormData(f),
+    headers: { 'Accept': 'application/json' }
+  }).then(r => {
+    if (r.ok) {
+      alert('Message sent successfully!');
+      f.reset();
+    } else {
+      alert('Something went wrong. Please try again.');
+    }
+  }).catch(() => {
+    alert('Something went wrong. Please try again.');
+  });
+});
+
+// Sneak and Peek Typing Effect with Enhanced Glitch
+const sneakText = `# 🔮 QuantumEntanglementEngine · Entangle high-entropy input
+def entangle(self, inputs: List[float]) -> List[float]:
+    raw_state = simulate_quantum_output(inputs, self.n_qubits)
+    input_tensor = torch.tensor(raw_state, dtype=torch.float32, device=self.device).half()
+    with autocast():
+        pred_output = self.predictive_circuit(input_tensor.unsqueeze(0)).squeeze(0)
+    self.simulated_state = pred_output.detach().clone().float()
+    return self.simulated_state.cpu().tolist()
+
+# 🧪 ModelFusion · Fuse multi-agent embeddings into a unified vector
+async def fuse_analysis(self, data: str) -> Dict:
+    embeddings = [
+        torch.tensor(self.ai.omni_embedder.encode(data), device=self.ai.device),
+        torch.tensor(self.ai.omni_embedder.encode(await self.ai.converse(data)), device=self.ai.device),
+        torch.tensor(self.ai.omni_embedder.encode(await self.ai.web_learner.learn_from_web(data, depth=5)[0]), device=self.ai.device)
+    ]
+    fused_input = torch.cat(embeddings, dim=0).unsqueeze(0)
+    with autocast():
+        fused_embedding = self.fusion_model(fused_input).squeeze(0)
+    return {
+        "embedding": fused_embedding.cpu().numpy().tolist(),
+        "confidence": cosine_similarity(fused_embedding.unsqueeze(0).cpu().numpy(), embeddings[0].unsqueeze(0).cpu().numpy())[0][0]
+    }
+
+# 🕵️ ThreatHunter · Deep learning + external fusion threat score
+async def scan_for_threats(self, data: str) -> Dict:
+    embedding = torch.tensor(self.ai.omni_embedder.encode(data), device=self.ai.device)
+    with autocast():
+        threat_score = self.network_model(embedding.unsqueeze(0)).item()
+    feed_score = await self.threat_feed.check(data)
+    score = max(threat_score, feed_score)
+    return {"is_threat": score > CONFIG.security_threshold, "threat_level": score}
+
+# 🛠️ CodeSynthesizer · Generate patches for detected threats
+async def generate_patch(self, code_block: str, error: str) -> str:
+    prompt = f"Fix this code based on error: {error}\n\n{code_block}"
+    patch = await self.ai.generate(prompt, max_tokens=500)
+    return patch.strip()
+
+# 🧠 RecursiveSelfImprovement · Iterative enhancement cycle
+async def run_improvement_cycle(self) -> Dict:
+    current_state = self.get_system_state()
+    analysis = await self.analyze_state(current_state)
+    if analysis["needs_improvement"]:
+        optimization = await self.optimize(analysis["weak_points"])
+        await self.apply_optimization(optimization)
+    return {"status": "cycle_complete", "improvements": analysis["improvements"]}
+`;
+
+let isTyping = false;
+let editTimeout;
+const aiComments = [
+  "// Omega: Threat level nominal.",
+  "// Entropy stabilized.",
+  "// Autonomous logic override: permitted.",
+  "// DAG cycle confirmed."
+];
+
+function triggerTyping() {
+  if (isTyping) return;
+  const output = document.querySelector('#sneakpeek-output code');
+  output.innerHTML = '';
+  isTyping = true;
+
+  let i = 0;
+  (function typeChar() {
+    if (i >= sneakText.length) {
+      isTyping = false;
+      return;
+    }
+
+    const ch = sneakText[i++];
+    const span = document.createElement('span');
+
+    if (ch !== ' ' && Math.random() < 0.5 && ch !== '\n') {
+      span.className = 'glitch-on';
+      spawnTrail(span); // DNA Glitch Trails
+    }
+
+    span.textContent = ch;
+    output.appendChild(span);
+
+    setTimeout(typeChar, Math.random() * 14 + 10);
+  })();
+}
+
+function spawnTrail(span) {
+  const clone = span.cloneNode(true);
+  clone.classList.add('tail-trail');
+  document.body.appendChild(clone);
+  const rect = span.getBoundingClientRect();
+  clone.style.left = rect.left + 'px';
+  clone.style.top = rect.top + 'px';
+  setTimeout(() => clone.remove(), 500);
+}
+
+// Simulated Error Insertion + Reset
+document.querySelector('#sneakpeek-output code').addEventListener('input', () => {
+  document.getElementById('clickSound').play(); // Matrix Pulse Sound on key interaction
+  clearTimeout(editTimeout);
+  editTimeout = setTimeout(() => {
+    const errMsg = "// ✖ ERROR: Unauthorized mutation\n";
+    const terminal = document.querySelector('#sneakpeek-output code');
+    terminal.innerHTML = '';
+    sneakText.split('').forEach((ch) => {
+      const span = document.createElement('span');
+      span.textContent = ch;
+      if (ch !== ' ' && ch !== '\n' && Math.random() < 0.3) span.className = 'glitch-on';
+      terminal.appendChild(span);
+    });
+    const errorSpan = document.createElement('span');
+    errorSpan.textContent = errMsg;
+    errorSpan.className = 'ai-comment';
+    terminal.insertBefore(errorSpan, terminal.firstChild);
+  }, 5000); // Reset after 5 seconds
+});
+
+// Matrix Pulse Sound on Click
+document.querySelector('.crt-terminal').addEventListener('click', () => {
+  document.getElementById('clickSound').play();
+});
+
+// AI Commentary Mode
+setInterval(() => {
+  if (!isTyping) {
+    const comment = document.createElement('span');
+    comment.textContent = "\n" + aiComments[Math.floor(Math.random() * aiComments.length)] + "\n";
+    comment.className = 'ai-comment';
+    document.querySelector('#sneakpeek-output code').appendChild(comment);
+  }
+}, 15000);
+
+window.addEventListener('DOMContentLoaded', triggerTyping);
+
+// Fade-In Effect for System Architecture
+document.addEventListener('DOMContentLoaded', () => {
+  const fadeInElements = document.querySelectorAll('.fade-in-section > *');
+  fadeInElements.forEach((el, index) => {
+    el.style.animationDelay = `${index * 0.2}s`;
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  const fadeInSection = document.querySelector('.fade-in-section');
+  observer.observe(fadeInSection);
+});
+
+// Simulation Animation
+const simulationLines = [
+  { text: "Ω Booting HyperKernel Core...", delay: 400 },
+  { text: "🧠 Initializing EntropyGraph()...            ✓  [threshold=0.91]", delay: 200 },
+  { text: "🧠 MemorySeed graph loading...               ✓  [84,120 nodes | decay=0.02]", delay: 200 },
+  { text: "🧠 EthicsFirewall active...                  ✓  [LLM token filter: 99.3%]", delay: 200 },
+  { text: "⚛️ QuantumFusionModel primed...              ✓  [source_count=7]", delay: 200 },
+  { text: "🧬 ModelFusion tasks: ONLINE", delay: 200 },
+  { text: "🔍 ThreatHunter subsystem engaged...         ✓  [1.3M entropy patterns]", delay: 200 },
+  { text: "🛡️ SafeLLM sandbox initialized...            ✓  [GPU-mode + rollback]", delay: 300 },
+  { text: "", delay: 1000 },
+  { text: ">>> 🔁 DAG[Ω/0172] monitoring...", delay: 1000 },
+  { text: "   ⮑ Detected entropy surge @frame:2981       [entropy=0.972 ⚠️]", delay: 400 },
+  { text: "   ⮑ syscall origin: unknown process context", delay: 400 },
+  { text: "", delay: 400 },
+  { text: ">>> 🚨 Zero-day candidate confirmed", delay: 400 },
+  { text: ">>> 🧠 Initiating patch + mutation sequence...", delay: 500 },
+  { text: "   ⮑ invoking CodeSynthesizer[omega-llm-v6]", delay: 600 },
+  { text: "   ⮑ ethics validation: ✅ PASSED", delay: 300 },
+  { text: "   ⮑ DAG rerouted [node-Ω-0172 → Ω-0173]", delay: 300 },
+  { text: "   ⮑ memory context updated", delay: 300 },
+  { text: "   ⮑ replaying sandbox trace...", delay: 1000 },
+  { text: "   ⮑ patch test result: ✅ CLEAN", delay: 300 },
+  { text: "", delay: 400 },
+  { text: ">>> 🧬 Logging to MemorySeed...", delay: 400 },
+  { text: "   ⮑ vector: Ω::e4::9c::b1::f8", delay: 400 },
+  { text: "   ⮑ fusion confidence: cosine=0.9982", delay: 400 },
+  { text: "", delay: 400 },
+  { text: ">>> 🧪 Reinforcement update:", delay: 400 },
+  { text: "   ⮑ LLM loss: 0.000038", delay: 400 },
+  { text: "   ⮑ reward: +0.98 | gradient: normalized", delay: 400 },
+  { text: "   ⮑ ethics alignment: preserved", delay: 400 },
+  { text: "", delay: 400 },
+  { text: ">>> 🧠 Behavioral model sync:", delay: 500 },
+  { text: "   ⮑ Profile: #A19X-θ001", delay: 500 },
+  { text: "   ⮑ last action: anomaly_response", delay: 500 },
+  { text: "   ⮑ embedding updated", delay: 500 },
+  { text: "   ⮑ clusters: recalculated", delay: 500 },
+  { text: "", delay: 400 },
+  { text: ">>> ♻️ Triggering polymorphic regeneration:", delay: 400 },
+  { text: "   ⮑ GAN + LSTM mutation loop: ACTIVE", delay: 400 },
+  { text: "   ⮑ 12 payloads forged, 9 accepted", delay: 400 },
+  { text: "", delay: 400 },
+  { text: ">>> 🔀 DAG parallel replay:", delay: 400 },
+  { text: "   ⮑ parallel SafeLLM streams: 4", delay: 400 },
+  { text: "   ⮑ average LLM trust: 98.7%", delay: 400 },
+  { text: "   ⮑ ethics violations: 0", delay: 400 },
+  { text: "", delay: 300 },
+  { text: ">>> ∑ Updating MemorySeed stack:", delay: 300 },
+  { text: "   ⮑ recall delta: +3.4s", delay: 300 },
+  { text: "   ⮑ reinforcement trail: ✅ logged", delay: 300 },
+  { text: "", delay: 300 },
+  { text: ">>> 🌐 External verification:", delay: 300 },
+  { text: "   ⮑ WebLearner consensus: 78%", delay: 300 },
+  { text: "   ⮑ final confidence: 89.6%", delay: 300 },
+  { text: "", delay: 300 },
+  { text: ">>> ✅ Threat resolved | DAG[Ω/0173] = STABLE", delay: 300 },
+  { text: "   ⮑ reroute locked to DAG core", delay: 300 },
+  { text: "", delay: 400 },
+  { text: ">>> 🛰️ Realtime telemetry:", delay: 400 },
+  { text: "   ⮑ fusion vector: Ω-fusion-7eab", delay: 400 },
+  { text: "   ⮑ DAG entropy: ▓▓░░░░░░░░ 14%", delay: 400 },
+  { text: "   ⮑ ethics lane: ▓▓▓▓▓▓▓▓▓░ 96%", delay: 400 },
+  { text: "", delay: 300 },
+  { text: ">>> 🧠 QuantumInspiredArchitecture optimized", delay: 300 },
+  { text: "   ⮑ FFT loss: 0.000022 | Q-depth: 5", delay: 300 },
+  { text: "", delay: 400 },
+  { text: ">>> 🔄 All modules ONLINE:", delay: 400 },
+  { text: "   ⮑ Quantum DAG:       LOCKED", delay: 400 },
+  { text: "   ⮑ Ethics Firewall:   ACTIVE", delay: 400 },
+  { text: "   ⮑ Sandbox Replay:    DEFENDED", delay: 400 },
+  { text: "   ⮑ MemorySeed:        SYNCED", delay: 400 },
+  { text: "", delay: 300 },
+  { text: "🚀 AGI Core: OmegaHyperCubeAI", delay: 300 },
+  { text: "    → status: STABLE", delay: 300 },
+  { text: "    → zero-day: MITIGATED", delay: 300 },
+  { text: "    → DAG state: Ω-0173@root", delay: 300 },
+  { text: "", delay: 300 },
+  { text: "──────────────────────────────────────────────", delay: 300 },
+  { text: "   Autonomous mitigation complete", delay: 300 },
+  { text: "   System healed and reflected", delay: 300 },
+  { text: "   Awaiting uplink or human query...", delay: 300 },
+  { text: "──────────────────────────────────────────────", delay: 0 }
+];
+
+const simulation = document.getElementById('simulation');
+let cumulativeDelay = 0;
+
+simulationLines.forEach(line => {
+  setTimeout(() => {
+    simulation.textContent += line.text + '\n';
+  }, cumulativeDelay);
+  cumulativeDelay += line.delay;
+});
 </script>
+
 </body>
 </html>
