@@ -137,23 +137,34 @@
 
     .crt-terminal {
       background: #000;
-      border: none; /* Removed additional framing */
+      border: none;
       border-radius: 10px;
       padding: 2rem;
       position: relative;
-      overflow: hidden;
+      overflow-x: hidden;
+      white-space: pre-wrap;
+      word-break: break-word;
       line-height: 1.6;
       font-size: 0.95rem;
       cursor: pointer;
       box-shadow: 0 0 20px rgba(0,0,0,0.7) inset;
       transition: transform 0.3s ease;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      min-height: 320px;
+      user-select: none;
+      padding-right: 1rem;
+      touch-action: none;
+      -webkit-user-select: none;
+      -webkit-font-smoothing: antialiased;
     }
     .crt-terminal:hover {
-      transform: perspective(800px) rotateX(1deg); /* Cursor Drag Zoom */
+      transform: perspective(800px) rotateX(1deg);
       box-shadow: 0 0 30px #7d6fff33 inset;
     }
     .crt-terminal:active {
-      transform: scale(1.03) rotateX(2deg); /* Enhanced zoom on click */
+      transform: scale(1.03) rotateX(2deg);
     }
 
     .crt-terminal::before {
@@ -224,100 +235,43 @@
       font-style: italic;
     }
 
-    /* Fade-In Effect */
-    .fade-in-section > * {
-      opacity: 0;
-    }
-    .fade-in-section.visible > * {
-      animation: fadeIn 1s ease-in forwards;
-    }
-    @keyframes fadeIn {
-      to { opacity: 1; }
+    /* Mobile Tip */
+    .mobile-tip {
+      text-align: center;
+      color: #999;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
     }
 
-    /* Cyber Button */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      padding: 1rem 2rem;
-      background: linear-gradient(45deg, var(--accent), var(--accent2));
-      color: #000;
-      font-weight: 700;
-      border-radius: 8px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: filter 0.3s ease;
+    /* Media Queries */
+    @media (max-width: 600px) {
+      .crt-terminal {
+        padding: 1.2rem;
+        font-size: 0.85rem;
+      }
+      .sneak-heading {
+        font-size: 1rem;
+      }
+      .glitch-on {
+        animation: glitchFlicker 1.4s ease infinite;
+        filter: none;
+        text-shadow: none;
+      }
     }
-    .btn:hover {
-      filter: brightness(1.2);
-      box-shadow: 0 0 20px var(--accent);
-    }
-
-    /* Matrix Inputs */
-    input, textarea {
-      background: #0a0c15;
-      border: 2px solid #2d2f45;
-      color: var(--fg);
-      padding: 1rem;
-      border-radius: 8px;
-      transition: all 0.3s ease;
-    }
-    input:focus, textarea:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 15px var(--accent);
+    @media (min-width: 768px) {
+      .mobile-tip {
+        display: none;
+      }
     }
 
-    /* Particle Background */
-    .particles {
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      pointer-events: none;
+    /* Outline Removal */
+    .crt-terminal code:focus {
+      outline: none;
+      box-shadow: none;
     }
-
-    /* Simulation Styles */
-    #simulation {
-      background: #000;
-      color: var(--fg);
-      font-family: var(--font-mono);
-      padding: 1em;
-      position: relative;
-      white-space: pre;
-      font-size: 1rem;
-    }
-
-    /* Contact Form */
-    #contactForm input[type="submit"] {
-      background: linear-gradient(45deg, var(--accent), var(--accent2));
-      border: none;
-      padding: 1rem 2rem;
-      border-radius: 8px;
-      color: #000;
-      font-weight: 700;
-      cursor: pointer;
-      transition: box-shadow 0.3s ease;
-    }
-    #contactForm input[type="submit"]:hover {
-      box-shadow: 0 0 20px var(--accent);
-    }
-
-    /* System Architecture Note */
-    .under-hood {
-      font-style: italic;
-      color: var(--accent);
-      text-shadow: 0 0 10px var(--accent);
-      animation: glow 2s infinite alternate;
-    }
-    @keyframes glow {
-      from { text-shadow: 0 0 10px var(--accent); }
-      to { text-shadow: 0 0 20px var(--accent); }
-    }
-
-    @media (max-width: 768px) {
-      .card { margin: 1rem; padding: 1.5rem; }
-      header { padding: 4rem 1rem; }
-      .sneak-peek pre { font-size: 1.2rem; padding: 2rem; }
-      pre, code { font-size: 1rem; }
+    .crt-terminal *:focus {
+      outline: none !important;
+      box-shadow: none !important;
     }
   </style>
 </head>
@@ -339,6 +293,7 @@
   <div class="crt-terminal glitch-hover-zone">
     <pre id="sneakpeek-output"><code contenteditable="true"></code></pre>
   </div>
+  <p class="mobile-tip">Tap to awaken OmegaHyperCubeAI.</p>
 </section>
 
 <!-- Simulation Section -->
@@ -463,13 +418,8 @@ f.addEventListener('submit', e => {
     headers: { 'Accept': 'application/json' }
   }).then(r => {
     if (r.ok) {
-      alert('Message sent successfully!');
       f.reset();
-    } else {
-      alert('Something went wrong. Please try again.');
     }
-  }).catch(() => {
-    alert('Something went wrong. Please try again.');
   });
 });
 
@@ -524,7 +474,6 @@ async def run_improvement_cycle(self) -> Dict:
 `;
 
 let isTyping = false;
-let editTimeout;
 const aiComments = [
   "// Omega: Threat level nominal.",
   "// Entropy stabilized.",
@@ -550,7 +499,7 @@ function triggerTyping() {
 
     if (ch !== ' ' && Math.random() < 0.5 && ch !== '\n') {
       span.className = 'glitch-on';
-      spawnTrail(span); // DNA Glitch Trails
+      spawnTrail(span);
     }
 
     span.textContent = ch;
@@ -570,30 +519,10 @@ function spawnTrail(span) {
   setTimeout(() => clone.remove(), 500);
 }
 
-// Simulated Error Insertion + Reset
-document.querySelector('#sneakpeek-output code').addEventListener('input', () => {
-  document.getElementById('clickSound').play(); // Matrix Pulse Sound on key interaction
-  clearTimeout(editTimeout);
-  editTimeout = setTimeout(() => {
-    const errMsg = "// ✖ ERROR: Unauthorized mutation\n";
-    const terminal = document.querySelector('#sneakpeek-output code');
-    terminal.innerHTML = '';
-    sneakText.split('').forEach((ch) => {
-      const span = document.createElement('span');
-      span.textContent = ch;
-      if (ch !== ' ' && ch !== '\n' && Math.random() < 0.3) span.className = 'glitch-on';
-      terminal.appendChild(span);
-    });
-    const errorSpan = document.createElement('span');
-    errorSpan.textContent = errMsg;
-    errorSpan.className = 'ai-comment';
-    terminal.insertBefore(errorSpan, terminal.firstChild);
-  }, 5000); // Reset after 5 seconds
-});
-
 // Matrix Pulse Sound on Click
 document.querySelector('.crt-terminal').addEventListener('click', () => {
   document.getElementById('clickSound').play();
+  if (!isTyping) triggerTyping();
 });
 
 // AI Commentary Mode
