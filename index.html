@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OmegaHyperCubeAI · Quantum‑Evolved AGI Defense</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>SNEAK & PEEK · OmegaHyperCubeAI</title>
 
-  <!-- SEO / Social -->
-  <meta name="description" content="OmegaHyperCubeAI is a quantum‑powered, self‑healing AGI that patches, mutates, and defends in real‑time." />
-  <meta name="keywords"    content="AGI, quantum AI, self‑healing AI, autonomous cybersecurity, DAG executor, ethics firewall, memory engine" />
-  <meta property="og:title"       content="OmegaHyperCubeAI – Autonomous Quantum Defense" />
-  <meta property="og:description" content="A fully‑modular AGI engine with glitch‑typed code, memory‑linked evolution and real‑time patching." />
-  <meta property="og:image"       content="assets/og-image.png" />
-  <meta name="twitter:card"       content="summary_large_image" />
+  <!-- ── SEO / Social -->
+  <meta name="description"  content="SNEAK & PEEK — a quantum‑evolved AGI defense engine that mutates, heals and defends faster than zero‑day."/>
+  <meta name="keywords"     content="AGI, quantum AI, self‑healing, autonomous cybersecurity, OpenAI alternative, LLM sandbox, exploit fuzzing"/>
+  <meta property="og:title" content="SNEAK & PEEK · OmegaHyperCubeAI"/>
+  <meta property="og:description" content="Glitch‑typed, memory‑linked, ethics‑enforced AGI for post‑zero‑day defense."/>
+  <meta property="og:image" content="assets/og-image.png"/>
+  <meta name="twitter:card" content="summary_large_image"/>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,178 +21,155 @@
   <!-- Styles -->
   <style>
     :root{
-      --page-bg:#ffffff;
-      --page-fg:#111;
-      --card-bg:#f8f8f9;
-      --card-border:#e3e4e6;
-      --accent:#10a37f;     /* OpenAI‑teal */
-      --code-bg:#0d0d0d;
-      --code-fg:#00ffe0;
+      --bg:#f7f7f8;        --fg:#202123;      /* ChatGPT‑ish neutrals   */
+      --card:#ffffff;      --border:#e5e7eb;
+      --accent:#0077ff;    --accent-dark:#005dd1;
+      --code-bg:#1e1e1e;   --code-fg:#00e0ff;
     }
-
-    *,*::before,*::after{box-sizing:border-box}
-    body{
-      margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      background:var(--page-bg);color:var(--page-fg);line-height:1.6;
-    }
-    h1,h2{margin:0;font-weight:600}
-    a{text-decoration:none;color:var(--accent)}
-    /* ---------- NAV / HERO ---------- */
-    header{
-      padding:72px 24px;text-align:center;
-      border-bottom:1px solid var(--card-border)
-    }
-    header h1{font-size:clamp(2.4rem,6vw,3.5rem)}
-    header .tagline{font-size:1.1rem;color:#555;margin-top:.6rem}
-    header .pill{
-      display:inline-block;margin-top:1rem;padding:6px 12px;
-      background:var(--accent);color:#fff;border-radius:9999px;font-size:.9rem
-    }
-    /* ---------- SECTIONS ---------- */
-    section{
-      max-width:980px;margin:56px auto;padding:0 24px
-    }
-    .card{
-      background:var(--card-bg);border:1px solid var(--card-border);
-      border-radius:12px;padding:32px;margin-bottom:32px
-    }
-    .card h2{font-size:1.4rem;color:var(--accent);margin-bottom:16px}
-    ul{margin:0 0 8px 1.2rem;padding:0}
-    ul li{margin-bottom:6px}
-    /* ---------- CODE DEMO ---------- */
-    pre{
-      background:var(--code-bg);color:var(--code-fg);
-      padding:24px;border-radius:8px;font-size:.9rem;
-      font-family:'Fira Code',monospace;overflow-x:auto;
-      border:1px solid #1d1d1d
-    }
-    .glitch{animation:shake .3s steps(2,end) infinite}
-    @keyframes shake{
-      0%{transform:translate(0)}20%{transform:translate(-1px,1px)}
-      40%{transform:translate(1px,-1px)}60%{transform:translate(-1px,-1px)}
-      80%{transform:translate(1px,1px)}100%{transform:translate(0)}
-    }
-    /* ---------- BUTTON ---------- */
-    .btn{
-      display:inline-block;margin-top:18px;padding:14px 28px;
-      background:var(--accent);color:#fff;font-weight:600;font-size:.95rem;
-      border-radius:8px;transition:.2s
-    }
-    .btn:hover{filter:brightness(.9)}
-    /* ---------- FORM ---------- */
+    /* RESET */
+    *,*::before,*::after{box-sizing:border-box} body{margin:0;line-height:1.6;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--fg);}
+    h1,h2{margin:0;font-weight:600}  a{color:var(--accent);text-decoration:none}
+    /* HEADER */
+    header{padding:72px 24px;text-align:center;border-bottom:1px solid var(--border);}
+    header h1{font-size:clamp(2.3rem,6vw,3.4rem);}
+    .tagline{font-size:1.05rem;color:#555;margin-top:.6rem}
+    .pill{display:inline-block;margin-top:1rem;padding:6px 12px;background:var(--accent);color:#fff;border-radius:9999px;font-size:.9rem}
+    /* SECTIONS / CARDS */
+    section{max-width:980px;margin:56px auto;padding:0 24px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:32px;margin-bottom:40px}
+    .card h2{font-size:1.35rem;color:var(--accent);margin-bottom:18px}
+    ul{margin:0 0 8px 1.1rem;padding:0}  li{margin-bottom:6px}
+    /* CODE DEMO */
+    pre{background:var(--code-bg);color:var(--code-fg);padding:26px;border-radius:8px;font-family:'Fira Code',monospace;font-size:.88rem;overflow-x:auto;border:1px solid #333}
+    .glitch{animation:shake .35s steps(2,end) infinite}
+    @keyframes shake{0%{transform:translate(0)}25%{transform:translate(-1px,1px)}50%{transform:translate(1px,-1px)}75%{transform:translate(-1px,-1px)}100%{transform:translate(0)}}
+    /* BUTTON */
+    .btn{display:inline-block;margin-top:20px;padding:14px 30px;background:var(--accent);color:#fff;font-weight:600;border-radius:8px;transition:.2s}
+    .btn:hover{background:var(--accent-dark)}
+    /* FORM */
     form{display:flex;flex-direction:column;gap:14px}
-    input,textarea{
-      width:100%;padding:14px;border:1px solid var(--card-border);
-      border-radius:8px;font-size:1rem;font-family:Inter,sans-serif
-    }
-    input[type=submit]{
-      background:var(--accent);color:#fff;font-weight:600;cursor:pointer
-    }
-    input[type=submit]:hover{filter:brightness(.9)}
+    input,textarea{padding:14px;border:1px solid var(--border);border-radius:8px;font-size:1rem;font-family:Inter,sans-serif}
+    input[type=submit]{background:var(--accent);color:#fff;font-weight:600;cursor:pointer}
+    input[type=submit]:hover{background:var(--accent-dark)}
     .success,.error{display:none;font-weight:600;margin-top:.5rem}
-    .success{color:var(--accent)}
-    .error{color:#d92c2c}
-    /* ---------- FOOTER ---------- */
-    footer{border-top:1px solid var(--card-border);text-align:center;padding:40px 24px;font-size:.85rem;color:#555}
+    .success{color:var(--accent)} .error{color:#d92c2c}
+    /* FOOTER */
+    footer{border-top:1px solid var(--border);text-align:center;padding:42px 24px;font-size:.85rem;color:#555}
+    /* SMALL */
+    @media(max-width:520px){header h1{font-size:2.2rem}}
   </style>
 </head>
 <body>
 
-<!-- ███████ HERO / NAV -->
+<!-- ■ HERO -->
 <header>
-  <h1>OmegaHyperCubeAI</h1>
-  <p class="tagline">Quantum‑evolved AGI cyber defense engine</p>
-  <span class="pill">Autonomous · Self‑Healing · Ethical · Memory‑Aware</span>
+  <h1>SNEAK & PEEK</h1>
+  <p class="tagline">OmegaHyperCubeAI · quantum‑evolved AGI cyber defense</p>
+  <span class="pill">Autonomous · Self‑Healing · Memory‑Aware</span>
 </header>
 
-<!-- ███████ WHAT IS IT -->
+<!-- ■ UNIQUENESS / VALUE  -->
 <section>
   <div class="card">
-    <h2>What makes OmegaHyperCubeAI different?</h2>
+    <h2>Why it’s truly one‑of‑a‑kind</h2>
     <ul>
-      <li><strong>Quantum DAG executor</strong> prioritising entropy‑weighted reasoning paths.</li>
-      <li><strong>Self‑healing sandbox</strong> that mutates & patches code up to <em>30×</em> autonomously.</li>
-      <li><strong>Ethics firewall</strong> with 99 % confidence token‑level filtering.</li>
-      <li><strong>MemorySeed</strong> graph that logs, reflects & evolves persistent context.</li>
-      <li><strong>GUI Core</strong> (PyQt 5) for visual DAG editing, GPU metrics & live LLM console.</li>
+      <li><strong>Neural JIT Compiler</strong> – TorchScript mutation of live LLM output into safe byte‑code.</li>
+      <li><strong>QuantumMemoryOptimizer</strong> – FFT‑driven CuPy tensor shaping for entropy‑balanced recall.</li>
+      <li><strong>Exploit AutoSurgeon</strong> – Transformer that heals crashes using adversarial traces.</li>
+      <li><strong>PolymorphicPayloadGenerator</strong> – GAN‑style, entropy‑tuned stealth payload creator.</li>
+      <li><strong>Protocol Chameleon</strong> – HTTP / DNS / SMTP morphing with seamless switch‑over.</li>
+      <li><strong>SafeLLM Sandbox</strong> – GPU LLM with rollback, retries & ethics gating.</li>
+      <li><strong>MemorySeed</strong> – Persistent graph that remembers, reflects & evolves.</li>
+      <li><strong>GUI Hypercube Core</strong> – PyQt5 dashboard: DAG editor, GPU metrics, live LLM console.</li>
     </ul>
-    <a class="btn" href="pitch_deck.pdf" download>📄 Download pitch deck</a>
+    <a href="pitch_deck.pdf" class="btn" download>📄 Download pitch deck</a>
   </div>
 </section>
 
-<!-- ███████ LIVE CODE DEMO -->
+<!-- ■ LIVE CODE — GLITCH TYPE -->
 <section>
   <div class="card">
-    <h2>Live defense loop (glitch‑type)</h2>
-    <pre><code id="demo">
-// OmegaHyperCubeAI · entropy‑governed defense loop
-class OmegaHyperCubeAI:
-  def __init__(self):
-    self.entropy   = EntropyGraph(threshold=0.91)
-    self.dag       = QuantumDAG(weighting="contextual_entropy")
-    self.memory    = MemorySeed(decay_rate=0.02)
-    self.validator = EthicsFirewall(confidence=0.99)
-    self.stream    = AsyncPatchStream(model="omega-llm-v6")
-    self.sandbox   = SelfHealingSandbox(max_cycles=30)
+    <h2>SNEAK & PEEK · live defense loop</h2>
+    <pre><code id="typebox">
+// pulled from SafeLLM & QuantumMemoryOptimizer
 
-  async def auto_defend(self, code:str):
-    score = self.entropy.analyze(code)
-    if score>0.95:
-      return {"status":"rejected","reason":"entropy_limit"}
-    for cycle in range(self.sandbox.max_cycles):
-      try:
-        exec(code,{},{}); return {"status":"ok","cycle":cycle}
-      except Exception as e:
-        patch = await self.stream.repair(code,error=str(e))
-        if not self.validator.verify(patch):
-          return {"status":"blocked","reason":"ethics_fail"}
-        code = self.memory.reinforce_patch(patch)
-    return {"status":"terminated"}
+class SafeLLM:
+  def __init__(self, model_name="mistral-7b"):
+    self.n_ctx, self.n_batch, self.n_gpu_layers = get_auto_params()
+    self._load_model(model_name)              # auto VRAM tuning
+
+  async def generate(self, prompt, on_token, max_tokens=2048):
+    sys_prompt = "<<SYS>>You are a helpful assistant.<</SYS>>"
+    for chunk in await self._model(
+        f"{sys_prompt}\n[INST] {prompt} [/INST]",
+        stream=True, top_p=0.95, temperature=0.7, max_tokens=max_tokens
+    ):
+      tok = chunk["choices"][0]["text"]; await on_token(tok)
+
+class QuantumMemoryOptimizer:
+  async def optimize(self, tensor):
+    with autocast():
+      f = torch.fft.fftn(tensor)              # hyper‑cube FFT
+      return torch.real(f)/torch.norm(f)
+
+class EntropyGraph:
+  def analyze(self, code:str)->float:
+    return scipy_entropy(np.histogram([ord(c)%256 for c in code],256,density=True)[0])
+
+# === autonomous defense ===
+async def auto_defend(code:str):
+  if EntropyGraph().analyze(code)>0.95: return "🚫 entropy limit"
+  for _ in range(30):
+    try: exec(code); return "✅ clean"
+    except Exception as e:
+      code = await SafeLLM().generate(f"patch this ➜ {e}", lambda t: None)
     </code></pre>
   </div>
 </section>
 
-<!-- ███████ CONTACT -->
+<!-- ■ CONTACT -->
 <section>
   <div class="card">
     <h2>Contact the architect</h2>
-    <p>Request a demo, integration assistance, or licensing details:</p>
-    <form id="contactForm" action="https://formspree.io/f/xleqrdzn" method="POST">
-      <input type="text"   name="name"    placeholder="Your name"  required />
-      <input type="email"  name="_replyto" placeholder="Your email" required />
-      <textarea name="message" rows="5" placeholder="Your message..." required></textarea>
-      <input type="submit" value="Send message" />
-      <p class="success" id="msgOk">✅ Thank you — message received.</p>
-      <p class="error"   id="msgErr">❌ Send failed — please retry.</p>
+    <p>Need a private demo, integration blueprint, or licensing quote?</p>
+    <form id="contactForm" action="https://formspree.io/f/xxxxxxxx" method="POST">
+      <!--  ↳ replace xxxxxxxx with your real Formspree ID  -->
+      <input name="name"     type="text"   placeholder="Your name"  required>
+      <input name="_replyto" type="email"  placeholder="Your email" required>
+      <textarea name="message" rows="5" placeholder="Your message…" required></textarea>
+      <input type="submit" value="Send message">
+      <p class="success" id="msgOk">✅ Thanks — message received.</p>
+      <p class="error"   id="msgErr">❌ Send failed — retry.</p>
     </form>
   </div>
 </section>
 
-<!-- ███████ FOOTER -->
-<footer>
-  © 2025 OmegaHyperCubeAI · Built for a post‑zero‑day era
-</footer>
+<!-- ■ FOOTER -->
+<footer>© 2025 OmegaHyperCubeAI — built for a post‑zero‑day era</footer>
 
 <!-- Scripts -->
 <script>
-/* === glitch‑typing === */
-const box = document.getElementById('demo');
-const txt = box.textContent.trim();
-box.textContent=''; let i=0;
-function rndc(){return "abcdefghijklmnopqrstuvwxyz0123456789#$%&*"[Math.floor(Math.random()*44)];}
-function type(){if(i<txt.length){
-    if(Math.random()<.04){box.classList.add('glitch');box.textContent+=rndc();
-       setTimeout(()=>{box.textContent=box.textContent.slice(0,-1);box.classList.remove('glitch');},70);}
-    box.textContent+=txt[i++]; setTimeout(type,6+Math.random()*18);} }
+/* ── ultra‑glitch typing ── */
+const box=document.getElementById('typebox'),txt=box.textContent.trim();box.textContent='';let i=0;
+function rc(){return"01!<>$%&*"[Math.floor(Math.random()*9)];}
+function type(){
+  if(i<txt.length){
+    if(Math.random()<.06){           // 6 % glitch injection
+      box.classList.add('glitch');
+      let g=box.textContent+rc(); setTimeout(()=>{box.textContent=g.slice(0,-1);box.classList.remove('glitch');},60);
+    }
+    box.textContent+=txt[i++]; setTimeout(type,5+Math.random()*16);
+  }
+}
 window.addEventListener('load',type);
 
-/* === Formspree AJAX === */
-const f=document.getElementById('contactForm'), ok=document.getElementById('msgOk'), er=document.getElementById('msgErr');
-f.addEventListener('submit', e=>{
-  e.preventDefault(); ok.style.display=er.style.display='none';
+/* ── Formspree async ── */
+const f=document.getElementById('contactForm'),ok=document.getElementById('msgOk'),er=document.getElementById('msgErr');
+f.addEventListener('submit',e=>{
+  e.preventDefault();ok.style.display=er.style.display='none';
   fetch(f.action,{method:'POST',body:new FormData(f),headers:{Accept:'application/json'}})
-  .then(r=>r.ok?(ok.style.display='block',f.reset()):Promise.reject())
-  .catch(()=>er.style.display='block');
+   .then(r=>r.ok?(ok.style.display='block',f.reset()):Promise.reject())
+   .catch(()=>er.style.display='block');
 });
 </script>
 </body>
