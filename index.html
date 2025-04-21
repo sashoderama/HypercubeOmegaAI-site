@@ -2,228 +2,199 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>OmegaHyperCubeAI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OmegaHyperCubeAI – Quantum‑Evolved AGI Defense</title>
 
-  <!-- SEO & Metadata -->
-  <meta name="description" content="Quantum-powered AGI cyber defense engine with glitch-typing LLM sandboxing, memory-linked evolution, and self-healing intelligence.">
-  <meta name="keywords" content="AGI, OpenAI, ChatGPT, quantum AI, autonomous cybersecurity, LLM sandbox, DAG executor, GAN mutation, memory AI, self-healing code, red team AI">
-  <meta property="og:title" content="OmegaHyperCubeAI – Quantum-Evolved Defense Engine">
-  <meta property="og:description" content="A self-evolving AGI that detects, heals, adapts and protects in real-time.">
-  <meta property="og:image" content="assets/og-image.png">
-  <meta name="twitter:card" content="summary_large_image">
+  <!-- ── SEO / Social ─────────────────────────────────────────── -->
+  <meta name="description"
+        content="OmegaHyperCubeAI is a quantum‑powered, self‑healing AGI that patches, mutates, and defends in real‑time." />
+  <meta name="keywords"
+        content="AGI, quantum AI, self‑healing AI, autonomous cybersecurity, DAG executor, ethics firewall, memory engine, ChatGPT alternative" />
+  <meta property="og:title" content="OmegaHyperCubeAI – Autonomous Quantum Defense" />
+  <meta property="og:description"
+        content="A fully modular AGI engine with glitch‑typed code, memory‑linked evolution, and real‑time patching." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://sashoderama.github.io/HypercubeOmegaAI-site" />
+  <meta property="og:image" content="https://sashoderama.github.io/HypercubeOmegaAI-site/assets/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
 
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Fira+Code&display=swap" rel="stylesheet">
 
+  <!-- ── Styles ──────────────────────────────────────────────── -->
   <style>
-    :root {
-      --main-color: #00ff95;
-      --accent-color: #00ffcc;
-      --bg: #000;
-      --fg: #d0ffd8;
+    :root{
+      --bg:#000;          --fg:#d0ffd8;
+      --main:#00ff95;     --accent:#00ffcc;
     }
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--fg);
-      font-family: 'Fira Code', monospace;
-      padding: 0 2rem;
+    *{box-sizing:border-box}
+    body{
+      margin:0;background:var(--bg);color:var(--fg);
+      font-family:'Fira Code',monospace;padding:0 2rem;
     }
-    header {
-      background: linear-gradient(to right, #001010, #002020);
-      text-align: center;
-      padding: 4rem 1rem;
-      border-bottom: 4px solid var(--main-color);
+    /* ---------- HEADER ---------- */
+    header{
+      text-align:center;padding:4rem 1rem;
+      background:linear-gradient(90deg,#001010 0%,#002020 100%);
+      border-bottom:4px solid var(--main);
     }
-    header h1 {
-      font-size: 3.5rem;
-      font-family: 'Orbitron', sans-serif;
-      color: var(--main-color);
-      text-shadow: 0 0 12px var(--main-color);
+    header h1{
+      font-family:'Orbitron',sans-serif;font-size:3.6rem;margin:0;
+      color:var(--main);text-shadow:0 0 14px var(--main);
     }
-    header p {
-      font-size: 1.2rem;
-      color: var(--accent-color);
+    header p{margin:.4rem 0;color:var(--accent);font-size:1.2rem}
+    /* ---------- SECTIONS ---------- */
+    section{max-width:900px;margin:auto;padding:2.5rem 0;border-bottom:1px solid #111}
+    section h2{
+      font-size:1.5rem;color:var(--accent);
+      border-left:4px solid var(--main);padding-left:1rem;margin-bottom:1rem
     }
-    section {
-      max-width: 900px;
-      margin: auto;
-      padding: 2.5rem 0;
-      border-bottom: 1px solid #111;
+    ul{padding-left:2rem;line-height:1.7;margin:0}
+    /* ---------- CODE BLOCK ---------- */
+    pre{
+      background:#0f0f0f;border-left:5px solid var(--main);
+      padding:1.6rem;font-size:1.02rem;color:#00ffcc;
+      border-radius:8px;white-space:pre-wrap;overflow-x:auto;
+      position:relative
     }
-    section h2 {
-      color: var(--accent-color);
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-      border-left: 4px solid var(--main-color);
-      padding-left: 1rem;
+    /* glitch shake */
+    .glitch{animation:glitch .35s steps(2,end) infinite}
+    @keyframes glitch{
+      0%{transform:translate(0)}20%{transform:translate(-2px,2px)}
+      40%{transform:translate(2px,-2px)}60%{transform:translate(-2px,-2px)}
+      80%{transform:translate(2px,2px)}100%{transform:translate(0)}
     }
-    ul {
-      padding-left: 2rem;
-      line-height: 1.7;
+    /* ---------- BUTTON ---------- */
+    .button{
+      display:inline-block;background:var(--main);color:#000;
+      font-weight:700;padding:1rem 2rem;text-decoration:none;
+      border-radius:6px;box-shadow:0 0 12px var(--main);transition:.25s
     }
-    pre {
-      background: #0f0f0f;
-      padding: 1.5rem;
-      font-size: 1rem;
-      color: #00ffcc;
-      border-left: 5px solid var(--main-color);
-      border-radius: 8px;
-      white-space: pre-wrap;
-      overflow-x: auto;
+    .button:hover{background:var(--accent);box-shadow:0 0 18px var(--accent)}
+    /* ---------- FORM ---------- */
+    form{display:flex;flex-direction:column;gap:1rem;max-width:600px;margin-top:1rem}
+    input,textarea{
+      width:100%;background:#000;border:1px solid var(--main);
+      color:var(--fg);padding:.9rem;border-radius:6px;font-size:1rem
     }
-    .button {
-      display: inline-block;
-      background: var(--main-color);
-      color: #000;
-      font-weight: bold;
-      padding: 1rem 2rem;
-      text-decoration: none;
-      border-radius: 6px;
-      margin-top: 1rem;
-      box-shadow: 0 0 12px var(--main-color);
+    input[type=submit]{
+      background:var(--main);color:#000;font-weight:700;cursor:pointer;border:none
     }
-    input, textarea {
-      width: 100%;
-      background-color: #000;
-      border: 1px solid var(--main-color);
-      color: var(--fg);
-      font-family: 'Fira Code', monospace;
-      padding: 0.8rem;
-      border-radius: 6px;
-      font-size: 1rem;
-    }
-    input[type="submit"] {
-      background: var(--main-color);
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-      border: none;
-    }
-    .success, .error {
-      margin-top: 1rem;
-      font-weight: bold;
-      display: none;
-    }
-    .success { color: #00ff95; }
-    .error { color: #ff4444; }
-    footer {
-      text-align: center;
-      padding: 2rem;
-      color: #888;
-      font-size: 0.9rem;
-    }
+    input[type=submit]:hover{background:var(--accent)}
+    .success,.error{display:none;font-weight:700;margin-top:.7rem}
+    .success{color:#00ff95}.error{color:#ff4d4d}
+    /* ---------- FOOTER ---------- */
+    footer{text-align:center;padding:2rem;color:#888;font-size:.9rem}
+    /* ---------- SMALL SCREEN ---------- */
+    @media(max-width:500px){header h1{font-size:2.4rem}}
   </style>
 </head>
 <body>
-
+<!-- ═══════════ HEADER ═══════════ -->
 <header>
   <h1>OmegaHyperCubeAI</h1>
-  <p><em>Quantum AGI Cyber Defense Stack</em></p>
-  <p>Autonomous • Self-Healing • Ethics-Driven • Memory-Aware</p>
+  <p><em>Quantum AGI Cyber Defense Engine</em></p>
+  <p>Autonomous • Self‑Healing • Ethics‑Driven • Memory‑Aware</p>
 </header>
 
+<!-- ═══════════ CODE DEMO ═══════════ -->
 <section>
-  <h2>💻 AGI Execution Engine (Typing Demo)</h2>
-  <pre><code id="typing-code">
-// OmegaHyperCubeAI :: Full Entropy-Aware AGI Execution Engine
+  <h2>💻 Live Code Simulation (Glitch‑Type)</h2>
+  <pre><code id="typebox">
+// OmegaHyperCubeAI :: full entropy‑governed AGI defense loop
 class OmegaHyperCubeAI:
   def __init__(self):
-    self.entropy = EntropyGraph(threshold=0.91)
-    self.dag = QuantumDAG(weighting="contextual_entropy")
-    self.memory = MemorySeed(decay_rate=0.02)
+    self.entropy   = EntropyGraph(threshold=0.91)
+    self.dag       = QuantumDAG(weighting="contextual_entropy")
+    self.memory    = MemorySeed(decay_rate=0.02)
     self.validator = EthicsFirewall(confidence=0.99)
-    self.patch_stream = AsyncPatchStream(model="omega-llm-v6")
-    self.sandbox = SelfHealingSandbox(max_cycles=30)
-    self.metrics = TelemetryCore()
+    self.stream    = AsyncPatchStream(model="omega-llm-v6")
+    self.sandbox   = SelfHealingSandbox(max_cycles=30)
+    self.metrics   = TelemetryCore()
 
-  async def auto_defend(self, code: str):
-    context_hash = self.memory.hash_context(code)
-    entropy_score = self.entropy.analyze(code)
-    self.memory.log_entropy(context_hash, entropy_score)
-
-    if entropy_score > 0.95:
-      self.memory.flag(code, reason="High volatility")
-      self.metrics.log_alert("Blocked unstable execution", severity="high")
-      return {"status": "entropy_violation"}
+  async def auto_defend(self, code:str):
+    ctx = self.memory.hash_context(code)
+    score = self.entropy.analyze(code)
+    if score>0.95:
+      self.memory.flag(code,"volatility")
+      return {"status":"rejected","reason":"entropy_limit"}
 
     for cycle in range(self.sandbox.max_cycles):
       try:
-        result = exec(code, {}, {})
-        self.memory.log_success(result, cycle)
-        self.metrics.log("execution_time", cycle)
-        return {"status": "executed", "result": result}
+        result = exec(code,{},{}); self.metrics.log("exec",cycle)
+        return {"status":"ok","cycle":cycle,"result":result}
       except Exception as e:
-        patch = await self.patch_stream.repair(code, error=str(e))
+        patch = await self.stream.repair(code,error=str(e))
         if not self.validator.verify(patch):
-          self.memory.log_violation(str(e))
-          return {"status": "blocked", "reason": "ethics violation"}
+          return {"status":"blocked","reason":"ethics_fail"}
         code = self.memory.reinforce_patch(patch)
-
-    return {"status": "terminated", "reason": "max mutation loop reached"}
+    return {"status":"terminated","reason":"max_cycles"}
   </code></pre>
 </section>
 
+<!-- ═══════════ PITCH DECK ═══════════ -->
 <section>
-  <h2>📄 Pitch Deck</h2>
-  <a class="button" href="pitch_deck.pdf" download>📥 Download Full Pitch</a>
+  <h2>📄 Pitch Deck</h2>
+  <a class="button" href="pitch_deck.pdf" download>📥 Download Full Deck</a>
 </section>
 
+<!-- ═══════════ CONTACT FORM ═══════════ -->
 <section>
-  <h2>📬 Contact the Architect</h2>
-  <p>Request demo access, licensing terms, or AGI integration support:</p>
-  <form id="contact-form" action="https://formspree.io/f/xleqrdzn" method="POST">
-    <input type="text" name="name" placeholder="Your name" required />
-    <input type="email" name="_replyto" placeholder="Your email" required />
+  <h2>📬 Contact the Architect</h2>
+  <p>Request a demo, integration support, or licensing terms:</p>
+  <form id="contactForm" action="https://formspree.io/f/xleqrdzn" method="POST">
+    <input type="text"   name="name"    placeholder="Your name"  required />
+    <input type="email"  name="_replyto"placeholder="Your email" required />
     <textarea name="message" rows="6" placeholder="Your message..." required></textarea>
     <input type="submit" value="Send Message" />
-    <div id="form-feedback">
-      <p id="form-success" class="success">✅ Message sent successfully!</p>
-      <p id="form-error" class="error">❌ Failed to send. Try again.</p>
-    </div>
+    <p class="success" id="msgOk">✅ Message sent successfully!</p>
+    <p class="error"   id="msgErr">❌ Failed to send. Try again.</p>
   </form>
 </section>
 
+<!-- ═══════════ FOOTER ═══════════ -->
 <footer>
-  <p>© 2025 OmegaHyperCubeAI — Quantum-Evolved Defense Intelligence</p>
+  <p>© 2025 OmegaHyperCubeAI — Quantum‑Evolved Defense Intelligence</p>
 </footer>
 
+<!-- ── Scripts ──────────────────────────────────────────────── -->
 <script>
-  const codeElement = document.getElementById("typing-code");
-  const originalText = codeElement.textContent.trim();
-  codeElement.textContent = "";
-  let i = 0;
-  function typeCode() {
-    if (i < originalText.length) {
-      codeElement.textContent += originalText.charAt(i);
-      i++;
-      setTimeout(typeCode, Math.random() * 14 + 6);
+/* ---------- glitch typing ------------ */
+const box   = document.getElementById('typebox');
+const text  = box.textContent.trim();
+box.textContent=''; let idx=0;
+
+function randChar(){
+  const c='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>!?$%';
+  return c[Math.floor(Math.random()*c.length)];
+}
+function type(){
+  if(idx<text.length){
+    // 5 % glitch every char
+    if(Math.random()<.05){
+      box.classList.add('glitch');
+      const glitched = box.textContent + randChar();
+      box.textContent = glitched;
+      setTimeout(()=>{ box.textContent = box.textContent.slice(0,-1); box.classList.remove('glitch'); }, 80);
     }
+    box.textContent += text[idx++];
+    setTimeout(type, 8 + Math.random()*20);
   }
-  window.addEventListener("load", typeCode);
+}
+window.addEventListener('load', type);
 
-  const form = document.getElementById("contact-form");
-  form.addEventListener("submit", function(e) {
-    e.preventDefault();
-    const formData = new FormData(form);
-    fetch(form.action, {
-      method: "POST",
-      body: formData,
-      headers: { 'Accept': 'application/json' }
-    }).then(response => {
-      if (response.ok) {
-        document.getElementById("form-success").style.display = "block";
-        document.getElementById("form-error").style.display = "none";
-        form.reset();
-      } else {
-        throw new Error("Failed");
-      }
-    }).catch(() => {
-      document.getElementById("form-success").style.display = "none";
-      document.getElementById("form-error").style.display = "block";
-    });
-  });
+/* ---------- contact form ajax ---------- */
+const form = document.getElementById('contactForm'),
+      ok   = document.getElementById('msgOk'),
+      err  = document.getElementById('msgErr');
+
+form.addEventListener('submit', e=>{
+  e.preventDefault();
+  ok.style.display=err.style.display='none';
+  fetch(form.action,{method:'POST',body:new FormData(form),headers:{Accept:'application/json'}})
+  .then(r=> r.ok ? (ok.style.display='block',form.reset()) : Promise.reject())
+  .catch(()=> err.style.display='block');
+});
 </script>
-
 </body>
 </html>
