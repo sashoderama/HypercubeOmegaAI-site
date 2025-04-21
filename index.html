@@ -5,55 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>OmegaHyperCubeAI</title>
 
-  <!-- SEO & Social Metadata -->
-  <meta name="description" content="OmegaHyperCubeAI is a quantum-powered AGI defense system with self-healing, ethical LLMs, memory-linked sandboxing, and real-time anomaly response.">
-  <meta name="keywords" content="AGI, artificial intelligence, OpenAI, ChatGPT, quantum AI, self-healing AI, cybersecurity, DAG, sandbox, LLM defense, memory engine, red team, AGI startup">
-  <meta name="author" content="Omega Architect">
-  <meta name="robots" content="index, follow">
-  <meta property="og:title" content="OmegaHyperCubeAI – Autonomous AGI Defense">
+  <!-- SEO & Metadata -->
+  <meta name="description" content="Quantum-powered AGI cyber defense engine with glitch-typing LLM sandboxing, memory-linked evolution, and self-healing intelligence.">
+  <meta name="keywords" content="AGI, OpenAI, ChatGPT, quantum AI, autonomous cybersecurity, LLM sandbox, DAG executor, GAN mutation, memory AI, self-healing code, red team AI">
+  <meta property="og:title" content="OmegaHyperCubeAI – Quantum-Evolved Defense Engine">
   <meta property="og:description" content="A self-evolving AGI that detects, heals, adapts and protects in real-time.">
-  <meta property="og:type" content="website">
-  <meta property="og:image" content="https://sashoderama.github.io/HypercubeOmegaAI-site/assets/og-image.png">
-  <meta property="og:url" content="https://sashoderama.github.io/HypercubeOmegaAI-site">
+  <meta property="og:image" content="assets/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="OmegaHyperCubeAI – Autonomous AGI Defense Engine">
-  <meta name="twitter:description" content="Quantum DAGs. Ethical LLMs. Fully self-healing. Built from the future.">
-  <meta name="twitter:image" content="https://sashoderama.github.io/HypercubeOmegaAI-site/assets/og-image.png">
 
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Fira+Code&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --main-color: #00ff95;
       --accent-color: #00ffcc;
-      --bg: #000000;
+      --bg: #000;
       --fg: #d0ffd8;
-      --dim: #1a1a1a;
     }
     body {
       margin: 0;
-      background-color: var(--bg);
+      background: var(--bg);
       color: var(--fg);
       font-family: 'Fira Code', monospace;
-      scroll-behavior: smooth;
       padding: 0 2rem;
     }
     header {
       background: linear-gradient(to right, #001010, #002020);
       text-align: center;
       padding: 4rem 1rem;
-      border-bottom: 3px solid var(--main-color);
+      border-bottom: 4px solid var(--main-color);
     }
     header h1 {
       font-size: 3.5rem;
-      color: var(--main-color);
       font-family: 'Orbitron', sans-serif;
-      margin-bottom: 1rem;
-      text-shadow: 0 0 20px var(--main-color);
+      color: var(--main-color);
+      text-shadow: 0 0 12px var(--main-color);
     }
     header p {
-      color: var(--accent-color);
       font-size: 1.2rem;
-      margin-top: 0.5rem;
+      color: var(--accent-color);
     }
     section {
       max-width: 900px;
@@ -73,7 +63,7 @@
       line-height: 1.7;
     }
     pre {
-      background-color: #0f0f0f;
+      background: #0f0f0f;
       padding: 1.5rem;
       font-size: 1rem;
       color: #00ffcc;
@@ -92,11 +82,23 @@
       border-radius: 6px;
       margin-top: 1rem;
       box-shadow: 0 0 12px var(--main-color);
-      transition: 0.3s ease;
     }
-    .button:hover {
-      background: #00ddb0;
-      box-shadow: 0 0 18px var(--accent-color);
+    input, textarea {
+      width: 100%;
+      background-color: #000;
+      border: 1px solid var(--main-color);
+      color: var(--fg);
+      font-family: 'Fira Code', monospace;
+      padding: 0.8rem;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    input[type="submit"] {
+      background: var(--main-color);
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
     }
     .success, .error {
       margin-top: 1rem;
@@ -105,11 +107,11 @@
     }
     .success { color: #00ff95; }
     .error { color: #ff4444; }
-    img.demo {
-      max-width: 100%;
-      border-radius: 8px;
-      box-shadow: 0 0 25px var(--main-color);
-      margin-top: 1rem;
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: #888;
+      font-size: 0.9rem;
     }
   </style>
 </head>
@@ -122,17 +124,44 @@
 </header>
 
 <section>
-  <h2>🧠 What Is OmegaHyperCubeAI?</h2>
-  <p>
-    A fully autonomous AGI defense engine that evolves against cyber threats in real-time. OmegaHyperCubeAI combines:
-  </p>
-  <ul>
-    <li>Quantum DAG reasoning</li>
-    <li>Self-healing sandbox patching</li>
-    <li>Ethical LLM filtering</li>
-    <li>Memory-linked self-reflection</li>
-    <li>GPU-visualized GUI intelligence execution</li>
-  </ul>
+  <h2>💻 AGI Execution Engine (Typing Demo)</h2>
+  <pre><code id="typing-code">
+// OmegaHyperCubeAI :: Full Entropy-Aware AGI Execution Engine
+class OmegaHyperCubeAI:
+  def __init__(self):
+    self.entropy = EntropyGraph(threshold=0.91)
+    self.dag = QuantumDAG(weighting="contextual_entropy")
+    self.memory = MemorySeed(decay_rate=0.02)
+    self.validator = EthicsFirewall(confidence=0.99)
+    self.patch_stream = AsyncPatchStream(model="omega-llm-v6")
+    self.sandbox = SelfHealingSandbox(max_cycles=30)
+    self.metrics = TelemetryCore()
+
+  async def auto_defend(self, code: str):
+    context_hash = self.memory.hash_context(code)
+    entropy_score = self.entropy.analyze(code)
+    self.memory.log_entropy(context_hash, entropy_score)
+
+    if entropy_score > 0.95:
+      self.memory.flag(code, reason="High volatility")
+      self.metrics.log_alert("Blocked unstable execution", severity="high")
+      return {"status": "entropy_violation"}
+
+    for cycle in range(self.sandbox.max_cycles):
+      try:
+        result = exec(code, {}, {})
+        self.memory.log_success(result, cycle)
+        self.metrics.log("execution_time", cycle)
+        return {"status": "executed", "result": result}
+      except Exception as e:
+        patch = await self.patch_stream.repair(code, error=str(e))
+        if not self.validator.verify(patch):
+          self.memory.log_violation(str(e))
+          return {"status": "blocked", "reason": "ethics violation"}
+        code = self.memory.reinforce_patch(patch)
+
+    return {"status": "terminated", "reason": "max mutation loop reached"}
+  </code></pre>
 </section>
 
 <section>
@@ -141,53 +170,17 @@
 </section>
 
 <section>
-  <h2>💻 AGI Code Execution Simulation</h2>
-  <pre><code id="typing-code">
-// OmegaHyperCubeAI - Quantum-Aware Self-Healing AI
-class OmegaHyperCubeAI:
-  def __init__(self):
-    self.memory = QuantumMemoryEngine()
-    self.sandbox = HealingSandbox(retries=30)
-    self.ethics = EthicsFirewall()
-    self.generator = CodeSynthesizer()
-
-  async def defend(self, code):
-    for attempt in range(self.sandbox.retries):
-      try:
-        exec(code)
-        return {"status": "clean"}
-      except Exception as e:
-        patch = await self.generator.generate_patch(code, str(e))
-        if not self.ethics.approve(patch): return {"error": "blocked by ethics"}
-        code = patch
-    return {"error": "max attempts reached"}
-  </code></pre>
-</section>
-
-<section>
-  <h2>🛡️ System Intelligence Modules</h2>
-  <ul>
-    <li><strong>Neural JIT Compiler</strong> — Converts runtime LLM output into safe, TorchScript-validated Python logic.</li>
-    <li><strong>QuantumMemoryOptimizer</strong> — FFT-powered CuPy graph optimizer for entropy-balanced memory graphs.</li>
-    <li><strong>Self-Healing Sandbox</strong> — Retry-safe, ethics-enforced sandbox that heals code up to 30x per loop.</li>
-    <li><strong>Recursive DAG Engine</strong> — Entropy-weighted DAG reasoning for multi-agent execution paths.</li>
-    <li><strong>Ethical Firewall</strong> — Filters every token with real-time neural moral scoring.</li>
-    <li><strong>Quantum Entropy Analyzer</strong> — Classifies code, memory, and LLM outputs based on volatility.</li>
-    <li><strong>Secure MemorySeed</strong> — Traceable memory graphs that log, reflect, and evolve independently.</li>
-    <li><strong>GUI: Hypercube Core</strong> — PyQt5 dashboard with DAG editor, GPU monitor, agent loader, and sandbox console.</li>
-  </ul>
-</section>
-
-<section>
   <h2>📬 Contact the Architect</h2>
-  <p>Request live demo access, AGI integration support, or licensing details:</p>
+  <p>Request demo access, licensing terms, or AGI integration support:</p>
   <form id="contact-form" action="https://formspree.io/f/xleqrdzn" method="POST">
     <input type="text" name="name" placeholder="Your name" required />
     <input type="email" name="_replyto" placeholder="Your email" required />
-    <textarea name="message" rows="5" placeholder="Your message..." required></textarea>
+    <textarea name="message" rows="6" placeholder="Your message..." required></textarea>
     <input type="submit" value="Send Message" />
-    <div class="success" id="form-success">✅ Message sent successfully!</div>
-    <div class="error" id="form-error">❌ Failed to send. Try again.</div>
+    <div id="form-feedback">
+      <p id="form-success" class="success">✅ Message sent successfully!</p>
+      <p id="form-error" class="error">❌ Failed to send. Try again.</p>
+    </div>
   </form>
 </section>
 
@@ -196,22 +189,19 @@ class OmegaHyperCubeAI:
 </footer>
 
 <script>
-  // Glitch-typed AGI simulation code
   const codeElement = document.getElementById("typing-code");
   const originalText = codeElement.textContent.trim();
   codeElement.textContent = "";
   let i = 0;
-
   function typeCode() {
     if (i < originalText.length) {
       codeElement.textContent += originalText.charAt(i);
       i++;
-      setTimeout(typeCode, Math.random() * 15 + 10);
+      setTimeout(typeCode, Math.random() * 14 + 6);
     }
   }
   window.addEventListener("load", typeCode);
 
-  // Contact Form: AJAX post with success/error feedback
   const form = document.getElementById("contact-form");
   form.addEventListener("submit", function(e) {
     e.preventDefault();
