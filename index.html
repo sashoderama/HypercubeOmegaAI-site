@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>HyperCubeΩAI · Quantum Defense Core</title>
 
   <!-- SEO / Social -->
@@ -32,6 +32,18 @@
       line-height: 1.8;
       min-height: 100vh;
       overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: clamp(15px, 1.1vw, 17px);
+    }
+
+    .page-container {
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      box-sizing: border-box;
     }
 
     /* Cyber Header */
@@ -40,6 +52,10 @@
       text-align: center;
       position: relative;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 80vh;
     }
     header::after {
       content: '';
@@ -57,18 +73,26 @@
       margin-bottom: 1.5rem;
       text-shadow: var(--neon);
     }
+    h2 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      text-align: center;
+      margin-inline: auto;
+      max-width: 90%;
+    }
 
     /* Holographic Cards */
     .card {
       background: var(--card-bg);
       backdrop-filter: blur(12px);
       border-radius: 16px;
-      padding: 2.5rem;
-      margin: 2rem auto;
-      max-width: 1200px;
+      padding: 2rem;
+      margin: 3rem auto;
+      max-width: 900px;
       border: 1px solid #2d2f45;
       position: relative;
       transition: transform 0.3s ease;
+      width: 100%;
     }
     .card:hover {
       transform: translateY(-5px);
@@ -84,6 +108,18 @@
       mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
+    }
+    .card p, .card ul {
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 960px;
+    }
+    .card ul {
+      padding-left: 1.4rem;
+      margin-top: 1rem;
+    }
+    .card ul li {
+      margin-bottom: 0.6rem;
     }
 
     /* Neon Code Block */
@@ -120,12 +156,6 @@
     .number { color: #ff6b6b; }
 
     /* Sneak & Peek Styles */
-    .sneak-peek-terminal {
-      background: #0a0a0a;
-      color: #ccc;
-      padding: 4rem 1.5rem;
-      font-family: 'JetBrains Mono', monospace;
-    }
     .sneak-heading {
       color: #999;
       font-size: 1.2rem;
@@ -133,47 +163,47 @@
       letter-spacing: 1.5px;
       margin-bottom: 1rem;
       text-transform: uppercase;
+      margin-inline: auto;
+      max-width: 90%;
     }
 
     .crt-terminal {
       background: #000;
-      border: none;
+      border: 1px solid #333;
       border-radius: 10px;
       padding: 2rem;
       position: relative;
-      overflow-x: hidden;
-      white-space: pre-wrap;
-      word-break: break-word;
+      overflow: hidden;
       line-height: 1.6;
       font-size: 0.95rem;
       cursor: pointer;
-      box-shadow: 0 0 20px rgba(0,0,0,0.7) inset;
-      transition: transform 0.3s ease;
-      width: 100%;
+      EYbox-shadow: 0 0 20px rgba(0,0,0,0.7) inset;
+      transition: 0.3s ease;
+      margin: 0 auto;
       max-width: 100%;
       box-sizing: border-box;
-      min-height: 320px;
-      user-select: none;
-      padding-right: 1rem;
-      touch-action: none;
-      -webkit-user-select: none;
-      -webkit-font-smoothing: antialiased;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      user-select: text;
+      -webkit-user-select: text;
     }
     .crt-terminal:hover {
-      transform: perspective(800px) rotateX(1deg);
       box-shadow: 0 0 30px #7d6fff33 inset;
     }
-    .crt-terminal:active {
-      transform: scale(1.03) rotateX(2deg);
+    .crt-terminal code {
+      display: block;
+      white-space: pre-wrap;
+      padding-bottom: 1rem;
+      caret-color: #00f7ff;
     }
-
     .crt-terminal::before {
       content: '';
       position: absolute;
       inset: 0;
       background: repeating-linear-gradient(to bottom, rgba(255,255,255,0.015) 0px, transparent 2px, rgba(255,255,255,0.01) 3px);
       pointer-events: none;
-      animation: scanline 3s linear infinite;
+      animation: scanline 2s linear infinite;
     }
     @keyframes scanline {
       0% { transform: translateY(-100%); }
@@ -185,7 +215,7 @@
       display: inline-block;
       margin-left: 2px;
       color: #888;
-      animation: blink 0.9s steps(1) infinite;
+      animation: blink 0.7s steps(1) infinite;
     }
     @keyframes blink {
       0%, 50% { opacity: 1; }
@@ -194,7 +224,7 @@
 
     .glitch-on {
       display: inline-block;
-      animation: glitchFlicker 0.8s infinite;
+      animation: glitchFlicker 0.4s infinite steps(1);
       color: #aaa;
       text-shadow:
         0 0 2px #7d6fff88,
@@ -202,80 +232,165 @@
     }
     @keyframes glitchFlicker {
       0%   { transform: translateX(0); opacity: 1; }
-      20%  { transform: translateX(-0.5px); opacity: 0.85; }
-      40%  { transform: translateX(0.5px); opacity: 0.65; }
-      60%  { transform: translateX(-0.3px); opacity: 0.8; }
-      80%  { transform: translateX(0.3px); opacity: 0.95; }
+      25%  { transform: translateX(-1px) skewX(-5deg); opacity: 0.7; }
+      50%  { transform: translateX(1px) skewX(5deg); opacity: 0.9; }
+      75%  { transform: translateY(-1px); opacity: 0.6; }
       100% { transform: translateX(0); opacity: 1; }
     }
 
     .glitch-hover-zone:hover .glitch-on {
+      animation: glitchFlickerHover 0.2s infinite;
       filter: blur(0.8px) brightness(1.4);
       text-shadow:
         0 0 4px #ffffff22,
         0 0 8px #7d6fff66,
-        0 0 10px #00f7ff44;
+        0 0 12px #00f7ff44;
+    }
+    @keyframes glitchFlickerHover {
+      0%   { transform: translateX(-2px) translateY(1px); opacity: 0.8; }
+      33%  { transform: translateX(2px) skewX(10deg); opacity: 0.6; }
+      66%  { transform: translateY(-2px); opacity: 0.9; }
+      100% { transform: translateX(0); opacity: 1; }
     }
 
-    /* DNA Glitch Trails */
-    .tail-trail {
-      position: absolute;
-      pointer-events: none;
-      opacity: 0.5;
-      animation: tailTrail 0.5s ease-out forwards;
+    /* Fade-In Effect */
+    .fade-in-section > * {
+      opacity: 0;
     }
-    @keyframes tailTrail {
-      0%   { transform: scale(1) translateX(0); opacity: 1; }
-      100% { transform: scale(1.2) translateX(1px); opacity: 0; }
+    .fade-in-section.visible > * {
+      animation: fadeIn 1s ease-in forwards;
     }
-
-    /* AI Commentary */
-    .ai-comment {
-      color: #666;
-      font-style: italic;
+    @keyframes fadeIn {
+      to { opacity: 1; }
     }
 
-    /* Mobile Tip */
-    .mobile-tip {
-      text-align: center;
-      color: #999;
-      font-size: 0.9rem;
-      margin-top: 0.5rem;
+    /* Cyber Button */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: linear-gradient(45deg, var(--accent), var(--accent2));
+      color: #000;
+      font-weight: 700;
+      border-radius: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: filter 0.3s ease, transform 0.2s ease;
+      cursor: pointer;
+    }
+    .btn:hover {
+      filter: brightness(1.2);
+      box-shadow: 0 0 20px var(--accent);
+      transform: scale(1.03);
     }
 
-    /* Media Queries */
-    @media (max-width: 600px) {
-      .crt-terminal {
-        padding: 1.2rem;
-        font-size: 0.85rem;
-      }
-      .sneak-heading {
-        font-size: 1rem;
-      }
-      .glitch-on {
-        animation: glitchFlicker 1.4s ease infinite;
-        filter: none;
-        text-shadow: none;
-      }
-    }
-    @media (min-width: 768px) {
-      .mobile-tip {
-        display: none;
-      }
-    }
-
-    /* Outline Removal */
-    .crt-terminal code:focus {
-      outline: none;
-      box-shadow: none;
-    }
-    .crt-terminal *:focus {
+    /* Matrix Inputs */
+    input, textarea {
+      background: #0a0c15;
+      border: 2px solid #2d2f45;
+      color: var(--fg);
+      padding: 1rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 1rem;
+      font-family: var(--font-mono);
+      resize: vertical;
+      font-size: 1rem;
+      user-select: text !important;
+      pointer-events: auto !important;
       outline: none !important;
-      box-shadow: none !important;
+    }
+    input:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 15px var(--accent);
+    }
+
+    /* Particle Background */
+    .particles {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Simulation Styles */
+    #simulation {
+      background: #000;
+      color: var(--fg);
+      font-family: var(--font-mono);
+      padding: 1em;
+      position: relative;
+      white-space: pre-wrap;
+      font-size: 1rem;
+      line-height: 1.75;
+      word-break: break-word;
+    }
+
+    /* Contact Form */
+    #contactForm input[type="submit"] {
+      background: linear-gradient(45deg, var(--accent), var(--accent2));
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      color: #000;
+      font-weight: 700;
+      cursor: pointer;
+      transition: box-shadow 0.3s ease, transform 0.2s ease;
+    }
+    #contactForm input[type="submit"]:hover {
+      box-shadow: 0 0 20px var(--accent);
+      transform: scale(1.03);
+    }
+
+    /* System Architecture Note */
+    .under-hood {
+      font-style: italic;
+      color: var(--accent);
+      text-shadow: 0 0 10px var(--accent);
+      animation: glow 2s infinite alternate;
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 10px var(--accent); }
+      to { text-shadow: 0 0 20px var(--accent); }
+    }
+
+    /* Additional Fixes */
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+    .form-message.success {
+      color: #6fffad;
+      font-size: 0.95rem;
+      margin-top: 1rem;
+    }
+    .form-message.error {
+      color: #ff6b6b;
+    }
+    @media (max-width: 768px) {
+      header {
+        padding: 5rem 1rem 3rem;
+      }
+      .crt-terminal {
+        padding: 1rem;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        text-align: left;
+      }
+      pre, code {
+        font-size: 0.95rem;
+      }
+      .card {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
     }
   </style>
 </head>
 <body>
+
+<main class="page-container">
 
 <!-- Particle Background -->
 <canvas class="particles"></canvas>
@@ -287,13 +402,20 @@
   <div class="cyber-line"></div>
 </header>
 
-<!-- SNEAK & PEEK Section with Enhanced Glitch Effect and Larger Code Block -->
-<section class="sneak-peek-terminal">
-  <h2 class="sneak-heading">SNEAK & PEEK · SYSTEM TRACE</h2>
-  <div class="crt-terminal glitch-hover-zone">
-    <pre id="sneakpeek-output"><code contenteditable="true"></code></pre>
+<!-- SNEAK & PEEK Section with Enhanced Glitch Effect -->
+<section class="sneak-peek">
+  <div class="card">
+    <h2 class="sneak-heading">SNEAK & PEEK · SYSTEM TRACE</h2>
+    <div class="crt-terminal glitch-hover-zone" tabindex="0">
+      <pre id="sneakpeek-output"><code contenteditable="true" spellcheck="false" autocorrect="off" autocomplete="off"></code></pre>
+    </div>
+    <p style="font-size: 0.95rem; margin-top: 0.5rem; color: #999;">Live AGI simulation: Autonomous exploit synthesis</p>
+    <button class="btn copy-btn" onclick="copySneak()" title="Copy to clipboard">📋 Copy Code</button>
+    <label class="btn" style="margin-left: 1rem;">
+      <input type="checkbox" onchange="toggleGlitch(this.checked)" aria-label="Toggle Glitch Effect"> Toggle Glitch
+    </label>
+    <div id="ai-log" class="ai-commentary"></div>
   </div>
-  <p class="mobile-tip">Tap to awaken OmegaHyperCubeAI.</p>
 </section>
 
 <!-- Simulation Section -->
@@ -346,15 +468,19 @@
   <div class="card">
     <h2>Initiate Connection</h2>
     <form id="contactForm" action="https://formspree.io/f/xvoenjwd" method="POST">
-      <input type="text" name="name" placeholder="Name" required />
-      <input type="email" name="email" placeholder="Email" required />
-      <textarea name="message" placeholder="Message..." required></textarea>
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" placeholder="Name" required />
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" placeholder="Email" required pattern="[^ @]*@[^ @]*" />
+      <label for="message">Message</label>
+      <textarea id="message" name="message" placeholder="Message..." required></textarea>
       <input type="submit" value="Send Message" />
+      <div class="form-message"></div>
     </form>
   </div>
 </section>
 
-<audio id="clickSound" src="https://assets.mixkit.co/sfx/preview/mixkit-technology-interface-bleep-1310.mp3" preload="auto"></audio>
+</main>
 
 <script>
 // Particle Network
@@ -417,9 +543,21 @@ f.addEventListener('submit', e => {
     body: new FormData(f),
     headers: { 'Accept': 'application/json' }
   }).then(r => {
+    const msg = document.createElement('div');
     if (r.ok) {
+      msg.className = 'form-message success';
+      msg.textContent = "Message sent successfully!";
       f.reset();
+    } else {
+      msg.className = 'form-message error';
+      msg.textContent = "Something went wrong. Please try again.";
     }
+    f.appendChild(msg);
+  }).catch(() => {
+    const msg = document.createElement('div');
+    msg.className = 'form-message error';
+    msg.textContent = "Something went wrong. Please try again.";
+    f.appendChild(msg);
   });
 });
 
@@ -474,12 +612,29 @@ async def run_improvement_cycle(self) -> Dict:
 `;
 
 let isTyping = false;
-const aiComments = [
-  "// Omega: Threat level nominal.",
-  "// Entropy stabilized.",
-  "// Autonomous logic override: permitted.",
-  "// DAG cycle confirmed."
-];
+let editCount = 0;
+const terminal = document.querySelector('#sneakpeek-output code');
+terminal.addEventListener('input', () => {
+  if (!terminal.dataset.edited) {
+    terminal.textContent = '';
+    terminal.dataset.edited = 'true';
+  }
+  editCount++;
+  if (editCount % 10 === 0) {
+    const aiJokes = [
+      "// 🧠 Omega noticed that.",
+      "// 🛰️ Locating you in real-time... no big deal.",
+      "// 🤖 'Are you trying to hack me, or flirt?'",
+      "// 📍 Last edit traced to an undisclosed region.",
+      "// 💡 That wasn’t bad... but I’ve seen better."
+    ];
+    const msg = aiJokes[Math.floor(Math.random() * aiJokes.length)];
+    terminal.innerHTML += `<br><span class="glitch-on">${msg}</span><br>`;
+  }
+  if (editCount > 3) {
+    terminal.innerHTML += `\n<span class="glitch-on">// 🤖 AGI noticed unauthorized access attempt...</span>`;
+  }
+});
 
 function triggerTyping() {
   if (isTyping) return;
@@ -499,7 +654,6 @@ function triggerTyping() {
 
     if (ch !== ' ' && Math.random() < 0.5 && ch !== '\n') {
       span.className = 'glitch-on';
-      spawnTrail(span);
     }
 
     span.textContent = ch;
@@ -509,33 +663,59 @@ function triggerTyping() {
   })();
 }
 
-function spawnTrail(span) {
-  const clone = span.cloneNode(true);
-  clone.classList.add('tail-trail');
-  document.body.appendChild(clone);
-  const rect = span.getBoundingClientRect();
-  clone.style.left = rect.left + 'px';
-  clone.style.top = rect.top + 'px';
-  setTimeout(() => clone.remove(), 500);
+window.addEventListener('DOMContentLoaded', triggerTyping);
+
+// Copy Code Function
+function copySneak() {
+  const codeBlock = document.querySelector('#sneakpeek-output code');
+  const text = [...codeBlock.childNodes].map(n => n.textContent).join('');
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy Code', 1800);
+    codeBlock.innerHTML += `<br><span class="glitch-on">// ✅ Code copied. Omega approves.</span>`;
+  }).catch(err => console.error("Copy failed: ", err));
 }
 
-// Matrix Pulse Sound on Click
-document.querySelector('.crt-terminal').addEventListener('click', () => {
-  document.getElementById('clickSound').play();
-  if (!isTyping) triggerTyping();
-});
+// Toggle Glitch Effect
+function toggleGlitch(enabled) {
+  const code = document.querySelector('#sneakpeek-output code');
+  const spans = code.querySelectorAll('span');
+  spans.forEach(span => {
+    if (enabled && !span.classList.contains('glitch-on') && Math.random() < 0.4) {
+      span.classList.add('glitch-on');
+    } else if (!enabled) {
+      span.classList.remove('glitch-on');
+    }
+  });
+}
 
-// AI Commentary Mode
+// AI Commentary
+const commentary = [
+  "🧠 Omega initialized reflective feedback loop.",
+  "📡 Monitoring entropy channel: stabilized.",
+  "⚠️ DAG shift detected... rerouting node tree.",
+  "🧬 Synthesizing fix vector..."
+];
 setInterval(() => {
-  if (!isTyping) {
-    const comment = document.createElement('span');
-    comment.textContent = "\n" + aiComments[Math.floor(Math.random() * aiComments.length)] + "\n";
-    comment.className = 'ai-comment';
-    document.querySelector('#sneakpeek-output code').appendChild(comment);
-  }
+  const msg = document.createElement('div');
+  msg.textContent = commentary[Math.floor(Math.random() * commentary.length)];
+  document.getElementById('ai-log').appendChild(msg);
+}, 20000);
+
+// Patch Suggestions
+setTimeout(() => {
+  terminal.innerHTML += `
+    <br><span class="glitch-on">// 🛠️ Suggestion: refactor entangle() with quantum cache prefetch</span>
+    <br><span class="glitch-on">// 🔎 MemoryGraph pattern suggests DAG loop decoupling</span>
+  `;
 }, 15000);
 
-window.addEventListener('DOMContentLoaded', triggerTyping);
+// Disable Typing After 60s
+setTimeout(() => {
+  terminal.contentEditable = false;
+  terminal.innerHTML += `<br><span class="glitch-on">// ⛔ AGI timeout: editing disabled</span>`;
+}, 60000);
 
 // Fade-In Effect for System Architecture
 document.addEventListener('DOMContentLoaded', () => {
