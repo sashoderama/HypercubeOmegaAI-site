@@ -3,105 +3,129 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OmegaHyperCubeAI – Quantum‑Evolved AGI Defense</title>
+  <title>OmegaHyperCubeAI · Quantum‑Evolved AGI Defense</title>
 
-  <!-- ── SEO / Social ─────────────────────────────────────────── -->
-  <meta name="description"
-        content="OmegaHyperCubeAI is a quantum‑powered, self‑healing AGI that patches, mutates, and defends in real‑time." />
-  <meta name="keywords"
-        content="AGI, quantum AI, self‑healing AI, autonomous cybersecurity, DAG executor, ethics firewall, memory engine, ChatGPT alternative" />
-  <meta property="og:title" content="OmegaHyperCubeAI – Autonomous Quantum Defense" />
-  <meta property="og:description"
-        content="A fully modular AGI engine with glitch‑typed code, memory‑linked evolution, and real‑time patching." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://sashoderama.github.io/HypercubeOmegaAI-site" />
-  <meta property="og:image" content="https://sashoderama.github.io/HypercubeOmegaAI-site/assets/og-image.png" />
-  <meta name="twitter:card" content="summary_large_image" />
+  <!-- SEO / Social -->
+  <meta name="description" content="OmegaHyperCubeAI is a quantum‑powered, self‑healing AGI that patches, mutates, and defends in real‑time." />
+  <meta name="keywords"    content="AGI, quantum AI, self‑healing AI, autonomous cybersecurity, DAG executor, ethics firewall, memory engine" />
+  <meta property="og:title"       content="OmegaHyperCubeAI – Autonomous Quantum Defense" />
+  <meta property="og:description" content="A fully‑modular AGI engine with glitch‑typed code, memory‑linked evolution and real‑time patching." />
+  <meta property="og:image"       content="assets/og-image.png" />
+  <meta name="twitter:card"       content="summary_large_image" />
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Fira+Code&display=swap" rel="stylesheet">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Fira+Code&display=swap" rel="stylesheet">
 
-  <!-- ── Styles ──────────────────────────────────────────────── -->
+  <!-- Styles -->
   <style>
     :root{
-      --bg:#000;          --fg:#d0ffd8;
-      --main:#00ff95;     --accent:#00ffcc;
+      --page-bg:#ffffff;
+      --page-fg:#111;
+      --card-bg:#f8f8f9;
+      --card-border:#e3e4e6;
+      --accent:#10a37f;     /* OpenAI‑teal */
+      --code-bg:#0d0d0d;
+      --code-fg:#00ffe0;
     }
-    *{box-sizing:border-box}
+
+    *,*::before,*::after{box-sizing:border-box}
     body{
-      margin:0;background:var(--bg);color:var(--fg);
-      font-family:'Fira Code',monospace;padding:0 2rem;
+      margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--page-bg);color:var(--page-fg);line-height:1.6;
     }
-    /* ---------- HEADER ---------- */
+    h1,h2{margin:0;font-weight:600}
+    a{text-decoration:none;color:var(--accent)}
+    /* ---------- NAV / HERO ---------- */
     header{
-      text-align:center;padding:4rem 1rem;
-      background:linear-gradient(90deg,#001010 0%,#002020 100%);
-      border-bottom:4px solid var(--main);
+      padding:72px 24px;text-align:center;
+      border-bottom:1px solid var(--card-border)
     }
-    header h1{
-      font-family:'Orbitron',sans-serif;font-size:3.6rem;margin:0;
-      color:var(--main);text-shadow:0 0 14px var(--main);
+    header h1{font-size:clamp(2.4rem,6vw,3.5rem)}
+    header .tagline{font-size:1.1rem;color:#555;margin-top:.6rem}
+    header .pill{
+      display:inline-block;margin-top:1rem;padding:6px 12px;
+      background:var(--accent);color:#fff;border-radius:9999px;font-size:.9rem
     }
-    header p{margin:.4rem 0;color:var(--accent);font-size:1.2rem}
     /* ---------- SECTIONS ---------- */
-    section{max-width:900px;margin:auto;padding:2.5rem 0;border-bottom:1px solid #111}
-    section h2{
-      font-size:1.5rem;color:var(--accent);
-      border-left:4px solid var(--main);padding-left:1rem;margin-bottom:1rem
+    section{
+      max-width:980px;margin:56px auto;padding:0 24px
     }
-    ul{padding-left:2rem;line-height:1.7;margin:0}
-    /* ---------- CODE BLOCK ---------- */
+    .card{
+      background:var(--card-bg);border:1px solid var(--card-border);
+      border-radius:12px;padding:32px;margin-bottom:32px
+    }
+    .card h2{font-size:1.4rem;color:var(--accent);margin-bottom:16px}
+    ul{margin:0 0 8px 1.2rem;padding:0}
+    ul li{margin-bottom:6px}
+    /* ---------- CODE DEMO ---------- */
     pre{
-      background:#0f0f0f;border-left:5px solid var(--main);
-      padding:1.6rem;font-size:1.02rem;color:#00ffcc;
-      border-radius:8px;white-space:pre-wrap;overflow-x:auto;
-      position:relative
+      background:var(--code-bg);color:var(--code-fg);
+      padding:24px;border-radius:8px;font-size:.9rem;
+      font-family:'Fira Code',monospace;overflow-x:auto;
+      border:1px solid #1d1d1d
     }
-    /* glitch shake */
-    .glitch{animation:glitch .35s steps(2,end) infinite}
-    @keyframes glitch{
-      0%{transform:translate(0)}20%{transform:translate(-2px,2px)}
-      40%{transform:translate(2px,-2px)}60%{transform:translate(-2px,-2px)}
-      80%{transform:translate(2px,2px)}100%{transform:translate(0)}
+    .glitch{animation:shake .3s steps(2,end) infinite}
+    @keyframes shake{
+      0%{transform:translate(0)}20%{transform:translate(-1px,1px)}
+      40%{transform:translate(1px,-1px)}60%{transform:translate(-1px,-1px)}
+      80%{transform:translate(1px,1px)}100%{transform:translate(0)}
     }
     /* ---------- BUTTON ---------- */
-    .button{
-      display:inline-block;background:var(--main);color:#000;
-      font-weight:700;padding:1rem 2rem;text-decoration:none;
-      border-radius:6px;box-shadow:0 0 12px var(--main);transition:.25s
+    .btn{
+      display:inline-block;margin-top:18px;padding:14px 28px;
+      background:var(--accent);color:#fff;font-weight:600;font-size:.95rem;
+      border-radius:8px;transition:.2s
     }
-    .button:hover{background:var(--accent);box-shadow:0 0 18px var(--accent)}
+    .btn:hover{filter:brightness(.9)}
     /* ---------- FORM ---------- */
-    form{display:flex;flex-direction:column;gap:1rem;max-width:600px;margin-top:1rem}
+    form{display:flex;flex-direction:column;gap:14px}
     input,textarea{
-      width:100%;background:#000;border:1px solid var(--main);
-      color:var(--fg);padding:.9rem;border-radius:6px;font-size:1rem
+      width:100%;padding:14px;border:1px solid var(--card-border);
+      border-radius:8px;font-size:1rem;font-family:Inter,sans-serif
     }
     input[type=submit]{
-      background:var(--main);color:#000;font-weight:700;cursor:pointer;border:none
+      background:var(--accent);color:#fff;font-weight:600;cursor:pointer
     }
-    input[type=submit]:hover{background:var(--accent)}
-    .success,.error{display:none;font-weight:700;margin-top:.7rem}
-    .success{color:#00ff95}.error{color:#ff4d4d}
+    input[type=submit]:hover{filter:brightness(.9)}
+    .success,.error{display:none;font-weight:600;margin-top:.5rem}
+    .success{color:var(--accent)}
+    .error{color:#d92c2c}
     /* ---------- FOOTER ---------- */
-    footer{text-align:center;padding:2rem;color:#888;font-size:.9rem}
-    /* ---------- SMALL SCREEN ---------- */
-    @media(max-width:500px){header h1{font-size:2.4rem}}
+    footer{border-top:1px solid var(--card-border);text-align:center;padding:40px 24px;font-size:.85rem;color:#555}
   </style>
 </head>
 <body>
-<!-- ═══════════ HEADER ═══════════ -->
+
+<!-- ███████ HERO / NAV -->
 <header>
   <h1>OmegaHyperCubeAI</h1>
-  <p><em>Quantum AGI Cyber Defense Engine</em></p>
-  <p>Autonomous • Self‑Healing • Ethics‑Driven • Memory‑Aware</p>
+  <p class="tagline">Quantum‑evolved AGI cyber defense engine</p>
+  <span class="pill">Autonomous · Self‑Healing · Ethical · Memory‑Aware</span>
 </header>
 
-<!-- ═══════════ CODE DEMO ═══════════ -->
+<!-- ███████ WHAT IS IT -->
 <section>
-  <h2>💻 Live Code Simulation (Glitch‑Type)</h2>
-  <pre><code id="typebox">
-// OmegaHyperCubeAI :: full entropy‑governed AGI defense loop
+  <div class="card">
+    <h2>What makes OmegaHyperCubeAI different?</h2>
+    <ul>
+      <li><strong>Quantum DAG executor</strong> prioritising entropy‑weighted reasoning paths.</li>
+      <li><strong>Self‑healing sandbox</strong> that mutates & patches code up to <em>30×</em> autonomously.</li>
+      <li><strong>Ethics firewall</strong> with 99 % confidence token‑level filtering.</li>
+      <li><strong>MemorySeed</strong> graph that logs, reflects & evolves persistent context.</li>
+      <li><strong>GUI Core</strong> (PyQt 5) for visual DAG editing, GPU metrics & live LLM console.</li>
+    </ul>
+    <a class="btn" href="pitch_deck.pdf" download>📄 Download pitch deck</a>
+  </div>
+</section>
+
+<!-- ███████ LIVE CODE DEMO -->
+<section>
+  <div class="card">
+    <h2>Live defense loop (glitch‑type)</h2>
+    <pre><code id="demo">
+// OmegaHyperCubeAI · entropy‑governed defense loop
 class OmegaHyperCubeAI:
   def __init__(self):
     self.entropy   = EntropyGraph(threshold=0.91)
@@ -110,90 +134,65 @@ class OmegaHyperCubeAI:
     self.validator = EthicsFirewall(confidence=0.99)
     self.stream    = AsyncPatchStream(model="omega-llm-v6")
     self.sandbox   = SelfHealingSandbox(max_cycles=30)
-    self.metrics   = TelemetryCore()
 
   async def auto_defend(self, code:str):
-    ctx = self.memory.hash_context(code)
     score = self.entropy.analyze(code)
     if score>0.95:
-      self.memory.flag(code,"volatility")
       return {"status":"rejected","reason":"entropy_limit"}
-
     for cycle in range(self.sandbox.max_cycles):
       try:
-        result = exec(code,{},{}); self.metrics.log("exec",cycle)
-        return {"status":"ok","cycle":cycle,"result":result}
+        exec(code,{},{}); return {"status":"ok","cycle":cycle}
       except Exception as e:
         patch = await self.stream.repair(code,error=str(e))
         if not self.validator.verify(patch):
           return {"status":"blocked","reason":"ethics_fail"}
         code = self.memory.reinforce_patch(patch)
-    return {"status":"terminated","reason":"max_cycles"}
-  </code></pre>
+    return {"status":"terminated"}
+    </code></pre>
+  </div>
 </section>
 
-<!-- ═══════════ PITCH DECK ═══════════ -->
+<!-- ███████ CONTACT -->
 <section>
-  <h2>📄 Pitch Deck</h2>
-  <a class="button" href="pitch_deck.pdf" download>📥 Download Full Deck</a>
+  <div class="card">
+    <h2>Contact the architect</h2>
+    <p>Request a demo, integration assistance, or licensing details:</p>
+    <form id="contactForm" action="https://formspree.io/f/xleqrdzn" method="POST">
+      <input type="text"   name="name"    placeholder="Your name"  required />
+      <input type="email"  name="_replyto" placeholder="Your email" required />
+      <textarea name="message" rows="5" placeholder="Your message..." required></textarea>
+      <input type="submit" value="Send message" />
+      <p class="success" id="msgOk">✅ Thank you — message received.</p>
+      <p class="error"   id="msgErr">❌ Send failed — please retry.</p>
+    </form>
+  </div>
 </section>
 
-<!-- ═══════════ CONTACT FORM ═══════════ -->
-<section>
-  <h2>📬 Contact the Architect</h2>
-  <p>Request a demo, integration support, or licensing terms:</p>
-  <form id="contactForm" action="https://formspree.io/f/xleqrdzn" method="POST">
-    <input type="text"   name="name"    placeholder="Your name"  required />
-    <input type="email"  name="_replyto"placeholder="Your email" required />
-    <textarea name="message" rows="6" placeholder="Your message..." required></textarea>
-    <input type="submit" value="Send Message" />
-    <p class="success" id="msgOk">✅ Message sent successfully!</p>
-    <p class="error"   id="msgErr">❌ Failed to send. Try again.</p>
-  </form>
-</section>
-
-<!-- ═══════════ FOOTER ═══════════ -->
+<!-- ███████ FOOTER -->
 <footer>
-  <p>© 2025 OmegaHyperCubeAI — Quantum‑Evolved Defense Intelligence</p>
+  © 2025 OmegaHyperCubeAI · Built for a post‑zero‑day era
 </footer>
 
-<!-- ── Scripts ──────────────────────────────────────────────── -->
+<!-- Scripts -->
 <script>
-/* ---------- glitch typing ------------ */
-const box   = document.getElementById('typebox');
-const text  = box.textContent.trim();
-box.textContent=''; let idx=0;
+/* === glitch‑typing === */
+const box = document.getElementById('demo');
+const txt = box.textContent.trim();
+box.textContent=''; let i=0;
+function rndc(){return "abcdefghijklmnopqrstuvwxyz0123456789#$%&*"[Math.floor(Math.random()*44)];}
+function type(){if(i<txt.length){
+    if(Math.random()<.04){box.classList.add('glitch');box.textContent+=rndc();
+       setTimeout(()=>{box.textContent=box.textContent.slice(0,-1);box.classList.remove('glitch');},70);}
+    box.textContent+=txt[i++]; setTimeout(type,6+Math.random()*18);} }
+window.addEventListener('load',type);
 
-function randChar(){
-  const c='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>!?$%';
-  return c[Math.floor(Math.random()*c.length)];
-}
-function type(){
-  if(idx<text.length){
-    // 5 % glitch every char
-    if(Math.random()<.05){
-      box.classList.add('glitch');
-      const glitched = box.textContent + randChar();
-      box.textContent = glitched;
-      setTimeout(()=>{ box.textContent = box.textContent.slice(0,-1); box.classList.remove('glitch'); }, 80);
-    }
-    box.textContent += text[idx++];
-    setTimeout(type, 8 + Math.random()*20);
-  }
-}
-window.addEventListener('load', type);
-
-/* ---------- contact form ajax ---------- */
-const form = document.getElementById('contactForm'),
-      ok   = document.getElementById('msgOk'),
-      err  = document.getElementById('msgErr');
-
-form.addEventListener('submit', e=>{
-  e.preventDefault();
-  ok.style.display=err.style.display='none';
-  fetch(form.action,{method:'POST',body:new FormData(form),headers:{Accept:'application/json'}})
-  .then(r=> r.ok ? (ok.style.display='block',form.reset()) : Promise.reject())
-  .catch(()=> err.style.display='block');
+/* === Formspree AJAX === */
+const f=document.getElementById('contactForm'), ok=document.getElementById('msgOk'), er=document.getElementById('msgErr');
+f.addEventListener('submit', e=>{
+  e.preventDefault(); ok.style.display=er.style.display='none';
+  fetch(f.action,{method:'POST',body:new FormData(f),headers:{Accept:'application/json'}})
+  .then(r=>r.ok?(ok.style.display='block',f.reset()):Promise.reject())
+  .catch(()=>er.style.display='block');
 });
 </script>
 </body>
