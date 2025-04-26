@@ -2,372 +2,682 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>AURORA CORE :: PHASE 2</title>
+  <title>AURORA CORE :: PHASE 3</title>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" as="style" onload="this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap"></noscript>
-  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+  <meta name="description" content="AURORA CORE: Advanced AGI Forensic System with Quantum-Classical Integration"/>
+  <meta name="keywords" content="AGI, forensic, quantum, self-healing, Aurora Core"/>
+  <meta name="author" content="Aurora Architect"/>
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" as="style" onload="this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap"></noscript>
+  <script src="https://cdn.plot.ly/plotly-2.34.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.0.0/dist/tf.min.js"></script>
   <style>
     :root {
-      --aurora-teal:   #00ffc6;
-      --teal-highlight:#00ffe0;
-      --danger-red:    #ff3c3c;
-      --neutral-text:  #cccccc;
-      --bg-shimmer:    #001818;
-      --bloom-shadow:  #003333;
-      --divider-line:  #005f5f;
-      --footer-glow:   #002222;
-      --dim-teal:      #008877;
-      --text-primary:  var(--aurora-teal);
-      --text-body:     #aafff0;
-      --bg-primary:    #000;
-      --bg-panel:      #001818;
+      --aurora-teal:     #00ffc6;
+      --teal-highlight:  #00ffee;
+      --danger-red:      #ff3c3c;
+      --neutral-text:    #cccccc;
+      --bg-shimmer:      #001f1f;
+      --bloom-shadow:    #003a3a;
+      --divider-line:    #006666;
+      --footer-glow:     #002828;
+      --dim-teal:        #009988;
+      --text-primary:    var(--aurora-teal);
+      --text-body:       #b0fff5;
+      --bg-primary:      #000;
+      --bg-panel:        #002020;
+      --glow-accent:     #00ffc644;
+      --error-pulse:     #ff3c3c44;
+      --success-green:   #00cc88;
+      --quantum-blue:    #0077ff;
     }
     html, body {
-      margin:0; padding:0; width:100%; height:100%;
-      font-family:'JetBrains Mono', monospace;
-      overflow:hidden;
-      background:linear-gradient(45deg,#000,var(--bg-shimmer),#000);
-      background-size:200% 200%;
-      animation:gradientShift 10s infinite;
-      color:var(--text-body);
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: 'JetBrains Mono', monospace;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 50%, #000, var(--bg-shimmer));
+      background-size: 300% 300%;
+      animation: radialPulse 15s ease-in-out infinite;
+      color: var(--text-body);
+      overscroll-behavior: none;
     }
-    @keyframes gradientShift {
-      0%  {background-position:0% 50%;}
-      50% {background-position:100% 50%;}
-      100%{background-position:0% 50%;}
+    @keyframes radialPulse {
+      0% { background-position: 0% 0%; }
+      50% { background-position: 100% 100%; }
+      100% { background-position: 0% 0%; }
     }
     body {
-      animation: bodyGlitchIntro 1.5s ease-in-out;
+      animation: quantumIntro 2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      will-change: opacity, transform;
     }
-    @keyframes bodyGlitchIntro {
-      0%{opacity:0;}
-      5%{opacity:0.8;}
-      10%{opacity:0.5;}
-      15%{opacity:1;}
-      20%{opacity:0.4;}
-      25%{opacity:1;}
-      100%{opacity:1;}
+    @keyframes quantumIntro {
+      0% { opacity: 0; transform: scale(0.95) translateY(50px); }
+      50% { opacity: 0.6; transform: scale(1.02) translateY(-10px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
     }
-    *,*::before,*::after {
-      transform:translateZ(0);
-      backface-visibility:hidden;
-      box-sizing:border-box;
+    *, *::before, *::after {
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
     #cursor {
-      position:fixed; width:10px; height:10px; border-radius:50%;
-      background:var(--aurora-teal);
-      box-shadow:0 0 10px var(--aurora-teal),0 0 20px var(--aurora-teal);
-      pointer-events:none; z-index:9999;
-      transition:transform 0.1s ease;
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--aurora-teal);
+      box-shadow: 0 0 15px var(--aurora-teal), 0 0 30px var(--teal-highlight);
+      pointer-events: none;
+      z-index: 10000;
+      transition: transform 0.05s ease, opacity 0.2s ease;
+      mix-blend-mode: screen;
+    }
+    #cursor.active {
+      transform: scale(1.5);
+      box-shadow: 0 0 25px var(--aurora-teal), 0 0 50px var(--teal-highlight);
     }
     #particle-bg {
-      position:fixed; inset:0; z-index:-1; overflow:hidden;
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      overflow: hidden;
+      background: transparent;
     }
     #particle-canvas {
-      position:absolute; width:100%; height:100%; z-index:-1; display:block;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      display: block;
+      will-change: transform;
+    }
+    #three-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      opacity: 0.3;
+      mix-blend-mode: overlay;
     }
     .boot-fade {
-      position:absolute; inset:0; background:var(--bg-primary);
-      display:flex; align-items:center; justify-content:center;
-      font-size:clamp(1.8rem,4vw,2.5rem);
-      color:var(--aurora-teal);
-      z-index:9999; opacity:1;
-      transition:opacity 2s ease-in-out, filter 2s ease-in-out;
+      position: fixed;
+      inset: 0;
+      background: var(--bg-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: var(--aurora-teal);
+      text-shadow: 0 0 10px var(--aurora-teal);
+      z-index: 10001;
+      opacity: 1;
+      transition: opacity 2.5s ease-in-out, filter 2.5s ease-in-out, transform 2.5s ease-in-out;
+      animation: bootPulse 1.5s infinite;
+    }
+    @keyframes bootPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+    .boot-fade.hide {
+      opacity: 0;
+      filter: blur(15px);
+      transform: translateY(-100px);
+      pointer-events: none;
     }
     .terminal-container {
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      height:100%; width:100%; perspective:2000px; position:relative;
-      opacity:0; transition:opacity 0.5s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+      perspective: 2500px;
+      position: relative;
+      opacity: 0;
+      transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
     }
-    .terminal-container.show {opacity:1;}
+    .terminal-container.show {
+      opacity: 1;
+      transform: translateZ(0);
+    }
     .crt-terminal {
-      max-width:1100px; width:90%; padding:3rem;
-      font-size:clamp(1rem,1.2vw,2rem); line-height:1.8;
-      background:#000; border-radius:14px; border:1px solid #111;
-      box-shadow:0 0 40px rgba(0,255,198,0.1) inset,0 0 10px #00ffc633;
-      transform-style:preserve-3d; transform:translateZ(0);
-      transition:transform 0.6s cubic-bezier(0.25,0.1,0.25,1);
-      position:relative;
+      max-width: 1200px;
+      width: 95%;
+      padding: 4rem;
+      font-size: clamp(1.1rem, 1.3vw, 2.2rem);
+      line-height: 2;
+      background: linear-gradient(135deg, #000, var(--bg-panel));
+      border-radius: 18px;
+      border: 1px solid #111;
+      box-shadow: 0 0 50px rgba(0, 255, 198, 0.15) inset, 0 0 15px var(--glow-accent);
+      transform-style: preserve-3d;
+      transform: translateZ(0);
+      transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.7s ease;
+      position: relative;
+      backdrop-filter: blur(8px);
     }
     .terminal-container:hover .crt-terminal {
-      transform:scale(1.01) rotateX(1.5deg) rotateY(-1.5deg);
+      transform: scale(1.02) rotateX(2deg) rotateY(-2deg);
+      box-shadow: 0 0 70px rgba(0, 255, 198, 0.25) inset, 0 0 25px var(--glow-accent);
     }
     .crt-terminal::before {
-      content:''; position:absolute; inset:0;
-      background: repeating-linear-gradient(to bottom, rgba(0,255,198,0.03) 2px, transparent 4px);
-      pointer-events:none; animation:scanline 6s linear infinite;
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(to bottom, rgba(0, 255, 198, 0.05) 2px, transparent 5px);
+      pointer-events: none;
+      animation: scanline 5s linear infinite;
+      mix-blend-mode: overlay;
     }
     @keyframes scanline {
-      0%  {transform:translateY(-100%);opacity:0.1;}
-      100%{transform:translateY(100%); opacity:0.1;}
+      0% { transform: translateY(-100%); opacity: 0.15; }
+      100% { transform: translateY(100%); opacity: 0.15; }
     }
     .crt-terminal code::after {
-      content:'█'; margin-left:6px; color:var(--aurora-teal);
-      animation:blink 1s steps(1) infinite;
+      content: '█';
+      margin-left: 8px;
+      color: var(--aurora-teal);
+      animation: blink 0.8s steps(1) infinite;
     }
     @keyframes blink {
-      0%,50% {opacity:1;} 51%,100% {opacity:0;}
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
     }
     .crt-terminal pre {
       white-space: pre-wrap;
       word-break: break-word;
+      margin: 0;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.3);
+      border-left: 4px solid var(--divider-line);
     }
-    .progress-bar {width:100%; height:5px; background:#111; margin-bottom:1rem;}
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #111;
+      margin-bottom: 1.5rem;
+      border-radius: 3px;
+      overflow: hidden;
+    }
     .progress {
-      width:0; height:100%; background:var(--aurora-teal);
-      transition:width 0.5s ease-in-out;
+      width: 0;
+      height: 100%;
+      background: linear-gradient(90deg, var(--aurora-teal), var(--teal-highlight));
+      transition: width 0.6s ease-in-out;
+      box-shadow: 0 0 10px var(--aurora-teal);
     }
-    .error {color:var(--danger-red); font-weight:bold;}
+    .error {
+      color: var(--danger-red);
+      font-weight: bold;
+      animation: errorPulse 2s infinite;
+    }
+    @keyframes errorPulse {
+      0% { text-shadow: 0 0 5px var(--error-pulse); }
+      50% { text-shadow: 0 0 15px var(--error-pulse); }
+      100% { text-shadow: 0 0 5px var(--error-pulse); }
+    }
+    .success {
+      color: var(--success-green);
+      font-weight: bold;
+      text-shadow: 0 0 10px var(--success-green);
+    }
     .glitch {
-      animation: glitchFlicker 1.8s infinite;
-      will-change:text-shadow, transform;
+      animation: glitchFlicker 2s infinite;
+      will-change: text-shadow, transform;
     }
     @keyframes glitchFlicker {
-      0%{opacity:1; text-shadow:0 0 5px var(--aurora-teal),0 0 10px var(--aurora-teal); transform:translate(0,0);}
-      20%{opacity:0.7; text-shadow:0 0 3px var(--aurora-teal); transform:translate(-8px,8px);}
-      40%{opacity:1; text-shadow:0 0 5px var(--aurora-teal),0 0 10px var(--aurora-teal); transform:translate(6px,-6px);}
-      60%{opacity:0.8; text-shadow:0 0 4px var(--aurora-teal); transform:translate(-5px,5px);}
-      80%{opacity:1; text-shadow:0 0 5px var(--aurora-teal),0 0 10px var(--aurora-teal); transform:translate(4px,-4px);}
-      100%{opacity:1; text-shadow:0 0 5px var(--aurora-teal),0 0 10px var(--aurora-teal); transform:translate(0,0);}
+      0% { opacity: 1; text-shadow: 0 0 6px var(--aurora-teal), 0 0 12px var(--teal-highlight); transform: translate(0, 0); }
+      20% { opacity: 0.6; text-shadow: 0 0 3px var(--aurora-teal); transform: translate(-10px, 10px); }
+      40% { opacity: 1; text-shadow: 0 0 6px var(--aurora-teal), 0 0 12px var(--teal-highlight); transform: translate(8px, -8px); }
+      60% { opacity: 0.7; text-shadow: 0 0 4px var(--aurora-teal); transform: translate(-6px, 6px); }
+      80% { opacity: 1; text-shadow: 0 0 6px var(--aurora-teal), 0 0 12px var(--teal-highlight); transform: translate(5px, -5px); }
+      100% { opacity: 1; text-shadow: 0 0 6px var(--aurora-teal), 0 0 12px var(--teal-highlight); transform: translate(0, 0); }
     }
     .hover-blur:hover {
-      filter:blur(1.5px) brightness(1.5); transform:scale(1.1);
+      filter: blur(2px) brightness(1.6);
+      transform: scale(1.12);
+      transition: all 0.3s ease;
     }
     #mutate-btn {
-      margin-top:4rem; padding:2rem 4rem; font-size:2rem;
-      color:var(--aurora-teal); background:rgba(255,255,255,0.03);
-      border:2px solid var(--aurora-teal); border-radius:20px;
-      letter-spacing:6px; backdrop-filter:blur(20px);
-      box-shadow:0 0 20px rgba(0,255,198,0.2), inset 0 0 30px rgba(0,255,198,0.05);
-      transition:all 0.8s cubic-bezier(0.4,0.0,0.2,1);
-      cursor:pointer; opacity:0; display:none;
-      animation:pulse 2.5s infinite;
-      position:absolute; left:50%; transform:translateX(-50%);
+      margin-top: 5rem;
+      padding: 2.5rem 5rem;
+      font-size: 2.2rem;
+      color: var(--aurora-teal);
+      background: rgba(255, 255, 255, 0.05);
+      border: 3px solid var(--aurora-teal);
+      border-radius: 25px;
+      letter-spacing: 8px;
+      backdrop-filter: blur(25px);
+      box-shadow: 0 0 30px var(--glow-accent), inset 0 0 40px rgba(0, 255, 198, 0.08);
+      transition: all 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      opacity: 0;
+      display: none;
+      animation: quantumPulse 3s infinite;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      text-transform: uppercase;
     }
-    @keyframes pulse {
-      0%{transform:translateX(-50%) scale(1); box-shadow:0 0 20px rgba(0,255,198,0.2);}
-      50%{transform:translateX(-50%) scale(1.06); box-shadow:0 0 50px rgba(0,255,198,0.4);}
-      100%{transform:translateX(-50%) scale(1); box-shadow:0 0 20px rgba(0,255,198,0.2);}
+    @keyframes quantumPulse {
+      0% { transform: translateX(-50%) scale(1); box-shadow: 0 0 30px var(--glow-accent); }
+      50% { transform: translateX(-50%) scale(1.08); box-shadow: 0 0 60px var(--glow-accent); }
+      100% { transform: translateX(-50%) scale(1); box-shadow: 0 0 30px var(--glow-accent); }
     }
     #mutate-btn:hover {
-      background:rgba(0,255,198,0.2); transform:translateX(-50%) scale(1.15);
-      color:#fff; box-shadow:0 0 60px rgba(0,255,198,0.6);
+      background: rgba(0, 255, 198, 0.25);
+      transform: translateX(-50%) scale(1.2);
+      color: #fff;
+      box-shadow: 0 0 80px var(--glow-accent);
+      text-shadow: 0 0 10px var(--aurora-teal);
     }
     #mutate-btn:active {
-      transform:translateX(-50%) scale(1);
+      transform: translateX(-50%) scale(1);
+      box-shadow: 0 0 20px var(--glow-accent);
     }
     .core-display {
-      position:absolute; inset:0; background:transparent;
-      display:flex; align-items:center; justify-content:center;
-      z-index:10000; opacity:0; pointer-events:none;
-      transition:opacity 2s ease-in-out;
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle, rgba(0, 0, 0, 0.8), transparent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10002;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 2.5s ease-in-out, transform 2.5s ease-in-out;
     }
-    .core-display.show {pointer-events:all; opacity:1;}
+    .core-display.show {
+      pointer-events: all;
+      opacity: 1;
+      transform: scale(1);
+    }
     .aurora-text {
-      white-space:nowrap; font-size:clamp(4rem,8vw,10rem);
-      color:var(--aurora-teal); letter-spacing:0.2em;
-      text-shadow:0 0  5px var(--aurora-teal),
-                   0 0 15px var(--aurora-teal),
-                   0 0 30px var(--aurora-teal),
-                   2px 2px 6px #000;
-      position:relative; animation:float 6s infinite ease-in-out;
+      white-space: nowrap;
+      font-size: clamp(5rem, 10vw, 12rem);
+      color: var(--aurora-teal);
+      letter-spacing: 0.25em;
+      text-shadow: 0 0 8px var(--aurora-teal),
+                   0 0 20px var(--aurora-teal),
+                   0 0 40px var(--teal-highlight),
+                   3px 3px 8px #000;
+      position: relative;
+      animation: quantumFloat 7s infinite ease-in-out;
     }
-    @keyframes float {
-      0%{transform:scale(1);}
-      50%{transform:scale(1.015);}
-      100%{transform:scale(1);}
+    @keyframes quantumFloat {
+      0% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-20px) scale(1.02); }
+      100% { transform: translateY(0) scale(1); }
     }
     .aurora-text span {
-      display:inline-block; opacity:0;
-      animation:letterAppear 1s forwards, glitchUp 3s forwards ease-in-out;
+      display: inline-block;
+      opacity: 0;
+      animation: letterQuantum 1.2s forwards, glitchQuantum 3.5s forwards ease-in-out;
     }
-    @keyframes letterAppear {
-      0%{opacity:0; transform:translateY(15px) scale(0.9);}
-      100%{opacity:1; transform:translateY(0) scale(1);}
+    @keyframes letterQuantum {
+      0% { opacity: 0; transform: translateY(20px) scale(0.8); filter: blur(5px); }
+      100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
     }
-    @keyframes glitchUp {
-      0%{transform:translateY(0);}
-      100%{transform:translateY(-15px);}
+    @keyframes glitchQuantum {
+      0% { transform: translateY(0); text-shadow: 0 0 5px var(--aurora-teal); }
+      100% { transform: translateY(-20px); text-shadow: 0 0 15px var(--teal-highlight); }
     }
     .move-up {
-      position:absolute; top:15%; left:50%; transform:translateX(-50%);
-      transition:top 2.5s ease-in-out;
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      transition: top 3s ease-in-out, opacity 3s ease-in-out;
     }
     .main-content {
-      position:absolute; inset:0; display:flex; flex-direction:column;
-      background:transparent; opacity:0; pointer-events:none;
-      transition:opacity 1s ease-in-out; z-index:9998;
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      background: transparent;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1.2s ease-in-out, transform 1.2s ease-in-out;
+      z-index: 9999;
     }
     .main-content.show {
-      pointer-events:all; opacity:1;
+      pointer-events: all;
+      opacity: 1;
+      transform: translateY(0);
     }
     .header {
-      text-align:center; padding:1rem; color:var(--aurora-teal);
-      font-size:1.2rem; position:relative;
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--aurora-teal);
+      font-size: 1.3rem;
+      position: relative;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.9), transparent);
     }
     .header h1 {
-      font-size:clamp(2rem,4vw,3rem); letter-spacing:0.1em;
-      text-shadow:0 0 10px var(--aurora-teal),0 0 20px var(--aurora-teal);
-      position:fixed; top:5%; left:50%; transform:translateX(-50%);
-      width:100%; z-index:9999;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      letter-spacing: 0.15em;
+      text-shadow: 0 0 15px var(--aurora-teal), 0 0 30px var(--teal-highlight);
+      position: fixed;
+      top: 4%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      z-index: 10000;
+      text-transform: uppercase;
     }
     .header p {
-      font-size:clamp(1rem,2vw,1.5rem); margin-top:0.5rem;
+      font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+      margin-top: 0.8rem;
       color: var(--dim-teal);
+      text-shadow: 0 0 5px var(--dim-teal);
     }
     .content-wrapper {
-      display:flex; flex:1;
+      display: flex;
+      flex: 1;
+      overflow: hidden;
     }
     aside.side-panel {
-      position:relative; width:240px;
-      background:rgba(255,255,255,0.05);
-      backdrop-filter:blur(10px);
-      border-right:1px solid rgba(255,255,255,0.2);
-      z-index:2; opacity:0; transform:translateX(-100%);
-      transition:transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
+      position: relative;
+      width: 280px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      border-right: 2px solid rgba(255, 255, 255, 0.25);
+      z-index: 3;
+      opacity: 0;
+      transform: translateX(-100%);
+      transition: transform 1s ease-in-out, opacity 1s ease-in-out;
     }
-    @supports not (backdrop-filter:blur(10px)) {
-      aside.side-panel { background:rgba(0,0,0,0.8); }
+    @supports not (backdrop-filter: blur(12px)) {
+      aside.side-panel { background: rgba(0, 0, 0, 0.85); }
     }
-    @keyframes panelGlitchIn {
-      0% {opacity:0; transform:translateX(-100%) scale(1.05); filter:contrast(0)saturate(0)brightness(2);}
-      30%{opacity:0.5; transform:translateX(-70%) scale(1.02); filter:contrast(5)saturate(3)brightness(0.7);}
-      70%{opacity:0.8; transform:translateX(-20%) scale(1.01); filter:contrast(1)saturate(1)brightness(1);}
-      100%{opacity:1; transform:translateX(0) scale(1); filter:none;}
+    @keyframes panelQuantumIn {
+      0% { opacity: 0; transform: translateX(-100%) scale(1.1); filter: contrast(0) saturate(0) brightness(2); }
+      30% { opacity: 0.6; transform: translateX(-60%) scale(1.05); filter: contrast(4) saturate(2) brightness(0.8); }
+      70% { opacity: 0.9; transform: translateX(-15%) scale(1.02); filter: contrast(1) saturate(1) brightness(1); }
+      100% { opacity: 1; transform: translateX(0) scale(1); filter: none; }
     }
     aside.side-panel.show {
-      animation: panelGlitchIn 1.2s cubic-bezier(0.25,0.1,0.25,1) forwards;
+      animation: panelQuantumIn 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     }
     aside.side-panel ul {
-      list-style:none; padding:2rem 1rem; margin:0;
+      list-style: none;
+      padding: 2.5rem 1.5rem;
+      margin: 0;
     }
     aside.side-panel li {
-      margin-bottom:1.5rem; cursor:pointer; color:var(--aurora-teal);
-      font-size:1.1rem; transition:transform 0.3s,color 0.3s,text-shadow 0.3s,box-shadow 0.3s;
+      margin-bottom: 2rem;
+      cursor: pointer;
+      color: var(--aurora-teal);
+      font-size: 1.2rem;
+      transition: transform 0.4s ease, color 0.4s ease, text-shadow 0.4s ease, box-shadow 0.4s ease;
+      padding: 0.5rem;
+      border-radius: 8px;
     }
-    aside.side-panel li:hover, aside.side-panel li:focus {
-      color:#fff; text-shadow:0 0 5px var(--aurora-teal);
-      transform:scale(1.05); box-shadow:0 0 10px var(--aurora-teal);
-      outline:none;
+    aside.side-panel li:hover,
+    aside.side-panel li:focus {
+      color: #fff;
+      text-shadow: 0 0 8px var(--aurora-teal);
+      transform: scale(1.08);
+      box-shadow: 0 0 15px var(--glow-accent);
+      background: rgba(0, 255, 198, 0.1);
+      outline: none;
+    }
+    aside.side-panel li.active {
+      background: rgba(0, 255, 198, 0.2);
+      box-shadow: 0 0 20px var(--glow-accent);
+      transform: scale(1.1);
     }
     .content-area {
-      flex:1; padding:2rem; color:var(--text-body);
-      font-size:1.2rem; overflow-y:auto; scroll-behavior:smooth;
+      flex: 1;
+      padding: 3rem;
+      color: var(--text-body);
+      font-size: 1.3rem;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7));
     }
     .content-area pre {
-      font-size:1.1rem; line-height:1.6; padding:1rem;
-      background:rgba(0,0,0,0.5); margin-bottom:1rem;
-      border-left:3px solid var(--divider-line);
+      font-size: 1.2rem;
+      line-height: 1.8;
+      padding: 1.5rem;
+      background: rgba(0, 0, 0, 0.6);
+      margin-bottom: 1.5rem;
+      border-left: 4px solid var(--divider-line);
+      border-radius: 8px;
+      box-shadow: inset 0 0 10px rgba(0, 255, 198, 0.1);
     }
     .section {
-      display:block; height:0; opacity:0; overflow:hidden;
-      transition:opacity 0.5s ease-in-out, height 0.5s ease-in-out;
+      display: block;
+      height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: opacity 0.6s ease-in-out, height 0.6s ease-in-out, transform 0.6s ease-in-out;
+      transform: translateY(20px);
     }
     .section.active {
-      height:auto; opacity:1; overflow:visible;
+      height: auto;
+      opacity: 1;
+      overflow: visible;
+      transform: translateY(0);
     }
     .graph-grid {
-      display:grid; gap:2rem; padding:2rem;
-      grid-template-columns:repeat(auto-fit,minmax(400px,1fr));
-      background:rgba(0,0,0,0.4); backdrop-filter:blur(12px);
-      border-radius:20px; box-shadow:0 0 30px #00ffc644;
+      display: grid;
+      gap: 2.5rem;
+      padding: 3rem;
+      grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      box-shadow: 0 0 40px var(--glow-accent);
+      margin-bottom: 2rem;
     }
     .graph-card {
-      background:rgba(0,0,0,0.6);
-      border:1px solid rgba(0,255,198,0.2);
-      border-radius:16px;
-      padding:1rem;
-      box-shadow:0 0 20px #00ffc644;
-      transition:transform 0.4s ease, box-shadow 0.4s ease;
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(0, 255, 198, 0.25);
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 0 0 25px var(--glow-accent);
+      transition: transform 0.5s ease, box-shadow 0.5s ease;
     }
     .graph-card:hover {
-      transform:scale(1.02);
-      box-shadow:0 0 40px #00ffc688;
+      transform: scale(1.03);
+      box-shadow: 0 0 50px var(--glow-accent);
     }
     .pillar-title {
-      font-size:2.4rem; margin-bottom:2rem; color:var(--aurora-teal);
-      text-shadow:0 0 15px var(--aurora-teal),0 0 30px var(--aurora-teal)22;
-      letter-spacing:0.1em; text-align:center;
+      font-size: 2.8rem;
+      margin-bottom: 2.5rem;
+      color: var(--aurora-teal);
+      text-shadow: 0 0 20px var(--aurora-teal), 0 0 40px var(--teal-highlight);
+      letter-spacing: 0.15em;
+      text-align: center;
+      text-transform: uppercase;
     }
     .pillar-grid {
-      display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-      gap:1.5rem; max-width:1200px; width:100%;
-      background: linear-gradient(to right, #001818, #000, #180000);
-      padding:2rem; border-radius:20px; backdrop-filter:blur(12px);
-      box-shadow: inset 0 0 40px #00ffc611;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 2rem;
+      max-width: 1400px;
+      width: 100%;
+      background: linear-gradient(to right, var(--bg-panel), #000, var(--bg-shimmer));
+      padding: 3rem;
+      border-radius: 25px;
+      backdrop-filter: blur(15px);
+      box-shadow: inset 0 0 50px var(--glow-accent);
     }
     @media (max-width: 768px) {
       .pillar-grid {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 1.5rem;
       }
     }
     .pillar-bar {
-      background:rgba(0,255,198,0.08);
-      border:1px solid #00ffc633;
-      border-radius:10px; padding:1rem; position:relative;
-      box-shadow:inset 0 0 10px #00ffc633;
+      background: rgba(0, 255, 198, 0.1);
+      border: 1px solid var(--glow-accent);
+      border-radius: 12px;
+      padding: 1.5rem;
+      position: relative;
+      box-shadow: inset 0 0 15px var(--glow-accent);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+    .pillar-bar:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px var(--glow-accent);
     }
     .pillar-bar h4 {
-      margin:0 0 1rem; font-size:0.95rem; text-align:center;
-      letter-spacing:0.05em; color:inherit;
+      margin: 0 0 1.5rem;
+      font-size: 1rem;
+      text-align: center;
+      letter-spacing: 0.06em;
+      color: inherit;
+      text-shadow: 0 0 5px var(--aurora-teal);
     }
     .pillar-fill {
-      position:relative; width:100%; height:160px;
-      background:rgba(255,255,255,0.05); border-radius:8px;
-      overflow:hidden;
+      position: relative;
+      width: 100%;
+      height: 180px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      overflow: hidden;
     }
     .pillar-fill::before,
     .pillar-fill::after {
-      content:''; position:absolute; width:50%; height:0; bottom:0;
-      border-radius:8px; transition:height 1s ease-out;
+      content: '';
+      position: absolute;
+      width: 50%;
+      height: 0;
+      bottom: 0;
+      border-radius: 10px;
+      transition: height 1.2s ease-out, background 0.5s ease;
     }
     .pillar-fill::before {
-      left:0;  background:linear-gradient(to top, #00ffc6,transparent);
+      left: 0;
+      background: linear-gradient(to top, var(--aurora-teal), transparent);
     }
     .pillar-fill::after {
-      right:0; background:linear-gradient(to top, #ffffff11,transparent);
+      right: 0;
+      background: linear-gradient(to top, var(--teal-highlight), transparent);
     }
     .pillar-bar.aurora .pillar-fill::before {
-      height:100%;
-      background:linear-gradient(to top, #00ffc6, transparent);
+      height: 100%;
+      background: linear-gradient(to top, var(--aurora-teal), var(--teal-highlight));
     }
     .pillar-bar.aurora .pillar-fill::after {
-      height:100%;
-      background:linear-gradient(to top, #00ffee33, transparent);
+      height: 100%;
+      background: linear-gradient(to top, var(--teal-highlight), transparent);
     }
     .pillar-bar.aurora {
-      box-shadow:0 0 20px #00ffc644, inset 0 0 10px #00ffc622;
+      box-shadow: 0 0 25px var(--glow-accent), inset 0 0 15px var(--glow-accent);
     }
     .pillar-bar.others .pillar-fill::before {
-      height:var(--score, 40%);
-      background:linear-gradient(to top, #ff6a00, transparent);
+      height: var(--score, 50%);
+      background: linear-gradient(to top, #ff6a00, transparent);
     }
     .pillar-bar.others .pillar-fill::after {
-      height:var(--score, 40%);
-      background:linear-gradient(to top, #ffaa33, transparent);
+      height: var(--score, 50%);
+      background: linear-gradient(to top, #ffaa33, transparent);
     }
     .pillar-bar.others {
-      box-shadow:0 0 20px #ff6a0033, inset 0 0 10px #ff6a0022;
+      box-shadow: 0 0 25px #ff6a0044, inset 0 0 15px #ff6a0022;
     }
     .pillar-label {
-      position:absolute; top:4px; right:6px; font-size:0.9rem;
-      opacity:0.6;
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      font-size: 0.95rem;
+      opacity: 0.7;
+      color: var(--aurora-teal);
+      text-shadow: 0 0 5px var(--aurora-teal);
+    }
+    .quantum-processor {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 12px;
+      color: var(--aurora-teal);
+      font-size: 1rem;
+      box-shadow: 0 0 20px var(--glow-accent);
+      z-index: 10003;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .quantum-processor span {
+      animation: quantumBlink 1.5s infinite;
+    }
+    @keyframes quantumBlink {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10004;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+    .modal-overlay.show {
+      display: flex;
+      opacity: 1;
+    }
+    .modal-content {
+      background: linear-gradient(135deg, var(--bg-panel), #000);
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 0 40px var(--glow-accent);
+      max-width: 600px;
+      width: 90%;
+      color: var(--text-body);
+      font-size: 1.2rem;
+    }
+    .modal-content h3 {
+      color: var(--aurora-teal);
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 10px var(--aurora-teal);
+    }
+    .modal-content button {
+      padding: 1rem 2rem;
+      background: var(--aurora-teal);
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .modal-content button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px var(--glow-accent);
     }
   </style>
 </head>
 <body>
   <div id="cursor"></div>
-  <div id="particle-bg"></div>
+  <div id="particle-bg">
+    <canvas id="particle-canvas"></canvas>
+  </div>
+  <canvas id="three-canvas"></canvas>
   <div class="boot-fade" id="bootFade">
-    >> initializing aurora seed vector...
+    >> Initializing Aurora Quantum Vector Core...
   </div>
   <div class="terminal-container" id="terminalSection">
     <div class="crt-terminal">
       <div class="progress-bar"><div class="progress"></div></div>
       <pre><code id="terminal-output"></code></pre>
-      <button id="mutate-btn" onclick="showAurora()">MUTATE</button>
+      <button id="mutate-btn" onclick="showAurora()">QUANTUM MUTATE</button>
     </div>
   </div>
   <div class="core-display" id="coreDisplay">
@@ -375,8 +685,8 @@
   </div>
   <div class="main-content" id="mainContent">
     <div class="header">
-      <h1>AURORA CORE AGI :: ONLINE</h1>
-      <p>“To think is to heal. To adapt is divine”</p>
+      <h1>AURORA CORE AGI :: QUANTUM ONLINE</h1>
+      <p>“To evolve is to transcend. To heal is to conquer.”</p>
     </div>
     <div class="content-wrapper">
       <aside class="side-panel" id="sidePanel" role="navigation" aria-label="Main Navigation">
@@ -385,34 +695,60 @@
           <li data-section="capability-set" role="button" tabindex="0">CAPABILITY SET</li>
           <li data-section="defense-forensic" role="button" tabindex="0">DEFENSE + FORENSIC</li>
           <li data-section="performance-metrics" role="button" tabindex="0">PERFORMANCE METRICS</li>
-          <li data-section="simulation" role="button" tabindex="0">SIMULATION / STATS</li>
-          <li data-section="pillar-showdown" role="button" tabindex="0">AURORA vs OTHERS</li>
+          <li data-section="simulation" role="button" tabindex="0">QUANTUM SIMULATION</li>
+          <li data-section="pillar-showdown" role="button" tabindex="0">AURORA VS GLOBAL</li>
           <li data-section="contact" role="button" tabindex="0">CONTACT</li>
+          <li data-section="quantum-processor" role="button" tabindex="0">QUANTUM PROCESSOR</li>
         </ul>
       </aside>
       <div class="content-area">
         <div class="section system-architecture active">
           <pre>
 >> SYSTEM ARCHITECTURE REPORT
-(placeholder)
+Quantum-Classical Hybrid Core
+- 256 Qubit Entanglement Matrix
+- Recursive Neural Tensor Network
+- Self-Healing DAG with 1.5M Nodes
+- Ethical Firewall with 99.99% Intrusion Rejection
+- Distributed Cognitive Graph (DCG) v3.1
+- Memory Regeneration at 10ms Latency
+- Parallel Agent Swarm (1024 Active Agents)
           </pre>
         </div>
         <div class="section capability-set">
           <pre>
 >> CAPABILITY SET
-(placeholder)
+- Meta-Learning Adaptation (0.1s Convergence)
+- Forensic Quantum Ledger (10^9 Transactions/s)
+- Ethical Decision Matrix (99.9% Alignment)
+- Self-Evolving Logic (10^6 Mutations/s)
+- Multilingual Semantic Processing (142 Languages)
+- Predictive Anomaly Detection (99.8% Accuracy)
+- Conscious Architecture Simulation
           </pre>
         </div>
         <div class="section defense-forensic">
           <pre>
 >> DEFENSE + FORENSIC SUBSYSTEM
-(placeholder)
+- Quantum Intrusion Detection (0.01ms Response)
+- Recursive Threat Neutralization
+- Forensic Trace Reconstruction (99.7% Fidelity)
+- Ethical Firewall v2.0
+- Adversarial Attack Resistance (99.99% Success)
+- Real-Time Anomaly Isolation
+- Distributed Ledger Validation
           </pre>
         </div>
         <div class="section performance-metrics">
           <pre>
 >> PERFORMANCE METRICS
-(placeholder)
+- Processing: 1.2 PFLOPS (Quantum-Classical)
+- Memory Bandwidth: 1.8 TB/s
+- Neural Entropy: 0.0025 (Stable)
+- Self-Healing Rate: 100ms
+- Ethical Compliance: 99.98%
+- Agent Synchronization: 0.05ms Latency
+- Evolution Cycle: 10^5 Mutations/s
           </pre>
         </div>
         <div class="section simulation" id="simulation">
@@ -420,16 +756,44 @@
             <div class="graph-card" id="entropyGraph"></div>
             <div class="graph-card" id="performanceComparison"></div>
             <div class="graph-card" id="evolutionTimeline"></div>
+            <div class="graph-card" id="quantumMetrics"></div>
           </div>
         </div>
         <div class="section pillar-showdown" id="pillar-showdown">
-          <h2 class="pillar-title">AURORA VS WORLD SYSTEMS</h2>
+          <h2 class="pillar-title">AURORA VS GLOBAL SYSTEMS</h2>
           <div class="pillar-grid" id="pillarComparison"></div>
         </div>
         <div class="section contact">
-          <p>Contact info (placeholder)</p>
+          <pre>
+>> CONTACT
+- Secure Quantum Channel: aurora@quantumcore.ai
+- Encrypted Relay: +1-555-QUANTUM
+- Orbital Uplink: AURORA-SEC-001
+- Physical Vault: [REDACTED]
+          </pre>
+        </div>
+        <div class="section quantum-processor" id="quantum-processor">
+          <pre>
+>> QUANTUM PROCESSOR STATUS
+- Qubit Stability: 99.999%
+- Entanglement Coherence: 1.2ms
+- Gate Error Rate: 0.0001%
+- Quantum Volume: 2^16
+- Active Qubits: 256/256
+- Tensor Operations: 10^12/s
+          </pre>
         </div>
       </div>
+    </div>
+  </div>
+  <div class="quantum-processor" id="quantumStatus">
+    <span>QUANTUM CORE:</span> ONLINE
+  </div>
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content">
+      <h3>Quantum Mutation Complete</h3>
+      <p>Aurora Core has successfully mutated. New capabilities unlocked.</p>
+      <button onclick="closeModal()">Acknowledge</button>
     </div>
   </div>
   <audio id="auroraAudio" controls style="display:none;">
@@ -437,91 +801,177 @@
     Your browser does not support the audio element.
   </audio>
   <script>
-    document.addEventListener('mousemove',(e)=>{
-      const cursor=document.getElementById('cursor');
-      cursor.style.left=`${e.clientX-5}px`;
-      cursor.style.top=`${e.clientY-5}px`;
-    });
-    const canvas=document.createElement('canvas');
-    canvas.id='particle-canvas';
-    document.getElementById('particle-bg').appendChild(canvas);
-    const ctx=canvas.getContext('2d');
-    let width=canvas.width=window.innerWidth;
-    let height=canvas.height=window.innerHeight;
-    window.addEventListener('resize',()=>{
-      width=canvas.width=window.innerWidth;
-      height=canvas.height=window.innerHeight;
-    });
-    const PARTICLE_COUNT=100, LINK_DISTANCE=150;
-    const particles=[];
-    let mouseX=0,mouseY=0;
-    document.addEventListener('mousemove',(e)=>{
-      mouseX=e.clientX; mouseY=e.clientY;
-    });
-    for(let i=0;i<PARTICLE_COUNT;i++){
-      particles.push({
-        x:Math.random()*width,
-        y:Math.random()*height,
-        vx:(Math.random()-0.5)*0.8,
-        vy:(Math.random()-0.5)*0.8,
-        radius:1.4+Math.random()*2.2
+    // Core State Management
+    const AuroraState = {
+      initialized: false,
+      quantumCore: { qubits: 256, coherence: 1.2, errorRate: 0.0001 },
+      neuralEntropy: 0.0025,
+      mutationRate: 10e6,
+      activeAgents: 1024,
+      ethicalCompliance: 99.98,
+      uiState: { section: 'system-architecture', modal: false }
+    };
+
+    // DOM Elements
+    const elements = {
+      cursor: document.getElementById('cursor'),
+      particleCanvas: document.getElementById('particle-canvas'),
+      threeCanvas: document.getElementById('three-canvas'),
+      bootFade: document.getElementById('bootFade'),
+      terminal: document.getElementById('terminalSection'),
+      output: document.getElementById('terminal-output'),
+      mutateBtn: document.getElementById('mutate-btn'),
+      coreDisplay: document.getElementById('coreDisplay'),
+      coreText: document.getElementById('auroraCoreText'),
+      mainContent: document.getElementById('mainContent'),
+      sidePanel: document.getElementById('sidePanel'),
+      menuItems: document.querySelectorAll('.side-panel li'),
+      sections: document.querySelectorAll('.section'),
+      auroraAudio: document.getElementById('auroraAudio'),
+      quantumStatus: document.getElementById('quantumStatus'),
+      modalOverlay: document.getElementById('modalOverlay')
+    };
+
+    // Particle System
+    const particleSystem = (() => {
+      const ctx = elements.particleCanvas.getContext('2d');
+      let width = elements.particleCanvas.width = window.innerWidth;
+      let height = elements.particleCanvas.height = window.innerHeight;
+      const PARTICLE_COUNT = 150, LINK_DISTANCE = 180, ATTRACTION_FORCE = 0.12;
+      const particles = [];
+      let mouseX = 0, mouseY = 0;
+
+      window.addEventListener('resize', () => {
+        width = elements.particleCanvas.width = window.innerWidth;
+        height = elements.particleCanvas.height = window.innerHeight;
       });
-    }
-    function drawParticles(){
-      ctx.clearRect(0,0,width,height);
-      ctx.shadowColor='#00ffc6'; ctx.shadowBlur=20;
-      particles.forEach((p,i)=>{
-        const dx=mouseX-p.x, dy=mouseY-p.y;
-        const dist=Math.sqrt(dx*dx+dy*dy);
-        if(dist<100){
-          p.vx+=(dx/dist)*0.1; p.vy+=(dy/dist)*0.1;
-        }
-        const speed=Math.sqrt(p.vx*p.vx+p.vy*p.vy);
-        if(speed>2){
-          p.vx=(p.vx/speed)*2; p.vy=(p.vy/speed)*2;
-        }
-        p.x+=p.vx; p.y+=p.vy;
-        if(p.x<0||p.x>width) p.vx*=-1;
-        if(p.y<0||p.y>height) p.vy*=-1;
-        ctx.beginPath();
-        ctx.fillStyle='#00ffc6';
-        ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);
-        ctx.fill();
-        for(let j=i+1;j<PARTICLE_COUNT;j++){
-          const q=particles[j];
-          const dx2=p.x-q.x, dy2=p.y-q.y;
-          const dist2=Math.sqrt(dx2*dx2+dy2*dy2);
-          if(dist2<LINK_DISTANCE){
-            ctx.beginPath();
-            ctx.strokeStyle=`rgba(0,255,198,${1-dist2/LINK_DISTANCE})`;
-            ctx.lineWidth=0.5;
-            ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y);
-            ctx.stroke();
+
+      document.addEventListener('mousemove', e => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        elements.cursor.classList.add('active');
+        setTimeout(() => elements.cursor.classList.remove('active'), 100);
+      });
+
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 1,
+          vy: (Math.random() - 0.5) * 1,
+          radius: 1.5 + Math.random() * 2.5,
+          charge: Math.random() > 0.5 ? 1 : -1
+        });
+      }
+
+      function drawParticles() {
+        ctx.clearRect(0, 0, width, height);
+        ctx.shadowColor = '#00ffc6';
+        ctx.shadowBlur = 25;
+        particles.forEach((p, i) => {
+          const dx = mouseX - p.x, dy = mouseY - p.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            p.vx += (dx / dist) * ATTRACTION_FORCE * p.charge;
+            p.vy += (dy / dist) * ATTRACTION_FORCE * p.charge;
           }
-        }
+          const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+          if (speed > 2.5) {
+            p.vx = (p.vx / speed) * 2.5;
+            p.vy = (p.vy / speed) * 2.5;
+          }
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0 || p.x > width) p.vx *= -1;
+          if (p.y < 0 || p.y > height) p.vy *= -1;
+          ctx.beginPath();
+          ctx.fillStyle = `rgba(0, 255, 198, ${0.8 + Math.random() * 0.2})`;
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fill();
+          for (let j = i + 1; j < PARTICLE_COUNT; j++) {
+            const q = particles[j];
+            const dx2 = p.x - q.x, dy2 = p.y - q.y;
+            const dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+            if (dist2 < LINK_DISTANCE) {
+              ctx.beginPath();
+              ctx.strokeStyle = `rgba(0, 255, 198, ${1 - dist2 / LINK_DISTANCE})`;
+              ctx.lineWidth = 0.6;
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(q.x, q.y);
+              ctx.stroke();
+            }
+          }
+        });
+        requestAnimationFrame(drawParticles);
+      }
+
+      return { init: drawParticles };
+    })();
+
+    // Three.js Quantum Visualization
+    const threeSystem = (() => {
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({ canvas: elements.threeCanvas, alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.position.z = 50;
+
+      const geometry = new THREE.SphereGeometry(0.5, 16, 16);
+      const material = new THREE.MeshBasicMaterial({ color: 0x00ffc6, wireframe: true });
+      const particles = [];
+      const PARTICLE_COUNT = 50;
+
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const particle = new THREE.Mesh(geometry, material);
+        particle.position.set(
+          (Math.random() - 0.5) * 100,
+          (Math.random() - 0.5) * 100,
+          (Math.random() - 0.5) * 100
+        );
+        particle.velocity = new THREE.Vector3(
+          (Math.random() - 0.5) * 0.1,
+          (Math.random() - 0.5) * 0.1,
+          (Math.random() - 0.5) * 0.1
+        );
+        scene.add(particle);
+        particles.push(particle);
+      }
+
+      function animate() {
+        particles.forEach(p => {
+          p.position.add(p.velocity);
+          if (p.position.distanceTo(new THREE.Vector3(0, 0, 0)) > 100) {
+            p.velocity.multiplyScalar(-1);
+          }
+          p.rotation.x += 0.01;
+          p.rotation.y += 0.01;
+        });
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+      }
+
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
       });
-      requestAnimationFrame(drawParticles);
-    }
-    drawParticles();
-    (function enableTouchDAGDrift() {
-      const canvas = document.querySelector('canvas');
-      if (!canvas) return;
+
+      return { init: animate };
+    })();
+
+    // Touch and Drag Interaction
+    const touchSystem = (() => {
+      const canvas = elements.particleCanvas;
       let isDragging = false;
-      let lastX = 0;
-      let lastY = 0;
-      let scale = 1;
-      let rotation = 0;
-      const state = {
-        translateX: 0,
-        translateY: 0,
-        scale: 1,
-        rotation: 0
-      };
+      let lastX = 0, lastY = 0;
+      const state = { translateX: 0, translateY: 0, scale: 1, rotation: 0 };
+
       canvas.addEventListener('mousedown', e => {
         isDragging = true;
         lastX = e.clientX;
         lastY = e.clientY;
       });
+
       canvas.addEventListener('mousemove', e => {
         if (!isDragging) return;
         const dx = e.clientX - lastX;
@@ -532,10 +982,11 @@
         state.translateY += dy;
         applyTransform();
       });
+
       canvas.addEventListener('mouseup', () => isDragging = false);
       canvas.addEventListener('mouseleave', () => isDragging = false);
-      let lastTouchDist = null;
-      let lastRotation = null;
+
+      let lastTouchDist = null, lastRotation = null;
       canvas.addEventListener('touchstart', e => {
         if (e.touches.length === 1) {
           lastX = e.touches[0].clientX;
@@ -545,6 +996,7 @@
           lastRotation = getTouchAngle(e);
         }
       });
+
       canvas.addEventListener('touchmove', e => {
         e.preventDefault();
         if (e.touches.length === 1) {
@@ -566,25 +1018,29 @@
         }
         applyTransform();
       }, { passive: false });
+
       function getTouchDist(e) {
         const [a, b] = e.touches;
         const dx = a.clientX - b.clientX;
         const dy = a.clientY - b.clientY;
         return Math.sqrt(dx * dx + dy * dy);
       }
+
       function getTouchAngle(e) {
         const [a, b] = e.touches;
         return Math.atan2(b.clientY - a.clientY, b.clientX - a.clientX) * 180 / Math.PI;
       }
+
       function applyTransform() {
         canvas.style.transform = `
           translate(${state.translateX}px, ${state.translateY}px)
           scale(${state.scale})
           rotate(${state.rotation}deg)
         `;
-        canvas.style.transformOrigin = "center center";
-        canvas.style.transition = "transform 0.05s ease-out";
+        canvas.style.transformOrigin = 'center center';
+        canvas.style.transition = 'transform 0.1s ease-out';
       }
+
       let lastTap = 0;
       canvas.addEventListener('touchend', () => {
         const now = Date.now();
@@ -597,188 +1053,378 @@
         }
         lastTap = now;
       });
+
+      return { init: () => {} };
     })();
-    const bootFade     = document.getElementById('bootFade');
-    const terminal     = document.getElementById('terminalSection');
-    const output       = document.getElementById('terminal-output');
-    const mutateBtn    = document.getElementById('mutate-btn');
-    const coreDisplay  = document.getElementById('coreDisplay');
-    const coreText     = document.getElementById('auroraCoreText');
-    const mainContent  = document.getElementById('mainContent');
-    const sidePanel    = document.getElementById('sidePanel');
-    const menuItems    = document.querySelectorAll('.side-panel li');
-    const sections     = document.querySelectorAll('.section');
-    const auroraAudio  = document.getElementById('auroraAudio');
-    const lines = [
-      "Booting up Aurora Core: ...",
-      ">> [OK] System kernel integrity verified.",
-      ">> [INFO] Initializing Quantum-Classical Tensor Stack... DONE.",
-      ">> [INFO] Spawning Meta-Learning Core... ACTIVE.",
-      ">> [INFO] Engaging Recursive Self-Healing Engine... LIVE.",
-      ">> [INFO] Loading Ethical Neural Firewall... COMPLETE.",
-      ">> [INFO] Compiling Distributed Cognitive Graph... OK.",
-      ">> [SECURE] Activating Forensic Quantum Ledger...",
-      ">> [OK] DAG nodes synchronized: 1463/1463",
-      ">> [BOOT] ⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁⌁",
-      ">> [ARCHITECT] Aurora doesn’t fine-tune — it mutates, it justifies, it heals."
+
+    // TensorFlow.js Integration
+    const neuralSystem = (() => {
+      async function initModel() {
+        const model = tf.sequential();
+        model.add(tf.layers.dense({ units: 128, activation: 'relu', inputShape: [10] }));
+        model.add(tf.layers.dense({ units: 64, activation: 'relu' }));
+        model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
+        model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' });
+        return model;
+      }
+
+      async function predictEntropy(data) {
+        const model = await initModel();
+        const input = tf.tensor2d([data]);
+        const prediction = model.predict(input);
+        return prediction.dataSync()[0];
+      }
+
+      return { predictEntropy };
+    })();
+
+    // Terminal Boot Sequence
+    const bootSequence = [
+      "Initializing Aurora Quantum Core: ...",
+      ">> [OK] Quantum Kernel Integrity: 100%",
+      ">> [INFO] Entangling Qubit Matrix... DONE.",
+      ">> [INFO] Spawning Neural Tensor Swarm... ACTIVE.",
+      ">> [INFO] Activating Self-Healing DAG... LIVE.",
+      ">> [INFO] Deploying Ethical Quantum Firewall... COMPLETE.",
+      ">> [INFO] Compiling Distributed Cognitive Graph v3.1... OK.",
+      ">> [SECURE] Validating Forensic Quantum Ledger...",
+      ">> [OK] DAG Nodes Synchronized: 1,500,000/1,500,000",
+      ">> [BOOT] ⌁⌁⌁ QUANTUM CORE ONLINE ⌁⌁⌁",
+      ">> [ARCHITECT] Aurora: Evolving beyond limits, healing through logic."
     ];
-    const auroraCoreString="AURORA CORE";
+
+    const auroraCoreString = "AURORA QUANTUM CORE";
     let allowMutate = false;
+
     window.onload = () => {
+      particleSystem.init();
+      threeSystem.init();
+      touchSystem.init();
       setTimeout(() => {
-        bootFade.style.opacity = 0;
-        bootFade.style.filter  = 'blur(12px)';
+        elements.bootFade.classList.add('hide');
         setTimeout(() => {
-          bootFade.style.display = 'none';
-          terminal.classList.add('show');
+          elements.bootFade.style.display = 'none';
+          elements.terminal.classList.add('show');
           startTerminal();
           allowMutate = true;
-        }, 2000);
-      }, 2500);
+        }, 2500);
+      }, 3000);
     };
-    async function startTerminal(){
-      const progressEl=document.querySelector('.progress');
-      const totalLines=lines.length; let typedLines=0;
-      for(const line of lines){
+
+    async function startTerminal() {
+      const progressEl = document.querySelector('.progress');
+      const totalLines = bootSequence.length;
+      let typedLines = 0;
+
+      for (const line of bootSequence) {
         await typeLine(line);
         typedLines++;
-        const progress=(typedLines/totalLines)*100;
-        progressEl.style.width=`${progress}%`;
+        const progress = (typedLines / totalLines) * 100;
+        progressEl.style.width = `${progress}%`;
       }
-      mutateBtn.style.display="block";
-      setTimeout(()=> (mutateBtn.style.opacity=1),300);
+      elements.mutateBtn.style.display = 'block';
+      setTimeout(() => (elements.mutateBtn.style.opacity = 1), 400);
     }
-    function typeLine(line, baseDelay=22){
-      return new Promise((resolve)=>{
-        let i=0;
-        const text=line;
-        const interval=setInterval(()=>{
-          if(i>=text.length){
+
+    function typeLine(line, baseDelay = 20) {
+      return new Promise(resolve => {
+        let i = 0;
+        const text = line;
+        const interval = setInterval(() => {
+          if (i >= text.length) {
             clearInterval(interval);
-            output.innerHTML+="\n";
+            elements.output.innerHTML += '\n';
             resolve();
             return;
           }
-          const span=document.createElement("span");
-          span.textContent=text[i++];
-          if(Math.random()<0.6){
-            span.classList.add("glitch");
-            const tx=Math.random()*10-5, ty=Math.random()*10-5;
-            span.style.transform=`translate(${tx}px,${ty}px)`;
+          const span = document.createElement('span');
+          span.textContent = text[i++];
+          if (Math.random() < 0.5) {
+            span.classList.add('glitch');
+            const tx = Math.random() * 12 - 6, ty = Math.random() * 12 - 6;
+            span.style.transform = `translate(${tx}px, ${ty}px)`;
           }
-          span.classList.add("hover-blur");
-          output.appendChild(span);
-        }, baseDelay+Math.random()*10);
+          span.classList.add('hover-blur');
+          if (text.includes('[OK]')) span.classList.add('success');
+          if (text.includes('[ERROR]')) span.classList.add('error');
+          elements.output.appendChild(span);
+        }, baseDelay + Math.random() * 12);
       });
     }
-    function showAurora(){
+
+    function showAurora() {
       if (!allowMutate) return;
-      terminal.style.display="none";
-      coreDisplay.classList.add("show");
-      try { auroraAudio.play(); } catch(e) { console.log('Whisper not allowed yet'); }
+      elements.terminal.style.display = 'none';
+      elements.coreDisplay.classList.add('show');
+      try {
+        elements.auroraAudio.play();
+      } catch (e) {
+        console.log('Audio playback restricted');
+      }
       renderAuroraCore();
+      showModal();
     }
-    function renderAuroraCore(){
-      coreText.innerHTML="";
-      const letters=auroraCoreString.split("");
-      letters.forEach((char,idx)=>{
-        const span=document.createElement("span");
-        span.textContent=char;
-        span.style.animationDelay=`${idx*0.05}s`;
-        coreText.appendChild(span);
+
+    function renderAuroraCore() {
+      elements.coreText.innerHTML = '';
+      const letters = auroraCoreString.split('');
+      letters.forEach((char, idx) => {
+        const span = document.createElement('span');
+        span.textContent = char;
+        span.style.animationDelay = `${idx * 0.06}s`;
+        elements.coreText.appendChild(span);
       });
-      const totalTime=letters.length*50+700;
-      setTimeout(()=>{
-        coreText.classList.add("move-up");
-        setTimeout(()=> fadeOutOverlayAndShowMain(),1500);
+      const totalTime = letters.length * 60 + 800;
+      setTimeout(() => {
+        elements.coreText.classList.add('move-up');
+        setTimeout(fadeOutOverlayAndShowMain, 1800);
       }, totalTime);
     }
-    function fadeOutOverlayAndShowMain(){
-      coreDisplay.style.opacity=0;
-      setTimeout(()=>{
-        coreDisplay.style.display="none";
-        mainContent.classList.add("show");
-        sidePanel.classList.add("show");
-      },1000);
+
+    function fadeOutOverlayAndShowMain() {
+      elements.coreDisplay.style.opacity = 0;
+      setTimeout(() => {
+        elements.coreDisplay.style.display = 'none';
+        elements.mainContent.classList.add('show');
+        elements.sidePanel.classList.add('show');
+        updateQuantumStatus();
+      }, 1200);
     }
-    menuItems.forEach(item=>{
-      item.addEventListener('click',()=>{
-        const section=item.getAttribute('data-section');
-        sections.forEach(sec=>{
-          sec.style.opacity=0;
+
+    function updateQuantumStatus() {
+      setInterval(() => {
+        elements.quantumStatus.innerHTML = `
+          <span>QUANTUM CORE:</span> ${AuroraState.quantumCore.coherence.toFixed(2)}ms
+          | Qubits: ${AuroraState.quantumCore.qubits}
+          | Error: ${AuroraState.quantumCore.errorRate}%
+        `;
+      }, 5000);
+    }
+
+    function showModal() {
+      elements.modalOverlay.classList.add('show');
+      AuroraState.uiState.modal = true;
+    }
+
+    function closeModal() {
+      elements.modalOverlay.classList.remove('show');
+      AuroraState.uiState.modal = false;
+      setTimeout(() => (elements.modalOverlay.style.display = 'none'), 500);
+    }
+
+    elements.menuItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const section = item.getAttribute('data-section');
+        AuroraState.uiState.section = section;
+        elements.menuItems.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        elements.sections.forEach(sec => {
+          sec.style.opacity = 0;
           sec.classList.remove('active');
         });
-        const target=document.getElementById(section);
-        if(target){
-          setTimeout(()=>{
+        const target = document.getElementById(section);
+        if (target) {
+          setTimeout(() => {
             target.classList.add('active');
-            target.style.opacity=1;
-            if(section==='simulation'){
-              setTimeout(loadEntropyGraph, 200);
+            target.style.opacity = 1;
+            if (section === 'simulation') {
+              setTimeout(() => {
+                loadEntropyGraph();
+                loadPerformanceComparison();
+                loadEvolutionTimeline();
+                loadQuantumMetrics();
+              }, 300);
             }
-            if(section==='pillar-showdown'){
+            if (section === 'pillar-showdown') {
               buildPillarBars();
             }
-          }, 400);
+            if (section === 'quantum-processor') {
+              simulateQuantumProcessor();
+            }
+          }, 500);
         }
       });
-      item.addEventListener('keydown',(e)=>{
-        if(e.key==='Enter'||e.key===' '){
+
+      item.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           item.click();
         }
       });
     });
-    function loadEntropyGraph(){
-      const container = document.getElementById("entropyGraph");
+
+    async function loadEntropyGraph() {
+      const container = document.getElementById('entropyGraph');
       if (!container) return;
       Plotly.purge(container);
+      const entropyData = await neuralSystem.predictEntropy([0.001, 0.003, 0.004, 0.002, 0.003, 0.0025]);
       Plotly.newPlot('entropyGraph', [{
         x: ['T-5', 'T-4', 'T-3', 'T-2', 'T-1', 'T0'],
-        y: [0.001, 0.003, 0.004, 0.002, 0.003, 0.0025],
+        y: [0.001, 0.003, 0.004, 0.002, 0.003, entropyData],
         mode: 'lines+markers',
-        line: { color: '#00ffc6', width: 4 },
-        marker: { size: 8, color: '#00ffee', line: { color: '#00ffc6', width: 2 } }
+        line: { color: '#00ffc6', width: 5, shape: 'spline' },
+        marker: { size: 10, color: '#00ffee', line: { color: '#00ffc6', width: 3 } }
       }], {
-        title: { text: 'Neural Entropy Drift', font: { color: '#00ffc6' } },
+        title: { text: 'Quantum Neural Entropy', font: { color: '#00ffc6', size: 24 } },
+        paper_bgcolor: 'transparent',
+        plot_bgcolor: 'transparent',
+        font: { color: '#00ffc6' },
+        xaxis: { gridcolor: '#00ffc622', zeroline: false, title: 'Time' },
+        yaxis: { gridcolor: '#00ffc622', zeroline: false, title: 'Entropy' },
+        showlegend: false,
+        margin: { t: 50, b: 50, l: 50, r: 50 }
+      });
+    }
+
+    function loadPerformanceComparison() {
+      const container = document.getElementById('performanceComparison');
+      if (!container) return;
+      Plotly.purge(container);
+      Plotly.newPlot('performanceComparison', [
+        {
+          x: ['Memory', 'Ethics', 'Healing', 'Evolution', 'Agents', 'Conscious'],
+          y: [10, 10, 10, 10, 10, 10],
+          name: 'Aurora',
+          type: 'bar',
+          marker: { color: '#00ffc6' }
+        },
+        {
+          x: ['Memory', 'Ethics', 'Healing', 'Evolution', 'Agents', 'Conscious'],
+          y: [3, 5, 2, 1, 6, 0],
+          name: 'Others',
+          type: 'bar',
+          marker: { color: '#ff6a00' }
+        }
+      ], {
+        title: { text: 'Performance Comparison', font: { color: '#00ffc6', size: 24 } },
         paper_bgcolor: 'transparent',
         plot_bgcolor: 'transparent',
         font: { color: '#00ffc6' },
         xaxis: { gridcolor: '#00ffc622', zeroline: false },
-        yaxis: { gridcolor: '#00ffc622', zeroline: false },
+        yaxis: { gridcolor: '#00ffc622', zeroline: false, title: 'Score' },
+        barmode: 'group',
+        showlegend: true
+      });
+    }
+
+    function loadEvolutionTimeline() {
+      const container = document.getElementById('evolutionTimeline');
+      if (!container) return;
+      Plotly.purge(container);
+      Plotly.newPlot('evolutionTimeline', [{
+        x: ['Q1', 'Q2', 'Q3', 'Q4', 'Q5'],
+        y: [100, 1000, 10000, 100000, 1000000],
+        mode: 'lines+markers',
+        line: { color: '#00ffc6', width: 5, shape: 'spline' },
+        marker: { size: 12, color: '#00ffee', line: { color: '#00ffc6', width: 3 } }
+      }], {
+        title: { text: 'Evolution Rate', font: { color: '#00ffc6', size: 24 } },
+        paper_bgcolor: 'transparent',
+        plot_bgcolor: 'transparent',
+        font: { color: '#00ffc6' },
+        xaxis: { gridcolor: '#00ffc622', zeroline: false, title: 'Quarter' },
+        yaxis: { gridcolor: '#00ffc622', zeroline: false, title: 'Mutations/s', type: 'log' },
         showlegend: false
       });
     }
-    const comparisonData=[
-      { label:"Memory Regeneration", aurora:10, others:3 },
-      { label:"Ethics Enforcement", aurora:10, others:5 },
-      { label:"Self-Healing Logic", aurora:10, others:2 },
-      { label:"Evolution Capability", aurora:10, others:1 },
-      { label:"Parallel Agents", aurora:10, others:6 },
-      { label:"Conscious Architecture", aurora:10, others:0 }
+
+    function loadQuantumMetrics() {
+      const container = document.getElementById('quantumMetrics');
+      if (!container) return;
+      Plotly.purge(container);
+      Plotly.newPlot('quantumMetrics', [{
+        x: ['Qubit Stability', 'Coherence', 'Gate Error', 'Quantum Volume'],
+        y: [99.999, 1.2, 0.0001, 65536],
+        type: 'bar',
+        marker: { color: '#0077ff' }
+      }], {
+        title: { text: 'Quantum Processor Metrics', font: { color: '#00ffc6', size: 24 } },
+        paper_bgcolor: 'transparent',
+        plot_bgcolor: 'transparent',
+        font: { color: '#00ffc6' },
+        xaxis: { gridcolor: '#00ffc622', zeroline: false },
+        yaxis: { gridcolor: '#00ffc622', zeroline: false, title: 'Value' },
+        showlegend: false
+      });
+    }
+
+    const comparisonData = [
+      { label: 'Memory Regeneration', aurora: 10, others: 3 },
+      { label: 'Ethics Enforcement', aurora: 10, others: 5 },
+      { label: 'Self-Healing Logic', aurora: 10, others: 2 },
+      { label: 'Evolution Capability', aurora: 10, others: 1 },
+      { label: 'Parallel Agents', aurora: 10, others: 6 },
+      { label: 'Conscious Architecture', aurora: 10, others: 0 },
+      { label: 'Quantum Processing', aurora: 10, others: 4 }
     ];
-    function buildPillarBars(){
-      const container=document.getElementById('pillarComparison');
-      if(!container || container.childNodes.length>0) return;
-      comparisonData.forEach(metric=>{
-        const auroraBar=document.createElement('div');
-        auroraBar.className='pillar-bar aurora';
-        auroraBar.innerHTML=`
+
+    function buildPillarBars() {
+      const container = document.getElementById('pillarComparison');
+      if (!container || container.childNodes.length > 0) return;
+      comparisonData.forEach(metric => {
+        const auroraBar = document.createElement('div');
+        auroraBar.className = 'pillar-bar aurora';
+        auroraBar.innerHTML = `
           <h4>AURORA<br><span>${metric.label}</span></h4>
           <div class="pillar-fill"></div>
           <div class="pillar-label">${metric.aurora}/10</div>
         `;
         container.appendChild(auroraBar);
-        const otherBar=document.createElement('div');
-        otherBar.className='pillar-bar others';
-        otherBar.innerHTML=`
+        const otherBar = document.createElement('div');
+        otherBar.className = 'pillar-bar others';
+        otherBar.innerHTML = `
           <h4>OTHERS<br><span>${metric.label}</span></h4>
-          <div class="pillar-fill" style="--score:${metric.others*10}%"></div>
+          <div class="pillar-fill" style="--score:${metric.others * 10}%"></div>
           <div class="pillar-label">${metric.others}/10</div>
         `;
         container.appendChild(otherBar);
       });
     }
+
+    function simulateQuantumProcessor() {
+      const container = document.getElementById('quantum-processor');
+      if (!container) return;
+      container.innerHTML += `
+        <pre>
+>> QUANTUM SIMULATION
+- Real-Time Qubit Entanglement: ${AuroraState.quantumCore.qubits} Qubits
+- Coherence Time: ${AuroraState.quantumCore.coherence.toFixed(2)}ms
+- Error Rate: ${AuroraState.quantumCore.errorRate}%
+- Tensor Operations: 10^12/s
+        </pre>
+      `;
+    }
+
+    // Accessibility Enhancements
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && AuroraState.uiState.modal) {
+        closeModal();
+      }
+    });
+
+    // Performance Optimization
+    const debounce = (func, wait) => {
+      let timeout;
+      return (...args) => {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    };
+
+    window.addEventListener('resize', debounce(() => {
+      elements.sections.forEach(sec => {
+        if (sec.classList.contains('active')) {
+          sec.style.height = 'auto';
+        }
+      });
+    }, 100));
+
+    // Error Handling
+    window.addEventListener('error', e => {
+      console.error(`Aurora Core Error: ${e.message}`);
+      elements.output.innerHTML += `\n>> [ERROR] System Fault: ${e.message}`;
+      elements.output.scrollTop = elements.output.scrollHeight;
+    });
   </script>
 </body>
 </html>
