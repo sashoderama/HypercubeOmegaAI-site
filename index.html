@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#080808">
     <meta name="description" content="ElviraGenesis: The world's first GPU-cluster-compatible cybersecurity AI platform with capsule-based memory compression, ethical intelligence, and real-time multi-agent mutation for zero-day threat detection and forensic analysis.">
     <title>ElviraGenesis: Next-Gen Cybersecurity Platform</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Code+Pro:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Code+Pro:wght@300;400;500&display=swap&font-display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" defer></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis-network.min.css" rel="stylesheet">
     <style>
@@ -41,6 +41,41 @@
             overflow-x: hidden;
             scroll-behavior: smooth;
             position: relative;
+        }
+
+        /* Preloader Styles */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--void-black);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        #preloader.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .preloader-hexagon {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--neon-cyan);
+            border-radius: 10px;
+            transform: rotate(45deg);
+            animation: spin 2s infinite linear;
+            box-shadow: 0 0 20px var(--glow);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         #particles-js {
@@ -158,13 +193,15 @@
         }
 
         .card {
-            background: linear-gradient(145deg, var(--cyber-steel), var(--slick-gray));
-            border: 1px solid var(--border);
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--border);
             border-radius: 24px;
-            padding: 4rem;
+            padding: 4.5rem;
             transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
             position: relative;
             overflow: hidden;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 25px rgba(0, 247, 255, 0.1);
         }
 
         .card::before {
@@ -181,8 +218,8 @@
         }
 
         .card:hover {
-            transform: translateY(-15px);
-            box-shadow: 0 25px 70px var(--shadow);
+            transform: translateY(-20px) scale(1.05);
+            box-shadow: 0 30px 80px var(--shadow);
         }
 
         .card:hover::before {
@@ -278,6 +315,7 @@
         .cyber-button:hover {
             color: var(--hud-white);
             box-shadow: 0 0 35px var(--glow);
+            transform: scale(1.05);
         }
 
         .cyber-button:hover::before {
@@ -506,17 +544,51 @@
             }
         }
 
-        .cta-footer {
-            padding: 8rem 4rem;
-            text-align: center;
-            background: var(--cyber-steel);
+        .deployment-map {
+            margin: 4rem auto;
+            max-width: 1200px;
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 0 25px var(--shadow);
             transition: all 0.5s ease-in-out;
+        }
+
+        @media (max-width: 768px) {
+            .deployment-map {
+                max-width: 100%;
+                margin: 2.5rem auto;
+            }
+        }
+
+        .cta-footer {
+            padding: 10rem 5rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            border-top: 1px solid var(--border);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 25px rgba(0, 247, 255, 0.1);
+            transition: all 0.5s ease-in-out;
+        }
+
+        .cta-footer h1 {
+            font-size: 3.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .cta-footer p {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+        }
+
+        .cta-footer .cyber-button {
+            padding: 1.8rem 4rem;
+            font-size: 1.5rem;
         }
 
         .cta-footer a {
             color: var(--neon-cyan);
             text-decoration: none;
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             transition: color 0.3s ease-in-out;
         }
 
@@ -526,16 +598,36 @@
 
         @media (max-width: 768px) {
             .cta-footer {
-                padding: 5rem 2rem;
+                padding: 6rem 2rem;
+            }
+            .cta-footer h1 {
+                font-size: 2.5rem;
+            }
+            .cta-footer p {
+                font-size: 1.3rem;
+            }
+            .cta-footer .cyber-button {
+                padding: 1.5rem 3rem;
+                font-size: 1.2rem;
             }
             .cta-footer a {
-                font-size: 1.1rem;
+                font-size: 1.2rem;
             }
         }
 
         @media (max-width: 480px) {
             .cta-footer {
-                padding: 3rem 1rem;
+                padding: 4rem 1rem;
+            }
+            .cta-footer h1 {
+                font-size: 2rem;
+            }
+            .cta-footer p {
+                font-size: 1.1rem;
+            }
+            .cta-footer .cyber-button {
+                padding: 1rem 2rem;
+                font-size: 1rem;
             }
             .cta-footer a {
                 font-size: 1rem;
@@ -545,6 +637,9 @@
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" defer></script>
 </head>
 <body>
+    <div id="preloader">
+        <div class="preloader-hexagon"></div>
+    </div>
     <div id="particles-js"></div>
     <div class="terminal-line"></div>
 
@@ -827,7 +922,17 @@
             </div>
         </section>
 
-        <!-- Section 9: Team Section -->
+        <!-- Section 9: Live Deployment Map -->
+        <section>
+            <h1>Live Deployment Insights</h1>
+            <p>Visualize ElviraGenesis in action with our live deployment map, showcasing real-time threat monitoring and analytics.</p>
+            <picture>
+                <source media="(max-width: 768px)" srcset="https://via.placeholder.com/800x400.png?text=Live+Deployment+Map+Mobile">
+                <img src="https://via.placeholder.com/1200x600.png?text=Live+Deployment+Map" alt="Live Deployment Map Screenshot" class="deployment-map" loading="lazy">
+            </picture>
+        </section>
+
+        <!-- Section 10: Team Section -->
         <section>
             <h1>Our Team</h1>
             <p>Meet the brilliant minds behind ElviraGenesis, driving innovation in AI and cybersecurity.</p>
@@ -845,14 +950,14 @@
             </div>
         </section>
 
-        <!-- Section 10: Investment Opportunity -->
+        <!-- Section 11: Investment Opportunity -->
         <section>
             <h1>Investment Opportunity</h1>
             <p>ElviraGenesis is open to strategic investments to accelerate our mission of securing the digital world.</p>
             <button class="cyber-button">Contact to Invest</button>
         </section>
 
-        <!-- Section 11: Conclusion and Vision -->
+        <!-- Section 12: Conclusion and Vision -->
         <section>
             <h1>Vision and Impact</h1>
             <p>ElviraGenesis is poised to revolutionize cybersecurity with its ethics-anchored, GPU-accelerated, and cluster-native AI framework. By combining real-time threat detection, advanced forensic visualization, and auditable governance, we aim to secure the digital world for enterprises, governments, and beyond—delivering a future where safety and innovation coexist seamlessly.</p>
@@ -869,6 +974,12 @@
     </footer>
 
     <script>
+        // Preloader Fade-Out
+        window.addEventListener('load', function () {
+            const preloader = document.getElementById('preloader');
+            preloader.classList.add('fade-out');
+        });
+
         // Ensure particlesJS is loaded before initializing
         document.addEventListener('DOMContentLoaded', function () {
             if (typeof particlesJS !== 'undefined') {
