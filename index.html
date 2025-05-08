@@ -5,8 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#080808">
+    <meta name="description" content="ElviraGenesis: The world's first GPU-cluster-compatible cybersecurity AI platform with capsule-based memory compression, ethical intelligence, and real-time multi-agent mutation for zero-day threat detection and forensic analysis.">
     <title>ElviraGenesis: Next-Gen Cybersecurity Platform</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Code+Pro:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis-network.min.css" rel="stylesheet">
     <style>
         :root {
             --void-black: #080808;
@@ -49,78 +52,106 @@
             z-index: -1;
         }
 
-        .slide {
-            min-height: 100vh;
-            padding: 6rem 3rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        main {
             position: relative;
+            z-index: 1;
+        }
+
+        section {
+            min-height: 100dvh;
+            padding: 8rem 4rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            z-index: 1;
             transition: all 0.5s ease-in-out;
         }
 
         @media (max-width: 768px) {
-            .slide {
-                padding: 4rem 1.5rem;
+            section {
+                padding: 5rem 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            section {
+                padding: 3rem 1rem;
             }
         }
 
         h1 {
             font-family: 'Source Code Pro', monospace;
-            font-size: 4.5rem;
+            font-size: 5rem;
             color: var(--neon-cyan);
-            text-shadow: 0 0 35px var(--glow);
-            margin: 3rem 0;
+            text-shadow: 0 0 40px var(--glow);
+            margin: 4rem 0;
             letter-spacing: -0.03em;
             animation: pulse 4s infinite;
             transition: all 0.5s ease-in-out;
         }
 
         h2 {
-            font-size: 2.8rem;
+            font-size: 3rem;
             color: var(--neon-cyan);
-            margin-bottom: 2.5rem;
+            margin-bottom: 3rem;
             transition: all 0.5s ease-in-out;
         }
 
         p {
-            max-width: 1000px;
-            margin: 0 auto 2rem;
-            font-size: 1.3rem;
+            max-width: 1100px;
+            margin: 0 auto 2.5rem;
+            font-size: 1.5rem;
             opacity: 0.9;
             transition: all 0.5s ease-in-out;
         }
 
         @media (max-width: 768px) {
             h1 {
-                font-size: 3rem;
+                font-size: 3.5rem;
             }
             h2 {
-                font-size: 2rem;
+                font-size: 2.2rem;
             }
             p {
-                font-size: 1.1rem;
+                font-size: 1.2rem;
                 max-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            h2 {
+                font-size: 1.4rem;
+            }
+            p {
+                font-size: 1rem;
             }
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-            gap: 3rem;
-            padding: 3rem;
-            max-width: 1600px;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 4rem;
+            padding: 4rem;
+            max-width: 1800px;
             margin: 0 auto;
             transition: all 0.5s ease-in-out;
         }
 
         @media (max-width: 768px) {
             .grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr !important;
+                gap: 2.5rem;
+                padding: 2.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid {
                 gap: 2rem;
                 padding: 2rem;
             }
@@ -129,8 +160,8 @@
         .card {
             background: linear-gradient(145deg, var(--cyber-steel), var(--slick-gray));
             border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 3rem;
+            border-radius: 24px;
+            padding: 4rem;
             transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
             position: relative;
             overflow: hidden;
@@ -150,8 +181,8 @@
         }
 
         .card:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 20px 60px var(--shadow);
+            transform: translateY(-15px);
+            box-shadow: 0 25px 70px var(--shadow);
         }
 
         .card:hover::before {
@@ -159,28 +190,34 @@
             animation: hologram 2s linear infinite;
         }
 
+        @media (max-width: 480px) {
+            .card {
+                padding: 1.5rem;
+            }
+        }
+
         .badge {
             background: rgba(0, 247, 255, 0.1);
             color: var(--neon-cyan);
-            padding: 0.7rem 1.5rem;
-            border-radius: 28px;
+            padding: 0.8rem 1.8rem;
+            border-radius: 32px;
             border: 1px solid var(--border);
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             backdrop-filter: blur(8px);
             display: inline-flex;
             align-items: center;
-            gap: 0.7rem;
-            margin-bottom: 1.5rem;
+            gap: 0.8rem;
+            margin-bottom: 2rem;
             transition: all 0.5s ease-in-out;
         }
 
         .badge::before {
             content: '';
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             background: var(--neon-cyan);
             border-radius: 50%;
-            box-shadow: 0 0 12px var(--neon-cyan);
+            box-shadow: 0 0 14px var(--neon-cyan);
         }
 
         @keyframes hologram {
@@ -198,9 +235,9 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 5px;
+            height: 6px;
             background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-            box-shadow: 0 0 50px var(--glow);
+            box-shadow: 0 0 60px var(--glow);
             animation: scan 6s infinite linear;
         }
 
@@ -213,18 +250,18 @@
             background: transparent;
             border: 2px solid var(--neon-cyan);
             color: var(--neon-cyan);
-            padding: 1.3rem 3rem;
-            border-radius: 10px;
+            padding: 1.5rem 3.5rem;
+            border-radius: 12px;
             position: relative;
             overflow: hidden;
             transition: all 0.4s ease-in-out;
             font-weight: 600;
             letter-spacing: 0.06em;
             cursor: pointer;
-            margin-top: 2rem;
-            font-size: 1.2rem;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 20px rgba(0, 247, 255, 0.1);
+            margin-top: 2.5rem;
+            font-size: 1.3rem;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 25px rgba(0, 247, 255, 0.1);
         }
 
         .cyber-button::before {
@@ -240,7 +277,7 @@
 
         .cyber-button:hover {
             color: var(--hud-white);
-            box-shadow: 0 0 30px var(--glow);
+            box-shadow: 0 0 35px var(--glow);
         }
 
         .cyber-button:hover::before {
@@ -249,40 +286,52 @@
 
         @media (max-width: 768px) {
             .cyber-button {
-                padding: 1rem 2rem;
+                padding: 1.2rem 2.5rem;
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cyber-button {
+                width: 100%;
                 font-size: 1rem;
+                padding: 1rem;
             }
         }
 
         .accordion {
-            margin: 3rem 0;
-            max-width: 1000px;
+            margin: 4rem 0;
+            max-width: 1100px;
             width: 100%;
             transition: all 0.5s ease-in-out;
         }
 
         .accordion-header {
-            background: var(--slick-gray);
-            padding: 1.5rem;
+            background: transparent;
+            border: 2px solid var(--neon-cyan);
+            padding: 1.8rem;
             cursor: pointer;
-            border-radius: 10px;
-            transition: background 0.4s ease-in-out;
+            border-radius: 12px;
+            transition: all 0.4s ease-in-out;
             color: var(--neon-cyan);
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 25px rgba(0, 247, 255, 0.1);
         }
 
         .accordion-header:hover {
-            background: var(--cyber-steel);
+            color: var(--hud-white);
+            box-shadow: 0 0 35px var(--glow);
         }
 
         .accordion-content {
             display: none;
-            padding: 2.5rem;
+            padding: 3rem;
             background: var(--cyber-steel);
-            border-radius: 0 0 10px 10px;
+            border-radius: 0 0 12px 12px;
         }
 
         .accordion.active .accordion-content {
@@ -291,14 +340,20 @@
 
         @media (max-width: 768px) {
             .accordion {
-                margin: 2rem 0;
+                margin: 2.5rem 0;
             }
             .accordion-header {
-                font-size: 1.2rem;
-                padding: 1.2rem;
+                font-size: 1.4rem;
+                padding: 1.4rem;
             }
             .accordion-content {
-                padding: 1.8rem;
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .accordion-header {
+                font-size: 1rem;
             }
         }
 
@@ -308,10 +363,10 @@
         }
 
         .feature-list li {
-            margin-bottom: 1.2rem;
-            padding-left: 2.5rem;
+            margin-bottom: 1.5rem;
+            padding-left: 3rem;
             position: relative;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             transition: all 0.5s ease-in-out;
         }
 
@@ -324,61 +379,78 @@
 
         @media (max-width: 768px) {
             .feature-list li {
+                font-size: 1.1rem;
+                padding-left: 2.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .feature-list li {
                 font-size: 1rem;
-                padding-left: 2rem;
             }
         }
 
         .llm-input {
-            margin: 3rem 0;
-            max-width: 800px;
+            margin: 4rem 0;
+            max-width: 900px;
             width: 100%;
             transition: all 0.5s ease-in-out;
         }
 
         .llm-input textarea {
             width: 100%;
-            padding: 1.5rem;
+            max-width: 100%;
+            padding: 1.8rem;
             background: var(--slick-gray);
             border: 1px solid var(--border);
-            border-radius: 10px;
+            border-radius: 12px;
             color: var(--hud-white);
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             resize: vertical;
-            min-height: 150px;
+            min-height: 180px;
             transition: all 0.5s ease-in-out;
         }
 
         .llm-response {
             background: var(--cyber-steel);
-            padding: 2.5rem;
-            border-radius: 10px;
-            margin-top: 2rem;
-            max-height: 400px;
+            padding: 3rem;
+            border-radius: 12px;
+            margin-top: 2.5rem;
+            max-height: 450px;
             overflow-y: auto;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             transition: all 0.5s ease-in-out;
         }
 
         @media (max-width: 768px) {
             .llm-input {
-                margin: 2rem 0;
+                margin: 2.5rem 0;
             }
             .llm-input textarea {
-                font-size: 1rem;
-                padding: 1.2rem;
-                min-height: 120px;
+                font-size: 1.1rem;
+                padding: 1.5rem;
+                min-height: 140px;
             }
             .llm-response {
-                padding: 1.8rem;
+                padding: 2rem;
+                font-size: 1rem;
+                max-height: 400px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .llm-input textarea {
                 font-size: 0.95rem;
-                max-height: 350px;
+                min-height: 90px;
+            }
+            .llm-response {
+                font-size: 0.9rem;
             }
         }
 
         .api-demo {
-            margin: 3rem 0;
-            max-width: 800px;
+            margin: 4rem 0;
+            max-width: 900px;
             width: 100%;
             transition: all 0.5s ease-in-out;
         }
@@ -387,292 +459,475 @@
             background: var(--slick-gray);
             color: var(--hud-white);
             border: 1px solid var(--border);
-            padding: 1rem;
-            border-radius: 10px;
+            padding: 1.2rem;
+            border-radius: 12px;
             width: 100%;
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
             transition: all 0.5s ease-in-out;
         }
 
         @media (max-width: 768px) {
             .api-demo {
-                margin: 2rem 0;
+                margin: 2.5rem 0;
             }
             .api-demo select {
+                font-size: 1.1rem;
+                padding: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .api-demo select {
                 font-size: 1rem;
-                padding: 0.8rem;
+            }
+        }
+
+        #tech-stack-diagram {
+            width: 100%;
+            max-width: 1000px;
+            height: 600px;
+            margin: 4rem auto;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: all 0.5s ease-in-out;
+        }
+
+        @media (max-width: 768px) {
+            #tech-stack-diagram {
+                height: 500px;
+                margin: 2.5rem auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #tech-stack-diagram {
+                height: 400px;
+            }
+        }
+
+        .cta-footer {
+            padding: 8rem 4rem;
+            text-align: center;
+            background: var(--cyber-steel);
+            transition: all 0.5s ease-in-out;
+        }
+
+        .cta-footer a {
+            color: var(--neon-cyan);
+            text-decoration: none;
+            font-size: 1.3rem;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .cta-footer a:hover {
+            color: var(--hud-white);
+        }
+
+        @media (max-width: 768px) {
+            .cta-footer {
+                padding: 5rem 2rem;
+            }
+            .cta-footer a {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cta-footer {
+                padding: 3rem 1rem;
+            }
+            .cta-footer a {
+                font-size: 1rem;
             }
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" defer></script>
 </head>
 <body>
     <div id="particles-js"></div>
     <div class="terminal-line"></div>
 
-    <!-- Slide 1: Introduction -->
-    <div class="slide">
-        <h1>ElviraGenesis: Pioneering Cybersecurity Excellence</h1>
-        <p>ElviraGenesis is the world's first GPU-cluster-compatible cybersecurity AI platform, integrating capsule-based memory compression, DAG-verified ethical intelligence, and real-time multi-agent mutation. Designed for zero-day threat detection, forensic analysis, and regulatory-compliant governance, it operates on consumer-grade hardware with no speculative dependencies, ensuring a future where safety and innovation thrive.</p>
-        <button class="cyber-button">Discover the Future</button>
-    </div>
+    <main>
+        <!-- Section 1: Introduction -->
+        <section>
+            <h1>ElviraGenesis: Pioneering Cybersecurity Excellence</h1>
+            <p>ElviraGenesis is the world's first GPU-cluster-compatible cybersecurity AI platform, integrating capsule-based memory compression, DAG-verified ethical intelligence, and real-time multi-agent mutation. Designed for zero-day threat detection, forensic analysis, and regulatory-compliant governance, it operates on consumer-grade hardware with no speculative dependencies, ensuring a future where safety and innovation thrive.</p>
+            <button class="cyber-button">Discover the Future</button>
+        </section>
 
-    <!-- Slide 2: Unique Selling Propositions -->
-    <div class="slide">
-        <h1>Unique Intellectual Property</h1>
-        <p>ElviraGenesis leverages patented innovations and cutting-edge AI to deliver unparalleled cybersecurity capabilities.</p>
-        <div class="grid">
-            <div class="card">
-                <div class="badge">Patent-Pending</div>
-                <h2>Cyber-AI Memory Fusion</h2>
-                <p>Capsule-compressed memory with entropy-aware retrieval and QUBO prioritization. No other platform fuses semantic memory recall with threat detection.</p>
+        <!-- Section 2: Unique Selling Propositions -->
+        <section>
+            <h1>Unique Intellectual Property</h1>
+            <p>ElviraGenesis leverages patented innovations and cutting-edge AI to deliver unparalleled cybersecurity capabilities.</p>
+            <div class="grid">
+                <div class="card">
+                    <div class="badge">Patent-Pending</div>
+                    <h2>Cyber-AI Memory Fusion</h2>
+                    <p>Capsule-compressed memory with entropy-aware retrieval and QUBO prioritization. No other platform fuses semantic memory recall with threat detection.</p>
+                </div>
+                <div class="card">
+                    <div class="badge">RL-Tuned</div>
+                    <h2>Zero-Day Evolution Engine</h2>
+                    <p>Live mutation of exploit detectors using adversarial LLM agents, enabling self-improving red team capabilities.</p>
+                </div>
+                <div class="card">
+                    <div class="badge">ZK-Verified</div>
+                    <h2>Ethical DAG Security</h2>
+                    <p>DAG-traced causality with soul-vector decisions, Merkle-hashed and zk-verified for forensic auditability.</p>
+                </div>
+                <div class="card">
+                    <div class="badge">Ray + CUDA</div>
+                    <h2>Cluster-Native Intelligence</h2>
+                    <p>Multi-GPU and distributed agent support for parallel inference and forensics, scaling seamlessly with nodes.</p>
+                </div>
+                <div class="card">
+                    <div class="badge">VisPy</div>
+                    <h2>Visual-Forensics GUI</h2>
+                    <p>GPU-powered 3D forensic UIs displaying live hex entropy shifts, capsule memory activity, and DAG attack paths.</p>
+                </div>
             </div>
-            <div class="card">
-                <div class="badge">RL-Tuned</div>
-                <h2>Zero-Day Evolution Engine</h2>
-                <p>Live mutation of exploit detectors using adversarial LLM agents, enabling self-improving red team capabilities.</p>
-            </div>
-            <div class="card">
-                <div class="badge">ZK-Verified</div>
-                <h2>Ethical DAG Security</h2>
-                <p>DAG-traced causality with soul-vector decisions, Merkle-hashed and zk-verified for forensic auditability.</p>
-            </div>
-            <div class="card">
-                <div class="badge">Ray + CUDA</div>
-                <h2>Cluster-Native Intelligence</h2>
-                <p>Multi-GPU and distributed agent support for parallel inference and forensics, scaling seamlessly with nodes.</p>
-            </div>
-            <div class="card">
-                <div class="badge">VisPy</div>
-                <h2>Visual-Forensics GUI</h2>
-                <p>GPU-powered 3D forensic UIs displaying live hex entropy shifts, capsule memory activity, and DAG attack paths.</p>
-            </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- Slide 3: Core Capabilities -->
-    <div class="slide">
-        <h1>Core Capabilities</h1>
-        <p>ElviraGenesis leverages a modular architecture to deliver real-time cybersecurity solutions across multiple domains.</p>
-        <div class="accordion">
-            <div class="accordion-header">Enhanced Entropy Visualization <span>↓</span></div>
-            <div class="accordion-content">
-                <ul class="feature-list">
-                    <li>3D entropy visualization with animated particle systems and tessellated meshes</li>
-                    <li>Full GLSL pipeline for advanced rendering with post-process shaders</li>
-                    <li>Gaussian Mixture Models for adaptive anomaly detection and thresholding</li>
-                    <li>Redis-backed caching for high-speed state tracking and session persistence</li>
-                    <li>Interactive PyQt5 GUI with sliders, heatmaps, and live AI-driven insights</li>
-                    <li>Multi-scale entropy overlays for detailed forensic analysis</li>
-                    <li>Real-time anomaly glow effects with interactive camera controls</li>
-                </ul>
+        <!-- Section 3: Core Capabilities -->
+        <section>
+            <h1>Core Capabilities</h1>
+            <p>ElviraGenesis leverages a modular architecture to deliver real-time cybersecurity solutions across multiple domains.</p>
+            <div class="accordion">
+                <div class="accordion-header">Enhanced Entropy Visualization <span>↓</span></div>
+                <div class="accordion-content">
+                    <ul class="feature-list">
+                        <li>3D entropy visualization with animated particle systems and tessellated meshes</li>
+                        <li>Full GLSL pipeline for advanced rendering with post-process shaders</li>
+                        <li>Gaussian Mixture Models for adaptive anomaly detection and thresholding</li>
+                        <li>Redis-backed caching for high-speed state tracking and session persistence</li>
+                        <li>Interactive PyQt5 GUI with sliders, heatmaps, and live AI-driven insights</li>
+                        <li>Multi-scale entropy overlays for detailed forensic analysis</li>
+                        <li>Real-time anomaly glow effects with interactive camera controls</li>
+                    </ul>
+                </div>
             </div>
-        </div>
-        <div class="accordion">
-            <div class="accordion-header">Forensic Hex Matrix Window <span>↓</span></div>
-            <div class="accordion-content">
-                <ul class="feature-list">
-                    <li>GPU-accelerated hex-matrix statistical analysis using OpenCL</li>
-                    <li>Cryptographic heuristics for detecting anomalous entropy shifts in file blocks</li>
-                    <li>Real-time visualization of anomaly patterns in binary data with 3D overlays</li>
-                    <li>Integration with EnhancedEntropyVisualization.py for seamless pipeline operations</li>
-                    <li>Dynamic threshold adjustments for adaptive cyber defense scenarios</li>
-                    <li>Support for live updates with Redis-backed state preservation</li>
-                </ul>
+            <div class="accordion">
+                <div class="accordion-header">Forensic Hex Matrix Window <span>↓</span></div>
+                <div class="accordion-content">
+                    <ul class="feature-list">
+                        <li>GPU-accelerated hex-matrix statistical analysis using OpenCL</li>
+                        <li>Cryptographic heuristics for detecting anomalous entropy shifts in file blocks</li>
+                        <li>Real-time visualization of anomaly patterns in binary data with 3D overlays</li>
+                        <li>Integration with EnhancedEntropyVisualization.py for seamless pipeline operations</li>
+                        <li>Dynamic threshold adjustments for adaptive cyber defense scenarios</li>
+                        <li>Support for live updates with Redis-backed state preservation</li>
+                    </ul>
+                </div>
             </div>
-        </div>
-        <div class="accordion">
-            <div class="accordion-header">Cyber Forensic Capabilities <span>↓</span></div>
-            <div class="accordion-content">
-                <ul class="feature-list">
-                    <li>Multi-format forensic scanner with steganography detection and metadata analysis</li>
-                    <li>AI-driven wallet and mnemonic discovery using HypercubeOmegaAI</li>
-                    <li>YARA signature triggers and binwalk analysis for embedded threat detection</li>
-                    <li>Async thread pool architecture for high-volume file ingestion</li>
-                    <li>CuPy-enhanced entropy analysis for rapid processing</li>
-                    <li>Signal bus via Qt for real-time GUI and telemetry updates</li>
-                    <li>Support for PDF/Office metadata scanning and ROT/XOR obfuscation detection</li>
-                </ul>
+            <div class="accordion">
+                <div class="accordion-header">Cyber Forensic Capabilities <span>↓</span></div>
+                <div class="accordion-content">
+                    <ul class="feature-list">
+                        <li>Multi-format forensic scanner with steganography detection and metadata analysis</li>
+                        <li>AI-driven wallet and mnemonic discovery using HypercubeOmegaAI</li>
+                        <li>YARA signature triggers and binwalk analysis for embedded threat detection</li>
+                        <li>Async thread pool architecture for high-volume file ingestion</li>
+                        <li>CuPy-enhanced entropy analysis for rapid processing</li>
+                        <li>Signal bus via Qt for real-time GUI and telemetry updates</li>
+                        <li>Support for PDF/Office metadata scanning and ROT/XOR obfuscation detection</li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- Slide 4: LLM Integration and GUI -->
-    <div class="slide">
-        <h1>LLM Integration via GUI</h1>
-        <p>ElviraGenesis enables seamless interaction with LLMs through an advanced PyQt5 GUI, with ethical validation and real-time auditing.</p>
-        <div class="api-demo">
-            <select id="llm-provider">
-                <option value="openai">OpenAI GPT-4</option>
-                <option value="local-llama">Local LLaMA</option>
-                <option value="groq">Grok (xAI)</option>
-            </select>
-            <div class="llm-input">
-                <textarea id="llm-query" placeholder="Enter your query (e.g., 'Analyze this file for threats')"></textarea>
-                <button class="cyber-button" onclick="callLLM()">Submit Query</button>
+        <!-- Section 4: LLM Integration and GUI -->
+        <section>
+            <h1>LLM Integration via GUI</h1>
+            <p>ElviraGenesis enables seamless interaction with LLMs through an advanced PyQt5 GUI, with ethical validation and real-time auditing.</p>
+            <div class="api-demo">
+                <select id="llm-provider">
+                    <option value="openai">OpenAI GPT-4</option>
+                    <option value="local-llama">Local LLaMA</option>
+                    <option value="groq">Grok (xAI)</option>
+                </select>
+                <div class="llm-input">
+                    <textarea id="llm-query" placeholder="Enter your query (e.g., 'Analyze this file for threats')"></textarea>
+                    <button class="cyber-button" onclick="callLLM()">Submit Query</button>
+                </div>
+                <div class="llm-response" id="llm-response">LLM Response will appear here...</div>
             </div>
-            <div class="llm-response" id="llm-response">LLM Response will appear here...</div>
-        </div>
-        <div class="accordion">
-            <div class="accordion-header">LLM Workflow <span>↓</span></div>
-            <div class="accordion-content">
-                <ul class="feature-list">
-                    <li>User input (text/audio) captured via PyQt5 GUI with real-time validation</li>
-                    <li>Routed through llm_bridge or llm_output_guard for secure processing</li>
-                    <li>API calls to OpenAI, local LLaMA, or other LLMs with configurable endpoints</li>
-                    <li>Responses validated by 15D soul vector and entropy checks for ethical compliance</li>
-                    <li>Logged in Neo4j with zstd-compressed audit chain for traceability</li>
-                    <li>Real-time display with dynamic updates and audit feedback</li>
-                    <li>Support for multi-modal inputs and cross-sandbox monitoring</li>
-                </ul>
+            <div class="accordion">
+                <div class="accordion-header">LLM Workflow <span>↓</span></div>
+                <div class="accordion-content">
+                    <ul class="feature-list">
+                        <li>User input (text/audio) captured via PyQt5 GUI with real-time validation</li>
+                        <li>Routed through llm_bridge or llm_output_guard for secure processing</li>
+                        <li>API calls to OpenAI, local LLaMA, or other LLMs with configurable endpoints</li>
+                        <li>Responses validated by 15D soul vector and entropy checks for ethical compliance</li>
+                        <li>Logged in Neo4j with zstd-compressed audit chain for traceability</li>
+                        <li>Real-time display with dynamic updates and audit feedback</li>
+                        <li>Support for multi-modal inputs and cross-sandbox monitoring</li>
+                    </ul>
+                </div>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- Slide 5: Advanced Cybersecurity Modules -->
-    <div class="slide">
-        <h1>Advanced Cybersecurity Modules</h1>
-        <p>ElviraGenesis includes a comprehensive suite of specialized modules for unmatched threat detection and response capabilities.</p>
-        <div class="grid">
-            <div class="card">
-                <div class="badge">Torch AMP</div>
-                <h2>AI Vulnerability Predictor</h2>
-                <p>Transformer-based neuro-reasoning for predicting system-level vulnerabilities with CVE scoring and stealth analysis.</p>
+        <!-- Section 5: Model Training & Capsule Evolution -->
+        <section>
+            <h1>Model Training & Capsule Evolution</h1>
+            <p>ElviraGenesis supports advanced model training and capsule evolution pipelines, ensuring continuous improvement and adaptability.</p>
+            <div class="accordion">
+                <div class="accordion-header">Key Capabilities <span>↓</span></div>
+                <div class="accordion-content">
+                    <ul class="feature-list">
+                        <li>Train new LLMs/agents using PyTorch with FP16/FP8 mixed precision</li>
+                        <li>Dynamic routing via custom capsule_kernel.py (Triton)</li>
+                        <li>Entropy-gated AdaptiveMPS compressor for efficient memory handling</li>
+                        <li>Capsule-aware attention transformer for contextual learning</li>
+                        <li>Multi-GPU compatible distributed training via Ray</li>
+                        <li>Self-mutation and evolution through mutation_engine.py</li>
+                        <li>QUBO-based memory prioritization with RL-tuned relevance scoring</li>
+                    </ul>
+                </div>
             </div>
-            <div class="card">
-                <div class="badge">eBPF</div>
-                <h2>Kernel Anomaly Monitor</h2>
-                <p>Detects runtime kernel patching and rootkits using /proc/kallsyms and eBPF hooks with GPU-accelerated entropy tracing.</p>
+            <div class="accordion">
+                <div class="accordion-header">Supported Pipelines <span>↓</span></div>
+                <div class="accordion-content">
+                    <ul class="feature-list">
+                        <li>Train capsules from scratch or refine from datasets (HuggingFace)</li>
+                        <li>Inject synthetic memory traces or adversarial patterns for robustness</li>
+                        <li>Validate every output ethically via soul vector and ethical_reasoning_engine.py</li>
+                        <li>Store and replay results from Redis, Neo4j, and FAISS vector stores</li>
+                        <li>Support for continuous learning loops with real-time feedback</li>
+                    </ul>
+                </div>
             </div>
-            <div class="card">
-                <div class="badge">SHA3-512</div>
-                <h2>File System Integrity</h2>
-                <p>Real-time fingerprinting of critical paths with tamper-proof ledger integration and automated rollback mechanisms.</p>
-            </div>
-            <div class="card">
-                <div class="badge">Triton</div>
-                <h2>Deep Packet Inspection</h2>
-                <p>GPU-powered L7 DPI for detecting payload anomalies, signatureless exploits, and C2 callbacks using TorchScript.</p>
-            </div>
-            <div class="card">
-                <div class="badge">Volatility3</div>
-                <h2>Memory Forensics</h2>
-                <p>AI-driven analysis of process memory for shellcode, payloads, and obfuscated injections with volatility3 integration.</p>
-            </div>
-            <div class="card">
-                <div class="badge">MITRE ATT&CK</div>
-                <h2>Attack Path Simulator</h2>
-                <p>Simulates lateral movement and privilege escalation using graph-based AI trained on MITRE ATT&CK dataset.</p>
-            </div>
-            <div class="card">
-                <div class="badge">Ray</div>
-                <h2>Exploit Ingestor</h2>
-                <p>High-performance ingestion pipeline for vulnerability data with AI + SVM hybrid classification, genetic mutation, and secure sandbox testing.</p>
-            </div>
-            <div class="card">
-                <div class="badge">Asyncio</div>
-                <h2>Exploit Mutator</h2>
-                <p>DAG-based mutation engine for evolving exploits with RL-tuned strategies, concurrency for parallel tasks, and IDS-agnostic stealth metrics.</p>
-            </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- Slide 6: Technical Architecture -->
-    <div class="slide">
-        <h1>Technical Architecture</h1>
-        <p>ElviraGenesis is built on a modular, GPU-accelerated framework optimized for real-time performance, scalability, and security.</p>
-        <div class="accordion">
-            <div class="accordion-header">Memory Core <span>↓</span></div>
-            <div class="accordion-content">
-                <ul class="feature-list">
-                    <li>FAISS-indexed memory embeddings with capsule compression for efficient storage</li>
-                    <li>AdaptiveMPS for entropy-aware projection and retrieval</li>
-                    <li>QUBO optimization for dynamic memory relevance scoring</li>
-                    <li>Integration with Redis for high-speed ephemeral state tracking</li>
-                    <li>Support for both episodic and semantic memory types</li>
-                    <li>Real-time memory pruning with adaptive entropy thresholding</li>
-                    <li>Secure memory buffers with AES+RSA encryption and signing</li>
-                </ul>
+        <!-- Section 6: Advanced Cybersecurity Modules -->
+        <section>
+            <h1>Advanced Cybersecurity Modules</h1>
+            <p>ElviraGenesis includes a comprehensive suite of specialized modules for unmatched threat detection and response capabilities.</p>
+            <div class="grid">
+                <div class="card">
+                    <div class="badge">Torch AMP</div>
+                    <h2>AI Vulnerability Predictor</h2>
+                    <p>Transformer-based neuro-reasoning for predicting system-level vulnerabilities with CVE scoring and stealth analysis.</p>
+                </div>
+                <div class="card">
+                    <div class="badge">eBPF</div>
+                    <h2>Kernel Anomaly Monitor</h2>
+                    <p>Detects runtime kernel patching and rootkits using /proc/kallsyms and eBPF hooks with GPU-accelerated entropy tracing.</p>
+                </div>
+                <div class="card">
+                    <div class="badge">SHA3-512</div>
+                    <h2>File System Integrity</h2>
+                    <p>Real-time fingerprinting of critical paths with tamper-proof ledger integration and automated rollback mechanisms.</p>
+                </div>
+                <div class="card">
+                    <div class="badge">Triton</div>
+                    <h2>Deep Packet Inspection</h2>
+                    <p>GPU-powered L7 DPI for detecting payload anomalies, signatureless exploits, and C2 callbacks using TorchScript.</p>
+                </div>
+                <div class="card">
+                    <div class="badge">Volatility3</div>
+                    <h2>Memory Forensics</h2>
+                    <p>AI-driven analysis of process memory for shellcode, payloads, and obfuscated injections with volatility3 integration.</p>
+                </div>
+                <div class="card">
+                    <div class="badge">MITRE ATT&CK</div>
+                    <h2>Attack Path Simulator</h2>
+                    <p>Simulates lateral movement and privilege escalation using graph-based AI trained on MITRE ATT&CK dataset.</p>
+                </div>
+                <div class="card">
+                    <div class="badge">Ray</div>
+                    <h2>Exploit Ingestor</h2>
+                    <p>High-performance ingestion pipeline for vulnerability data with AI + SVM hybrid classification, genetic mutation, and secure sandbox testing.</p>
+                </div>
+                <div class="card">
+                    <div class="badge">Asyncio</div>
+                    <h2>Exploit Mutator</h2>
+                    <p>DAG-based mutation engine for evolving exploits with RL-tuned strategies, concurrency for parallel tasks, and IDS-agnostic stealth metrics.</p>
+                </div>
             </div>
-        </div>
-        <div class="accordion">
-            <div class="accordion-header">Capsule Transformer <span>↓</span></div>
-            <div class="accordion-content">
-                <ul class="feature-list">
-                    <li>Custom Triton kernel for efficient token routing with 3x performance gains</li>
-                    <li>FP16 operations with dynamic routing for low-latency processing</li>
-                    <li>Hybrid self-attention mechanisms for enhanced contextual understanding</li>
-                    <li>Scalable across multi-GPU clusters using Ray</li>
-                    <li>Optimized for real-time inference on RTX 4070</li>
-                    <li>Support for capsule-aware self-attention with FP8 fallback</li>
-                    <li>Dynamic load balancing for distributed inference tasks</li>
-                </ul>
-            </div>
-        </div>
-        <div class="accordion">
-            <div class="accordion-header">Ethical Reasoning <span>↓</span></div>
-            <div class="accordion-content">
-                <ul class="feature-list">
-                    <li>15D soul vector alignment for ethical validation of all actions</li>
-                    <li>Real-time anomaly, rogue drift, and adversarial state detection</li>
-                    <li>Neo4j-integrated logging with zkProofs for auditability</li>
-                    <li>Merkle-hashed decision chains for regulatory compliance</li>
-                    <li>Automated kill-switch policies for safety enforcement</li>
-                    <li>Emotion-weighted metrics for decision logging</li>
-                    <li>Support for adversarial input detection and mitigation</li>
-                </ul>
-            </div>
-        </div>
-        <div class="accordion">
-            <div class="accordion-header">Multi-GPU Runtime <span>↓</span></div>
-            <div class="accordion-content">
-                <ul class="feature-list">
-                    <li>Stream-aware memory allocation with FP8/FP16 fallback for efficiency</li>
-                    <li>Dual GPU dispatch (RTX 4070 for inference, RTX 3060 for forensics and logging)</li>
-                    <li>Ray-based task orchestration for distributed agent intelligence</li>
-                    <li>Dynamic VRAM analysis for optimal resource utilization</li>
-                    <li>Scalable to larger clusters without parameter limitations</li>
-                    <li>AMP support for mixed precision training and inference</li>
-                    <li>Real-time monitoring of GPU health and performance</li>
-                </ul>
-            </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- Slide 7: Investment Opportunity -->
-    <div class="slide">
-        <h1>Investment Opportunity</h1>
-        <p>ElviraGenesis seeks $2.75M USD for a 15% equity stake in a seed round to scale our groundbreaking cybersecurity platform and deliver transformative impact.</p>
-        <button class="cyber-button">Contact for Investment</button>
-    </div>
+        <!-- Section 7: Technical Architecture -->
+        <section>
+            <h1>Technical Architecture</h1>
+            <p>ElviraGenesis is built on a modular, GPU-accelerated framework optimized for real-time performance, scalability, and security.</p>
+            <div class="accordion">
+                <div class="accordion-header">Memory Core <span>↓</span></div>
+                <div class="accordion-content">
+                    <ul class="feature-list">
+                        <li>FAISS-indexed memory embeddings with capsule compression for efficient storage</li>
+                        <li>AdaptiveMPS for entropy-aware projection and retrieval</li>
+                        <li>QUBO optimization for dynamic memory relevance scoring</li>
+                        <li>Integration with Redis for high-speed ephemeral state tracking</li>
+                        <li>Support for both episodic and semantic memory types</li>
+                        <li>Real-time memory pruning with adaptive entropy thresholding</li>
+                        <li>Secure memory buffers with AES+RSA encryption and signing</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Capsule Transformer <span>↓</span></div>
+                <div class="accordion-content">
+                    <ul class="feature-list">
+                        <li>Custom Triton kernel for efficient token routing with 3x performance gains</li>
+                        <li>FP16 operations with dynamic routing for low-latency processing</li>
+                        <li>Hybrid self-attention mechanisms for enhanced contextual understanding</li>
+                        <li>Scalable across multi-GPU clusters using Ray</li>
+                        <li>Optimized for real-time inference on RTX 4070</li>
+                        <li>Support for capsule-aware self-attention with FP8 fallback</li>
+                        <li>Dynamic load balancing for distributed inference tasks</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Ethical Reasoning <span>↓</span></div>
+                <div class="accordion-content">
+                    <ul class="feature-list">
+                        <li>15D soul vector alignment for ethical validation of all actions</li>
+                        <li>Real-time anomaly, rogue drift, and adversarial state detection</li>
+                        <li>Neo4j-integrated logging with zkProofs for auditability</li>
+                        <li>Merkle-hashed decision chains for regulatory compliance</li>
+                        <li>Automated kill-switch policies for safety enforcement</li>
+                        <li>Emotion-weighted metrics for decision logging</li>
+                        <li>Support for adversarial input detection and mitigation</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Multi-GPU Runtime <span>↓</span></div>
+                <div class="accordion-content">
+                    <ul class="feature-list">
+                        <li>Stream-aware memory allocation with FP8/FP16 fallback for efficiency</li>
+                        <li>Dual GPU dispatch (RTX 4070 for inference, RTX 3060 for forensics and logging)</li>
+                        <li>Ray-based task orchestration for distributed agent intelligence</li>
+                        <li>Dynamic VRAM analysis for optimal resource utilization</li>
+                        <li>Scalable to larger clusters without parameter limitations</li>
+                        <li>AMP support for mixed precision training and inference</li>
+                        <li>Real-time monitoring of GPU health and performance</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
 
-    <!-- Slide 8: Conclusion and Vision -->
-    <div class="slide">
-        <h1>Vision and Impact</h1>
-        <p>ElviraGenesis is poised to revolutionize cybersecurity with its ethics-anchored, GPU-accelerated, and cluster-native AI framework. By combining real-time threat detection, advanced forensic visualization, and auditable governance, we aim to secure the digital world for enterprises, governments, and beyond—delivering a future where safety and innovation coexist seamlessly.</p>
-        <button class="cyber-button">Join the Revolution</button>
-    </div>
+        <!-- Section 8: Tech Stack Diagram -->
+        <section>
+            <h1>Tech Stack</h1>
+            <p>ElviraGenesis is powered by a robust and modern tech stack, ensuring performance, scalability, and security.</p>
+            <div id="tech-stack-diagram"></div>
+            <div class="accordion">
+                <div class="accordion-header">Technologies Used <span>↓</span></div>
+                <div class="accordion-content">
+                    <ul class="feature-list">
+                        <li><strong>Frameworks:</strong> PyTorch, Ray, FAISS, Triton, CuPy, Volatility3</li>
+                        <li><strong>Languages:</strong> Python 3.11, GLSL (for VisPy)</li>
+                        <li><strong>Security:</strong> AES/RSA, SHA3-512, Zstandard, eBPF, AppArmor</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 9: Team Section -->
+        <section>
+            <h1>Our Team</h1>
+            <p>Meet the brilliant minds behind ElviraGenesis, driving innovation in AI and cybersecurity.</p>
+            <div class="grid">
+                <div class="card">
+                    <div class="badge">Founder</div>
+                    <h2>Ben [Redacted]</h2>
+                    <p>Lead architect behind ElviraGenesis. 10+ years in AI, cybersecurity, and systems design.</p>
+                </div>
+                <div class="card">
+                    <div class="badge">Security R&D</div>
+                    <h2>Core Team</h2>
+                    <p>Red team engineers, PyTorch hackers, and systems architects working in stealth-mode ops.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 10: Investment Opportunity -->
+        <section>
+            <h1>Investment Opportunity</h1>
+            <p>ElviraGenesis is open to strategic investments to accelerate our mission of securing the digital world.</p>
+            <button class="cyber-button">Contact to Invest</button>
+        </section>
+
+        <!-- Section 11: Conclusion and Vision -->
+        <section>
+            <h1>Vision and Impact</h1>
+            <p>ElviraGenesis is poised to revolutionize cybersecurity with its ethics-anchored, GPU-accelerated, and cluster-native AI framework. By combining real-time threat detection, advanced forensic visualization, and auditable governance, we aim to secure the digital world for enterprises, governments, and beyond—delivering a future where safety and innovation coexist seamlessly.</p>
+            <button class="cyber-button">Join the Revolution</button>
+        </section>
+    </main>
+
+    <!-- CTA Footer -->
+    <footer class="cta-footer">
+        <h1>Ready to Secure the Future?</h1>
+        <p>Contact us for pilot deployment, investor discussions, or strategic partnership.</p>
+        <button class="cyber-button">Contact Us</button>
+        <p><a href="mailto:ceo@aurora-core.net">ceo@aurora-core.net</a></p>
+    </footer>
 
     <script>
-        // Initialize Particles.js for enhanced background effects
-        particlesJS('particles-js', {
-            particles: {
-                number: { value: 200, density: { enable: true, value_area: 1200 } },
-                color: { value: '#00f7ff' },
-                shape: { type: 'circle', stroke: { width: 0, color: '#000000' } },
-                opacity: { value: 0.6, random: true, anim: { enable: true, speed: 1.5, opacity_min: 0.2, sync: false } },
-                size: { value: 4, random: true, anim: { enable: true, speed: 20, size_min: 0.5, sync: false } },
-                line_linked: { enable: true, distance: 200, color: '#00f7ff', opacity: 0.5, width: 1.5 },
-                move: { enable: true, speed: 3, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
-            },
-            interactivity: {
-                detect_on: 'canvas',
-                events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true },
-                modes: { repulse: { distance: 120, duration: 0.5 }, push: { particles_nb: 5 } }
-            },
-            retina_detect: true
+        // Ensure particlesJS is loaded before initializing
+        document.addEventListener('DOMContentLoaded', function () {
+            if (typeof particlesJS !== 'undefined') {
+                particlesJS('particles-js', {
+                    particles: {
+                        number: { value: 250, density: { enable: true, value_area: 1200 } },
+                        color: { value: '#00f7ff' },
+                        shape: { type: 'circle', stroke: { width: 0, color: '#000000' } },
+                        opacity: { value: 0.7, random: true, anim: { enable: true, speed: 1.5, opacity_min: 0.2, sync: false } },
+                        size: { value: 5, random: true, anim: { enable: true, speed: 20, size_min: 0.5, sync: false } },
+                        line_linked: { enable: true, distance: 200, color: '#00f7ff', opacity: 0.5, width: 1.5 },
+                        move: { enable: true, speed: 3, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
+                    },
+                    interactivity: {
+                        detect_on: 'canvas',
+                        events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true },
+                        modes: { repulse: { distance: 120, duration: 0.5 }, push: { particles_nb: 5 } }
+                    },
+                    retina_detect: true
+                });
+            } else {
+                console.error('particlesJS is not defined. Ensure the script is loaded correctly.');
+            }
         });
+
+        // Initialize VisJS Network for Tech Stack Diagram
+        function drawTechStackDiagram() {
+            const nodes = [
+                { id: 1, label: 'Elvira Core', shape: 'box', color: { background: '#00f7ff', border: '#00f7ff' } },
+                { id: 2, label: 'PyTorch', shape: 'ellipse', color: { background: '#1a1a1a', border: '#00f7ff' } },
+                { id: 3, label: 'Neo4j', shape: 'ellipse', color: { background: '#1a1a1a', border: '#00f7ff' } },
+                { id: 4, label: 'Triton', shape: 'ellipse', color: { background: '#1a1a1a', border: '#00f7ff' } },
+                { id: 5, label: 'Ray Cluster', shape: 'ellipse', color: { background: '#1a1a1a', border: '#00f7ff' } },
+                { id: 6, label: 'Redis', shape: 'ellipse', color: { background: '#1a1a1a', border: '#00f7ff' } },
+                { id: 7, label: 'FAISS', shape: 'ellipse', color: { background: '#1a1a1a', border: '#00f7ff' } }
+            ];
+
+            const edges = [
+                { from: 2, to: 1, color: { color: '#00f7ff' } },
+                { from: 3, to: 1, color: { color: '#00f7ff' } },
+                { from: 4, to: 1, color: { color: '#00f7ff' } },
+                { from: 5, to: 1, color: { color: '#00f7ff' } },
+                { from: 6, to: 1, color: { color: '#00f7ff' } },
+                { from: 7, to: 1, color: { color: '#00f7ff' } }
+            ];
+
+            const container = document.getElementById('tech-stack-diagram');
+            const data = { nodes: nodes, edges: edges };
+            const options = {
+                nodes: { font: { size: 16, color: '#ffffff' }, borderWidth: 2 },
+                edges: { width: 2, arrows: { to: { enabled: true, scaleFactor: 1 } } },
+                physics: { stabilization: { iterations: 1000 } },
+                layout: { randomSeed: 2 }
+            };
+            new vis.Network(container, data, options);
+        }
+
+        // Call the diagram function after DOM is loaded
+        document.addEventListener('DOMContentLoaded', drawTechStackDiagram);
 
         // Accordion functionality
         document.querySelectorAll('.accordion-header').forEach(header => {
@@ -698,24 +953,19 @@
             try {
                 let responseText = '';
                 if (provider === 'openai') {
-                    // Simulated OpenAI API call
                     responseText = await simulateOpenAICall(query);
                 } else if (provider === 'local-llama') {
-                    // Simulated local LLaMA call
                     responseText = await simulateLocalLLMCall(query);
                 } else if (provider === 'groq') {
-                    // Simulated Grok call
                     responseText = await simulateGrokCall(query);
                 }
 
-                // Simulate ethical validation
                 const isEthical = await simulateEthicalValidation(responseText);
                 if (!isEthical) {
                     responseDiv.textContent = 'Response blocked due to ethical violation.';
                     return;
                 }
 
-                // Simulate audit logging
                 await simulateAuditLog(query, responseText);
 
                 responseDiv.textContent = responseText;
@@ -724,7 +974,6 @@
             }
         }
 
-        // Simulated OpenAI API call
         async function simulateOpenAICall(query) {
             return new Promise(resolve => {
                 setTimeout(() => {
@@ -733,7 +982,6 @@
             });
         }
 
-        // Simulated local LLaMA call
         async function simulateLocalLLMCall(query) {
             return new Promise(resolve => {
                 setTimeout(() => {
@@ -742,7 +990,6 @@
             });
         }
 
-        // Simulated Grok call
         async function simulateGrokCall(query) {
             return new Promise(resolve => {
                 setTimeout(() => {
@@ -751,16 +998,14 @@
             });
         }
 
-        // Simulated ethical validation
         async function simulateEthicalValidation(response) {
             return new Promise(resolve => {
                 setTimeout(() => {
-                    resolve(Math.random() > 0.1); // 90% chance of passing
+                    resolve(Math.random() > 0.1);
                 }, 500);
             });
         }
 
-        // Simulated audit logging
         async function simulateAuditLog(query, response) {
             console.log(`Audit Log: Query="${query}", Response="${response}"`);
             return Promise.resolve();
