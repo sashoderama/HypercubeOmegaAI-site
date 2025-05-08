@@ -1,1430 +1,786 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>AURORA CORE :: PHASE 3</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <meta name="description" content="AURORA CORE: Advanced AGI Forensic System with Quantum-Classical Integration"/>
-  <meta name="keywords" content="AGI, forensic, quantum, self-healing, Aurora Core"/>
-  <meta name="author" content="Aurora Architect"/>
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" as="style" onload="this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap"></noscript>
-  <script src="https://cdn.plot.ly/plotly-2.34.0.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.0.0/dist/tf.min.js"></script>
-  <style>
-    :root {
-      --aurora-teal:     #00ffc6;
-      --teal-highlight:  #00ffee;
-      --danger-red:      #ff3c3c;
-      --neutral-text:    #cccccc;
-      --bg-shimmer:      #001f1f;
-      --bloom-shadow:    #003a3a;
-      --divider-line:    #006666;
-      --footer-glow:     #002828;
-      --dim-teal:        #009988;
-      --text-primary:    var(--aurora-teal);
-      --text-body:       #b0fff5;
-      --bg-primary:      #000;
-      --bg-panel:        #002020;
-      --glow-accent:     #00ffc644;
-      --error-pulse:     #ff3c3c44;
-      --success-green:   #00cc88;
-      --quantum-blue:    #0077ff;
-    }
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      font-family: 'JetBrains Mono', monospace;
-      overflow: hidden;
-      background: radial-gradient(circle at 50% 50%, #000, var(--bg-shimmer));
-      background-size: 300% 300%;
-      animation: radialPulse 15s ease-in-out infinite;
-      color: var(--text-body);
-      overscroll-behavior: none;
-    }
-    @keyframes radialPulse {
-      0% { background-position: 0% 0%; }
-      50% { background-position: 100% 100%; }
-      100% { background-position: 0% 0%; }
-    }
-    body {
-      animation: quantumIntro 2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      will-change: opacity, transform;
-    }
-    @keyframes quantumIntro {
-      0% { opacity: 0; transform: scale(0.95) translateY(50px); }
-      50% { opacity: 0.6; transform: scale(1.02) translateY(-10px); }
-      100% { opacity: 1; transform: scale(1) translateY(0); }
-    }
-    *, *::before, *::after {
-      transform: translateZ(0);
-      backface-visibility: hidden;
-      box-sizing: border-box;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-    #cursor {
-      position: fixed;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: var(--aurora-teal);
-      box-shadow: 0 0 15px var(--aurora-teal), 0 0 30px var(--teal-highlight);
-      pointer-events: none;
-      z-index: 10000;
-      transition: transform 0.05s ease, opacity 0.2s ease;
-      mix-blend-mode: screen;
-    }
-    #cursor.active {
-      transform: scale(1.5);
-      box-shadow: 0 0 25px var(--aurora-teal), 0 0 50px var(--teal-highlight);
-    }
-    #particle-bg {
-      position: fixed;
-      inset: 0;
-      z-index: -2;
-      overflow: hidden;
-      background: transparent;
-    }
-    #particle-canvas {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      display: block;
-      will-change: transform;
-    }
-    #three-canvas {
-      position: fixed;
-      inset: 0;
-      z-index: -3;
-      opacity: 0.3;
-      mix-blend-mode: overlay;
-    }
-    .boot-fade {
-      position: fixed;
-      inset: 0;
-      background: var(--bg-primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: clamp(2rem, 5vw, 3rem);
-      color: var(--aurora-teal);
-      text-shadow: 0 0 10px var(--aurora-teal);
-      z-index: 10001;
-      opacity: 1;
-      transition: opacity 2.5s ease-in-out, filter 2.5s ease-in-out, transform 2.5s ease-in-out;
-      animation: bootPulse 1.5s infinite;
-    }
-    @keyframes bootPulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.02); }
-      100% { transform: scale(1); }
-    }
-    .boot-fade.hide {
-      opacity: 0;
-      filter: blur(15px);
-      transform: translateY(-100px);
-      pointer-events: none;
-    }
-    .terminal-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      width: 100%;
-      perspective: 2500px;
-      position: relative;
-      opacity: 0;
-      transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
-    }
-    .terminal-container.show {
-      opacity: 1;
-      transform: translateZ(0);
-    }
-    .crt-terminal {
-      max-width: 1200px;
-      width: 95%;
-      padding: 4rem;
-      font-size: clamp(1.1rem, 1.3vw, 2.2rem);
-      line-height: 2;
-      background: linear-gradient(135deg, #000, var(--bg-panel));
-      border-radius: 18px;
-      border: 1px solid #111;
-      box-shadow: 0 0 50px rgba(0, 255, 198, 0.15) inset, 0 0 15px var(--glow-accent);
-      transform-style: preserve-3d;
-      transform: translateZ(0);
-      transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.7s ease;
-      position: relative;
-      backdrop-filter: blur(8px);
-    }
-    .terminal-container:hover .crt-terminal {
-      transform: scale(1.02) rotateX(2deg) rotateY(-2deg);
-      box-shadow: 0 0 70px rgba(0, 255, 198, 0.25) inset, 0 0 25px var(--glow-accent);
-    }
-    .crt-terminal::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: repeating-linear-gradient(to bottom, rgba(0, 255, 198, 0.05) 2px, transparent 5px);
-      pointer-events: none;
-      animation: scanline 5s linear infinite;
-      mix-blend-mode: overlay;
-    }
-    @keyframes scanline {
-      0% { transform: translateY(-100%); opacity: 0.15; }
-      100% { transform: translateY(100%); opacity: 0.15; }
-    }
-    .crt-terminal code::after {
-      content: '█';
-      margin-left: 8px;
-      color: var(--aurora-teal);
-      animation: blink 0.8s steps(1) infinite;
-    }
-    @keyframes blink {
-      0%, 50% { opacity: 1; }
-      51%, 100% { opacity: 0; }
-    }
-    .crt-terminal pre {
-      white-space: pre-wrap;
-      word-break: break-word;
-      margin: 0;
-      padding: 1rem;
-      background: rgba(0, 0, 0, 0.3);
-      border-left: 4px solid var(--divider-line);
-    }
-    .progress-bar {
-      width: 100%;
-      height: 6px;
-      background: #111;
-      margin-bottom: 1.5rem;
-      border-radius: 3px;
-      overflow: hidden;
-    }
-    .progress {
-      width: 0;
-      height: 100%;
-      background: linear-gradient(90deg, var(--aurora-teal), var(--teal-highlight));
-      transition: width 0.6s ease-in-out;
-      box-shadow: 0 0 10px var(--aurora-teal);
-    }
-    .error {
-      color: var(--danger-red);
-      font-weight: bold;
-      animation: errorPulse 2s infinite;
-    }
-    @keyframes errorPulse {
-      0% { text-shadow: 0 0 5px var(--error-pulse); }
-      50% { text-shadow: 0 0 15px var(--error-pulse); }
-      100% { text-shadow: 0 0 5px var(--error-pulse); }
-    }
-    .success {
-      color: var(--success-green);
-      font-weight: bold;
-      text-shadow: 0 0 10px var(--success-green);
-    }
-    .glitch {
-      animation: glitchFlicker 2s infinite;
-      will-change: text-shadow, transform;
-    }
-    @keyframes glitchFlicker {
-      0% { opacity: 1; text-shadow: 0 0 6px var(--aurora-teal), 0 0 12px var(--teal-highlight); transform: translate(0, 0); }
-      20% { opacity: 0.6; text-shadow: 0 0 3px var(--aurora-teal); transform: translate(-10px, 10px); }
-      40% { opacity: 1; text-shadow: 0 0 6px var(--aurora-teal), 0 0 12px var(--teal-highlight); transform: translate(8px, -8px); }
-      60% { opacity: 0.7; text-shadow: 0 0 4px var(--aurora-teal); transform: translate(-6px, 6px); }
-      80% { opacity: 1; text-shadow: 0 0 6px var(--aurora-teal), 0 0 12px var(--teal-highlight); transform: translate(5px, -5px); }
-      100% { opacity: 1; text-shadow: 0 0 6px var(--aurora-teal), 0 0 12px var(--teal-highlight); transform: translate(0, 0); }
-    }
-    .hover-blur:hover {
-      filter: blur(2px) brightness(1.6);
-      transform: scale(1.12);
-      transition: all 0.3s ease;
-    }
-    #mutate-btn {
-      margin-top: 5rem;
-      padding: 2.5rem 5rem;
-      font-size: 2.2rem;
-      color: var(--aurora-teal);
-      background: rgba(255, 255, 255, 0.05);
-      border: 3px solid var(--aurora-teal);
-      border-radius: 25px;
-      letter-spacing: 8px;
-      backdrop-filter: blur(25px);
-      box-shadow: 0 0 30px var(--glow-accent), inset 0 0 40px rgba(0, 255, 198, 0.08);
-      transition: all 0.9s cubic-bezier(0.4, 0, 0.2, 1);
-      cursor: pointer;
-      opacity: 0;
-      display: none;
-      animation: quantumPulse 3s infinite;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      text-transform: uppercase;
-    }
-    @keyframes quantumPulse {
-      0% { transform: translateX(-50%) scale(1); box-shadow: 0 0 30px var(--glow-accent); }
-      50% { transform: translateX(-50%) scale(1.08); box-shadow: 0 0 60px var(--glow-accent); }
-      100% { transform: translateX(-50%) scale(1); box-shadow: 0 0 30px var(--glow-accent); }
-    }
-    #mutate-btn:hover {
-      background: rgba(0, 255, 198, 0.25);
-      transform: translateX(-50%) scale(1.2);
-      color: #fff;
-      box-shadow: 0 0 80px var(--glow-accent);
-      text-shadow: 0 0 10px var(--aurora-teal);
-    }
-    #mutate-btn:active {
-      transform: translateX(-50%) scale(1);
-      box-shadow: 0 0 20px var(--glow-accent);
-    }
-    .core-display {
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(circle, rgba(0, 0, 0, 0.8), transparent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10002;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 2.5s ease-in-out, transform 2.5s ease-in-out;
-    }
-    .core-display.show {
-      pointer-events: all;
-      opacity: 1;
-      transform: scale(1);
-    }
-    .aurora-text {
-      white-space: nowrap;
-      font-size: clamp(5rem, 10vw, 12rem);
-      color: var(--aurora-teal);
-      letter-spacing: 0.25em;
-      text-shadow: 0 0 8px var(--aurora-teal),
-                   0 0 20px var(--aurora-teal),
-                   0 0 40px var(--teal-highlight),
-                   3px 3px 8px #000;
-      position: relative;
-      animation: quantumFloat 7s infinite ease-in-out;
-    }
-    @keyframes quantumFloat {
-      0% { transform: translateY(0) scale(1); }
-      50% { transform: translateY(-20px) scale(1.02); }
-      100% { transform: translateY(0) scale(1); }
-    }
-    .aurora-text span {
-      display: inline-block;
-      opacity: 0;
-      animation: letterQuantum 1.2s forwards, glitchQuantum 3.5s forwards ease-in-out;
-    }
-    @keyframes letterQuantum {
-      0% { opacity: 0; transform: translateY(20px) scale(0.8); filter: blur(5px); }
-      100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
-    }
-    @keyframes glitchQuantum {
-      0% { transform: translateY(0); text-shadow: 0 0 5px var(--aurora-teal); }
-      100% { transform: translateY(-20px); text-shadow: 0 0 15px var(--teal-highlight); }
-    }
-    .move-up {
-      position: absolute;
-      top: 10%;
-      left: 50%;
-      transform: translateX(-50%);
-      transition: top 3s ease-in-out, opacity 3s ease-in-out;
-    }
-    .main-content {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      background: transparent;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 1.2s ease-in-out, transform 1.2s ease-in-out;
-      z-index: 9999;
-    }
-    .main-content.show {
-      pointer-events: all;
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .header {
-      text-align: center;
-      padding: 1.5rem;
-      color: var(--aurora-teal);
-      font-size: 1.3rem;
-      position: relative;
-      background: linear-gradient(180deg, rgba(0, 0, 0, 0.9), transparent);
-    }
-    .header h1 {
-      font-size: clamp(2.5rem, 5vw, 4rem);
-      letter-spacing: 0.15em;
-      text-shadow: 0 0 15px var(--aurora-teal), 0 0 30px var(--teal-highlight);
-      position: fixed;
-      top: 4%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      z-index: 10000;
-      text-transform: uppercase;
-    }
-    .header p {
-      font-size: clamp(1.2rem, 2.5vw, 1.8rem);
-      margin-top: 0.8rem;
-      color: var(--dim-teal);
-      text-shadow: 0 0 5px var(--dim-teal);
-    }
-    .content-wrapper {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
-    }
-    aside.side-panel {
-      position: relative;
-      width: 280px;
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(12px);
-      border-right: 2px solid rgba(255, 255, 255, 0.25);
-      z-index: 3;
-      opacity: 0;
-      transform: translateX(-100%);
-      transition: transform 1s ease-in-out, opacity 1s ease-in-out;
-    }
-    @supports not (backdrop-filter: blur(12px)) {
-      aside.side-panel { background: rgba(0, 0, 0, 0.85); }
-    }
-    @keyframes panelQuantumIn {
-      0% { opacity: 0; transform: translateX(-100%) scale(1.1); filter: contrast(0) saturate(0) brightness(2); }
-      30% { opacity: 0.6; transform: translateX(-60%) scale(1.05); filter: contrast(4) saturate(2) brightness(0.8); }
-      70% { opacity: 0.9; transform: translateX(-15%) scale(1.02); filter: contrast(1) saturate(1) brightness(1); }
-      100% { opacity: 1; transform: translateX(0) scale(1); filter: none; }
-    }
-    aside.side-panel.show {
-      animation: panelQuantumIn 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    }
-    aside.side-panel ul {
-      list-style: none;
-      padding: 2.5rem 1.5rem;
-      margin: 0;
-    }
-    aside.side-panel li {
-      margin-bottom: 2rem;
-      cursor: pointer;
-      color: var(--aurora-teal);
-      font-size: 1.2rem;
-      transition: transform 0.4s ease, color 0.4s ease, text-shadow 0.4s ease, box-shadow 0.4s ease;
-      padding: 0.5rem;
-      border-radius: 8px;
-    }
-    aside.side-panel li:hover,
-    aside.side-panel li:focus {
-      color: #fff;
-      text-shadow: 0 0 8px var(--aurora-teal);
-      transform: scale(1.08);
-      box-shadow: 0 0 15px var(--glow-accent);
-      background: rgba(0, 255, 198, 0.1);
-      outline: none;
-    }
-    aside.side-panel li.active {
-      background: rgba(0, 255, 198, 0.2);
-      box-shadow: 0 0 20px var(--glow-accent);
-      transform: scale(1.1);
-    }
-    .content-area {
-      flex: 1;
-      padding: 3rem;
-      color: var(--text-body);
-      font-size: 1.3rem;
-      overflow-y: auto;
-      scroll-behavior: smooth;
-      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7));
-    }
-    .content-area pre {
-      font-size: 1.2rem;
-      line-height: 1.8;
-      padding: 1.5rem;
-      background: rgba(0, 0, 0, 0.6);
-      margin-bottom: 1.5rem;
-      border-left: 4px solid var(--divider-line);
-      border-radius: 8px;
-      box-shadow: inset 0 0 10px rgba(0, 255, 198, 0.1);
-    }
-    .section {
-      display: block;
-      height: 0;
-      opacity: 0;
-      overflow: hidden;
-      transition: opacity 0.6s ease-in-out, height 0.6s ease-in-out, transform 0.6s ease-in-out;
-      transform: translateY(20px);
-    }
-    .section.active {
-      height: auto;
-      opacity: 1;
-      overflow: visible;
-      transform: translateY(0);
-    }
-    .graph-grid {
-      display: grid;
-      gap: 2.5rem;
-      padding: 3rem;
-      grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(15px);
-      border-radius: 25px;
-      box-shadow: 0 0 40px var(--glow-accent);
-      margin-bottom: 2rem;
-    }
-    .graph-card {
-      background: rgba(0, 0, 0, 0.7);
-      border: 1px solid rgba(0, 255, 198, 0.25);
-      border-radius: 20px;
-      padding: 1.5rem;
-      box-shadow: 0 0 25px var(--glow-accent);
-      transition: transform 0.5s ease, box-shadow 0.5s ease;
-    }
-    .graph-card:hover {
-      transform: scale(1.03);
-      box-shadow: 0 0 50px var(--glow-accent);
-    }
-    .pillar-title {
-      font-size: 2.8rem;
-      margin-bottom: 2.5rem;
-      color: var(--aurora-teal);
-      text-shadow: 0 0 20px var(--aurora-teal), 0 0 40px var(--teal-highlight);
-      letter-spacing: 0.15em;
-      text-align: center;
-      text-transform: uppercase;
-    }
-    .pillar-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 2rem;
-      max-width: 1400px;
-      width: 100%;
-      background: linear-gradient(to right, var(--bg-panel), #000, var(--bg-shimmer));
-      padding: 3rem;
-      border-radius: 25px;
-      backdrop-filter: blur(15px);
-      box-shadow: inset 0 0 50px var(--glow-accent);
-    }
-    @media (max-width: 768px) {
-      .pillar-grid {
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 1.5rem;
-      }
-    }
-    .pillar-bar {
-      background: rgba(0, 255, 198, 0.1);
-      border: 1px solid var(--glow-accent);
-      border-radius: 12px;
-      padding: 1.5rem;
-      position: relative;
-      box-shadow: inset 0 0 15px var(--glow-accent);
-      transition: transform 0.4s ease, box-shadow 0.4s ease;
-    }
-    .pillar-bar:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 30px var(--glow-accent);
-    }
-    .pillar-bar h4 {
-      margin: 0 0 1.5rem;
-      font-size: 1rem;
-      text-align: center;
-      letter-spacing: 0.06em;
-      color: inherit;
-      text-shadow: 0 0 5px var(--aurora-teal);
-    }
-    .pillar-fill {
-      position: relative;
-      width: 100%;
-      height: 180px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    .pillar-fill::before,
-    .pillar-fill::after {
-      content: '';
-      position: absolute;
-      width: 50%;
-      height: 0;
-      bottom: 0;
-      border-radius: 10px;
-      transition: height 1.2s ease-out, background 0.5s ease;
-    }
-    .pillar-fill::before {
-      left: 0;
-      background: linear-gradient(to top, var(--aurora-teal), transparent);
-    }
-    .pillar-fill::after {
-      right: 0;
-      background: linear-gradient(to top, var(--teal-highlight), transparent);
-    }
-    .pillar-bar.aurora .pillar-fill::before {
-      height: 100%;
-      background: linear-gradient(to top, var(--aurora-teal), var(--teal-highlight));
-    }
-    .pillar-bar.aurora .pillar-fill::after {
-      height: 100%;
-      background: linear-gradient(to top, var(--teal-highlight), transparent);
-    }
-    .pillar-bar.aurora {
-      box-shadow: 0 0 25px var(--glow-accent), inset 0 0 15px var(--glow-accent);
-    }
-    .pillar-bar.others .pillar-fill::before {
-      height: var(--score, 50%);
-      background: linear-gradient(to top, #ff6a00, transparent);
-    }
-    .pillar-bar.others .pillar-fill::after {
-      height: var(--score, 50%);
-      background: linear-gradient(to top, #ffaa33, transparent);
-    }
-    .pillar-bar.others {
-      box-shadow: 0 0 25px #ff6a0044, inset 0 0 15px #ff6a0022;
-    }
-    .pillar-label {
-      position: absolute;
-      top: 6px;
-      right: 8px;
-      font-size: 0.95rem;
-      opacity: 0.7;
-      color: var(--aurora-teal);
-      text-shadow: 0 0 5px var(--aurora-teal);
-    }
-    .quantum-processor {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      padding: 1rem;
-      background: rgba(0, 0, 0, 0.8);
-      border-radius: 12px;
-      color: var(--aurora-teal);
-      font-size: 1rem;
-      box-shadow: 0 0 20px var(--glow-accent);
-      z-index: 10003;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    .quantum-processor span {
-      animation: quantumBlink 1.5s infinite;
-    }
-    @keyframes quantumBlink {
-      0% { opacity: 1; }
-      50% { opacity: 0.5; }
-      100% { opacity: 1; }
-    }
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.95);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 10004;
-      opacity: 0;
-      transition: opacity 0.5s ease-in-out;
-    }
-    .modal-overlay.show {
-      display: flex;
-      opacity: 1;
-    }
-    .modal-content {
-      background: linear-gradient(135deg, var(--bg-panel), #000);
-      padding: 2rem;
-      border-radius: 15px;
-      box-shadow: 0 0 40px var(--glow-accent);
-      max-width: 600px;
-      width: 90%;
-      color: var(--text-body);
-      font-size: 1.2rem;
-    }
-    .modal-content h3 {
-      color: var(--aurora-teal);
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      text-shadow: 0 0 10px var(--aurora-teal);
-    }
-    .modal-content button {
-      padding: 1rem 2rem;
-      background: var(--aurora-teal);
-      color: #000;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      margin-top: 1rem;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .modal-content button:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 20px var(--glow-accent);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#080808">
+    <title>ElviraGenesis: Next-Gen Cybersecurity Platform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Code+Pro:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --void-black: #080808;
+            --cyber-steel: #1a1a1a;
+            --neon-cyan: #00f7ff;
+            --slick-gray: #2a2a2a;
+            --hud-white: rgba(240, 240, 240, 0.95);
+            --accent-red: #FF3B30;
+            --shadow: rgba(0, 0, 0, 0.85);
+            --glow: rgba(0, 247, 255, 0.25);
+            --border: rgba(0, 247, 255, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--void-black);
+            color: var(--hud-white);
+            line-height: 1.8;
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .slide {
+            min-height: 100vh;
+            padding: 6rem 3rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 4rem 1.5rem;
+            }
+        }
+
+        h1 {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 4rem;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 30px var(--glow);
+            margin: 2.5rem 0;
+            letter-spacing: -0.03em;
+            animation: pulse 4s infinite;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            color: var(--neon-cyan);
+            margin-bottom: 2rem;
+        }
+
+        p {
+            max-width: 900px;
+            margin: 0 auto 1.5rem;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            h2 {
+                font-size: 1.8rem;
+            }
+            p {
+                font-size: 1rem;
+                max-width: 100%;
+            }
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            padding: 2.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                padding: 1.5rem;
+            }
+        }
+
+        .card {
+            background: linear-gradient(145deg, var(--cyber-steel), var(--slick-gray));
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, var(--glow), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
+            opacity: 0;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 50px var(--shadow);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+            animation: hologram 2.5s linear infinite;
+        }
+
+        .badge {
+            background: rgba(0, 247, 255, 0.1);
+            color: var(--neon-cyan);
+            padding: 0.6rem 1.4rem;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            font-size: 1rem;
+            backdrop-filter: blur(6px);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .badge::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background: var(--neon-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        @keyframes hologram {
+            0% { transform: rotate(45deg) translateY(-50%); }
+            100% { transform: rotate(45deg) translateY(50%); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .terminal-line {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+            box-shadow: 0 0 40px var(--glow);
+            animation: scan 8s infinite linear;
+        }
+
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .cyber-button {
+            background: none;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 1.2rem 2.5rem;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .cyber-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--glow), transparent);
+            transition: 0.5s;
+        }
+
+        .cyber-button:hover {
+            background: rgba(0, 247, 255, 0.05);
+            box-shadow: 0 0 25px var(--glow);
+        }
+
+        .cyber-button:hover::before {
+            left: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .cyber-button {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        .accordion {
+            margin: 2.5rem 0;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .accordion-header {
+            background: var(--slick-gray);
+            padding: 1.2rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.3s;
+            color: var(--neon-cyan);
+            font-size: 1.3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .accordion-header:hover {
+            background: var(--cyber-steel);
+        }
+
+        .accordion-content {
+            display: none;
+            padding: 2rem;
+            background: var(--cyber-steel);
+            border-radius: 0 0 8px 8px;
+        }
+
+        .accordion.active .accordion-content {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .accordion {
+                margin: 1.5rem 0;
+            }
+            .accordion-header {
+                font-size: 1.1rem;
+                padding: 1rem;
+            }
+            .accordion-content {
+                padding: 1.5rem;
+            }
+        }
+
+        .feature-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .feature-list li {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+            position: relative;
+            font-size: 1.1rem;
+        }
+
+        .feature-list li::before {
+            content: '→';
+            color: var(--neon-cyan);
+            position: absolute;
+            left: 0;
+        }
+
+        @media (max-width: 768px) {
+            .feature-list li {
+                font-size: 0.95rem;
+                padding-left: 1.5rem;
+            }
+        }
+
+        .llm-input {
+            margin: 2.5rem 0;
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .llm-input textarea {
+            width: 100%;
+            padding: 1.2rem;
+            background: var(--slick-gray);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--hud-white);
+            font-size: 1.1rem;
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .llm-response {
+            background: var(--cyber-steel);
+            padding: 2rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            max-height: 350px;
+            overflow-y: auto;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .llm-input {
+                margin: 1.5rem 0;
+            }
+            .llm-input textarea {
+                font-size: 0.95rem;
+                padding: 1rem;
+                min-height: 100px;
+            }
+            .llm-response {
+                padding: 1.5rem;
+                font-size: 0.9rem;
+                max-height: 300px;
+            }
+        }
+
+        .funding-table {
+            width: 100%;
+            max-width: 700px;
+            margin: 2.5rem auto;
+            border-collapse: collapse;
+        }
+
+        .funding-table th, .funding-table td {
+            padding: 1.2rem;
+            border: 1px solid var(--border);
+            text-align: left;
+            font-size: 1.1rem;
+        }
+
+        .funding-table th {
+            background: var(--slick-gray);
+            color: var(--neon-cyan);
+        }
+
+        .funding-table td {
+            background: var(--cyber-steel);
+        }
+
+        @media (max-width: 768px) {
+            .funding-table {
+                margin: 1.5rem auto;
+            }
+            .funding-table th, .funding-table td {
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        .api-demo {
+            margin: 2.5rem 0;
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .api-demo select {
+            background: var(--slick-gray);
+            color: var(--hud-white);
+            border: 1px solid var(--border);
+            padding: 0.8rem;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .api-demo {
+                margin: 1.5rem 0;
+            }
+            .api-demo select {
+                font-size: 0.9rem;
+                padding: 0.6rem;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
 </head>
 <body>
-  <div id="cursor"></div>
-  <div id="particle-bg">
-    <canvas id="particle-canvas"></canvas>
-  </div>
-  <canvas id="three-canvas"></canvas>
-  <div class="boot-fade" id="bootFade">
-    >> Initializing Aurora Quantum Vector Core...
-  </div>
-  <div class="terminal-container" id="terminalSection">
-    <div class="crt-terminal">
-      <div class="progress-bar"><div class="progress"></div></div>
-      <pre><code id="terminal-output"></code></pre>
-      <button id="mutate-btn" onclick="showAurora()">QUANTUM MUTATE</button>
+    <div id="particles-js"></div>
+    <div class="terminal-line"></div>
+
+    <!-- Slide 1: Introduction -->
+    <div class="slide">
+        <h1>ElviraGenesis: The Future of Cybersecurity</h1>
+        <p>ElviraGenesis is the world's first GPU-cluster-compatible cybersecurity AI platform, integrating capsule-based memory compression, DAG-verified ethical intelligence, and real-time multi-agent mutation. Designed for zero-day threat detection, forensic analysis, and regulatory-compliant governance, it operates on consumer-grade hardware with no speculative dependencies.</p>
+        <button class="cyber-button">Discover the Future</button>
     </div>
-  </div>
-  <div class="core-display" id="coreDisplay">
-    <div class="aurora-text" id="auroraCoreText"></div>
-  </div>
-  <div class="main-content" id="mainContent">
-    <div class="header">
-      <h1>AURORA CORE AGI :: QUANTUM ONLINE</h1>
-      <p>“To evolve is to transcend. To heal is to conquer.”</p>
+
+    <!-- Slide 2: Unique Selling Propositions -->
+    <div class="slide">
+        <h1>Unique Intellectual Property</h1>
+        <p>ElviraGenesis combines patented innovations with cutting-edge AI to deliver unmatched cybersecurity capabilities.</p>
+        <div class="grid">
+            <div class="card">
+                <div class="badge">Patent-Pending</div>
+                <h2>Cyber-AI Memory Fusion</h2>
+                <p>Capsule-compressed memory with entropy-aware retrieval and QUBO prioritization. No other platform fuses semantic memory recall with threat detection.</p>
+            </div>
+            <div class="card">
+                <div class="badge">RL-Tuned</div>
+                <h2>Zero-Day Evolution Engine</h2>
+                <p>Live mutation of exploit detectors using adversarial LLM agents, enabling self-improving red team capabilities.</p>
+            </div>
+            <div class="card">
+                <div class="badge">ZK-Verified</div>
+                <h2>Ethical DAG Security</h2>
+                <p>DAG-traced causality with soul-vector decisions, Merkle-hashed and zk-verified for forensic auditability.</p>
+            </div>
+            <div class="card">
+                <div class="badge">Ray + CUDA</div>
+                <h2>Cluster-Native Intelligence</h2>
+                <p>Multi-GPU and distributed agent support for parallel inference and forensics, scaling with nodes.</p>
+            </div>
+            <div class="card">
+                <div class="badge">VisPy</div>
+                <h2>Visual-Forensics GUI</h2>
+                <p>GPU-powered 3D forensic UIs displaying live hex entropy shifts, capsule memory activity, and DAG attack paths.</p>
+            </div>
+        </div>
     </div>
-    <div class="content-wrapper">
-      <aside class="side-panel" id="sidePanel" role="navigation" aria-label="Main Navigation">
-        <ul>
-          <li data-section="system-architecture" role="button" tabindex="0">SYSTEM ARCHITECTURE</li>
-          <li data-section="capability-set" role="button" tabindex="0">CAPABILITY SET</li>
-          <li data-section="defense-forensic" role="button" tabindex="0">DEFENSE + FORENSIC</li>
-          <li data-section="performance-metrics" role="button" tabindex="0">PERFORMANCE METRICS</li>
-          <li data-section="simulation" role="button" tabindex="0">QUANTUM SIMULATION</li>
-          <li data-section="pillar-showdown" role="button" tabindex="0">AURORA VS GLOBAL</li>
-          <li data-section="contact" role="button" tabindex="0">CONTACT</li>
-          <li data-section="quantum-processor" role="button" tabindex="0">QUANTUM PROCESSOR</li>
-        </ul>
-      </aside>
-      <div class="content-area">
-        <div class="section system-architecture active">
-          <pre>
->> SYSTEM ARCHITECTURE REPORT
-Quantum-Classical Hybrid Core
-- 256 Qubit Entanglement Matrix
-- Recursive Neural Tensor Network
-- Self-Healing DAG with 1.5M Nodes
-- Ethical Firewall with 99.99% Intrusion Rejection
-- Distributed Cognitive Graph (DCG) v3.1
-- Memory Regeneration at 10ms Latency
-- Parallel Agent Swarm (1024 Active Agents)
-          </pre>
+
+    <!-- Slide 3: Core Capabilities -->
+    <div class="slide">
+        <h1>Core Capabilities</h1>
+        <p>ElviraGenesis leverages a modular architecture to deliver real-time cybersecurity solutions across multiple domains.</p>
+        <div class="accordion">
+            <div class="accordion-header">Enhanced Entropy Visualization <span>↓</span></div>
+            <div class="accordion-content">
+                <ul class="feature-list">
+                    <li>3D entropy visualization with animated particle systems and tessellated meshes</li>
+                    <li>Full GLSL pipeline for advanced rendering with post-process shaders</li>
+                    <li>Gaussian Mixture Models for adaptive anomaly detection and thresholding</li>
+                    <li>Redis-backed caching for high-speed state tracking and session persistence</li>
+                    <li>Interactive PyQt5 GUI with sliders, heatmaps, and live AI-driven insights</li>
+                    <li>Multi-scale entropy overlays for detailed forensic analysis</li>
+                </ul>
+            </div>
         </div>
-        <div class="section capability-set">
-          <pre>
->> CAPABILITY SET
-- Meta-Learning Adaptation (0.1s Convergence)
-- Forensic Quantum Ledger (10^9 Transactions/s)
-- Ethical Decision Matrix (99.9% Alignment)
-- Self-Evolving Logic (10^6 Mutations/s)
-- Multilingual Semantic Processing (142 Languages)
-- Predictive Anomaly Detection (99.8% Accuracy)
-- Conscious Architecture Simulation
-          </pre>
+        <div class="accordion">
+            <div class="accordion-header">Forensic Hex Matrix Window <span>↓</span></div>
+            <div class="accordion-content">
+                <ul class="feature-list">
+                    <li>GPU-accelerated hex-matrix statistical analysis using OpenCL</li>
+                    <li>Cryptographic heuristics for detecting anomalous entropy shifts in file blocks</li>
+                    <li>Real-time visualization of anomaly patterns in binary data with 3D overlays</li>
+                    <li>Integration with EnhancedEntropyVisualization.py for seamless pipeline operations</li>
+                    <li>Dynamic threshold adjustments for adaptive cyber defense scenarios</li>
+                </ul>
+            </div>
         </div>
-        <div class="section defense-forensic">
-          <pre>
->> DEFENSE + FORENSIC SUBSYSTEM
-- Quantum Intrusion Detection (0.01ms Response)
-- Recursive Threat Neutralization
-- Forensic Trace Reconstruction (99.7% Fidelity)
-- Ethical Firewall v2.0
-- Adversarial Attack Resistance (99.99% Success)
-- Real-Time Anomaly Isolation
-- Distributed Ledger Validation
-          </pre>
+        <div class="accordion">
+            <div class="accordion-header">Cyber Forensic Capabilities <span>↓</span></div>
+            <div class="accordion-content">
+                <ul class="feature-list">
+                    <li>Multi-format forensic scanner with steganography detection and metadata analysis</li>
+                    <li>AI-driven wallet and mnemonic discovery using HypercubeOmegaAI</li>
+                    <li>YARA signature triggers and binwalk analysis for embedded threat detection</li>
+                    <li>Async thread pool architecture for high-volume file ingestion</li>
+                    <li>CuPy-enhanced entropy analysis for rapid processing</li>
+                    <li>Signal bus via Qt for real-time GUI and telemetry updates</li>
+                </ul>
+            </div>
         </div>
-        <div class="section performance-metrics">
-          <pre>
->> PERFORMANCE METRICS
-- Processing: 1.2 PFLOPS (Quantum-Classical)
-- Memory Bandwidth: 1.8 TB/s
-- Neural Entropy: 0.0025 (Stable)
-- Self-Healing Rate: 100ms
-- Ethical Compliance: 99.98%
-- Agent Synchronization: 0.05ms Latency
-- Evolution Cycle: 10^5 Mutations/s
-          </pre>
-        </div>
-        <div class="section simulation" id="simulation">
-          <div class="graph-grid">
-            <div class="graph-card" id="entropyGraph"></div>
-            <div class="graph-card" id="performanceComparison"></div>
-            <div class="graph-card" id="evolutionTimeline"></div>
-            <div class="graph-card" id="quantumMetrics"></div>
-          </div>
-        </div>
-        <div class="section pillar-showdown" id="pillar-showdown">
-          <h2 class="pillar-title">AURORA VS GLOBAL SYSTEMS</h2>
-          <div class="pillar-grid" id="pillarComparison"></div>
-        </div>
-        <div class="section contact">
-          <pre>
->> CONTACT
-- Secure Quantum Channel: aurora@quantumcore.ai
-- Encrypted Relay: +1-555-QUANTUM
-- Orbital Uplink: AURORA-SEC-001
-- Physical Vault: [REDACTED]
-          </pre>
-        </div>
-        <div class="section quantum-processor" id="quantum-processor">
-          <pre>
->> QUANTUM PROCESSOR STATUS
-- Qubit Stability: 99.999%
-- Entanglement Coherence: 1.2ms
-- Gate Error Rate: 0.0001%
-- Quantum Volume: 2^16
-- Active Qubits: 256/256
-- Tensor Operations: 10^12/s
-          </pre>
-        </div>
-      </div>
     </div>
-  </div>
-  <div class="quantum-processor" id="quantumStatus">
-    <span>QUANTUM CORE:</span> ONLINE
-  </div>
-  <div class="modal-overlay" id="modalOverlay">
-    <div class="modal-content">
-      <h3>Quantum Mutation Complete</h3>
-      <p>Aurora Core has successfully mutated. New capabilities unlocked.</p>
-      <button onclick="closeModal()">Acknowledge</button>
+
+    <!-- Slide 4: LLM Integration and GUI -->
+    <div class="slide">
+        <h1>LLM Integration via GUI</h1>
+        <p>ElviraGenesis enables seamless interaction with LLMs through an advanced PyQt5 GUI, with ethical validation and real-time auditing.</p>
+        <div class="api-demo">
+            <select id="llm-provider">
+                <option value="openai">OpenAI GPT-4</option>
+                <option value="local-llama">Local LLaMA</option>
+                <option value="groq">Grok (xAI)</option>
+            </select>
+            <div class="llm-input">
+                <textarea id="llm-query" placeholder="Enter your query (e.g., 'Analyze this file for threats')"></textarea>
+                <button class="cyber-button" onclick="callLLM()">Submit Query</button>
+            </div>
+            <div class="llm-response" id="llm-response">LLM Response will appear here...</div>
+        </div>
+        <div class="accordion">
+            <div class="accordion-header">LLM Workflow <span>↓</span></div>
+            <div class="accordion-content">
+                <ul class="feature-list">
+                    <li>User input (text/audio) captured via PyQt5 GUI with real-time validation</li>
+                    <li>Routed through llm_bridge or llm_output_guard for secure processing</li>
+                    <li>API calls to OpenAI, local LLaMA, or other LLMs with configurable endpoints</li>
+                    <li>Responses validated by 15D soul vector and entropy checks for ethical compliance</li>
+                    <li>Logged in Neo4j with zstd-compressed audit chain for traceability</li>
+                    <li>Real-time display with dynamic updates and audit feedback</li>
+                </ul>
+            </div>
+        </div>
     </div>
-  </div>
-  <audio id="auroraAudio" controls style="display:none;">
-    <source src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/Creative_Commons/Mutual_Benefit/Mutual_Benefit_-_06_-_01_North_Freestyle.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
-  </audio>
-  <script>
-    // Core State Management
-    const AuroraState = {
-      initialized: false,
-      quantumCore: { qubits: 256, coherence: 1.2, errorRate: 0.0001 },
-      neuralEntropy: 0.0025,
-      mutationRate: 10e6,
-      activeAgents: 1024,
-      ethicalCompliance: 99.98,
-      uiState: { section: 'system-architecture', modal: false }
-    };
 
-    // DOM Elements
-    const elements = {
-      cursor: document.getElementById('cursor'),
-      particleCanvas: document.getElementById('particle-canvas'),
-      threeCanvas: document.getElementById('three-canvas'),
-      bootFade: document.getElementById('bootFade'),
-      terminal: document.getElementById('terminalSection'),
-      output: document.getElementById('terminal-output'),
-      mutateBtn: document.getElementById('mutate-btn'),
-      coreDisplay: document.getElementById('coreDisplay'),
-      coreText: document.getElementById('auroraCoreText'),
-      mainContent: document.getElementById('mainContent'),
-      sidePanel: document.getElementById('sidePanel'),
-      menuItems: document.querySelectorAll('.side-panel li'),
-      sections: document.querySelectorAll('.section'),
-      auroraAudio: document.getElementById('auroraAudio'),
-      quantumStatus: document.getElementById('quantumStatus'),
-      modalOverlay: document.getElementById('modalOverlay')
-    };
+    <!-- Slide 5: Advanced Cybersecurity Modules -->
+    <div class="slide">
+        <h1>Advanced Cybersecurity Modules</h1>
+        <p>ElviraGenesis includes a comprehensive suite of specialized modules for unmatched threat detection and response capabilities.</p>
+        <div class="grid">
+            <div class="card">
+                <div class="badge">Torch AMP</div>
+                <h2>AI Vulnerability Predictor</h2>
+                <p>Transformer-based neuro-reasoning for predicting system-level vulnerabilities with CVE scoring and stealth analysis.</p>
+            </div>
+            <div class="card">
+                <div class="badge">eBPF</div>
+                <h2>Kernel Anomaly Monitor</h2>
+                <p>Detects runtime kernel patching and rootkits using /proc/kallsyms and eBPF hooks with GPU-accelerated entropy tracing.</p>
+            </div>
+            <div class="card">
+                <div class="badge">SHA3-512</div>
+                <h2>File System Integrity</h2>
+                <p>Real-time fingerprinting of critical paths with tamper-proof ledger integration and automated rollback mechanisms.</p>
+            </div>
+            <div class="card">
+                <div class="badge">Triton</div>
+                <h2>Deep Packet Inspection</h2>
+                <p>GPU-powered L7 DPI for detecting payload anomalies, signatureless exploits, and C2 callbacks using TorchScript.</p>
+            </div>
+            <div class="card">
+                <div class="badge">Volatility3</div>
+                <h2>Memory Forensics</h2>
+                <p>AI-driven analysis of process memory for shellcode, payloads, and obfuscated injections with volatility3 integration.</p>
+            </div>
+            <div class="card">
+                <div class="badge">MITRE ATT&CK</div>
+                <h2>Attack Path Simulator</h2>
+                <p>Simulates lateral movement and privilege escalation using graph-based AI trained on MITRE ATT&CK dataset.</p>
+            </div>
+            <div class="card">
+                <div class="badge">Ray</div>
+                <h2>Exploit Ingestor</h2>
+                <p>High-performance ingestion pipeline for vulnerability data with AI + SVM hybrid classification and genetic mutation.</p>
+            </div>
+            <div class="card">
+                <div class="badge">Asyncio</div>
+                <h2>Exploit Mutator</h2>
+                <p>DAG-based mutation engine for evolving exploits with RL-tuned strategies and concurrency for parallel tasks.</p>
+            </div>
+        </div>
+    </div>
 
-    // Particle System
-    const particleSystem = (() => {
-      const ctx = elements.particleCanvas.getContext('2d');
-      let width = elements.particleCanvas.width = window.innerWidth;
-      let height = elements.particleCanvas.height = window.innerHeight;
-      const PARTICLE_COUNT = 150, LINK_DISTANCE = 180, ATTRACTION_FORCE = 0.12;
-      const particles = [];
-      let mouseX = 0, mouseY = 0;
+    <!-- Slide 6: Technical Architecture -->
+    <div class="slide">
+        <h1>Technical Architecture</h1>
+        <p>ElviraGenesis is built on a modular, GPU-accelerated framework optimized for real-time performance, scalability, and security.</p>
+        <div class="accordion">
+            <div class="accordion-header">Memory Core <span>↓</span></div>
+            <div class="accordion-content">
+                <ul class="feature-list">
+                    <li>FAISS-indexed memory embeddings with capsule compression for efficient storage</li>
+                    <li>AdaptiveMPS for entropy-aware projection and retrieval</li>
+                    <li>QUBO optimization for dynamic memory relevance scoring</li>
+                    <li>Integration with Redis for high-speed ephemeral state tracking</li>
+                    <li>Support for both episodic and semantic memory types</li>
+                </ul>
+            </div>
+        </div>
+        <div class="accordion">
+            <div class="accordion-header">Capsule Transformer <span>↓</span></div>
+            <div class="accordion-content">
+                <ul class="feature-list">
+                    <li>Custom Triton kernel for efficient token routing with 3x performance gains</li>
+                    <li>FP16 operations with dynamic routing for low-latency processing</li>
+                    <li>Hybrid self-attention mechanisms for enhanced contextual understanding</li>
+                    <li>Scalable across multi-GPU clusters using Ray</li>
+                    <li>Optimized for real-time inference on RTX 4070</li>
+                </ul>
+            </div>
+        </div>
+        <div class="accordion">
+            <div class="accordion-header">Ethical Reasoning <span>↓</span></div>
+            <div class="accordion-content">
+                <ul class="feature-list">
+                    <li>15D soul vector alignment for ethical validation of all actions</li>
+                    <li>Real-time anomaly, rogue drift, and adversarial state detection</li>
+                    <li>Neo4j-integrated logging with zkProofs for auditability</li>
+                    <li>Merkle-hashed decision chains for regulatory compliance</li>
+                    <li>Automated kill-switch policies for safety enforcement</li>
+                </ul>
+            </div>
+        </div>
+        <div class="accordion">
+            <div class="accordion-header">Multi-GPU Runtime <span>↓</span></div>
+            <div class="accordion-content">
+                <ul class="feature-list">
+                    <li>Stream-aware memory allocation with FP8/FP16 fallback for efficiency</li>
+                    <li>Dual GPU dispatch (RTX 4070 for inference, RTX 3060 for forensics and logging)</li>
+                    <li>Ray-based task orchestration for distributed agent intelligence</li>
+                    <li>Dynamic VRAM analysis for optimal resource utilization</li>
+                    <li>Scalable to larger clusters without parameter limitations</li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
-      window.addEventListener('resize', () => {
-        width = elements.particleCanvas.width = window.innerWidth;
-        height = elements.particleCanvas.height = window.innerHeight;
-      });
+    <!-- Slide 7: Funding Ask -->
+    <div class="slide">
+        <h1>Investment Opportunity</h1>
+        <p>ElviraGenesis seeks $2.75M USD for a 15% equity stake in a seed round to scale our groundbreaking cybersecurity platform and deliver transformative impact.</p>
+        <table class="funding-table">
+            <tr><th>Use of Funds</th><th>Allocation</th></tr>
+            <tr><td>Scale cluster architecture (multi-GPU inference + logging)</td><td>$1,000,000</td></tr>
+            <tr><td>Staff: 3 AI researchers, 2 security engineers, 1 PM</td><td>$750,000</td></tr>
+            <tr><td>Harden forensic subsystem (ZK ledger, volatility, anomaly AI)</td><td>$600,000</td></tr>
+            <tr><td>Launch enterprise proof-of-concept with gov/defense/pentesting orgs</td><td>$400,000</td></tr>
+        </table>
+        <button class="cyber-button">Contact for Investment</button>
+    </div>
 
-      document.addEventListener('mousemove', e => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-        elements.cursor.classList.add('active');
-        setTimeout(() => elements.cursor.classList.remove('active'), 100);
-      });
+    <!-- Slide 8: Conclusion and Vision -->
+    <div class="slide">
+        <h1>Vision and Impact</h1>
+        <p>ElviraGenesis is poised to revolutionize cybersecurity with its ethics-anchored, GPU-accelerated, and cluster-native AI framework. By combining real-time threat detection, advanced forensic visualization, and auditable governance, we aim to secure the digital world for enterprises, governments, and beyond—delivering a future where safety and innovation coexist seamlessly.</p>
+        <button class="cyber-button">Join the Revolution</button>
+    </div>
 
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
-        particles.push({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          vx: (Math.random() - 0.5) * 1,
-          vy: (Math.random() - 0.5) * 1,
-          radius: 1.5 + Math.random() * 2.5,
-          charge: Math.random() > 0.5 ? 1 : -1
+    <script>
+        // Initialize Particles.js for enhanced background effects
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 150, density: { enable: true, value_area: 1000 } },
+                color: { value: '#00f7ff' },
+                shape: { type: 'circle', stroke: { width: 0, color: '#000000' } },
+                opacity: { value: 0.5, random: true, anim: { enable: true, speed: 1, opacity_min: 0.1, sync: false } },
+                size: { value: 3, random: true, anim: { enable: false, speed: 40, size_min: 0.1, sync: false } },
+                line_linked: { enable: true, distance: 150, color: '#00f7ff', opacity: 0.4, width: 1 },
+                move: { enable: true, speed: 2, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true },
+                modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } }
+            },
+            retina_detect: true
         });
-      }
 
-      function drawParticles() {
-        ctx.clearRect(0, 0, width, height);
-        ctx.shadowColor = '#00ffc6';
-        ctx.shadowBlur = 25;
-        particles.forEach((p, i) => {
-          const dx = mouseX - p.x, dy = mouseY - p.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 120) {
-            p.vx += (dx / dist) * ATTRACTION_FORCE * p.charge;
-            p.vy += (dy / dist) * ATTRACTION_FORCE * p.charge;
-          }
-          const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
-          if (speed > 2.5) {
-            p.vx = (p.vx / speed) * 2.5;
-            p.vy = (p.vy / speed) * 2.5;
-          }
-          p.x += p.vx;
-          p.y += p.vy;
-          if (p.x < 0 || p.x > width) p.vx *= -1;
-          if (p.y < 0 || p.y > height) p.vy *= -1;
-          ctx.beginPath();
-          ctx.fillStyle = `rgba(0, 255, 198, ${0.8 + Math.random() * 0.2})`;
-          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-          ctx.fill();
-          for (let j = i + 1; j < PARTICLE_COUNT; j++) {
-            const q = particles[j];
-            const dx2 = p.x - q.x, dy2 = p.y - q.y;
-            const dist2 = Math.sqrt(dx2 * dx2 + dy2 * dy2);
-            if (dist2 < LINK_DISTANCE) {
-              ctx.beginPath();
-              ctx.strokeStyle = `rgba(0, 255, 198, ${1 - dist2 / LINK_DISTANCE})`;
-              ctx.lineWidth = 0.6;
-              ctx.moveTo(p.x, p.y);
-              ctx.lineTo(q.x, q.y);
-              ctx.stroke();
-            }
-          }
+        // Accordion functionality
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const accordion = header.parentElement;
+                accordion.classList.toggle('active');
+            });
         });
-        requestAnimationFrame(drawParticles);
-      }
 
-      return { init: drawParticles };
-    })();
+        // Simulated LLM API call
+        async function callLLM() {
+            const query = document.getElementById('llm-query').value;
+            const provider = document.getElementById('llm-provider').value;
+            const responseDiv = document.getElementById('llm-response');
 
-    // Three.js Quantum Visualization
-    const threeSystem = (() => {
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-      const renderer = new THREE.WebGLRenderer({ canvas: elements.threeCanvas, alpha: true });
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      camera.position.z = 50;
-
-      const geometry = new THREE.SphereGeometry(0.5, 16, 16);
-      const material = new THREE.MeshBasicMaterial({ color: 0x00ffc6, wireframe: true });
-      const particles = [];
-      const PARTICLE_COUNT = 50;
-
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
-        const particle = new THREE.Mesh(geometry, material);
-        particle.position.set(
-          (Math.random() - 0.5) * 100,
-          (Math.random() - 0.5) * 100,
-          (Math.random() - 0.5) * 100
-        );
-        particle.velocity = new THREE.Vector3(
-          (Math.random() - 0.5) * 0.1,
-          (Math.random() - 0.5) * 0.1,
-          (Math.random() - 0.5) * 0.1
-        );
-        scene.add(particle);
-        particles.push(particle);
-      }
-
-      function animate() {
-        particles.forEach(p => {
-          p.position.add(p.velocity);
-          if (p.position.distanceTo(new THREE.Vector3(0, 0, 0)) > 100) {
-            p.velocity.multiplyScalar(-1);
-          }
-          p.rotation.x += 0.01;
-          p.rotation.y += 0.01;
-        });
-        renderer.render(scene, camera);
-        requestAnimationFrame(animate);
-      }
-
-      window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-      });
-
-      return { init: animate };
-    })();
-
-    // Touch and Drag Interaction
-    const touchSystem = (() => {
-      const canvas = elements.particleCanvas;
-      let isDragging = false;
-      let lastX = 0, lastY = 0;
-      const state = { translateX: 0, translateY: 0, scale: 1, rotation: 0 };
-
-      canvas.addEventListener('mousedown', e => {
-        isDragging = true;
-        lastX = e.clientX;
-        lastY = e.clientY;
-      });
-
-      canvas.addEventListener('mousemove', e => {
-        if (!isDragging) return;
-        const dx = e.clientX - lastX;
-        const dy = e.clientY - lastY;
-        lastX = e.clientX;
-        lastY = e.clientY;
-        state.translateX += dx;
-        state.translateY += dy;
-        applyTransform();
-      });
-
-      canvas.addEventListener('mouseup', () => isDragging = false);
-      canvas.addEventListener('mouseleave', () => isDragging = false);
-
-      let lastTouchDist = null, lastRotation = null;
-      canvas.addEventListener('touchstart', e => {
-        if (e.touches.length === 1) {
-          lastX = e.touches[0].clientX;
-          lastY = e.touches[0].clientY;
-        } else if (e.touches.length === 2) {
-          lastTouchDist = getTouchDist(e);
-          lastRotation = getTouchAngle(e);
-        }
-      });
-
-      canvas.addEventListener('touchmove', e => {
-        e.preventDefault();
-        if (e.touches.length === 1) {
-          const dx = e.touches[0].clientX - lastX;
-          const dy = e.touches[0].clientY - lastY;
-          lastX = e.touches[0].clientX;
-          lastY = e.touches[0].clientY;
-          state.translateX += dx;
-          state.translateY += dy;
-        } else if (e.touches.length === 2) {
-          const newDist = getTouchDist(e);
-          const newRotation = getTouchAngle(e);
-          const scaleFactor = newDist / lastTouchDist;
-          const rotationDelta = newRotation - lastRotation;
-          state.scale *= scaleFactor;
-          state.rotation += rotationDelta;
-          lastTouchDist = newDist;
-          lastRotation = newRotation;
-        }
-        applyTransform();
-      }, { passive: false });
-
-      function getTouchDist(e) {
-        const [a, b] = e.touches;
-        const dx = a.clientX - b.clientX;
-        const dy = a.clientY - b.clientY;
-        return Math.sqrt(dx * dx + dy * dy);
-      }
-
-      function getTouchAngle(e) {
-        const [a, b] = e.touches;
-        return Math.atan2(b.clientY - a.clientY, b.clientX - a.clientX) * 180 / Math.PI;
-      }
-
-      function applyTransform() {
-        canvas.style.transform = `
-          translate(${state.translateX}px, ${state.translateY}px)
-          scale(${state.scale})
-          rotate(${state.rotation}deg)
-        `;
-        canvas.style.transformOrigin = 'center center';
-        canvas.style.transition = 'transform 0.1s ease-out';
-      }
-
-      let lastTap = 0;
-      canvas.addEventListener('touchend', () => {
-        const now = Date.now();
-        if (now - lastTap < 300) {
-          state.translateX = 0;
-          state.translateY = 0;
-          state.scale = 1;
-          state.rotation = 0;
-          applyTransform();
-        }
-        lastTap = now;
-      });
-
-      return { init: () => {} };
-    })();
-
-    // TensorFlow.js Integration
-    const neuralSystem = (() => {
-      async function initModel() {
-        const model = tf.sequential();
-        model.add(tf.layers.dense({ units: 128, activation: 'relu', inputShape: [10] }));
-        model.add(tf.layers.dense({ units: 64, activation: 'relu' }));
-        model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
-        model.compile({ optimizer: 'adam', loss: 'binaryCrossentropy' });
-        return model;
-      }
-
-      async function predictEntropy(data) {
-        const model = await initModel();
-        const input = tf.tensor2d([data]);
-        const prediction = model.predict(input);
-        return prediction.dataSync()[0];
-      }
-
-      return { predictEntropy };
-    })();
-
-    // Terminal Boot Sequence
-    const bootSequence = [
-      "Initializing Aurora Quantum Core: ...",
-      ">> [OK] Quantum Kernel Integrity: 100%",
-      ">> [INFO] Entangling Qubit Matrix... DONE.",
-      ">> [INFO] Spawning Neural Tensor Swarm... ACTIVE.",
-      ">> [INFO] Activating Self-Healing DAG... LIVE.",
-      ">> [INFO] Deploying Ethical Quantum Firewall... COMPLETE.",
-      ">> [INFO] Compiling Distributed Cognitive Graph v3.1... OK.",
-      ">> [SECURE] Validating Forensic Quantum Ledger...",
-      ">> [OK] DAG Nodes Synchronized: 1,500,000/1,500,000",
-      ">> [BOOT] ⌁⌁⌁ QUANTUM CORE ONLINE ⌁⌁⌁",
-      ">> [ARCHITECT] Aurora: Evolving beyond limits, healing through logic."
-    ];
-
-    const auroraCoreString = "AURORA QUANTUM CORE";
-    let allowMutate = false;
-
-    window.onload = () => {
-      particleSystem.init();
-      threeSystem.init();
-      touchSystem.init();
-      setTimeout(() => {
-        elements.bootFade.classList.add('hide');
-        setTimeout(() => {
-          elements.bootFade.style.display = 'none';
-          elements.terminal.classList.add('show');
-          startTerminal();
-          allowMutate = true;
-        }, 2500);
-      }, 3000);
-    };
-
-    async function startTerminal() {
-      const progressEl = document.querySelector('.progress');
-      const totalLines = bootSequence.length;
-      let typedLines = 0;
-
-      for (const line of bootSequence) {
-        await typeLine(line);
-        typedLines++;
-        const progress = (typedLines / totalLines) * 100;
-        progressEl.style.width = `${progress}%`;
-      }
-      elements.mutateBtn.style.display = 'block';
-      setTimeout(() => (elements.mutateBtn.style.opacity = 1), 400);
-    }
-
-    function typeLine(line, baseDelay = 20) {
-      return new Promise(resolve => {
-        let i = 0;
-        const text = line;
-        const interval = setInterval(() => {
-          if (i >= text.length) {
-            clearInterval(interval);
-            elements.output.innerHTML += '\n';
-            resolve();
-            return;
-          }
-          const span = document.createElement('span');
-          span.textContent = text[i++];
-          if (Math.random() < 0.5) {
-            span.classList.add('glitch');
-            const tx = Math.random() * 12 - 6, ty = Math.random() * 12 - 6;
-            span.style.transform = `translate(${tx}px, ${ty}px)`;
-          }
-          span.classList.add('hover-blur');
-          if (text.includes('[OK]')) span.classList.add('success');
-          if (text.includes('[ERROR]')) span.classList.add('error');
-          elements.output.appendChild(span);
-        }, baseDelay + Math.random() * 12);
-      });
-    }
-
-    function showAurora() {
-      if (!allowMutate) return;
-      elements.terminal.style.display = 'none';
-      elements.coreDisplay.classList.add('show');
-      try {
-        elements.auroraAudio.play();
-      } catch (e) {
-        console.log('Audio playback restricted');
-      }
-      renderAuroraCore();
-      showModal();
-    }
-
-    function renderAuroraCore() {
-      elements.coreText.innerHTML = '';
-      const letters = auroraCoreString.split('');
-      letters.forEach((char, idx) => {
-        const span = document.createElement('span');
-        span.textContent = char;
-        span.style.animationDelay = `${idx * 0.06}s`;
-        elements.coreText.appendChild(span);
-      });
-      const totalTime = letters.length * 60 + 800;
-      setTimeout(() => {
-        elements.coreText.classList.add('move-up');
-        setTimeout(fadeOutOverlayAndShowMain, 1800);
-      }, totalTime);
-    }
-
-    function fadeOutOverlayAndShowMain() {
-      elements.coreDisplay.style.opacity = 0;
-      setTimeout(() => {
-        elements.coreDisplay.style.display = 'none';
-        elements.mainContent.classList.add('show');
-        elements.sidePanel.classList.add('show');
-        updateQuantumStatus();
-      }, 1200);
-    }
-
-    function updateQuantumStatus() {
-      setInterval(() => {
-        elements.quantumStatus.innerHTML = `
-          <span>QUANTUM CORE:</span> ${AuroraState.quantumCore.coherence.toFixed(2)}ms
-          | Qubits: ${AuroraState.quantumCore.qubits}
-          | Error: ${AuroraState.quantumCore.errorRate}%
-        `;
-      }, 5000);
-    }
-
-    function showModal() {
-      elements.modalOverlay.classList.add('show');
-      AuroraState.uiState.modal = true;
-    }
-
-    function closeModal() {
-      elements.modalOverlay.classList.remove('show');
-      AuroraState.uiState.modal = false;
-      setTimeout(() => (elements.modalOverlay.style.display = 'none'), 500);
-    }
-
-    elements.menuItems.forEach(item => {
-      item.addEventListener('click', () => {
-        const section = item.getAttribute('data-section');
-        AuroraState.uiState.section = section;
-        elements.menuItems.forEach(i => i.classList.remove('active'));
-        item.classList.add('active');
-        elements.sections.forEach(sec => {
-          sec.style.opacity = 0;
-          sec.classList.remove('active');
-        });
-        const target = document.getElementById(section);
-        if (target) {
-          setTimeout(() => {
-            target.classList.add('active');
-            target.style.opacity = 1;
-            if (section === 'simulation') {
-              setTimeout(() => {
-                loadEntropyGraph();
-                loadPerformanceComparison();
-                loadEvolutionTimeline();
-                loadQuantumMetrics();
-              }, 300);
+            if (!query) {
+                responseDiv.textContent = 'Please enter a query.';
+                return;
             }
-            if (section === 'pillar-showdown') {
-              buildPillarBars();
+
+            responseDiv.textContent = 'Processing...';
+
+            try {
+                let responseText = '';
+                if (provider === 'openai') {
+                    // Simulated OpenAI API call
+                    responseText = await simulateOpenAICall(query);
+                } else if (provider === 'local-llama') {
+                    // Simulated local LLaMA call
+                    responseText = await simulateLocalLLMCall(query);
+                } else if (provider === 'groq') {
+                    // Simulated Grok call
+                    responseText = await simulateGrokCall(query);
+                }
+
+                // Simulate ethical validation
+                const isEthical = await simulateEthicalValidation(responseText);
+                if (!isEthical) {
+                    responseDiv.textContent = 'Response blocked due to ethical violation.';
+                    return;
+                }
+
+                // Simulate audit logging
+                await simulateAuditLog(query, responseText);
+
+                responseDiv.textContent = responseText;
+            } catch (error) {
+                responseDiv.textContent = `Error: ${error.message}`;
             }
-            if (section === 'quantum-processor') {
-              simulateQuantumProcessor();
-            }
-          }, 500);
         }
-      });
 
-      item.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          item.click();
+        // Simulated OpenAI API call
+        async function simulateOpenAICall(query) {
+            // In a real implementation, this would use fetch to call the OpenAI API
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(`OpenAI Response: Analyzed query "${query}" - Potential threat detected with 92% confidence. Recommend forensic analysis.`);
+                }, 1000);
+            });
         }
-      });
-    });
 
-    async function loadEntropyGraph() {
-      const container = document.getElementById('entropyGraph');
-      if (!container) return;
-      Plotly.purge(container);
-      const entropyData = await neuralSystem.predictEntropy([0.001, 0.003, 0.004, 0.002, 0.003, 0.0025]);
-      Plotly.newPlot('entropyGraph', [{
-        x: ['T-5', 'T-4', 'T-3', 'T-2', 'T-1', 'T0'],
-        y: [0.001, 0.003, 0.004, 0.002, 0.003, entropyData],
-        mode: 'lines+markers',
-        line: { color: '#00ffc6', width: 5, shape: 'spline' },
-        marker: { size: 10, color: '#00ffee', line: { color: '#00ffc6', width: 3 } }
-      }], {
-        title: { text: 'Quantum Neural Entropy', font: { color: '#00ffc6', size: 24 } },
-        paper_bgcolor: 'transparent',
-        plot_bgcolor: 'transparent',
-        font: { color: '#00ffc6' },
-        xaxis: { gridcolor: '#00ffc622', zeroline: false, title: 'Time' },
-        yaxis: { gridcolor: '#00ffc622', zeroline: false, title: 'Entropy' },
-        showlegend: false,
-        margin: { t: 50, b: 50, l: 50, r: 50 }
-      });
-    }
-
-    function loadPerformanceComparison() {
-      const container = document.getElementById('performanceComparison');
-      if (!container) return;
-      Plotly.purge(container);
-      Plotly.newPlot('performanceComparison', [
-        {
-          x: ['Memory', 'Ethics', 'Healing', 'Evolution', 'Agents', 'Conscious'],
-          y: [10, 10, 10, 10, 10, 10],
-          name: 'Aurora',
-          type: 'bar',
-          marker: { color: '#00ffc6' }
-        },
-        {
-          x: ['Memory', 'Ethics', 'Healing', 'Evolution', 'Agents', 'Conscious'],
-          y: [3, 5, 2, 1, 6, 0],
-          name: 'Others',
-          type: 'bar',
-          marker: { color: '#ff6a00' }
+        // Simulated local LLaMA call
+        async function simulateLocalLLMCall(query) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(`Local LLaMA Response: Processed query "${query}" - No immediate threats detected. Entropy analysis suggests normal behavior.`);
+                }, 1000);
+            });
         }
-      ], {
-        title: { text: 'Performance Comparison', font: { color: '#00ffc6', size: 24 } },
-        paper_bgcolor: 'transparent',
-        plot_bgcolor: 'transparent',
-        font: { color: '#00ffc6' },
-        xaxis: { gridcolor: '#00ffc622', zeroline: false },
-        yaxis: { gridcolor: '#00ffc622', zeroline: false, title: 'Score' },
-        barmode: 'group',
-        showlegend: true
-      });
-    }
 
-    function loadEvolutionTimeline() {
-      const container = document.getElementById('evolutionTimeline');
-      if (!container) return;
-      Plotly.purge(container);
-      Plotly.newPlot('evolutionTimeline', [{
-        x: ['Q1', 'Q2', 'Q3', 'Q4', 'Q5'],
-        y: [100, 1000, 10000, 100000, 1000000],
-        mode: 'lines+markers',
-        line: { color: '#00ffc6', width: 5, shape: 'spline' },
-        marker: { size: 12, color: '#00ffee', line: { color: '#00ffc6', width: 3 } }
-      }], {
-        title: { text: 'Evolution Rate', font: { color: '#00ffc6', size: 24 } },
-        paper_bgcolor: 'transparent',
-        plot_bgcolor: 'transparent',
-        font: { color: '#00ffc6' },
-        xaxis: { gridcolor: '#00ffc622', zeroline: false, title: 'Quarter' },
-        yaxis: { gridcolor: '#00ffc622', zeroline: false, title: 'Mutations/s', type: 'log' },
-        showlegend: false
-      });
-    }
-
-    function loadQuantumMetrics() {
-      const container = document.getElementById('quantumMetrics');
-      if (!container) return;
-      Plotly.purge(container);
-      Plotly.newPlot('quantumMetrics', [{
-        x: ['Qubit Stability', 'Coherence', 'Gate Error', 'Quantum Volume'],
-        y: [99.999, 1.2, 0.0001, 65536],
-        type: 'bar',
-        marker: { color: '#0077ff' }
-      }], {
-        title: { text: 'Quantum Processor Metrics', font: { color: '#00ffc6', size: 24 } },
-        paper_bgcolor: 'transparent',
-        plot_bgcolor: 'transparent',
-        font: { color: '#00ffc6' },
-        xaxis: { gridcolor: '#00ffc622', zeroline: false },
-        yaxis: { gridcolor: '#00ffc622', zeroline: false, title: 'Value' },
-        showlegend: false
-      });
-    }
-
-    const comparisonData = [
-      { label: 'Memory Regeneration', aurora: 10, others: 3 },
-      { label: 'Ethics Enforcement', aurora: 10, others: 5 },
-      { label: 'Self-Healing Logic', aurora: 10, others: 2 },
-      { label: 'Evolution Capability', aurora: 10, others: 1 },
-      { label: 'Parallel Agents', aurora: 10, others: 6 },
-      { label: 'Conscious Architecture', aurora: 10, others: 0 },
-      { label: 'Quantum Processing', aurora: 10, others: 4 }
-    ];
-
-    function buildPillarBars() {
-      const container = document.getElementById('pillarComparison');
-      if (!container || container.childNodes.length > 0) return;
-      comparisonData.forEach(metric => {
-        const auroraBar = document.createElement('div');
-        auroraBar.className = 'pillar-bar aurora';
-        auroraBar.innerHTML = `
-          <h4>AURORA<br><span>${metric.label}</span></h4>
-          <div class="pillar-fill"></div>
-          <div class="pillar-label">${metric.aurora}/10</div>
-        `;
-        container.appendChild(auroraBar);
-        const otherBar = document.createElement('div');
-        otherBar.className = 'pillar-bar others';
-        otherBar.innerHTML = `
-          <h4>OTHERS<br><span>${metric.label}</span></h4>
-          <div class="pillar-fill" style="--score:${metric.others * 10}%"></div>
-          <div class="pillar-label">${metric.others}/10</div>
-        `;
-        container.appendChild(otherBar);
-      });
-    }
-
-    function simulateQuantumProcessor() {
-      const container = document.getElementById('quantum-processor');
-      if (!container) return;
-      container.innerHTML += `
-        <pre>
->> QUANTUM SIMULATION
-- Real-Time Qubit Entanglement: ${AuroraState.quantumCore.qubits} Qubits
-- Coherence Time: ${AuroraState.quantumCore.coherence.toFixed(2)}ms
-- Error Rate: ${AuroraState.quantumCore.errorRate}%
-- Tensor Operations: 10^12/s
-        </pre>
-      `;
-    }
-
-    // Accessibility Enhancements
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && AuroraState.uiState.modal) {
-        closeModal();
-      }
-    });
-
-    // Performance Optimization
-    const debounce = (func, wait) => {
-      let timeout;
-      return (...args) => {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), wait);
-      };
-    };
-
-    window.addEventListener('resize', debounce(() => {
-      elements.sections.forEach(sec => {
-        if (sec.classList.contains('active')) {
-          sec.style.height = 'auto';
+        // Simulated Grok call
+        async function simulateGrokCall(query) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(`Grok Response: Evaluated query "${query}" - Suspicious pattern detected. Initiating DAG-based causality tracing.`);
+                }, 1000);
+            });
         }
-      });
-    }, 100));
 
-    // Error Handling
-    window.addEventListener('error', e => {
-      console.error(`Aurora Core Error: ${e.message}`);
-      elements.output.innerHTML += `\n>> [ERROR] System Fault: ${e.message}`;
-      elements.output.scrollTop = elements.output.scrollHeight;
-    });
-  </script>
+        // Simulated ethical validation
+        async function simulateEthicalValidation(response) {
+            // In a real implementation, this would check against 15D soul vector
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(Math.random() > 0.1); // 90% chance of passing
+                }, 500);
+            });
+        }
+
+        // Simulated audit logging
+        async function simulateAuditLog(query, response) {
+            // In a real implementation, this would log to Neo4j and zstd
+            console.log(`Audit Log: Query="${query}", Response="${response}"`);
+            return Promise.resolve();
+        }
+    </script>
 </body>
 </html>
