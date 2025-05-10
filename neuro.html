@@ -574,11 +574,7 @@ ws.onmessage = function(event) {
                 `;
             }
 
-            // Update query history
-            if (data.session_id && data.unified_response) {
-                addToHistory(data.session_id, data.unified_response);
-            }
-        };
+
 
         async function sendQuery() {
             const query = document.getElementById('chat-input').value.trim();
