@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" data-theme="cyber">
 <head>
@@ -6,12 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#000308">
-    <meta name="description" content="ElviraGenesis: The world's first GPU-cluster-compatible cybersecurity AI platform with capsule-based memory compression, ethical intelligence, and real-time multi-agent mutation for zero-day threat detection and forensic analysis.">
-    <title>ElviraGenesis: Neuro Interface</title>
-    <link href="/assets/fonts.css" rel="stylesheet">
-    <link href="/assets/vis-network.min.css" rel="stylesheet">
-    <script src="/assets/vis.min.js" defer></script>
-    <script src="/assets/particles.min.js" defer></script>
+    <meta name="description" content="ElviraGenesis-OMEGA: Advanced AI System for cybersecurity, ethical intelligence, autonomous strategy generation, and forensic analysis with capsule-based memory compression, recursive agent architecture, and real-time threat detection.">
+    <meta name="keywords" content="AI, cybersecurity, ethical AI, forensic analysis, blockchain, deep packet scanning, decompilation, zero-day threats">
+    <meta name="author" content="xAI">
+    <meta property="og:title" content="ElviraGenesis-OMEGA: Neuro Interface">
+    <meta property="og:description" content="A transformative Advanced AI System for enterprise cybersecurity, compliance, and forensic analysis.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://x.ai/grok">
+    <title>ElviraGenesis-OMEGA: Neuro Interface</title>
+    <!-- Replaced local fonts.css with CDN links -->
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400&family=Orbitron:wght@500&family=Source+Code+Pro:wght@400&display=swap" rel="stylesheet">
+    <!-- Replaced local vis-network.min.css and vis.min.js with CDN links -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis-network.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" defer></script>
+    <!-- Replaced local particles.min.js with CDN link -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" defer></script>
     <style>
         :root {
             --primary-hue: 200;
@@ -277,7 +285,7 @@
             min-width: 200px;
         }
 
-        .send-button {
+        .control-button {
             padding: 1.25rem 2.5rem;
             border: none;
             border-radius: 1rem;
@@ -291,7 +299,7 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .send-button:hover {
+        .control-button:hover {
             transform: scale(1.05);
             box-shadow: 0 0 15px var(--glow);
         }
@@ -357,7 +365,6 @@
         h1 {
             font-family: 'Orbitron', 'Source Code Pro', monospace;
             font-size: 5.5rem;
-@james
             color: var(--neon-cyan);
             text-shadow: 0 0 40px var(--glow);
             margin: 4rem 0;
@@ -382,6 +389,69 @@
             transition: all 0.5s ease-in-out;
         }
 
+        .tooltip {
+            position: absolute;
+            background: #0ff;
+            color: #000;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            display: none;
+            z-index: 1000;
+        }
+
+        .accordion {
+            margin: 4rem 0;
+            max-width: 1100px;
+            width: 100%;
+            transition: all 0.5s ease-in-out;
+        }
+
+        .accordion-header {
+            background: transparent;
+            border: 2px solid var(--neon-cyan);
+            padding: 1.8rem;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.4s ease-in-out;
+            color: var(--neon-cyan);
+            font-size: 1.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 0 25px rgba(0, 247, 255, 0.1);
+        }
+
+        .accordion-header:hover {
+            color: var(--hud-white);
+            box-shadow: 0 0 35px var(--glow);
+        }
+
+        .accordion-content {
+            display: none;
+            padding: 3rem;
+            background: transparent;
+            border-radius: 0 0 12px 12px;
+            backdrop-filter: blur(20px);
+        }
+
+        .accordion.active .accordion-content {
+            display: block;
+        }
+
+        .json-ld {
+            background: #000;
+            border: 1px solid var(--neon-cyan);
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 0.9rem;
+            color: #0ff;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
         @media (max-width: 768px) {
             section {
                 padding: 5rem 2rem;
@@ -396,7 +466,7 @@
                 max-width: 90%;
                 padding: 1.25rem;
             }
-            .send-button {
+            .control-button {
                 padding: 1rem 2rem;
             }
             h1 {
@@ -425,35 +495,20 @@
             .chat-input, .url-input {
                 font-size: 0.9rem;
             }
-            .send-button {
+            .control-button {
                 padding: 0.8rem 1.5rem;
                 font-size: 0.9rem;
             }
             h1 {
-                font-size: 1.8rem;
+                font-size: 2.8rem;
             }
             h2 {
-                font-size: 1.4rem;
+                font-size: 1.8rem;
             }
             p {
-                font-size: 1rem;
+                font-size: 1.1rem;
             }
         }
-
-        /* Existing styles from previous index.html (abridged for brevity) */
-        .grid { /* Existing grid styles */ }
-        .card { /* Existing card styles */ }
-        .badge { /* Existing badge styles */ }
-        .cyber-button { /* Existing cyber-button styles */ }
-        .accordion { /* Existing accordion styles */ }
-        .feature-list { /* Existing feature-list styles */ }
-        .llm-input { /* Existing llm-input styles */ }
-        .llm-response { /* Existing llm-response styles */ }
-        .api-demo { /* Existing api-demo styles */ }
-        #tech-stack-diagram, #threat-detection-diagram, #ethical-validation-diagram, #neo4j-diagram {
-            /* Existing diagram styles */
-        }
-        .cta-footer { /* Existing cta-footer styles */ }
     </style>
 </head>
 <body>
@@ -468,51 +523,85 @@
     <main>
         <!-- Chat Interface Section -->
         <section id="chat-section">
-            <h2>ElviraGenesis Neuro Interface</h2>
+            <h2>ElviraGenesis-OMEGA Neuro Interface</h2>
             <div class="frost-container">
                 <div class="chat-log" id="chatLog"></div>
-                <div class="metrics-panel" id="metrics-panel"></div>
+                <div class="metrics-panel" id="metrics-panel">
+                    <strong>Live Metrics</strong><br>
+                    <span>VRAM Usage: Initializing...</span><br>
+                    <span>CPU Usage: Initializing...</span><br>
+                    <span>RAM Usage: Initializing...</span><br>
+                    <span>Coherence Score: Initializing...</span><br>
+                    <span>Ethical Score: Initializing...</span><br>
+                    <span>Response Time: Initializing...</span><br>
+                    <span>Capsule Count: 0</span>
+                </div>
                 <div class="query-history" id="query-history">
                     <h3>Query History</h3>
                     <ul id="history-list"></ul>
                 </div>
                 <div class="input-group">
                     <input type="text" class="chat-input" placeholder="Initiate neural interface..." id="chat-input">
-                    <button class="send-button" onclick="sendQuery()">Transmit Query</button>
+                    <button class="control-button" id="start-tts" onclick="startTTS()">Start TTS</button>
+                    <button class="control-button" id="pause-tts" onclick="pauseTTS()" disabled>Pause TTS</button>
                     <input type="url" class="url-input" placeholder="Enter URL to learn from..." id="url-input">
-                    <button class="send-button" onclick="sendUrl()">Transmit URL</button>
+                    <button class="control-button" onclick="sendUrl()">Transmit URL</button>
                     <input type="file" class="file-input" id="file-input" accept=".py,.java,.txt,.pdf,.png,.jpg,.wav,.mp3">
-                    <button class="send-button" onclick="sendFile()">Upload File</button>
+                    <button class="control-button" onclick="sendFile()">Upload File</button>
                     <input type="file" class="dataset-input" id="dataset-input" accept=".csv,.txt,.json,.zst,.zip">
-                    <button class="send-button" onclick="sendDataset()">Upload Dataset</button>
+                    <button class="control-button" onclick="sendDataset()">Upload Dataset</button>
+                </div>
+                <!-- Demos for Additional Features -->
+                <div class="accordion">
+                    <div class="accordion-header">Encrypt/Decrypt Demo <span>↓</span></div>
+                    <div class="accordion-content">
+                        <p>Simulate encryption/decryption for forensic analysis:</p>
+                        <div class="encrypt-demo">
+                            <textarea id="encrypt-input" placeholder="Enter text to encrypt"></textarea>
+                            <button class="control-button" onclick="encryptText()">Encrypt</button>
+                            <p id="encrypt-output">Encrypted output will appear here...</p>
+                        </div>
+                        <div class="decrypt-demo">
+                            <textarea id="decrypt-input" placeholder="Enter encrypted text to decrypt"></textarea>
+                            <button class="control-button" onclick="decryptText()">Decrypt</button>
+                            <p id="decrypt-output">Decrypted output will appear here...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion">
+                    <div class="accordion-header">Decompilation Demo <span>↓</span></div>
+                    <div class="accordion-content">
+                        <p>Simulate decompilation of compiled code:</p>
+                        <textarea id="decompile-input" placeholder="Enter compiled code (e.g., base64-encoded binary)"></textarea>
+                        <button class="control-button" onclick="decompileCode()">Decompile</button>
+                        <p id="decompile-output">Decompiled output will appear here...</p>
+                    </div>
+                </div>
+                <div class="accordion">
+                    <div class="accordion-header">Metadata Example <span>↓</span></div>
+                    <div class="accordion-content">
+                        <p>Example metadata for a capsule:</p>
+                        <pre class="json-ld">
+{
+    "@context": "http://schema.org",
+    "@type": "DataRecord",
+    "identifier": "capsule_20250510_123456",
+    "name": "Threat Analysis Capsule",
+    "description": "Capsule containing threat analysis data",
+    "dateCreated": "2025-05-10T12:34:56Z",
+    "creator": "ElviraGenesis-OMEGA",
+    "ethicalScore": 0.98,
+    "hash": "sha512:abc123...",
+    "source": "ExploitIngestor",
+    "userId": "default_user",
+    "cryptographicKey": "RSA:xyz789..."
+}
+                        </pre>
+                    </div>
                 </div>
             </div>
         </section>
-
-        <!-- Section 1: Introduction -->
-        <section>
-            <h1>ElviraGenesis: Pioneering Cybersecurity Excellence</h1>
-            <p>ElviraGenesis is the world's first GPU-cluster-compatible cybersecurity AI platform, integrating capsule-based memory compression, DAG-verified ethical intelligence, and real-time multi-agent mutation. Designed for zero-day threat detection, forensic analysis, and regulatory-compliant governance, it operates on consumer-grade hardware with no speculative dependencies, ensuring a future where safety and innovation thrive.</p>
-            <button class="cyber-button">Discover the Future</button>
-        </section>
-
-        <!-- Remaining sections unchanged (abridged for brevity) -->
-        <section> <!-- Unique Selling Propositions --> </section>
-        <section> <!-- Core Capabilities --> </section>
-        <section> <!-- LLM Integration and GUI --> </section>
-        <section> <!-- Model Training & Capsule Evolution --> </section>
-        <section> <!-- Advanced Cybersecurity Modules --> </section>
-        <section> <!-- Tech Stack --> </section>
-        <section> <!-- Team Section --> </section>
-        <section> <!-- Investment Opportunity --> </section>
-        <section> <!-- Conclusion and Vision --> </section>
     </main>
-
-    <footer class="cta-footer">
-        <h1>Ready to Secure the Future?</h1>
-        <p>Contact us for pilot deployment, investor discussions, or strategic partnership.</p>
-        <button class="cyber-button">Contact Us</button>
-    </footer>
 
     <script>
         // Environment Toggle
@@ -520,61 +609,152 @@
         const API_URL = isLocal ? 'http://localhost:8000/process_query' : '/api/process_query';
         const WS_URL = isLocal ? 'ws://localhost:8000/events' : 'wss://<api-id>.execute-api.us-east-1.amazonaws.com/prod/events';
 
-// WebSocket Connection
-const ws = new WebSocket(WS_URL);
+        // WebSocket Connection
+        const ws = new WebSocket(WS_URL);
 
-ws.onmessage = function(event) {
-    try {
-        const data = JSON.parse(event.data);
-        const chatLog = document.getElementById('chatLog');
+        ws.onmessage = function(event) {
+            try {
+                const data = JSON.parse(event.data);
+                const chatLog = document.getElementById('chatLog');
 
-        const bubble = document.createElement('div');
-        bubble.className = `message-bubble ai`;
+                const bubble = document.createElement('div');
+                bubble.className = `message-bubble ai`;
+                bubble.innerHTML = `<strong>Session ${data.session_id}</strong>: ${data.unified_response}<br>` +
+                    Object.entries(data.model_responses || {}).map(([model, res]) => 
+                        `<strong>${model}</strong>: ${res.response} (Ethical: ${res.ethical_score || 'N/A'})`
+                    ).join('<br>');
 
-        bubble.innerHTML = `<strong>Session ${data.session_id}</strong>: ${data.unified_response}<br>` +
-            Object.entries(data.model_responses || {}).map(([model, res]) => 
-                `<strong>${model}</strong>: ${res.response} (Ethical: ${res.ethical_score || 'N/A'})`
-            ).join('<br>');
+                chatLog.appendChild(bubble);
+                scrollToBottom();
+                addToHistory(data.session_id, data.unified_response);
+                saveHistory();
 
-        chatLog.appendChild(bubble);
-        scrollToBottom();
-        addToHistory(data.session_id, data.unified_response);  // ✅ Adds to <ul>
-        saveHistory();  // ✅ Optional: persist to localStorage or your method
-    } catch (err) {
-        console.error("Error parsing WebSocket message:", err, event.data);
-    }
-};
+                // Update metrics panel
+                if (data.metrics) {
+                    const metricsPanel = document.getElementById('metrics-panel');
+                    metricsPanel.innerHTML = `
+                        <strong>Live Metrics</strong><br>
+                        <span style="color: ${data.metrics.vram_usage_4070 > 10 ? 'var(--neon-red)' : 'var(--neon-green)'};">
+                            VRAM Usage (4070): ${data.metrics.vram_usage_4070.toFixed(2)} GB
+                        </span><br>
+                        <span style="color: ${data.metrics.vram_usage_3060 > 10 ? 'var(--neon-red)' : 'var(--neon-green)'};">
+                            VRAM Usage (3060): ${data.metrics.vram_usage_3060.toFixed(2)} GB
+                        </span><br>
+                        <span style="color: ${data.metrics.cpu_usage > 80 ? 'var(--neon-red)' : 'var(--neon-green)'};">
+                            CPU Usage: ${data.metrics.cpu_usage.toFixed(2)}%
+                        </span><br>
+                        <span style="color: ${data.metrics.ram_usage > 80 ? 'var(--neon-red)' : 'var(--neon-green)'};">
+                            RAM Usage: ${data.metrics.ram_usage.toFixed(2)}%
+                        </span><br>
+                        <span style="color: ${data.metrics.coherence_score < 0.7 ? 'var(--neon-red)' : 'var(--neon-green)'};">
+                            Coherence Score: ${data.metrics.coherence_score.toFixed(4)}
+                        </span><br>
+                        <span style="color: ${data.metrics.ethical_score < 0.7 ? 'var(--neon-red)' : 'var(--neon-green)'};">
+                            Ethical Score: ${data.metrics.ethical_score.toFixed(4)}
+                        </span><br>
+                        Response Time: ${data.metrics.response_time.toFixed(2)}s<br>
+                        Capsule Count: ${data.metrics.capsule_count || 0}
+                    `;
+                }
+            } catch (err) {
+                console.error("Error parsing WebSocket message:", err, event.data);
+            }
+        };
 
+        // Text-to-Speech Setup
+        let speech = new SpeechSynthesisUtterance();
+        let isSpeaking = false;
+        let currentChunkIndex = 0;
+        let isPaused = false;
 
-            // Update metrics panel
-            if (data.metrics) {
-                const metricsPanel = document.getElementById('metrics-panel');
-                metricsPanel.innerHTML = `
-                    <strong>Live Metrics</strong><br>
-                    <span style="color: ${data.metrics.vram_usage_4070 > 10 ? 'var(--neon-red)' : 'var(--neon-green)'};">
-                        VRAM Usage (4070): ${data.metrics.vram_usage_4070.toFixed(2)} GB
-                    </span><br>
-                    <span style="color: ${data.metrics.vram_usage_3060 > 10 ? 'var(--neon-red)' : 'var(--neon-green)'};">
-                        VRAM Usage (3060): ${data.metrics.vram_usage_3060.toFixed(2)} GB
-                    </span><br>
-                    <span style="color: ${data.metrics.cpu_usage > 80 ? 'var(--neon-red)' : 'var(--neon-green)'};">
-                        CPU Usage: ${data.metrics.cpu_usage.toFixed(2)}%
-                    </span><br>
-                    <span style="color: ${data.metrics.ram_usage > 80 ? 'var(--neon-red)' : 'var(--neon-green)'};">
-                        RAM Usage: ${data.metrics.ram_usage.toFixed(2)}%
-                    </span><br>
-                    <span style="color: ${data.metrics.coherence_score < 0.7 ? 'var(--neon-red)' : 'var(--neon-green)'};">
-                        Coherence Score: ${data.metrics.coherence_score.toFixed(4)}
-                    </span><br>
-                    <span style="color: ${data.metrics.ethical_score < 0.7 ? 'var(--neon-red)' : 'var(--neon-green)'};">
-                        Ethical Score: ${data.metrics.ethical_score.toFixed(4)}
-                    </span><br>
-                    Response Time: ${data.metrics.response_time.toFixed(2)}s<br>
-                    Capsule Count: ${data.metrics.capsule_count || 0}
-                `;
-  
+        // Split the presentation content into chunks for TTS
+        const presentationChunks = [
+            // Executive Summary
+            "ElviraGenesis-OMEGA is a state-of-the-art Advanced AI System designed for cybersecurity, ethical reasoning, autonomous strategy generation, and forensic analysis. Built on a modular, dual-GPU architecture with CUDA 12.6, Python 3.12, and distributed computing via Ray, the system integrates over 40 modules to achieve Consciousness Level ξ-9—a conceptual benchmark for advanced cognitive and ethical reasoning.",
+            "Key components include: FlashTRASymbioticAI, a neuro-symbolic engine for strategy generation and ethical reasoning; KnowledgeCapsulePreloader, which loads and validates compressed knowledge capsules with ZKProofs and ethical checks; KnowledgeGrowthManager, for growing and mutating LoRA adapters based on affective embeddings and probe data; GenesisInitializer, for seeding ethically aligned knowledge; TRATrainingModule, for training with DeepSpeed ZeRO-3; and the Twin Recursive Agent Architecture, a dual-agent system with recursive self-modification and ethical safeguards.",
+            "Additional components include ForensicHex3DEntropyViewer for visualizing capsule entropy in 3D, TimelineEngine for tracking temporal evolution, SteganographyEmbedderDetection for detecting hidden data, NetworkAnalytics for deep packet scanning and blockchain forensics, InteractiveTooltips for AI-driven suggestions, ExploitPrevention and CounterAttacking for proactive threat response, ConsoleNative for AI chat and command execution, VoiceCommands for hands-free operation, AdvancedEncryption for secure data handling, Decrypt/Encrypt for forensic analysis, MetadataManagement for traceability, and DecompileEngine for reverse-engineering exploits.",
+            "The system excels in: Cybersecurity Excellence, detecting and countering exploits with AI-driven classification, reinforcement learning, sandbox testing, and deep packet scanning; Ethical Compliance, validating actions against 10,000+ ethical protocols using ZKProofs and Merkle trees; Scalability, processing 1 to 3 billion tokens per day across 10+ distributed nodes; Real-Time Visualization, displaying system health, fork metrics, entropy, and forensic analytics; Self-Improvement, enabling continuous learning through recursive agent modification; and Forensic Precision, providing ultra-detailed analysis with decompilation, metadata, and temporal tracking.",
+            // System Architecture
+            "The system is organized into six layers: Hardware, Core Infrastructure, Processing, Orchestration, Interaction, and Security/Audit. The Hardware Layer includes dual high-performance GPUs, a multi-core CPU, 128GB DDR5 RAM, and a 2TB NVMe SSD, with NVIDIA-SMI monitoring and high-speed LAN networking. The Core Infrastructure Layer uses Ubuntu 22.04 LTS, Python 3.12, Docker containerization, Neo4j for capsules and blockchain forensics, Redis for event streaming, and a file system at /home/ben/BALI/cyber/.",
+            "The Processing Layer includes AI models like FlashTRASymbioticAI, LearningOrchestrator, TaskGeneralizer, KnowledgeGrowthManager, TRATrainingModule, HyperAgent, and PluginThoughtReactor, plus specialized modules like ExploitIngestor, CognitiveStateProcessor, CrossModalPerception, ThreatPathSimulator, AdaptiveFeatureCompressor, ForensicHex3DEntropyViewer, TimelineEngine, SteganographyEmbedderDetection, NetworkAnalytics, and DecompileEngine, optimized with BF16 precision, AMP autocast, and FlashAttention2.",
+            "The Orchestration Layer features InfinityBrain, ElviraRouter, DistributedTaskOrchestrator, KnowledgeGrowthManager, ReinforcementLoop, TemporalAccelerator, and TimelineEngine. The Interaction Layer includes a PyQt5 GUI with glitch-heavy aesthetics, a Dash dashboard, web application, WebSocket server, ConsoleNative, and VoiceCommands. The Security/Audit Layer provides ethical validation, cryptographic security, audit logging, forensic telemetry, threat detection, exploit prevention, and counterattacking.",
+            "The Twin Recursive Agent Architecture employs an Ethics Agent and Capability Agent, with recursive modification and safeguards like mutual validation, human-in-the-loop oversight, and rollback via DualGPUMemory. The key workflow includes initialization, capsule preloading, exploit processing, knowledge growth, training and optimization, monitoring and visualization, and security and auditing.",
+            // Key Features
+            "Key features include the Twin Recursive Agent Architecture for safe self-improvement, Knowledge Capsule Preloading for auditable data, Adaptive LoRA Adapter Growth for personalization, Multimodal Sensory Integration for enhanced interaction, Ethical Compliance and Forensic Traceability for regulatory alignment, Scalable Dual-GPU Architecture for enterprise deployments, Cinematic GUI and Real-Time Telemetry for investor appeal, Predictive Error Healing and Capsule Forecasting for resilience, Quantum-Inspired Processing for advanced reasoning, Forensic and Network Analytics for compliance, Exploit Prevention and Counterattacking for cybersecurity, Interactive Tooltips and Voice Commands for accessibility, Advanced Encryption and Decrypt/Encrypt for data security, Decompile Engine for exploit analysis, and Metadata Management for traceability.",
+            // Market Fit
+            "Target markets include Cybersecurity ($200B market), Healthcare AI ($50B market), Legal and Compliance ($20B market), and Enterprise AI SaaS ($150B market). The competitive edge lies in its unique architecture, ethical safeguards, multimodal and forensic capabilities, scalability, and investor appeal through cinematic visualizations.",
+            // Technical Specifications
+            "Technical specifications include dual high-performance GPUs, 128GB DDR5 RAM, 2TB NVMe SSD, Ubuntu 22.04 LTS, Python 3.12, CUDA 12.6, and dependencies like PyTorch, DeepSpeed, Neo4j, and FAISS. Performance metrics show 1200 req/s throughput, 1–3B tokens/day capacity, 99.5% ethical compliance, and 95% forensic precision.",
+            // Roadmap
+            "The roadmap includes Core Integration by Q2 2025, Scalability and Optimization by Q4 2025, Market Deployment by Q2 2026, and Continuous Learning and Expansion from Q4 2026, targeting $50M annual revenue and 300% ROI in 5 years.",
+            // Cost Estimation
+            "Cost estimation covers $210K for 3-month development, $3M for 1-year deployment, $550K annual maintenance, totaling $4.7M over 3 years.",
+            // Investor Pitch
+            "Investor pitch points highlight innovative AI, cybersecurity leadership, ethical compliance, forensic precision, scalable infrastructure, market potential, investor appeal, and a projected 300% ROI in 5 years.",
+            // Conclusion
+            "ElviraGenesis-OMEGA redefines cybersecurity, ethical intelligence, and forensic analysis with its modular architecture, Twin Recursive Agent model, advanced forensic capabilities, and real-time visualization, poised to deliver significant value and innovation."
+        ];
 
+        function startTTS() {
+            if (!('speechSynthesis' in window)) {
+                addMessage('Text-to-speech is not supported in this browser.', 'ai');
+                return;
+            }
+            if (isSpeaking) return;
 
+            isSpeaking = true;
+            isPaused = false;
+            document.getElementById('start-tts').disabled = true;
+            document.getElementById('pause-tts').disabled = false;
+
+            // Initialize TTS
+            speech = new SpeechSynthesisUtterance();
+            speech.lang = 'en-US';
+            speech.volume = 1;
+            speech.rate = 1;
+            speech.pitch = 1;
+
+            // Start reading from the current chunk
+            readNextChunk();
+        }
+
+        function readNextChunk() {
+            if (currentChunkIndex >= presentationChunks.length) {
+                isSpeaking = false;
+                document.getElementById('start-tts').disabled = false;
+                document.getElementById('pause-tts').disabled = true;
+                currentChunkIndex = 0; // Reset for next play
+                return;
+            }
+
+            if (!isPaused) {
+                // Display chunk in chat log
+                addMessage(presentationChunks[currentChunkIndex], 'ai');
+
+                // Set TTS text
+                speech.text = presentationChunks[currentChunkIndex];
+                speech.onend = () => {
+                    currentChunkIndex++;
+                    readNextChunk();
+                };
+                window.speechSynthesis.speak(speech);
+            }
+        }
+
+        function pauseTTS() {
+            if (isSpeaking) {
+                if (isPaused) {
+                    isPaused = false;
+                    document.getElementById('pause-tts').textContent = 'Pause TTS';
+                    window.speechSynthesis.resume();
+                    readNextChunk();
+                } else {
+                    isPaused = true;
+                    document.getElementById('pause-tts').textContent = 'Resume TTS';
+                    window.speechSynthesis.pause();
+                }
+            }
+        }
 
         async function sendQuery() {
             const query = document.getElementById('chat-input').value.trim();
@@ -588,7 +768,6 @@ ws.onmessage = function(event) {
                 });
                 const result = await response.json();
                 ws.send(JSON.stringify({ command: 'process_query', data: query, user_id: 'web_user' }));
-                // Sync history with backend
                 await syncHistoryWithBackend(result.session_id, query, result.unified_response);
             } catch (e) {
                 console.error('Query failed:', e);
@@ -640,6 +819,7 @@ ws.onmessage = function(event) {
             const bubble = document.createElement('div');
             bubble.className = `message-bubble ${type}`;
             bubble.textContent = text;
+            bubble.dataset.tooltip = type === 'ai' ? 'AI-generated response with ethical validation.' : 'User input.';
             chatLog.appendChild(bubble);
             scrollToBottom();
             saveHistory();
@@ -673,7 +853,6 @@ ws.onmessage = function(event) {
         function loadHistory() {
             const history = JSON.parse(localStorage.getItem('neuroChatHistory') || '[]');
             history.forEach(msg => addMessage(msg.text, msg.type));
-            // Load backend history in cloud mode
             if (!isLocal) {
                 loadBackendHistory();
             }
@@ -713,6 +892,44 @@ ws.onmessage = function(event) {
             } catch (e) {
                 console.error('Failed to load backend history:', e);
             }
+        }
+
+        // Encrypt/Decrypt Simulation
+        function encryptText() {
+            const input = document.getElementById('encrypt-input').value;
+            const output = document.getElementById('encrypt-output');
+            if (!input) {
+                output.textContent = 'Please enter text to encrypt.';
+                return;
+            }
+            const encoded = btoa(input); // Base64 for demo
+            output.textContent = `Encrypted: ${encoded}`;
+        }
+
+        function decryptText() {
+            const input = document.getElementById('decrypt-input').value;
+            const output = document.getElementById('decrypt-output');
+            if (!input) {
+                output.textContent = 'Please enter encrypted text to decrypt.';
+                return;
+            }
+            try {
+                const decoded = atob(input); // Base64 for demo
+                output.textContent = `Decrypted: ${decoded}`;
+            } catch (e) {
+                output.textContent = 'Invalid encrypted text.';
+            }
+        }
+
+        // Decompilation Simulation
+        function decompileCode() {
+            const input = document.getElementById('decompile-input').value;
+            const output = document.getElementById('decompile-output');
+            if (!input) {
+                output.textContent = 'Please enter compiled code to decompile.';
+                return;
+            }
+            output.textContent = `Decompiled Output: Simulated decompilation of ${input.length} bytes. Detected function: main() with 3 calls to unknown libraries.`;
         }
 
         // Quantum Particle System
@@ -790,18 +1007,17 @@ ws.onmessage = function(event) {
                             onhover: { enable: true, mode: 'repulse' }, 
                             onclick: { enable: true, mode: 'push' }, 
                             resize: true,
-                            onQuery: { enable: true, mode: 'burst' } // Custom event for query submission
+                            onQuery: { enable: true, mode: 'burst' }
                         },
                         modes: { 
                             repulse: { distance: 150, duration: 0.5 }, 
                             push: { particles_nb: 5 },
-                            burst: { particles_nb: 10, speed: 8 } // Burst effect on query
+                            burst: { particles_nb: 10, speed: 8 }
                         }
                     },
                     retina_detect: true
                 });
 
-                // Add custom event listener for query submission
                 document.getElementById('chat-input').addEventListener('keypress', function(e) {
                     if (e.key === 'Enter' && this.value.trim()) {
                         particlesJS('particles-js').pJS.fn.vendors.interactivity.pushParticles(10, { speed: 8 });
@@ -814,19 +1030,33 @@ ws.onmessage = function(event) {
             const particles = new QuantumParticles(document.querySelector('.particle-canvas'));
             loadHistory();
 
-            // Initialize VisJS diagrams (existing code)
-            drawTechStackDiagram();
-            drawThreatDetectionDiagram();
-            drawEthicalValidationDiagram();
-            drawNeo4jDiagram();
+            // Initialize tooltips
+            document.querySelectorAll('[data-tooltip]').forEach(element => {
+                element.addEventListener('mouseenter', function (e) {
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'tooltip';
+                    tooltip.textContent = this.dataset.tooltip;
+                    document.body.appendChild(tooltip);
+                    const rect = this.getBoundingClientRect();
+                    tooltip.style.left = `${rect.left + window.scrollX + rect.width / 2}px`;
+                    tooltip.style.top = `${rect.top + window.scrollY - 40}px`;
+                    tooltip.style.display = 'block';
+                });
+                element.addEventListener('mouseleave', function () {
+                    document.querySelectorAll('.tooltip').forEach(t => t.remove());
+                });
+            });
 
-            // Accordion functionality (existing code)
+            // Initialize accordion functionality
             document.querySelectorAll('.accordion-header').forEach(header => {
                 header.addEventListener('click', () => {
                     const accordion = header.parentElement;
                     accordion.classList.toggle('active');
                 });
             });
+
+            // Load presentation content into chat log
+            presentationChunks.forEach(chunk => addMessage(chunk, 'ai'));
         });
 
         // Preloader Fade-Out
@@ -834,20 +1064,6 @@ ws.onmessage = function(event) {
             const preloader = document.getElementById('preloader');
             preloader.classList.add('fade-out');
         });
-
-        // Existing VisJS diagram functions (unchanged)
-        function drawTechStackDiagram() { /* Existing code from previous index.html */ }
-        function drawThreatDetectionDiagram() { /* Existing code from previous index.html */ }
-        function drawEthicalValidationDiagram() { /* Existing code from previous index.html */ }
-        function drawNeo4jDiagram() { /* Existing code from previous index.html */ }
-
-        // Existing LLM simulation functions (unchanged)
-        async function callLLM() { /* Existing code from previous index.html */ }
-        async function simulateOpenAICall(query) { /* Existing code */ }
-        async function simulateLocalLLMCall(query) { /* Existing code */ }
-        async function simulateGrokCall(query) { /* Existing code */ }
-        async function simulateEthicalValidation(response) { /* Existing code */ }
-        async function simulateAuditLog(query, response) { /* Existing code */ }
     </script>
 </body>
 </html>
