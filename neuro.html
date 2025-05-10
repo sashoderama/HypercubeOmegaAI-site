@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en" data-theme="cyber">
 <head>
@@ -123,6 +124,12 @@
             border: 1px solid var(--glass-border);
             box-shadow: var(--neon-glow);
             border-radius: 1.5rem;
+            transition: backdrop-filter 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .frost-container:hover {
+            backdrop-filter: blur(50px) saturate(200%);
+            box-shadow: 0 0 30px hsla(var(--primary-hue), 100%, 50%, 0.5);
         }
 
         .frost-container::before {
@@ -157,12 +164,19 @@
             backdrop-filter: blur(25px);
             border: 1px solid var(--glass-border);
             transform: scale(0.98);
-            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-            will-change: transform;
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), backdrop-filter 0.3s ease;
+            will-change: transform, backdrop-filter;
+            animation: blurPulse 3s infinite ease-in-out;
         }
 
         .message-bubble:hover {
             transform: scale(1);
+            backdrop-filter: blur(35px);
+        }
+
+        @keyframes blurPulse {
+            0%, 100% { backdrop-filter: blur(25px); }
+            50% { backdrop-filter: blur(30px); }
         }
 
         .message-bubble.user {
@@ -188,6 +202,12 @@
             font-size: 0.9rem;
             color: var(--neon-green);
             margin-bottom: 1rem;
+            transition: box-shadow 0.3s ease, backdrop-filter 0.3s ease;
+        }
+
+        .metrics-panel:hover {
+            box-shadow: 0 0 20px var(--glow);
+            backdrop-filter: blur(30px);
         }
 
         .query-history {
@@ -199,6 +219,12 @@
             font-size: 0.9rem;
             color: var(--neon-green);
             margin-bottom: 1rem;
+            transition: box-shadow 0.3s ease, backdrop-filter 0.3s ease;
+        }
+
+        .query-history:hover {
+            box-shadow: 0 0 20px var(--glow);
+            backdrop-filter: blur(30px);
         }
 
         .query-history ul {
@@ -219,6 +245,12 @@
             background: var(--glass-bg);
             border-radius: 1.5rem;
             backdrop-filter: blur(30px);
+            transition: box-shadow 0.3s ease, backdrop-filter 0.3s ease;
+        }
+
+        .input-group:hover {
+            box-shadow: 0 0 20px var(--glow);
+            backdrop-filter: blur(40px);
         }
 
         .chat-input, .url-input {
@@ -256,7 +288,7 @@
             font-family: 'Orbitron', sans-serif;
             font-weight: 700;
             cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .send-button:hover {
@@ -325,6 +357,7 @@
         h1 {
             font-family: 'Orbitron', 'Source Code Pro', monospace;
             font-size: 5.5rem;
+@james
             color: var(--neon-cyan);
             text-shadow: 0 0 40px var(--glow);
             margin: 4rem 0;
@@ -493,28 +526,41 @@
             const data = JSON.parse(event.data);
             const chatLog = document.getElementById('chatLog');
             const bubble = document.createElement('div');
-            bubble.className = message-bubble ai;
-            bubble.innerHTML = <strong>Session ${data.session_id}</strong>: ${data.unified_response}<br> +
+            bubble.className = `message-bubble ai`;
+            bubble.innerHTML = `<strong>Session ${data.session_id}</strong>: ${data.unified_response}<br>` +
                 Object.entries(data.model_responses || {}).map(([model, res]) => 
-                    <strong>${model}</strong>: ${res.response} (Ethical: ${res.ethical_score || 'N/A'})
+                    `<strong>${model}</strong>: ${res.response} (Ethical: ${res.ethical_score || 'N/A'})`
                 ).join('<br>');
             chatLog.appendChild(bubble);
             scrollToBottom();
+            saveHistory();
 
             // Update metrics panel
             if (data.metrics) {
                 const metricsPanel = document.getElementById('metrics-panel');
-                metricsPanel.innerHTML = 
+                metricsPanel.innerHTML = `
                     <strong>Live Metrics</strong><br>
-                    VRAM Usage (4070): ${data.metrics.vram_usage_4070.toFixed(2)} GB<br>
-                    VRAM Usage (3060): ${data.metrics.vram_usage_3060.toFixed(2)} GB<br>
-                    CPU Usage: ${data.metrics.cpu_usage.toFixed(2)}%<br>
-                    RAM Usage: ${data.metrics.ram_usage.toFixed(2)}%<br>
-                    Coherence Score: ${data.metrics.coherence_score.toFixed(4)}<br>
-                    Ethical Score: ${data.metrics.ethical_score.toFixed(4)}<br>
+                    <span style="color: ${data.metrics.vram_usage_4070 > 10 ? 'var(--neon-red)' : 'var(--neon-green)'};">
+                        VRAM Usage (4070): ${data.metrics.vram_usage_4070.toFixed(2)} GB
+                    </span><br>
+                    <span style="color: ${data.metrics.vram_usage_3060 > 10 ? 'var(--neon-red)' : 'var(--neon-green)'};">
+                        VRAM Usage (3060): ${data.metrics.vram_usage_3060.toFixed(2)} GB
+                    </span><br>
+                    <span style="color: ${data.metrics.cpu_usage > 80 ? 'var(--neon-red)' : 'var(--neon-green)'};">
+                        CPU Usage: ${data.metrics.cpu_usage.toFixed(2)}%
+                    </span><br>
+                    <span style="color: ${data.metrics.ram_usage > 80 ? 'var(--neon-red)' : 'var(--neon-green)'};">
+                        RAM Usage: ${data.metrics.ram_usage.toFixed(2)}%
+                    </span><br>
+                    <span style="color: ${data.metrics.coherence_score < 0.7 ? 'var(--neon-red)' : 'var(--neon-green)'};">
+                        Coherence Score: ${data.metrics.coherence_score.toFixed(4)}
+                    </span><br>
+                    <span style="color: ${data.metrics.ethical_score < 0.7 ? 'var(--neon-red)' : 'var(--neon-green)'};">
+                        Ethical Score: ${data.metrics.ethical_score.toFixed(4)}
+                    </span><br>
                     Response Time: ${data.metrics.response_time.toFixed(2)}s<br>
                     Capsule Count: ${data.metrics.capsule_count || 0}
-                ;
+                `;
             }
 
             // Update query history
@@ -535,9 +581,11 @@
                 });
                 const result = await response.json();
                 ws.send(JSON.stringify({ command: 'process_query', data: query, user_id: 'web_user' }));
+                // Sync history with backend
+                await syncHistoryWithBackend(result.session_id, query, result.unified_response);
             } catch (e) {
                 console.error('Query failed:', e);
-                addMessage(Error: ${e.message}, 'ai');
+                addMessage(`Error: ${e.message}`, 'ai');
             }
             document.getElementById('chat-input').value = '';
         }
@@ -545,7 +593,7 @@
         async function sendUrl() {
             const url = document.getElementById('url-input').value.trim();
             if (!url) return;
-            addMessage(URL: ${url}, 'user');
+            addMessage(`URL: ${url}`, 'user');
             ws.send(JSON.stringify({ command: 'process_url', data: url, user_id: 'web_user' }));
             document.getElementById('url-input').value = '';
         }
@@ -554,7 +602,7 @@
             const fileInput = document.getElementById('file-input');
             const file = fileInput.files[0];
             if (!file) return;
-            addMessage(File: ${file.name}, 'user');
+            addMessage(`File: ${file.name}`, 'user');
             const formData = new FormData();
             formData.append('file', file);
             formData.append('user_id', 'web_user');
@@ -569,7 +617,7 @@
             const datasetInput = document.getElementById('dataset-input');
             const file = datasetInput.files[0];
             if (!file) return;
-            addMessage(Dataset: ${file.name}, 'user');
+            addMessage(`Dataset: ${file.name}`, 'user');
             const formData = new FormData();
             formData.append('dataset', file);
             formData.append('user_id', 'web_user');
@@ -583,10 +631,11 @@
         function addMessage(text, type) {
             const chatLog = document.getElementById('chatLog');
             const bubble = document.createElement('div');
-            bubble.className = message-bubble ${type};
+            bubble.className = `message-bubble ${type}`;
             bubble.textContent = text;
             chatLog.appendChild(bubble);
             scrollToBottom();
+            saveHistory();
         }
 
         function scrollToBottom() {
@@ -600,8 +649,63 @@
         function addToHistory(sessionId, query) {
             const historyList = document.getElementById('history-list');
             const item = document.createElement('li');
-            item.innerHTML = <strong>${sessionId}</strong>: ${query};
+            item.innerHTML = `<strong>${sessionId}</strong>: ${query}`;
             historyList.appendChild(item);
+            saveHistory();
+        }
+
+        function saveHistory() {
+            const messages = Array.from(document.getElementById('chatLog').children)
+                .map(el => ({
+                    text: el.textContent,
+                    type: el.classList.contains('user') ? 'user' : 'ai'
+                }));
+            localStorage.setItem('neuroChatHistory', JSON.stringify(messages));
+        }
+
+        function loadHistory() {
+            const history = JSON.parse(localStorage.getItem('neuroChatHistory') || '[]');
+            history.forEach(msg => addMessage(msg.text, msg.type));
+            // Load backend history in cloud mode
+            if (!isLocal) {
+                loadBackendHistory();
+            }
+        }
+
+        async function syncHistoryWithBackend(sessionId, query, response) {
+            if (!isLocal) {
+                try {
+                    await fetch(isLocal ? 'http://localhost:8000/sync_history' : '/api/sync_history', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            session_id: sessionId,
+                            query: query,
+                            response: response,
+                            user_id: 'web_user'
+                        })
+                    });
+                } catch (e) {
+                    console.error('Failed to sync history:', e);
+                }
+            }
+        }
+
+        async function loadBackendHistory() {
+            try {
+                const response = await fetch(isLocal ? 'http://localhost:8000/get_history' : '/api/get_history', {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const history = await response.json();
+                history.forEach(entry => {
+                    addMessage(`Session ${entry.session_id}: ${entry.query}`, 'user');
+                    addMessage(entry.response, 'ai');
+                    addToHistory(entry.session_id, entry.response);
+                });
+            } catch (e) {
+                console.error('Failed to load backend history:', e);
+            }
         }
 
         // Quantum Particle System
@@ -652,7 +756,7 @@
                     this.ctx.translate(p.x, p.y);
                     this.ctx.rotate(p.angle);
                     this.ctx.globalAlpha = p.alpha;
-                    this.ctx.fillStyle = hsl(180, 100%, 70%);
+                    this.ctx.fillStyle = `hsl(180, 100%, 70%)`;
                     this.ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
                     this.ctx.restore();
                 });
@@ -675,16 +779,33 @@
                     },
                     interactivity: {
                         detect_on: 'canvas',
-                        events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true },
-                        modes: { repulse: { distance: 150, duration: 0.5 }, push: { particles_nb: 5 } }
+                        events: { 
+                            onhover: { enable: true, mode: 'repulse' }, 
+                            onclick: { enable: true, mode: 'push' }, 
+                            resize: true,
+                            onQuery: { enable: true, mode: 'burst' } // Custom event for query submission
+                        },
+                        modes: { 
+                            repulse: { distance: 150, duration: 0.5 }, 
+                            push: { particles_nb: 5 },
+                            burst: { particles_nb: 10, speed: 8 } // Burst effect on query
+                        }
                     },
                     retina_detect: true
+                });
+
+                // Add custom event listener for query submission
+                document.getElementById('chat-input').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' && this.value.trim()) {
+                        particlesJS('particles-js').pJS.fn.vendors.interactivity.pushParticles(10, { speed: 8 });
+                    }
                 });
             } else {
                 console.error('particlesJS is not defined.');
             }
 
             const particles = new QuantumParticles(document.querySelector('.particle-canvas'));
+            loadHistory();
 
             // Initialize VisJS diagrams (existing code)
             drawTechStackDiagram();
@@ -723,28 +844,205 @@
     </script>
 </body>
 </html>
+```
 
-### Additional Assets
-To support local mode, the following assets are added to `/assets/`:
+### Backend Enhancements for Persistent History
+To support backend-persisted chat history, I’ll add new endpoints to `web_server.py` for syncing and retrieving history.
 
-<xaiArtifact artifact_id="708fd8c3-85fa-43f3-8c66-d7907288d096" artifact_version_id="ae873809-0dfa-44e7-bc19-5e345923665d" title="assets/fonts.css" contentType="text/css">
+<xaiArtifact artifact_id="edda9f70-8b55-49ef-8679-26279ee1836c" artifact_version_id="48e89b9e-e565-40d6-9c8d-89c5a87dbd39" title="web_server.py" contentType="text/python">
+```python
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+WebServer — ElviraGenesis-OMEGA
+==============================
+Purpose:
+    Unified asyncio webserver for ElviraGenesis-OMEGA, handling WebSocket and REST
+    endpoints for query processing, URL/file/dataset inputs, live metrics, and chat history.
 
-css
-@font-face {
-    font-family: 'Exo 2';
-    src: url('/assets/Exo2-Regular.woff2') format('woff2');
-    font-weight: 400;
-    font-style: normal;
-}
-@font-face {
-    font-family: 'Orbitron';
-    src: url('/assets/Orbitron-Medium.woff2') format('woff2');
-    font-weight: 500;
-    font-style: normal;
-}
-@font-face {
-    font-family: 'Source Code Pro';
-    src: url('/assets/SourceCodePro-Regular.woff2') format('woff2');
-    font-weight: 400;
-    font-style: normal;
-}
+Key Features:
+    - Supports local mode (http://localhost:8000) and cloud mode (AWS Gateway).
+    - Consolidated WebSocket/REST I/O handlers using FastAPI.
+    - Real-time metrics broadcasting via WebSocket.
+    - Health check endpoint for Kubernetes.
+    - New endpoints for chat history sync and retrieval.
+
+Author: ElviraGenesis AI Engineering
+"""
+
+import asyncio
+import logging
+import os
+import uuid
+from fastapi import FastAPI, WebSocket, UploadFile, File, HTTPException
+from fastapi.responses import HTMLResponse
+from starlette.websockets import WebSocketDisconnect
+from pathlib import Path
+from typing import Dict, Any, List
+import json
+import pynvml
+import psutil
+from modules.chat_box_backend import ChatBoxBackend
+from modules.elvira_gui_interface import AI_SIGNALS
+
+# Configuration
+GENESIS_DIR = Path("/home/ben/BALI/cyber")
+LOG_DIR = GENESIS_DIR / "infinity_output/logs"
+LOG_DIR.mkdir(parents=True, exist_ok=True)
+
+# Logging Setup
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s [%(levelname)s] [%(threadName)s] PID:%(pid)s %(message)s',
+    handlers=[logging.FileHandler(LOG_DIR / f"web_server_{time.strftime('%Y%m%d_%H%M%S')}.log"), logging.StreamHandler()]
+)
+logger = logging.getLogger("WebServer")
+
+app = FastAPI()
+backend = ChatBoxBackend()
+pynvml.nvmlInit()
+
+# WebSocket clients
+connected_clients = set()
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
+
+@app.get("/")
+async def get():
+    with open("index.html", "r") as f:
+        return HTMLResponse(f.read())
+
+@app.post("/upload")
+async def upload_file(file: UploadFile = File(...), user_id: str = "web_user"):
+    try:
+        file_path = os.path.join("/tmp", file.filename)
+        with open(file_path, "wb") as f:
+            f.write(await file.read())
+        result = await backend.process_file(file_path, user_id)
+        os.remove(file_path)
+        return result
+    except Exception as e:
+        logger.error(f"File upload failed: {str(e)}", extra={"pid": os.getpid()})
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/upload_dataset")
+async def upload_dataset(dataset: UploadFile = File(...), user_id: str = "web_user"):
+    try:
+        file_path = os.path.join("/tmp", dataset.filename)
+        with open(file_path, "wb") as f:
+            f.write(await file.read())
+        result = await backend.process_dataset(file_path, user_id)
+        os.remove(file_path)
+        return result
+    except Exception as e:
+        logger.error(f"Dataset upload failed: {str(e)}", extra={"pid": os.getpid()})
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/process_query")
+async def process_query(query: Dict[str, str]):
+    try:
+        result = await backend.process_query(query.get("data", ""), query.get("user_id", "web_user"))
+        return result
+    except Exception as e:
+        logger.error(f"Query processing failed: {str(e)}", extra={"pid": os.getpid()})
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/process_url")
+async def process_url(url: Dict[str, str]):
+    try:
+        result = await backend.process_url(url.get("data", ""), url.get("user_id", "web_user"))
+        return result
+    except Exception as e:
+        logger.error(f"URL processing failed: {str(e)}", extra={"pid": os.getpid()})
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/sync_history")
+async def sync_history(history: Dict[str, Any]):
+    try:
+        session_id = history.get("session_id")
+        query = history.get("query")
+        response = history.get("response")
+        user_id = history.get("user_id", "web_user")
+        capsule_data = {
+            "hash": hashlib.sha3_512(json.dumps({"session_id": session_id, "query": query, "response": response}, sort_keys=True).encode()).hexdigest(),
+            "compressed_data": [],  # Placeholder, could store vector if needed
+            "metadata": {
+                "session_id": session_id,
+                "user_id": user_id,
+                "query": query,
+                "response": response,
+                "timestamp": datetime.utcnow().isoformat()
+            }
+        }
+        await backend.capsule_bank.add_capsule(capsule_data, torch.randn(256, device=backend.device_compute), user_id=user_id)
+        return {"status": "success"}
+    except Exception as e:
+        logger.error(f"History sync failed: {str(e)}", extra={"pid": os.getpid()})
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/get_history")
+async def get_history(user_id: str = "web_user"):
+    try:
+        capsules = await backend.capsule_bank.get_capsules(user_id=user_id, limit=100)
+        history = [
+            {
+                "session_id": capsule["metadata"]["session_id"],
+                "query": capsule["metadata"]["query"],
+                "response": capsule["metadata"]["response"]
+            } for capsule in capsules if "query" in capsule["metadata"]
+        ]
+        return history
+    except Exception as e:
+        logger.error(f"History retrieval failed: {str(e)}", extra={"pid": os.getpid()})
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.websocket("/events")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    connected_clients.add(websocket)
+    try:
+        while True:
+            data = await websocket.receive_json()
+            command = data.get("command")
+            user_id = data.get("user_id", "web_user")
+            if command == "process_query":
+                result = await backend.process_query(data["data"], user_id)
+                await websocket.send_json(result)
+            elif command == "process_url":
+                result = await backend.process_url(data["data"], user_id)
+                await websocket.send_json(result)
+            elif command == "metrics":
+                metrics = {
+                    "vram_usage_4070": pynvml.nvmlDeviceGetMemoryInfo(pynvml.nvmlDeviceGetHandleByIndex(0)).used / 1e9,
+                    "vram_usage_3060": pynvml.nvmlDeviceGetMemoryInfo(pynvml.nvmlDeviceGetHandleByIndex(1)).used / 1e9,
+                    "cpu_usage": psutil.cpu_percent(),
+                    "ram_usage": psutil.virtual_memory().percent
+                }
+                await websocket.send_json({"type": "metrics", "data": metrics})
+    except WebSocketDisconnect:
+        connected_clients.remove(websocket)
+    except Exception as e:
+        logger.error(f"WebSocket error: {str(e)}", extra={"pid": os.getpid()})
+
+async def broadcast_metrics():
+    """Broadcast live metrics to all connected WebSocket clients."""
+    while True:
+        try:
+            metrics = {
+                "vram_usage_4070": pynvml.nvmlDeviceGetMemoryInfo(pynvml.nvmlDeviceGetHandleByIndex(0)).used / 1e9,
+                "vram_usage_3060": pynvml.nvmlDeviceGetMemoryInfo(pynvml.nvmlDeviceGetHandleByIndex(1)).used / 1e9,
+                "cpu_usage": psutil.cpu_percent(),
+                "ram_usage": psutil.virtual_memory().percent
+            }
+            for client in connected_clients:
+                await client.send_json({"type": "metrics", "data": metrics})
+            await asyncio.sleep(5)
+        except Exception as e:
+            logger.error(f"Metrics broadcast failed: {str(e)}", extra={"pid": os.getpid()})
+
+if __name__ == "__main__":
+    import uvicorn
+    asyncio.create_task(broadcast_metrics())
+    uvicorn.run(app, host="0.0.0.0", port=8000)
