@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#000308">
-    <meta name="description" content="ElviraGenesis-OMEGA: Advanced AI System for cybersecurity, ethical intelligence, autonomous strategy generation, and forensic analysis with capsule-based memory compression, recursive agent architecture, and real-time threat detection.">
+    <meta name="description" content="ElviraGenesis-OMEGA: Advanced AI System for cybersecurity, ethical intelligence, autonomous strategy generation, and forensic analysis with capsule-based memory compression, recursive agent architecture, and real-time threat detection, powered by Mistral-7B-Instruct.">
     <meta name="keywords" content="AI, cybersecurity, ethical AI, forensic analysis, blockchain, deep packet scanning, decompilation, zero-day threats">
     <meta name="author" content="xAI">
     <meta property="og:title" content="ElviraGenesis-OMEGA: Neuro Interface">
-    <meta property="og:description" content="A transformative Advanced AI System for enterprise cybersecurity, compliance, and forensic analysis.">
+    <meta property="og:description" content="A transformative Advanced AI System for enterprise cybersecurity, compliance, and forensic analysis, powered by Mistral-7B-Instruct.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://x.ai/grok">
     <title>ElviraGenesis-OMEGA: Neuro Interface</title>
@@ -68,13 +68,13 @@
             width: 100%;
             height: 100%;
             z-index: -2;
-            opacity: 0.8;
-            animation: holoPulse 10s infinite ease-in-out;
+            opacity: 0.9;
+            animation: holoPulse 8s infinite ease-in-out;
         }
 
         @keyframes holoPulse {
-            0%, 100% { opacity: 0.8; filter: brightness(1); }
-            50% { opacity: 0.9; filter: brightness(1.2); }
+            0%, 100% { opacity: 0.9; filter: brightness(1); }
+            50% { opacity: 1; filter: brightness(1.3); }
         }
 
         .hex-overlay {
@@ -83,19 +83,19 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><path d="M15 5 L45 5 L55 25 L45 45 L15 45 L5 25 Z" stroke="rgba(0, 247, 255, 0.2)" fill="none" stroke-width="1"/></svg>');
-            background-size: 60px 60px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"><path d="M20 10 L60 10 L70 40 L60 70 L20 70 L10 40 Z" stroke="rgba(0, 247, 255, 0.3)" fill="none" stroke-width="2"/></svg>');
+            background-size: 80px 80px;
             background-repeat: repeat;
-            opacity: 0.6;
+            opacity: 0.7;
             z-index: -1;
             pointer-events: none;
-            animation: hexFade 12s ease-in-out infinite;
-            transform: perspective(1000px) rotateX(10deg);
+            animation: hexFade 10s ease-in-out infinite;
+            transform: perspective(1200px) rotateX(15deg);
         }
 
         @keyframes hexFade {
-            0%, 100% { opacity: 0.6; transform: perspective(1000px) rotateX(10deg) translateZ(0); }
-            50% { opacity: 0.3; transform: perspective(1000px) rotateX(15deg) translateZ(50px); }
+            0%, 100% { opacity: 0.7; transform: perspective(1200px) rotateX(15deg) translateZ(0); }
+            50% { opacity: 0.4; transform: perspective(1200px) rotateX(20deg) translateZ(80px); }
         }
 
         .terminal-line {
@@ -103,216 +103,153 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 8px;
+            height: 10px;
             background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-            box-shadow: 0 0 80px var(--glow-blue);
-            animation: scan 5s infinite linear;
-            transform: perspective(1000px) translateZ(-20px);
+            box-shadow: 0 0 100px var(--glow-blue);
+            animation: scan 4s infinite linear;
+            transform: perspective(1200px) translateZ(-30px);
         }
 
         @keyframes scan {
-            0% { transform: perspective(1000px) translateX(-100%) translateZ(-20px); }
-            100% { transform: perspective(1000px) translateX(100%) translateZ(-20px); }
+            0% { transform: perspective(1200px) translateX(-100%) translateZ(-30px); }
+            100% { transform: perspective(1200px) translateX(100%) translateZ(-30px); }
         }
 
         .frost-container {
             position: relative;
-            max-width: 900px;
+            max-width: 1200px;
             margin: 2rem auto;
-            padding: 2rem;
-            display: grid;
-            grid-template-rows: 1fr auto;
-            gap: 1.5rem;
-            backdrop-filter: blur(50px) saturate(200%);
-            background: linear-gradient(135deg, rgba(0, 247, 255, 0.1), rgba(255, 0, 255, 0.1));
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            backdrop-filter: blur(60px) saturate(220%);
+            background: linear-gradient(135deg, rgba(0, 247, 255, 0.15), rgba(255, 0, 255, 0.15));
             border: 1px solid var(--glass-border);
-            box-shadow: 0 0 40px var(--glow-blue), 0 0 80px var(--glow-magenta);
-            border-radius: 2rem;
-            transform: perspective(1000px) rotateX(5deg);
+            box-shadow: 0 0 50px var(--glow-blue), 0 0 100px var(--glow-magenta);
+            border-radius: 2.5rem;
+            transform: perspective(1200px) rotateX(5deg);
             transition: transform 0.5s ease, box-shadow 0.5s ease, backdrop-filter 0.5s ease;
+            height: 90vh;
+            justify-content: space-between;
         }
 
         .frost-container:hover {
-            transform: perspective(1000px) rotateX(0deg) translateZ(20px);
-            box-shadow: 0 0 60px var(--glow-blue), 0 0 120px var(--glow-magenta);
-            backdrop-filter: blur(60px) saturate(220%);
+            transform: perspective(1200px) rotateX(0deg) translateZ(30px);
+            box-shadow: 0 0 70px var(--glow-blue), 0 0 140px var(--glow-magenta);
+            backdrop-filter: blur(70px) saturate(240%);
         }
 
         .frost-container::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(45deg, rgba(255,255,255,0.05), rgba(0,247,255,0.1));
+            background: linear-gradient(45deg, rgba(255,255,255,0.07), rgba(0,247,255,0.15));
             z-index: -1;
-            border-radius: 2rem;
-            animation: prismGlow 8s infinite ease-in-out;
+            border-radius: 2.5rem;
+            animation: prismGlow 6s infinite ease-in-out;
         }
 
         @keyframes prismGlow {
-            0%, 100% { opacity: 0.7; filter: brightness(1); }
-            50% { opacity: 0.9; filter: brightness(1.3); }
+            0%, 100% { opacity: 0.8; filter: brightness(1); }
+            50% { opacity: 1; filter: brightness(1.4); }
         }
 
         .chat-log {
             overflow-y: auto;
-            padding: 1.5rem;
+            padding: 2.5rem;
             display: flex;
             flex-direction: column;
-            gap: 2rem;
+            gap: 2.5rem;
             scroll-behavior: smooth;
-            max-height: 450px;
+            flex-grow: 1;
             font-family: 'Source Code Pro', monospace;
-            font-size: 1.1rem;
+            font-size: 1.3rem;
             color: var(--neon-green);
-            transform: perspective(1000px) translateZ(10px);
+            transform: perspective(1200px) translateZ(15px);
         }
 
         .message-bubble {
             position: relative;
-            padding: 1.8rem;
-            border-radius: 1.8rem;
-            max-width: min(85%, 850px);
-            background: linear-gradient(135deg, rgba(0, 247, 255, 0.15), rgba(255, 0, 255, 0.15));
-            backdrop-filter: blur(30px);
-            border: 1px solid rgba(0, 247, 255, 0.3);
-            box-shadow: 0 0 30px var(--glow-blue);
-            transform: perspective(1000px) rotateY(5deg) scale(0.98);
+            padding: 2rem;
+            border-radius: 2rem;
+            max-width: min(90%, 1000px);
+            background: linear-gradient(135deg, rgba(0, 247, 255, 0.2), rgba(255, 0, 255, 0.2));
+            backdrop-filter: blur(35px);
+            border: 1px solid rgba(0, 247, 255, 0.4);
+            box-shadow: 0 0 40px var(--glow-blue);
+            transform: perspective(1200px) rotateY(5deg) scale(0.98);
             transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease, backdrop-filter 0.4s ease;
-            animation: holoFloat 6s infinite ease-in-out;
+            animation: holoFloat 5s infinite ease-in-out;
         }
 
         .message-bubble:hover {
-            transform: perspective(1000px) rotateY(0deg) scale(1) translateZ(20px);
-            box-shadow: 0 0 50px var(--glow-blue), 0 0 70px var(--glow-magenta);
-            backdrop-filter: blur(40px);
+            transform: perspective(1200px) rotateY(0deg) scale(1) translateZ(30px);
+            box-shadow: 0 0 60px var(--glow-blue), 0 0 80px var(--glow-magenta);
+            backdrop-filter: blur(45px);
         }
 
         @keyframes holoFloat {
-            0%, 100% { transform: perspective(1000px) rotateY(5deg) scale(0.98) translateZ(0); }
-            50% { transform: perspective(1000px) rotateY(5deg) scale(0.98) translateZ(10px); }
+            0%, 100% { transform: perspective(1200px) rotateY(5deg) scale(0.98) translateZ(0); }
+            50% { transform: perspective(1200px) rotateY(5deg) scale(0.98) translateZ(15px); }
         }
 
         .message-bubble.user {
             align-self: flex-end;
-            background: linear-gradient(135deg, rgba(0, 200, 255, 0.25), rgba(0, 100, 255, 0.35));
-            transform: perspective(1000px) rotateY(-5deg) scale(0.98);
+            background: linear-gradient(135deg, rgba(0, 200, 255, 0.3), rgba(0, 100, 255, 0.4));
+            transform: perspective(1200px) rotateY(-5deg) scale(0.98);
         }
 
         .message-bubble.ai {
             align-self: flex-start;
-            background: linear-gradient(135deg, rgba(255, 50, 255, 0.2), rgba(150, 0, 255, 0.3));
-        }
-
-        .metrics-panel {
-            padding: 1.5rem;
-            background: linear-gradient(135deg, rgba(0, 247, 255, 0.1), rgba(0, 0, 0, 0.3));
-            border: 1px solid var(--border);
-            border-radius: 1rem;
-            font-family: 'Source Code Pro', monospace;
-            font-size: 1rem;
-            color: var(--neon-green);
-            margin-bottom: 1.5rem;
-            box-shadow: 0 0 20px var(--glow-blue);
-            transform: perspective(1000px) translateZ(5px);
-            transition: box-shadow 0.4s ease, transform 0.4s ease;
-        }
-
-        .metrics-panel:hover {
-            box-shadow: 0 0 40px var(--glow-blue), 0 0 60px var(--glow-magenta);
-            transform: perspective(1000px) translateZ(15px);
-        }
-
-        .query-history {
-            padding: 1.5rem;
-            background: linear-gradient(135deg, rgba(0, 247, 255, 0.1), rgba(0, 0, 0, 0.3));
-            border: 1px solid var(--border);
-            border-radius: 1rem;
-            font-family: 'Source Code Pro', monospace;
-            font-size: 1rem;
-            color: var(--neon-green);
-            margin-bottom: 1.5rem;
-            box-shadow: 0 0 20px var(--glow-blue);
-            transform: perspective(1000px) translateZ(5px);
-            transition: box-shadow 0.4s ease, transform 0.4s ease;
-        }
-
-        .query-history:hover {
-            box-shadow: 0 0 40px var(--glow-blue), 0 0 60px var(--glow-magenta);
-            transform: perspective(1000px) translateZ(15px);
-        }
-
-        .query-history ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .query-history li {
-            margin-bottom: 0.8rem;
+            background: linear-gradient(135deg, rgba(255, 50, 255, 0.25), rgba(150, 0, 255, 0.35));
         }
 
         .input-group {
-            position: relative;
             display: flex;
-            flex-wrap: wrap;
             gap: 1.5rem;
-            padding: 1.5rem;
-            background: linear-gradient(135deg, rgba(0, 247, 255, 0.15), rgba(255, 0, 255, 0.15));
-            border-radius: 1.8rem;
-            backdrop-filter: blur(40px);
-            box-shadow: 0 0 30px var(--glow-blue);
-            transform: perspective(1000px) translateZ(10px);
-            transition: box-shadow 0.4s ease, transform 0.4s ease;
+            margin-top: 1.5rem;
         }
 
-        .input-group:hover {
-            box-shadow: 0 0 50px var(--glow-blue), 0 0 70px var(--glow-magenta);
-            transform: perspective(1000px) translateZ(20px);
-        }
-
-        .chat-input, .url-input {
+        .chat-input {
             flex-grow: 1;
-            padding: 1.5rem;
+            padding: 1.8rem;
             border: none;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 1.2rem;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 1.5rem;
             color: #fff;
-            font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+            font-size: clamp(1.2rem, 2.5vw, 1.5rem);
             transition: all 0.4s ease;
-            min-width: 220px;
-            box-shadow: 0 0 15px var(--glow-blue);
+            box-shadow: 0 0 20px var(--glow-blue);
         }
 
-        .chat-input:focus, .url-input:focus {
+        .chat-input:focus {
             outline: 2px solid var(--particle-color);
-            box-shadow: 0 0 30px var(--glow-blue), 0 0 50px var(--glow-magenta);
-        }
-
-        .file-input, .dataset-input {
-            flex-grow: 1;
-            padding: 1.2rem;
-            color: var(--neon-green);
-            min-width: 220px;
+            box-shadow: 0 0 40px var(--glow-blue), 0 0 60px var(--glow-magenta);
         }
 
         .control-button {
-            padding: 1.5rem 3rem;
+            padding: 1.8rem 3.5rem;
             border: none;
-            border-radius: 1.2rem;
-            background: linear-gradient(135deg, rgba(0, 255, 255, 0.4), rgba(0, 150, 255, 0.6));
+            border-radius: 1.5rem;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.5), rgba(0, 150, 255, 0.7));
             color: #fff;
             font-family: 'Orbitron', sans-serif;
             font-weight: 700;
+            font-size: 1.3rem;
             cursor: pointer;
             position: relative;
             overflow: hidden;
             transition: transform 0.4s ease, box-shadow 0.4s ease;
-            box-shadow: 0 0 20px var(--glow-blue);
-            transform: perspective(1000px) scale(1);
+            box-shadow: 0 0 25px var(--glow-blue);
+            transform: perspective(1200px) scale(1);
+            touch-action: manipulation;
+            min-width: 150px;
         }
 
         .control-button:hover {
-            transform: perspective(1000px) scale(1.1) translateZ(10px);
-            box-shadow: 0 0 40px var(--glow-blue), 0 0 60px var(--glow-magenta);
+            transform: perspective(1200px) scale(1.15) translateZ(15px);
+            box-shadow: 0 0 50px var(--glow-blue), 0 0 70px var(--glow-magenta);
         }
 
         .control-button::before {
@@ -322,7 +259,7 @@
             left: 50%;
             width: 0;
             height: 0;
-            background: radial-gradient(circle, rgba(255,255,255,0.3), transparent);
+            background: radial-gradient(circle, rgba(255,255,255,0.4), transparent);
             transform: translate(-50%, -50%);
             transition: width 0.4s ease, height 0.4s ease;
             border-radius: 50%;
@@ -353,13 +290,13 @@
         }
 
         .preloader-hexagon {
-            width: 80px;
-            height: 80px;
-            border: 6px solid var(--neon-cyan);
-            border-radius: 15px;
+            width: 100px;
+            height: 100px;
+            border: 8px solid var(--neon-cyan);
+            border-radius: 20px;
             transform: rotate(45deg);
-            animation: spin 1.5s infinite linear;
-            box-shadow: 0 0 40px var(--glow-blue), 0 0 60px var(--glow-magenta);
+            animation: spin 1.2s infinite linear;
+            box-shadow: 0 0 50px var(--glow-blue), 0 0 80px var(--glow-magenta);
         }
 
         @keyframes spin {
@@ -387,91 +324,93 @@
 
         #chat-section {
             min-height: auto;
-            padding: 4rem;
+            padding: clamp(2rem, 5vw, 4rem);
         }
 
         h1 {
             font-family: 'Orbitron', 'Source Code Pro', monospace;
-            font-size: 6rem;
+            font-size: clamp(4rem, 8vw, 6.5rem);
             color: var(--neon-cyan);
-            text-shadow: 0 0 50px var(--glow-blue), 0 0 80px var(--glow-magenta);
-            margin: 4rem 0;
+            text-shadow: 0 0 60px var(--glow-blue), 0 0 90px var(--glow-magenta);
+            margin: clamp(2rem, 5vw, 4rem) 0;
             letter-spacing: -0.05em;
-            animation: pulse 5s infinite;
-            transform: perspective(1000px) translateZ(20px);
+            animation: pulse 4s infinite;
+            transform: perspective(1200px) translateZ(25px);
             transition: all 0.5s ease-in-out;
         }
 
         h2 {
             font-family: 'Orbitron', 'Source Code Pro', monospace;
-            font-size: 3.5rem;
+            font-size: clamp(2rem, 5vw, 3.8rem);
             color: var(--neon-cyan);
-            text-shadow: 0 0 30px var(--glow-blue);
-            margin-bottom: 3rem;
-            transform: perspective(1000px) translateZ(10px);
+            text-shadow: 0 0 35px var(--glow-blue);
+            margin-bottom: clamp(1.5rem, 3vw, 3rem);
+            transform: perspective(1200px) translateZ(15px);
             transition: all 0.5s ease-in-out;
         }
 
         p {
             max-width: 1200px;
-            margin: 0 auto 2.5rem;
-            font-size: 1.8rem;
+            margin: 0 auto clamp(1rem, 2vw, 2rem);
+            font-size: clamp(1.2rem, 2vw, 1.8rem);
             opacity: 0.9;
             transition: all 0.5s ease-in-out;
-            text-shadow: 0 0 10px var(--glow-blue);
+            text-shadow: 0 0 12px var(--glow-blue);
         }
 
         .tooltip {
             position: absolute;
-            background: linear-gradient(135deg, rgba(0, 247, 255, 0.5), rgba(255, 0, 255, 0.5));
+            background: linear-gradient(135deg, rgba(0, 247, 255, 0.6), rgba(255, 0, 255, 0.6));
             color: #fff;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 1rem;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 1.1rem;
             display: none;
             z-index: 1000;
-            box-shadow: 0 0 20px var(--glow-blue);
-            transform: perspective(1000px) translateZ(10px);
+            box-shadow: 0 0 25px var(--glow-blue);
+            transform: perspective(1200px) translateZ(15px);
         }
 
         .accordion {
-            margin: 4rem 0;
-            max-width: 1100px;
+            margin: clamp(2rem, 5vw, 4rem) 0;
+            max-width: 1200px;
             width: 100%;
             transition: all 0.5s ease-in-out;
         }
 
         .accordion-header {
-            background: linear-gradient(135deg, rgba(0, 247, 255, 0.2), rgba(0, 0, 0, 0.4));
+            background: linear-gradient(135deg, rgba(0, 247, 255, 0.25), rgba(0, 0, 0, 0.5));
             border: 2px solid var(--neon-cyan);
-            padding: 2rem;
+            padding: clamp(1.5rem, 3vw, 2.5rem);
             cursor: pointer;
-            border-radius: 1.5rem;
+            border-radius: 1.8rem;
             transition: all 0.4s ease-in-out;
             color: var(--neon-cyan);
-            font-size: 2rem;
+            font-size: clamp(1.5rem, 2.5vw, 2.2rem);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            backdrop-filter: blur(25px);
-            box-shadow: 0 0 30px var(--glow-blue);
-            transform: perspective(1000px) translateZ(5px);
+            backdrop-filter: blur(30px);
+            box-shadow: 0 0 35px var(--glow-blue);
+            transform: perspective(1200px) translateZ(10px);
+            touch-action: manipulation;
+            min-height: 60px;
         }
 
         .accordion-header:hover {
             color: var(--hud-white);
-            box-shadow: 0 0 50px var(--glow-blue), 0 0 70px var(--glow-magenta);
-            transform: perspective(1000px) translateZ(15px);
+            box-shadow: 0 0 60px var(--glow-blue), 0 0 80px var(--glow-magenta);
+            transform: perspective(1200px) translateZ(20px);
         }
 
         .accordion-content {
             display: none;
-            padding: 3rem;
-            background: linear-gradient(135deg, rgba(0, 247, 255, 0.1), rgba(0, 0, 0, 0.3));
-            border-radius: 0 0 1.5rem 1.5rem;
-            backdrop-filter: blur(25px);
-            box-shadow: 0 0 20px var(--glow-blue);
-            transform: perspective(1000px) translateZ(5px);
+            padding: clamp(2rem, 4vw, 3rem);
+            background: linear-gradient(135deg, rgba(0, 247, 255, 0.15), rgba(0, 0, 0, 0.4));
+            border-radius: 0 0 1.8rem 1.8rem;
+            backdrop-filter: blur(30px);
+            box-shadow: 0 0 25px var(--glow-blue);
+            transform: perspective(1200px) translateZ(10px);
         }
 
         .accordion.active .accordion-content {
@@ -481,32 +420,53 @@
         .json-ld {
             background: #000;
             border: 1px solid var(--neon-cyan);
-            padding: 1.5rem;
-            border-radius: 1rem;
+            padding: 2rem;
+            border-radius: 1.2rem;
             font-family: 'Source Code Pro', monospace;
-            font-size: 1rem;
+            font-size: 1.2rem;
             color: #0ff;
-            max-height: 350px;
+            max-height: 400px;
             overflow-y: auto;
-            box-shadow: 0 0 20px var(--glow-blue);
+            box-shadow: 0 0 25px var(--glow-blue);
+        }
+
+        .loader {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 5px solid var(--neon-cyan);
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin: 1rem auto;
+        }
+
+        .loader.active {
+            display: block;
         }
 
         @media (max-width: 768px) {
-            section {
-                padding: 5rem 2rem;
-            }
-            #chat-section {
-                padding: 2rem;
-            }
             .frost-container {
-                padding: 1rem;
+                max-width: 90vw;
+                padding: 1.5rem;
+                height: 85vh;
+            }
+            .chat-log {
+                padding: 1.5rem;
+                font-size: 1.1rem;
             }
             .message-bubble {
-                max-width: 90%;
-                padding: 1.25rem;
+                max-width: 95%;
+                padding: 1.5rem;
+            }
+            .chat-input {
+                padding: 1.2rem;
+                font-size: 1.2rem;
             }
             .control-button {
-                padding: 1rem 2rem;
+                padding: 1.2rem 2rem;
+                font-size: 1.1rem;
+                min-width: 120px;
             }
             h1 {
                 font-size: 4rem;
@@ -516,27 +476,39 @@
             }
             p {
                 font-size: 1.4rem;
-                max-width: 100%;
+            }
+            .accordion-header {
+                padding: 1.2rem;
+                font-size: 1.5rem;
+                min-height: 50px;
+            }
+            .accordion-content {
+                padding: 1.5rem;
             }
         }
 
         @media (max-width: 480px) {
-            section {
-                padding: 3rem 1rem;
-            }
-            #chat-section {
+            .frost-container {
+                max-width: 95vw;
                 padding: 1rem;
+                height: 80vh;
+            }
+            .chat-log {
+                padding: 1rem;
+                font-size: 1rem;
             }
             .message-bubble {
-                max-width: 95%;
+                max-width: 98%;
                 padding: 1rem;
             }
-            .chat-input, .url-input {
+            .chat-input {
+                padding: 1rem;
                 font-size: 1rem;
             }
             .control-button {
-                padding: 0.8rem 1.5rem;
+                padding: 1rem 1.5rem;
                 font-size: 1rem;
+                min-width: 100px;
             }
             h1 {
                 font-size: 3rem;
@@ -546,6 +518,14 @@
             }
             p {
                 font-size: 1.2rem;
+            }
+            .accordion-header {
+                padding: 1rem;
+                font-size: 1.3rem;
+                min-height: 45px;
+            }
+            .accordion-content {
+                padding: 1rem;
             }
         }
     </style>
@@ -563,31 +543,21 @@
         <section id="chat-section">
             <h2>ElviraGenesis-OMEGA Neuro Interface</h2>
             <div class="frost-container">
-                <div class="chat-log" id="chatLog"></div>
-                <div class="metrics-panel" id="metrics-panel">
-                    <strong>Live Metrics</strong><br>
-                    <span>VRAM Usage: Initializing...</span><br>
-                    <span>CPU Usage: Initializing...</span><br>
-                    <span>RAM Usage: Initializing...</span><br>
-                    <span>Coherence Score: Initializing...</span><br>
-                    <span>Ethical Score: Initializing...</span><br>
-                    <span>Response Time: Initializing...</span><br>
-                    <span>Capsule Count: 0</span>
-                </div>
-                <div class="query-history" id="query-history">
-                    <h3>Query History</h3>
-                    <ul id="history-list"></ul>
+                <div id="chatLog" class="chat-log">
+                    <!-- Messages will appear here -->
                 </div>
                 <div class="input-group">
-                    <input type="text" class="chat-input" placeholder="Initiate neural interface..." id="chat-input">
-                    <button class="control-button" id="start-tts" onclick="startTTS()">Start TTS</button>
-                    <button class="control-button" id="pause-tts" onclick="pauseTTS()" disabled>Pause TTS</button>
-                    <input type="url" class="url-input" placeholder="Enter URL to learn from..." id="url-input">
-                    <button class="control-button" onclick="sendUrl()">Transmit URL</button>
-                    <input type="file" class="file-input" id="file-input" accept=".py,.java,.txt,.pdf,.png,.jpg,.wav,.mp3">
-                    <button class="control-button" onclick="sendFile()">Upload File</button>
-                    <input type="file" class="dataset-input" id="dataset-input" accept=".csv,.txt,.json,.zst,.zip">
-                    <button class="control-button" onclick="sendDataset()">Upload Dataset</button>
+                    <input type="text" id="chat-input" class="chat-input" placeholder="Ask ElviraGenesis anything...">
+                    <button class="control-button" onclick="sendQuery()">Send</button>
+                    <div id="loader" class="loader"></div>
+                </div>
+                <div class="accordion">
+                    <div class="accordion-header">Text-to-Speech Controls <span>↓</span></div>
+                    <div class="accordion-content">
+                        <p>Control TTS for the ElviraGenesis-OMEGA presentation:</p>
+                        <button class="control-button" id="start-tts" onclick="startTTS()">Start TTS</button>
+                        <button class="control-button" id="pause-tts" onclick="pauseTTS()" disabled>Pause TTS</button>
+                    </div>
                 </div>
                 <div class="accordion">
                     <div class="accordion-header">Encrypt/Decrypt Demo <span>↓</span></div>
@@ -636,6 +606,28 @@
                         </pre>
                     </div>
                 </div>
+                <div class="accordion">
+                    <div class="accordion-header">System State Map <span>↓</span></div>
+                    <div class="accordion-content">
+                        <p>Visualize capsule connections (simulated):</p>
+                        <div id="system-state-map" style="height: 400px;"></div>
+                    </div>
+                </div>
+                <div class="accordion">
+                    <div class="accordion-header">Visual Cortex <span>↓</span></div>
+                    <div class="accordion-content">
+                        <p>Animated 3D Graph Neural Network (simulated):</p>
+                        <canvas id="visual-cortex" style="width: 100%; height: 400px;"></canvas>
+                    </div>
+                </div>
+                <div class="accordion">
+                    <div class="accordion-header">Voice Command Activation <span>↓</span></div>
+                    <div class="accordion-content">
+                        <p>Activate voice commands:</p>
+                        <button class="control-button" onclick="startVoiceCommand()">Start Voice</button>
+                        <p id="voice-output">Voice output will appear here...</p>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
@@ -645,6 +637,7 @@
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
         const API_URL = isLocal ? 'http://localhost:8000/process_query' : '/api/process_query';
         const WS_URL = isLocal ? 'ws://localhost:8000/events' : 'wss://your-api-id.execute-api.us-east-1.amazonaws.com/prod/events';
+        const OPENROUTER_API_KEY = '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'; // Replace with your key
 
         // WebSocket Connection
         const ws = new WebSocket(WS_URL);
@@ -658,53 +651,34 @@
                     return;
                 }
 
-                const bubble = document.createElement('div');
-                bubble.className = 'message-bubble ai';
-                bubble.dataset.tooltip = 'AI-generated response with ethical validation.';
+                requestAnimationFrame(() => {
+                    const bubble = document.createElement('div');
+                    bubble.className = 'message-bubble ai';
+                    bubble.dataset.tooltip = 'AI-generated response with ethical validation.';
 
-                const sessionText = `<strong>Session ${sanitizeHTML(data.session_id)}</strong>: ${sanitizeHTML(data.unified_response || 'No response')}`;
-                const modelResponses = (data.model_responses && typeof data.model_responses === 'object')
-                    ? Object.entries(data.model_responses).map(([model, res]) => {
-                        const modelResponse = sanitizeHTML(res.response || 'N/A');
-                        const ethicalScore = res.ethical_score !== undefined ? res.ethical_score : 'N/A';
-                        return `<strong>${sanitizeHTML(model)}</strong>: ${modelResponse} (Ethical: ${ethicalScore})`;
-                    }).join('<br>')
-                    : '';
+                    const sessionText = `<strong>Session ${sanitizeHTML(data.session_id)}</strong>: ${sanitizeHTML(data.unified_response || 'No response')}`;
+                    const modelResponses = (data.model_responses && typeof data.model_responses === 'object')
+                        ? Object.entries(data.model_responses).map(([model, res]) => {
+                            const modelResponse = sanitizeHTML(res.response || 'N/A');
+                            const ethicalScore = res.ethical_score !== undefined ? res.ethical_score : 'N/A';
+                            return `<strong>${sanitizeHTML(model)}</strong>: ${modelResponse} (Ethical: ${ethicalScore})`;
+                        }).join('<br>')
+                        : '';
 
-                bubble.innerHTML = `${sessionText}<br>${modelResponses}`;
-                chatLog.appendChild(bubble);
-
-                scrollToBottom();
-                addToHistory(data.session_id, data.unified_response);
-                saveHistory();
-
-                // Update metrics panel
-                if (data.metrics) {
-                    const metricsPanel = document.getElementById('metrics-panel');
-                    metricsPanel.innerHTML = `
-                        <strong>Live Metrics</strong><br>
-                        <span style="color: ${data.metrics.vram_usage > 10 ? 'var(--neon-red)' : 'var(--neon-green)'};">
-                            VRAM Usage: ${data.metrics.vram_usage.toFixed(2)} GB
-                        </span><br>
-                        <span style="color: ${data.metrics.cpu_usage > 80 ? 'var(--neon-red)' : 'var(--neon-green)'};">
-                            CPU Usage: ${data.metrics.cpu_usage.toFixed(2)}%
-                        </span><br>
-                        <span style="color: ${data.metrics.ram_usage > 80 ? 'var(--neon-red)' : 'var(--neon-green)'};">
-                            RAM Usage: ${data.metrics.ram_usage.toFixed(2)}%
-                        </span><br>
-                        <span style="color: ${data.metrics.coherence_score < 0.7 ? 'var(--neon-red)' : 'var(--neon-green)'};">
-                            Coherence Score: ${data.metrics.coherence_score.toFixed(4)}
-                        </span><br>
-                        <span style="color: ${data.metrics.ethical_score < 0.7 ? 'var(--neon-red)' : 'var(--neon-green)'};">
-                            Ethical Score: ${data.metrics.ethical_score.toFixed(4)}
-                        </span><br>
-                        Response Time: ${data.metrics.response_time.toFixed(2)}s<br>
-                        Capsule Count: ${data.metrics.capsule_count || 0}
-                    `;
-                }
+                    bubble.innerHTML = `${sessionText}<br>${modelResponses}`;
+                    chatLog.appendChild(bubble);
+                    scrollToBottom();
+                    addToHistory(data.session_id, data.unified_response);
+                    saveHistory();
+                });
             } catch (err) {
                 console.error("❌ WebSocket message handling failed:", err);
             }
+        };
+
+        ws.onerror = (err) => {
+            console.error('WebSocket error:', err);
+            addMessage('WebSocket connection failed. Please check the server.', 'ai');
         };
 
         // Safe HTML sanitization
@@ -805,37 +779,65 @@
         }
 
         async function sendQuery() {
-            const query = document.getElementById('chat-input').value.trim();
-            if (!query) return;
-            addMessage(query, 'user');
+            const input = document.getElementById('chat-input').value.trim();
+            if (!input) return;
+            addMessage(input, 'user');
+            const loader = document.getElementById('loader');
+            loader.classList.add('active');
+
             try {
-                const response = await fetch(API_URL, {
+                const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${OPENROUTER_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'mistral/mistral-7b-instruct',
+                        messages: [{ role: 'user', content: input }]
+                    })
+                });
+
+                const data = await response.json();
+                const content = data.choices?.[0]?.message?.content || '[No response]';
+                addMessage(content, 'ai');
+
+                // Sync to capsule memory
+                const sessionId = `session_${Date.now()}`;
+                await fetch(isLocal ? 'http://localhost:8000/sync_history' : '/api/sync_history', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ data: query, user_id: 'web_user' })
+                    body: JSON.stringify({
+                        session_id: sessionId,
+                        query: input,
+                        response: content,
+                        user_id: 'web_user',
+                        timestamp: new Date().toISOString(),
+                        vector_embedding: 'placeholder' // Replace with actual embedding
+                    })
                 });
-                const result = await response.json();
-                ws.send(JSON.stringify({ command: 'process_query', data: query, user_id: 'web_user' }));
-                await syncHistoryWithBackend(result.session_id, query, result.unified_response);
+
+                ws.send(JSON.stringify({ command: 'process_query', data: input, user_id: 'web_user' }));
+                addToHistory(sessionId, content);
+                saveHistory();
             } catch (e) {
                 console.error('Query failed:', e);
                 addMessage(`Error: ${e.message}`, 'ai');
+            } finally {
+                loader.classList.remove('active');
+                document.getElementById('chat-input').value = '';
             }
-            document.getElementById('chat-input').value = '';
-        }
-
-        async function sendUrl() {
-            const url = document.getElementById('url-input').value.trim();
-            if (!url) return;
-            addMessage(`URL: ${url}`, 'user');
-            ws.send(JSON.stringify({ command: 'process_url', data: url, user_id: 'web_user' }));
-            document.getElementById('url-input').value = '';
         }
 
         async function sendFile() {
             const fileInput = document.getElementById('file-input');
             const file = fileInput.files[0];
             if (!file) return;
+            const allowedTypes = ['text/csv', 'application/json', 'application/zip'];
+            if (!allowedTypes.includes(file.type)) {
+                addMessage('Invalid file type. Allowed: .csv, .json, .zip', 'ai');
+                return;
+            }
             addMessage(`File: ${file.name}`, 'user');
             const formData = new FormData();
             formData.append('file', file);
@@ -851,6 +853,11 @@
             const datasetInput = document.getElementById('dataset-input');
             const file = datasetInput.files[0];
             if (!file) return;
+            const allowedTypes = ['text/csv', 'application/json', 'application/zip'];
+            if (!allowedTypes.includes(file.type)) {
+                addMessage('Invalid dataset type. Allowed: .csv, .json, .zip', 'ai');
+                return;
+            }
             addMessage(`Dataset: ${file.name}`, 'user');
             const formData = new FormData();
             formData.append('dataset', file);
@@ -864,13 +871,15 @@
 
         function addMessage(text, type) {
             const chatLog = document.getElementById('chatLog');
-            const bubble = document.createElement('div');
-            bubble.className = `message-bubble ${type}`;
-            bubble.textContent = text;
-            bubble.dataset.tooltip = type === 'ai' ? 'AI-generated response with ethical validation.' : 'User input.';
-            chatLog.appendChild(bubble);
-            scrollToBottom();
-            saveHistory();
+            requestAnimationFrame(() => {
+                const bubble = document.createElement('div');
+                bubble.className = `message-bubble ${type}`;
+                bubble.textContent = text;
+                bubble.dataset.tooltip = type === 'ai' ? 'AI-generated response with ethical validation.' : 'User input.';
+                chatLog.appendChild(bubble);
+                scrollToBottom();
+                saveHistory();
+            });
         }
 
         function scrollToBottom() {
@@ -903,25 +912,6 @@
             history.forEach(msg => addMessage(msg.text, msg.type));
             if (!isLocal) {
                 loadBackendHistory();
-            }
-        }
-
-        async function syncHistoryWithBackend(sessionId, query, response) {
-            if (!isLocal) {
-                try {
-                    await fetch(isLocal ? 'http://localhost:8000/sync_history' : '/api/sync_history', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            session_id: sessionId,
-                            query: query,
-                            response: response,
-                            user_id: 'web_user'
-                        })
-                    });
-                } catch (e) {
-                    console.error('Failed to sync history:', e);
-                }
             }
         }
 
@@ -980,6 +970,37 @@
             output.textContent = `Decompiled Output: Simulated decompilation of ${input.length} bytes. Detected function: main() with 3 calls to unknown libraries.`;
         }
 
+        // Voice Command Activation
+        function startVoiceCommand() {
+            const output = document.getElementById('voice-output');
+            if (!('webkitSpeechRecognition' in window)) {
+                output.textContent = 'Speech recognition not supported in this browser.';
+                return;
+            }
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                output.textContent = `Recognized: ${transcript}`;
+                document.getElementById('chat-input').value = transcript;
+                sendQuery();
+            };
+
+            recognition.onerror = (event) => {
+                output.textContent = `Voice recognition error: ${event.error}`;
+            };
+
+            recognition.onend = () => {
+                output.textContent = 'Voice recognition stopped.';
+            };
+
+            recognition.start();
+            output.textContent = 'Listening...';
+        }
+
         // Three.js Holographic Particle System
         function initHolographicParticles() {
             const canvas = document.getElementById('holographic-bg');
@@ -990,25 +1011,29 @@
             renderer.setPixelRatio(window.devicePixelRatio);
 
             const particlesGeometry = new THREE.BufferGeometry();
-            const particleCount = 5000;
+            const particleCount = 10000;
             const posArray = new Float32Array(particleCount * 3);
             const colors = new Float32Array(particleCount * 3);
+            const velocities = new Float32Array(particleCount * 3);
 
             for (let i = 0; i < particleCount * 3; i += 3) {
-                posArray[i] = (Math.random() - 0.5) * 2000;
-                posArray[i + 1] = (Math.random() - 0.5) * 2000;
-                posArray[i + 2] = (Math.random() - 0.5) * 2000;
-                colors[i] = 0; colors[i + 1] = Math.random(); colors[i + 2] = 1;
+                posArray[i] = (Math.random() - 0.5) * 3000;
+                posArray[i + 1] = (Math.random() - 0.5) * 3000;
+                posArray[i + 2] = (Math.random() - 0.5) * 3000;
+                colors[i] = Math.random(); colors[i + 1] = Math.random(); colors[i + 2] = 1;
+                velocities[i] = (Math.random() - 0.5) * 0.5;
+                velocities[i + 1] = (Math.random() - 0.5) * 0.5;
+                velocities[i + 2] = (Math.random() - 0.5) * 0.5;
             }
 
             particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
             particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
             const material = new THREE.PointsMaterial({
-                size: 2,
+                size: 3,
                 vertexColors: true,
                 transparent: true,
-                opacity: 0.6,
+                opacity: 0.7,
                 sizeAttenuation: true,
                 blending: THREE.AdditiveBlending
             });
@@ -1016,21 +1041,94 @@
             const particles = new THREE.Points(particlesGeometry, material);
             scene.add(particles);
 
-            camera.position.z = 500;
+            camera.position.z = 600;
 
             function animate() {
                 requestAnimationFrame(animate);
-                particles.rotation.y += 0.001;
-                particles.rotation.x += 0.0005;
+                const positions = particlesGeometry.attributes.position.array;
+                for (let i = 0; i < particleCount * 3; i += 3) {
+                    positions[i] += velocities[i] * Math.sin(Date.now() * 0.001 + i);
+                    positions[i + 1] += velocities[i + 1] * Math.cos(Date.now() * 0.001 + i);
+                    positions[i + 2] += velocities[i + 2] * Math.sin(Date.now() * 0.001 + i);
+                    if (Math.abs(positions[i]) > 1500) velocities[i] *= -1;
+                    if (Math.abs(positions[i + 1]) > 1500) velocities[i + 1] *= -1;
+                    if (Math.abs(positions[i + 2]) > 1500) velocities[i + 2] *= -1;
+                }
+                particlesGeometry.attributes.position.needsUpdate = true;
+                particles.rotation.y += 0.002;
+                particles.rotation.x += 0.001;
                 renderer.render(scene, camera);
             }
-
             animate();
 
             window.addEventListener('resize', () => {
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        // System State Map with Vis.js
+        function initSystemStateMap() {
+            const container = document.getElementById('system-state-map');
+            const nodes = new vis.DataSet([
+                { id: 1, label: 'Capsule 1', title: 'Threat Analysis' },
+                { id: 2, label: 'Capsule 2', title: 'Network Analytics' },
+                { id: 3, label: 'Capsule 3', title: 'Forensic Entropy' },
+            ]);
+            const edges = new vis.DataSet([
+                { from: 1, to: 2, title: 'Data Flow' },
+                { from: 2, to: 3, title: 'Correlation' },
+            ]);
+            const data = { nodes, edges };
+            const options = {
+                nodes: { shape: 'dot', size: 20, color: '#00f7ff' },
+                edges: { color: '#00f7ff', width: 2 },
+                physics: { enabled: true },
+            };
+            new vis.Network(container, data, options);
+        }
+
+        // Visual Cortex with Three.js
+        function initVisualCortex() {
+            const canvas = document.getElementById('visual-cortex');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+
+            const nodes = new THREE.InstancedMesh(
+                new THREE.SphereGeometry(0.5, 16, 16),
+                new THREE.MeshBasicMaterial({ color: 0x00f7ff, transparent: true, opacity: 0.8 }),
+                50
+            );
+            const dummy = new THREE.Object3D();
+            for (let i = 0; i < 50; i++) {
+                dummy.position.set(
+                    (Math.random() - 0.5) * 20,
+                    (Math.random() - 0.5) * 20,
+                    (Math.random() - 0.5) * 20
+                );
+                dummy.updateMatrix();
+                nodes.setMatrixAt(i, dummy.matrix);
+            }
+            scene.add(nodes);
+
+            camera.position.z = 30;
+
+            function animate() {
+                requestAnimationFrame(animate);
+                nodes.rotation.y += 0.005;
+                nodes.rotation.x += 0.002;
+                renderer.render(scene, camera);
+            }
+            animate();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = canvas.clientWidth / canvas.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(canvas.clientWidth, canvas.clientHeight);
             });
         }
 
@@ -1075,6 +1173,8 @@
             }
 
             initHolographicParticles();
+            initSystemStateMap();
+            initVisualCortex();
             loadHistory();
 
             document.querySelectorAll('[data-tooltip]').forEach(element => {
@@ -1095,6 +1195,10 @@
 
             document.querySelectorAll('.accordion-header').forEach(header => {
                 header.addEventListener('click', () => {
+                    const accordion = header.parentElement;
+                    accordion.classList.toggle('active');
+                });
+                header.addEventListener('touchstart', () => {
                     const accordion = header.parentElement;
                     accordion.classList.toggle('active');
                 });
