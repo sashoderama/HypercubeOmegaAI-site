@@ -682,7 +682,7 @@ function sanitizeHTML(str) {
                         Response Time: ${data.metrics.response_time.toFixed(2)}s<br>
                         Capsule Count: ${data.metrics.capsule_count || 0}
                     `;
-                }
+                
             } catch (err) {
                 console.error("Error parsing WebSocket message:", err, event.data);
             }
