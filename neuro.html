@@ -604,30 +604,57 @@
     </main>
 
     <script>
-        // Environment Toggle
-        const isLocal = window.location.hostname === 'localhost';
-        const API_URL = isLocal ? 'http://localhost:8000/process_query' : '/api/process_query';
-        const WS_URL = isLocal ? 'ws://localhost:8000/events' : 'wss://<api-id>.execute-api.us-east-1.amazonaws.com/prod/events';
+// 🌐 Environment Toggle (Local vs Production)
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API_URL = isLocal 
+    ? 'http://localhost:8000/process_query' 
+    : '/api/process_query';
 
-        // WebSocket Connection
-        const ws = new WebSocket(WS_URL);
+const WS_URL = isLocal 
+    ? 'ws://localhost:8000/events' 
+    : 'wss://your-api-id.execute-api.us-east-1.amazonaws.com/prod/events';
 
-        ws.onmessage = function(event) {
-            try {
-                const data = JSON.parse(event.data);
-                const chatLog = document.getElementById('chatLog');
+// 🔌 Establish WebSocket Connection
+const ws = new WebSocket(WS_URL);
 
-                const bubble = document.createElement('div');
-                bubble.className = `message-bubble ai`;
-                bubble.innerHTML = `<strong>Session ${data.session_id}</strong>: ${data.unified_response}<br>` +
-                    Object.entries(data.model_responses || {}).map(([model, res]) => 
-                        `<strong>${model}</strong>: ${res.response} (Ethical: ${res.ethical_score || 'N/A'})`
-                    ).join('<br>');
+ws.onmessage = function(event) {
+    try {
+        const data = JSON.parse(event.data);
+        const chatLog = document.getElementById('chatLog');
+        if (!chatLog) {
+            console.warn("⚠️ chatLog element not found.");
+            return;
+        }
 
-                chatLog.appendChild(bubble);
-                scrollToBottom();
-                addToHistory(data.session_id, data.unified_response);
-                saveHistory();
+        const bubble = document.createElement('div');
+        bubble.className = 'message-bubble ai';
+
+        const sessionText = `<strong>Session ${data.session_id}</strong>: ${sanitizeHTML(data.unified_response || 'No response')}`;
+        const modelResponses = (data.model_responses && typeof data.model_responses === 'object')
+            ? Object.entries(data.model_responses).map(([model, res]) => {
+                const modelResponse = sanitizeHTML(res.response || 'N/A');
+                const ethicalScore = res.ethical_score !== undefined ? res.ethical_score : 'N/A';
+                return `<strong>${model}</strong>: ${modelResponse} (Ethical: ${ethicalScore})`;
+            }).join('<br>')
+            : '';
+
+        bubble.innerHTML = `${sessionText}<br>${modelResponses}`;
+        chatLog.appendChild(bubble);
+
+        scrollToBottom();
+        addToHistory(data.session_id, data.unified_response);
+        saveHistory();
+    } catch (err) {
+        console.error("❌ WebSocket message handling failed:", err);
+    }
+};
+
+// 🧼 Safe HTML sanitization
+function sanitizeHTML(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
 
                 // Update metrics panel
                 if (data.metrics) {
