@@ -13,13 +13,11 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://x.ai/grok">
     <title>ElviraGenesis-OMEGA: Neuro Interface</title>
-    <!-- Replaced local fonts.css with CDN links -->
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400&family=Orbitron:wght@500&family=Source+Code+Pro:wght@400&display=swap" rel="stylesheet">
-    <!-- Replaced local vis-network.min.css and vis.min.js with CDN links -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis-network.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" defer></script>
-    <!-- Replaced local particles.min.js with CDN link -->
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js" defer></script>
     <style>
         :root {
             --primary-hue: 200;
@@ -28,22 +26,22 @@
             --glass-bg: rgba(255, 255, 255, 0.06);
             --glass-border: rgba(255, 255, 255, 0.12);
             --neon-glow: 0 0 20px hsla(var(--primary-hue), 100%, 50%, 0.3);
-            --void-black: #080808;
+            --void-black: #000308;
             --cyber-steel: #1a1a1a;
             --neon-cyan: #00f7ff;
             --neon-blue: #00f7ff;
             --neon-magenta: #ff00ff;
             --neon-green: #00ffcc;
             --neon-red: #ff3b30;
-            --glow-blue: rgba(0, 247, 255, 0.3);
-            --glow-magenta: rgba(255, 0, 255, 0.3);
-            --glow-green: rgba(0, 255, 204, 0.3);
-            --glow-red: rgba(255, 59, 48, 0.3);
+            --glow-blue: rgba(0, 247, 255, 0.5);
+            --glow-magenta: rgba(255, 0, 255, 0.5);
+            --glow-green: rgba(0, 255, 204, 0.5);
+            --glow-red: rgba(255, 59, 48, 0.5);
             --slick-gray: #2a2a2a;
             --hud-white: rgba(240, 240, 240, 0.95);
             --accent-red: #FF3B30;
             --shadow: rgba(0, 0, 0, 0.85);
-            --glow: rgba(0, 247, 255, 0.25);
+            --glow: rgba(0, 247, 255, 0.35);
             --border: rgba(0, 247, 255, 0.15);
         }
 
@@ -59,27 +57,24 @@
             height: 100%;
             overflow: hidden;
             font-family: 'Exo 2', sans-serif;
-            background: radial-gradient(ellipse at bottom, #0a0e1a 0%, #000308 100%);
+            background: radial-gradient(ellipse at center, #0a0e1a 0%, #000308 100%);
             color: #fff;
         }
 
-        .particle-canvas {
+        #holographic-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0;
-            pointer-events: none;
+            z-index: -2;
+            opacity: 0.8;
+            animation: holoPulse 10s infinite ease-in-out;
         }
 
-        #particles-js {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
+        @keyframes holoPulse {
+            0%, 100% { opacity: 0.8; filter: brightness(1); }
+            50% { opacity: 0.9; filter: brightness(1.2); }
         }
 
         .hex-overlay {
@@ -88,18 +83,19 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><path d="M15 5 L45 5 L55 25 L45 45 L15 45 L5 25 Z" stroke="rgba(0, 247, 255, 0.1)" fill="none" stroke-width="1"/></svg>');
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><path d="M15 5 L45 5 L55 25 L45 45 L15 45 L5 25 Z" stroke="rgba(0, 247, 255, 0.2)" fill="none" stroke-width="1"/></svg>');
             background-size: 60px 60px;
             background-repeat: repeat;
-            opacity: 0.5;
+            opacity: 0.6;
             z-index: -1;
             pointer-events: none;
-            animation: hexFade 15s ease-in-out infinite;
+            animation: hexFade 12s ease-in-out infinite;
+            transform: perspective(1000px) rotateX(10deg);
         }
 
         @keyframes hexFade {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 0.2; }
+            0%, 100% { opacity: 0.6; transform: perspective(1000px) rotateX(10deg) translateZ(0); }
+            50% { opacity: 0.3; transform: perspective(1000px) rotateX(15deg) translateZ(50px); }
         }
 
         .terminal-line {
@@ -107,15 +103,16 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 6px;
+            height: 8px;
             background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-            box-shadow: 0 0 60px var(--glow);
-            animation: scan 6s infinite linear;
+            box-shadow: 0 0 80px var(--glow-blue);
+            animation: scan 5s infinite linear;
+            transform: perspective(1000px) translateZ(-20px);
         }
 
         @keyframes scan {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+            0% { transform: perspective(1000px) translateX(-100%) translateZ(-20px); }
+            100% { transform: perspective(1000px) translateX(100%) translateZ(-20px); }
         }
 
         .frost-container {
@@ -126,113 +123,122 @@
             display: grid;
             grid-template-rows: 1fr auto;
             gap: 1.5rem;
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
-            background: var(--glass-bg);
+            backdrop-filter: blur(50px) saturate(200%);
+            background: linear-gradient(135deg, rgba(0, 247, 255, 0.1), rgba(255, 0, 255, 0.1));
             border: 1px solid var(--glass-border);
-            box-shadow: var(--neon-glow);
-            border-radius: 1.5rem;
-            transition: backdrop-filter 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 40px var(--glow-blue), 0 0 80px var(--glow-magenta);
+            border-radius: 2rem;
+            transform: perspective(1000px) rotateX(5deg);
+            transition: transform 0.5s ease, box-shadow 0.5s ease, backdrop-filter 0.5s ease;
         }
 
         .frost-container:hover {
-            backdrop-filter: blur(50px) saturate(200%);
-            box-shadow: 0 0 30px hsla(var(--primary-hue), 100%, 50%, 0.5);
+            transform: perspective(1000px) rotateX(0deg) translateZ(20px);
+            box-shadow: 0 0 60px var(--glow-blue), 0 0 120px var(--glow-magenta);
+            backdrop-filter: blur(60px) saturate(220%);
         }
 
         .frost-container::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(45deg, 
-                rgba(255,255,255,0.02) 0%, 
-                rgba(255,255,255,0.01) 100%);
+            background: linear-gradient(45deg, rgba(255,255,255,0.05), rgba(0,247,255,0.1));
             z-index: -1;
+            border-radius: 2rem;
+            animation: prismGlow 8s infinite ease-in-out;
+        }
+
+        @keyframes prismGlow {
+            0%, 100% { opacity: 0.7; filter: brightness(1); }
+            50% { opacity: 0.9; filter: brightness(1.3); }
         }
 
         .chat-log {
             overflow-y: auto;
-            padding: 1rem;
+            padding: 1.5rem;
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 2rem;
             scroll-behavior: smooth;
-            max-height: 400px;
+            max-height: 450px;
             font-family: 'Source Code Pro', monospace;
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: var(--neon-green);
+            transform: perspective(1000px) translateZ(10px);
         }
 
         .message-bubble {
             position: relative;
-            padding: 1.5rem;
-            border-radius: 1.5rem;
-            max-width: min(80%, 800px);
-            background: var(--glass-bg);
-            backdrop-filter: blur(25px);
-            border: 1px solid var(--glass-border);
-            transform: scale(0.98);
-            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), backdrop-filter 0.3s ease;
-            will-change: transform, backdrop-filter;
-            animation: blurPulse 3s infinite ease-in-out;
+            padding: 1.8rem;
+            border-radius: 1.8rem;
+            max-width: min(85%, 850px);
+            background: linear-gradient(135deg, rgba(0, 247, 255, 0.15), rgba(255, 0, 255, 0.15));
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(0, 247, 255, 0.3);
+            box-shadow: 0 0 30px var(--glow-blue);
+            transform: perspective(1000px) rotateY(5deg) scale(0.98);
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease, backdrop-filter 0.4s ease;
+            animation: holoFloat 6s infinite ease-in-out;
         }
 
         .message-bubble:hover {
-            transform: scale(1);
-            backdrop-filter: blur(35px);
+            transform: perspective(1000px) rotateY(0deg) scale(1) translateZ(20px);
+            box-shadow: 0 0 50px var(--glow-blue), 0 0 70px var(--glow-magenta);
+            backdrop-filter: blur(40px);
         }
 
-        @keyframes blurPulse {
-            0%, 100% { backdrop-filter: blur(25px); }
-            50% { backdrop-filter: blur(30px); }
+        @keyframes holoFloat {
+            0%, 100% { transform: perspective(1000px) rotateY(5deg) scale(0.98) translateZ(0); }
+            50% { transform: perspective(1000px) rotateY(5deg) scale(0.98) translateZ(10px); }
         }
 
         .message-bubble.user {
             align-self: flex-end;
-            background: linear-gradient(135deg, 
-                rgba(0, 200, 255, 0.15), 
-                rgba(0, 100, 255, 0.25));
+            background: linear-gradient(135deg, rgba(0, 200, 255, 0.25), rgba(0, 100, 255, 0.35));
+            transform: perspective(1000px) rotateY(-5deg) scale(0.98);
         }
 
         .message-bubble.ai {
             align-self: flex-start;
-            background: linear-gradient(135deg, 
-                rgba(255, 50, 255, 0.1), 
-                rgba(150, 0, 255, 0.2));
+            background: linear-gradient(135deg, rgba(255, 50, 255, 0.2), rgba(150, 0, 255, 0.3));
         }
 
         .metrics-panel {
-            padding: 1rem;
-            background: var(--cyber-steel);
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(0, 247, 255, 0.1), rgba(0, 0, 0, 0.3));
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 1rem;
             font-family: 'Source Code Pro', monospace;
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: var(--neon-green);
-            margin-bottom: 1rem;
-            transition: box-shadow 0.3s ease, backdrop-filter 0.3s ease;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0 20px var(--glow-blue);
+            transform: perspective(1000px) translateZ(5px);
+            transition: box-shadow 0.4s ease, transform 0.4s ease;
         }
 
         .metrics-panel:hover {
-            box-shadow: 0 0 20px var(--glow);
-            backdrop-filter: blur(30px);
+            box-shadow: 0 0 40px var(--glow-blue), 0 0 60px var(--glow-magenta);
+            transform: perspective(1000px) translateZ(15px);
         }
 
         .query-history {
-            padding: 1rem;
-            background: var(--cyber-steel);
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(0, 247, 255, 0.1), rgba(0, 0, 0, 0.3));
             border: 1px solid var(--border);
-            border-radius: 8px;
+            border-radius: 1rem;
             font-family: 'Source Code Pro', monospace;
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: var(--neon-green);
-            margin-bottom: 1rem;
-            transition: box-shadow 0.3s ease, backdrop-filter 0.3s ease;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0 20px var(--glow-blue);
+            transform: perspective(1000px) translateZ(5px);
+            transition: box-shadow 0.4s ease, transform 0.4s ease;
         }
 
         .query-history:hover {
-            box-shadow: 0 0 20px var(--glow);
-            backdrop-filter: blur(30px);
+            box-shadow: 0 0 40px var(--glow-blue), 0 0 60px var(--glow-magenta);
+            transform: perspective(1000px) translateZ(15px);
         }
 
         .query-history ul {
@@ -241,70 +247,92 @@
         }
 
         .query-history li {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.8rem;
         }
 
         .input-group {
             position: relative;
             display: flex;
             flex-wrap: wrap;
-            gap: 1rem;
-            padding: 1rem;
-            background: var(--glass-bg);
-            border-radius: 1.5rem;
-            backdrop-filter: blur(30px);
-            transition: box-shadow 0.3s ease, backdrop-filter 0.3s ease;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(0, 247, 255, 0.15), rgba(255, 0, 255, 0.15));
+            border-radius: 1.8rem;
+            backdrop-filter: blur(40px);
+            box-shadow: 0 0 30px var(--glow-blue);
+            transform: perspective(1000px) translateZ(10px);
+            transition: box-shadow 0.4s ease, transform 0.4s ease;
         }
 
         .input-group:hover {
-            box-shadow: 0 0 20px var(--glow);
-            backdrop-filter: blur(40px);
+            box-shadow: 0 0 50px var(--glow-blue), 0 0 70px var(--glow-magenta);
+            transform: perspective(1000px) translateZ(20px);
         }
 
         .chat-input, .url-input {
             flex-grow: 1;
-            padding: 1.25rem;
+            padding: 1.5rem;
             border: none;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 1.2rem;
             color: #fff;
-            font-size: clamp(1rem, 2vw, 1.25rem);
-            transition: all 0.3s ease;
-            min-width: 200px;
+            font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+            transition: all 0.4s ease;
+            min-width: 220px;
+            box-shadow: 0 0 15px var(--glow-blue);
         }
 
         .chat-input:focus, .url-input:focus {
             outline: 2px solid var(--particle-color);
-            box-shadow: 0 0 25px rgba(0, 255, 255, 0.2);
+            box-shadow: 0 0 30px var(--glow-blue), 0 0 50px var(--glow-magenta);
         }
 
         .file-input, .dataset-input {
             flex-grow: 1;
-            padding: 1rem;
+            padding: 1.2rem;
             color: var(--neon-green);
-            min-width: 200px;
+            min-width: 220px;
         }
 
         .control-button {
-            padding: 1.25rem 2.5rem;
+            padding: 1.5rem 3rem;
             border: none;
-            border-radius: 1rem;
-            background: linear-gradient(135deg, 
-                rgba(0, 255, 255, 0.3), 
-                rgba(0, 150, 255, 0.5));
+            border-radius: 1.2rem;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.4), rgba(0, 150, 255, 0.6));
             color: #fff;
             font-family: 'Orbitron', sans-serif;
             font-weight: 700;
             cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            box-shadow: 0 0 20px var(--glow-blue);
+            transform: perspective(1000px) scale(1);
         }
 
         .control-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px var(--glow);
+            transform: perspective(1000px) scale(1.1) translateZ(10px);
+            box-shadow: 0 0 40px var(--glow-blue), 0 0 60px var(--glow-magenta);
         }
 
-        /* Preloader Styles */
+        .control-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(255,255,255,0.3), transparent);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+            border-radius: 50%;
+        }
+
+        .control-button:hover::before {
+            width: 200%;
+            height: 200%;
+        }
+
         #preloader {
             position: fixed;
             top: 0;
@@ -325,13 +353,13 @@
         }
 
         .preloader-hexagon {
-            width: 60px;
-            height: 60px;
-            border: 4px solid var(--neon-cyan);
-            border-radius: 10px;
+            width: 80px;
+            height: 80px;
+            border: 6px solid var(--neon-cyan);
+            border-radius: 15px;
             transform: rotate(45deg);
-            animation: spin 2s infinite linear;
-            box-shadow: 0 0 20px var(--glow);
+            animation: spin 1.5s infinite linear;
+            box-shadow: 0 0 40px var(--glow-blue), 0 0 60px var(--glow-magenta);
         }
 
         @keyframes spin {
@@ -364,40 +392,46 @@
 
         h1 {
             font-family: 'Orbitron', 'Source Code Pro', monospace;
-            font-size: 5.5rem;
+            font-size: 6rem;
             color: var(--neon-cyan);
-            text-shadow: 0 0 40px var(--glow);
+            text-shadow: 0 0 50px var(--glow-blue), 0 0 80px var(--glow-magenta);
             margin: 4rem 0;
-            letter-spacing: -0.03em;
-            animation: pulse 4s infinite;
+            letter-spacing: -0.05em;
+            animation: pulse 5s infinite;
+            transform: perspective(1000px) translateZ(20px);
             transition: all 0.5s ease-in-out;
         }
 
         h2 {
             font-family: 'Orbitron', 'Source Code Pro', monospace;
-            font-size: 3.2rem;
+            font-size: 3.5rem;
             color: var(--neon-cyan);
+            text-shadow: 0 0 30px var(--glow-blue);
             margin-bottom: 3rem;
+            transform: perspective(1000px) translateZ(10px);
             transition: all 0.5s ease-in-out;
         }
 
         p {
             max-width: 1200px;
             margin: 0 auto 2.5rem;
-            font-size: 1.6rem;
+            font-size: 1.8rem;
             opacity: 0.9;
             transition: all 0.5s ease-in-out;
+            text-shadow: 0 0 10px var(--glow-blue);
         }
 
         .tooltip {
             position: absolute;
-            background: #0ff;
-            color: #000;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 0.9rem;
+            background: linear-gradient(135deg, rgba(0, 247, 255, 0.5), rgba(255, 0, 255, 0.5));
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 1rem;
             display: none;
             z-index: 1000;
+            box-shadow: 0 0 20px var(--glow-blue);
+            transform: perspective(1000px) translateZ(10px);
         }
 
         .accordion {
@@ -408,32 +442,36 @@
         }
 
         .accordion-header {
-            background: transparent;
+            background: linear-gradient(135deg, rgba(0, 247, 255, 0.2), rgba(0, 0, 0, 0.4));
             border: 2px solid var(--neon-cyan);
-            padding: 1.8rem;
+            padding: 2rem;
             cursor: pointer;
-            border-radius: 12px;
+            border-radius: 1.5rem;
             transition: all 0.4s ease-in-out;
             color: var(--neon-cyan);
-            font-size: 1.8rem;
+            font-size: 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 0 25px rgba(0, 247, 255, 0.1);
+            backdrop-filter: blur(25px);
+            box-shadow: 0 0 30px var(--glow-blue);
+            transform: perspective(1000px) translateZ(5px);
         }
 
         .accordion-header:hover {
             color: var(--hud-white);
-            box-shadow: 0 0 35px var(--glow);
+            box-shadow: 0 0 50px var(--glow-blue), 0 0 70px var(--glow-magenta);
+            transform: perspective(1000px) translateZ(15px);
         }
 
         .accordion-content {
             display: none;
             padding: 3rem;
-            background: transparent;
-            border-radius: 0 0 12px 12px;
-            backdrop-filter: blur(20px);
+            background: linear-gradient(135deg, rgba(0, 247, 255, 0.1), rgba(0, 0, 0, 0.3));
+            border-radius: 0 0 1.5rem 1.5rem;
+            backdrop-filter: blur(25px);
+            box-shadow: 0 0 20px var(--glow-blue);
+            transform: perspective(1000px) translateZ(5px);
         }
 
         .accordion.active .accordion-content {
@@ -443,13 +481,14 @@
         .json-ld {
             background: #000;
             border: 1px solid var(--neon-cyan);
-            padding: 1rem;
-            border-radius: 8px;
+            padding: 1.5rem;
+            border-radius: 1rem;
             font-family: 'Source Code Pro', monospace;
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: #0ff;
-            max-height: 300px;
+            max-height: 350px;
             overflow-y: auto;
+            box-shadow: 0 0 20px var(--glow-blue);
         }
 
         @media (max-width: 768px) {
@@ -470,13 +509,13 @@
                 padding: 1rem 2rem;
             }
             h1 {
-                font-size: 3.8rem;
+                font-size: 4rem;
             }
             h2 {
-                font-size: 2.4rem;
+                font-size: 2.5rem;
             }
             p {
-                font-size: 1.3rem;
+                font-size: 1.4rem;
                 max-width: 100%;
             }
         }
@@ -493,20 +532,20 @@
                 padding: 1rem;
             }
             .chat-input, .url-input {
-                font-size: 0.9rem;
+                font-size: 1rem;
             }
             .control-button {
                 padding: 0.8rem 1.5rem;
-                font-size: 0.9rem;
+                font-size: 1rem;
             }
             h1 {
-                font-size: 2.8rem;
+                font-size: 3rem;
             }
             h2 {
                 font-size: 1.8rem;
             }
             p {
-                font-size: 1.1rem;
+                font-size: 1.2rem;
             }
         }
     </style>
@@ -515,13 +554,12 @@
     <div id="preloader">
         <div class="preloader-hexagon"></div>
     </div>
-    <canvas class="particle-canvas"></canvas>
+    <canvas id="holographic-bg"></canvas>
     <div id="particles-js"></div>
     <div class="hex-overlay"></div>
     <div class="terminal-line"></div>
 
     <main>
-        <!-- Chat Interface Section -->
         <section id="chat-section">
             <h2>ElviraGenesis-OMEGA Neuro Interface</h2>
             <div class="frost-container">
@@ -551,7 +589,6 @@
                     <input type="file" class="dataset-input" id="dataset-input" accept=".csv,.txt,.json,.zst,.zip">
                     <button class="control-button" onclick="sendDataset()">Upload Dataset</button>
                 </div>
-                <!-- Demos for Additional Features -->
                 <div class="accordion">
                     <div class="accordion-header">Encrypt/Decrypt Demo <span>↓</span></div>
                     <div class="accordion-content">
@@ -604,68 +641,50 @@
     </main>
 
     <script>
-// 🌐 Environment Toggle (Local vs Production)
-const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-const API_URL = isLocal 
-    ? 'http://localhost:8000/process_query' 
-    : '/api/process_query';
+        // Environment Toggle
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const API_URL = isLocal ? 'http://localhost:8000/process_query' : '/api/process_query';
+        const WS_URL = isLocal ? 'ws://localhost:8000/events' : 'wss://your-api-id.execute-api.us-east-1.amazonaws.com/prod/events';
 
-const WS_URL = isLocal 
-    ? 'ws://localhost:8000/events' 
-    : 'wss://your-api-id.execute-api.us-east-1.amazonaws.com/prod/events';
+        // WebSocket Connection
+        const ws = new WebSocket(WS_URL);
 
-// 🔌 Establish WebSocket Connection
-const ws = new WebSocket(WS_URL);
+        ws.onmessage = function(event) {
+            try {
+                const data = JSON.parse(event.data);
+                const chatLog = document.getElementById('chatLog');
+                if (!chatLog) {
+                    console.warn("⚠️ chatLog element not found.");
+                    return;
+                }
 
-ws.onmessage = function(event) {
-    try {
-        const data = JSON.parse(event.data);
-        const chatLog = document.getElementById('chatLog');
-        if (!chatLog) {
-            console.warn("⚠️ chatLog element not found.");
-            return;
-        }
+                const bubble = document.createElement('div');
+                bubble.className = 'message-bubble ai';
+                bubble.dataset.tooltip = 'AI-generated response with ethical validation.';
 
-        const bubble = document.createElement('div');
-        bubble.className = 'message-bubble ai';
+                const sessionText = `<strong>Session ${sanitizeHTML(data.session_id)}</strong>: ${sanitizeHTML(data.unified_response || 'No response')}`;
+                const modelResponses = (data.model_responses && typeof data.model_responses === 'object')
+                    ? Object.entries(data.model_responses).map(([model, res]) => {
+                        const modelResponse = sanitizeHTML(res.response || 'N/A');
+                        const ethicalScore = res.ethical_score !== undefined ? res.ethical_score : 'N/A';
+                        return `<strong>${sanitizeHTML(model)}</strong>: ${modelResponse} (Ethical: ${ethicalScore})`;
+                    }).join('<br>')
+                    : '';
 
-        const sessionText = `<strong>Session ${data.session_id}</strong>: ${sanitizeHTML(data.unified_response || 'No response')}`;
-        const modelResponses = (data.model_responses && typeof data.model_responses === 'object')
-            ? Object.entries(data.model_responses).map(([model, res]) => {
-                const modelResponse = sanitizeHTML(res.response || 'N/A');
-                const ethicalScore = res.ethical_score !== undefined ? res.ethical_score : 'N/A';
-                return `<strong>${model}</strong>: ${modelResponse} (Ethical: ${ethicalScore})`;
-            }).join('<br>')
-            : '';
+                bubble.innerHTML = `${sessionText}<br>${modelResponses}`;
+                chatLog.appendChild(bubble);
 
-        bubble.innerHTML = `${sessionText}<br>${modelResponses}`;
-        chatLog.appendChild(bubble);
-
-        scrollToBottom();
-        addToHistory(data.session_id, data.unified_response);
-        saveHistory();
-    } catch (err) {
-        console.error("❌ WebSocket message handling failed:", err);
-    }
-};
-
-// 🧼 Safe HTML sanitization
-function sanitizeHTML(str) {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-}
+                scrollToBottom();
+                addToHistory(data.session_id, data.unified_response);
+                saveHistory();
 
                 // Update metrics panel
                 if (data.metrics) {
                     const metricsPanel = document.getElementById('metrics-panel');
                     metricsPanel.innerHTML = `
                         <strong>Live Metrics</strong><br>
-                        <span style="color: ${data.metrics.vram_usage_4070 > 10 ? 'var(--neon-red)' : 'var(--neon-green)'};">
-                            VRAM Usage (4070): ${data.metrics.vram_usage_4070.toFixed(2)} GB
-                        </span><br>
-                        <span style="color: ${data.metrics.vram_usage_3060 > 10 ? 'var(--neon-red)' : 'var(--neon-green)'};">
-                            VRAM Usage (3060): ${data.metrics.vram_usage_3060.toFixed(2)} GB
+                        <span style="color: ${data.metrics.vram_usage > 10 ? 'var(--neon-red)' : 'var(--neon-green)'};">
+                            VRAM Usage: ${data.metrics.vram_usage.toFixed(2)} GB
                         </span><br>
                         <span style="color: ${data.metrics.cpu_usage > 80 ? 'var(--neon-red)' : 'var(--neon-green)'};">
                             CPU Usage: ${data.metrics.cpu_usage.toFixed(2)}%
@@ -682,11 +701,18 @@ function sanitizeHTML(str) {
                         Response Time: ${data.metrics.response_time.toFixed(2)}s<br>
                         Capsule Count: ${data.metrics.capsule_count || 0}
                     `;
-                
+                }
             } catch (err) {
-                console.error("Error parsing WebSocket message:", err, event.data);
+                console.error("❌ WebSocket message handling failed:", err);
             }
         };
+
+        // Safe HTML sanitization
+        function sanitizeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str || '';
+            return div.innerHTML;
+        }
 
         // Text-to-Speech Setup
         let speech = new SpeechSynthesisUtterance();
@@ -734,14 +760,12 @@ function sanitizeHTML(str) {
             document.getElementById('start-tts').disabled = true;
             document.getElementById('pause-tts').disabled = false;
 
-            // Initialize TTS
             speech = new SpeechSynthesisUtterance();
             speech.lang = 'en-US';
             speech.volume = 1;
             speech.rate = 1;
             speech.pitch = 1;
 
-            // Start reading from the current chunk
             readNextChunk();
         }
 
@@ -750,15 +774,12 @@ function sanitizeHTML(str) {
                 isSpeaking = false;
                 document.getElementById('start-tts').disabled = false;
                 document.getElementById('pause-tts').disabled = true;
-                currentChunkIndex = 0; // Reset for next play
+                currentChunkIndex = 0;
                 return;
             }
 
             if (!isPaused) {
-                // Display chunk in chat log
                 addMessage(presentationChunks[currentChunkIndex], 'ai');
-
-                // Set TTS text
                 speech.text = presentationChunks[currentChunkIndex];
                 speech.onend = () => {
                     currentChunkIndex++;
@@ -863,7 +884,7 @@ function sanitizeHTML(str) {
         function addToHistory(sessionId, query) {
             const historyList = document.getElementById('history-list');
             const item = document.createElement('li');
-            item.innerHTML = `<strong>${sessionId}</strong>: ${query}`;
+            item.innerHTML = `<strong>${sanitizeHTML(sessionId)}</strong>: ${sanitizeHTML(query)}`;
             historyList.appendChild(item);
             saveHistory();
         }
@@ -929,7 +950,7 @@ function sanitizeHTML(str) {
                 output.textContent = 'Please enter text to encrypt.';
                 return;
             }
-            const encoded = btoa(input); // Base64 for demo
+            const encoded = btoa(input);
             output.textContent = `Encrypted: ${encoded}`;
         }
 
@@ -941,7 +962,7 @@ function sanitizeHTML(str) {
                 return;
             }
             try {
-                const decoded = atob(input); // Base64 for demo
+                const decoded = atob(input);
                 output.textContent = `Decrypted: ${decoded}`;
             } catch (e) {
                 output.textContent = 'Invalid encrypted text.';
@@ -959,63 +980,61 @@ function sanitizeHTML(str) {
             output.textContent = `Decompiled Output: Simulated decompilation of ${input.length} bytes. Detected function: main() with 3 calls to unknown libraries.`;
         }
 
-        // Quantum Particle System
-        class QuantumParticles {
-            constructor(canvas) {
-                this.canvas = canvas;
-                this.ctx = canvas.getContext('2d');
-                this.particles = [];
-                this.resize();
-                this.init();
-                window.addEventListener('resize', () => this.resize());
+        // Three.js Holographic Particle System
+        function initHolographicParticles() {
+            const canvas = document.getElementById('holographic-bg');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particleCount = 5000;
+            const posArray = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+
+            for (let i = 0; i < particleCount * 3; i += 3) {
+                posArray[i] = (Math.random() - 0.5) * 2000;
+                posArray[i + 1] = (Math.random() - 0.5) * 2000;
+                posArray[i + 2] = (Math.random() - 0.5) * 2000;
+                colors[i] = 0; colors[i + 1] = Math.random(); colors[i + 2] = 1;
             }
 
-            resize() {
-                this.canvas.width = window.innerWidth * devicePixelRatio;
-                this.canvas.height = window.innerHeight * devicePixelRatio;
-                this.ctx.scale(devicePixelRatio, devicePixelRatio);
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const material = new THREE.PointsMaterial({
+                size: 2,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.6,
+                sizeAttenuation: true,
+                blending: THREE.AdditiveBlending
+            });
+
+            const particles = new THREE.Points(particlesGeometry, material);
+            scene.add(particles);
+
+            camera.position.z = 500;
+
+            function animate() {
+                requestAnimationFrame(animate);
+                particles.rotation.y += 0.001;
+                particles.rotation.x += 0.0005;
+                renderer.render(scene, camera);
             }
 
-            init() {
-                this.createParticles(150);
-                this.animate();
-            }
+            animate();
 
-            createParticles(count) {
-                for (let i = 0; i < count; i++) {
-                    this.particles.push({
-                        x: Math.random() * innerWidth,
-                        y: Math.random() * innerHeight,
-                        vx: (Math.random() - 0.5) * 0.3,
-                        vy: (Math.random() - 0.5) * 0.3,
-                        size: Math.random() * 2 + 1,
-                        alpha: Math.random() * 0.3 + 0.2,
-                        angle: Math.random() * Math.PI * 2
-                    });
-                }
-            }
-
-            animate() {
-                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                this.particles.forEach(p => {
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.angle += 0.02;
-                    if (p.x < 0 || p.x > innerWidth) p.vx *= -1;
-                    if (p.y < 0 || p.y > innerHeight) p.vy *= -1;
-                    this.ctx.save();
-                    this.ctx.translate(p.x, p.y);
-                    this.ctx.rotate(p.angle);
-                    this.ctx.globalAlpha = p.alpha;
-                    this.ctx.fillStyle = `hsl(180, 100%, 70%)`;
-                    this.ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
-                    this.ctx.restore();
-                });
-                requestAnimationFrame(() => this.animate());
-            }
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
         }
 
-        // Initialize particles.js and quantum particles
+        // Initialize particles.js and holographic particles
         document.addEventListener('DOMContentLoaded', function () {
             if (typeof particlesJS !== 'undefined') {
                 particlesJS('particles-js', {
@@ -1048,16 +1067,16 @@ function sanitizeHTML(str) {
                 document.getElementById('chat-input').addEventListener('keypress', function(e) {
                     if (e.key === 'Enter' && this.value.trim()) {
                         particlesJS('particles-js').pJS.fn.vendors.interactivity.pushParticles(10, { speed: 8 });
+                        sendQuery();
                     }
                 });
             } else {
                 console.error('particlesJS is not defined.');
             }
 
-            const particles = new QuantumParticles(document.querySelector('.particle-canvas'));
+            initHolographicParticles();
             loadHistory();
 
-            // Initialize tooltips
             document.querySelectorAll('[data-tooltip]').forEach(element => {
                 element.addEventListener('mouseenter', function (e) {
                     const tooltip = document.createElement('div');
@@ -1074,7 +1093,6 @@ function sanitizeHTML(str) {
                 });
             });
 
-            // Initialize accordion functionality
             document.querySelectorAll('.accordion-header').forEach(header => {
                 header.addEventListener('click', () => {
                     const accordion = header.parentElement;
@@ -1082,11 +1100,9 @@ function sanitizeHTML(str) {
                 });
             });
 
-            // Load presentation content into chat log
             presentationChunks.forEach(chunk => addMessage(chunk, 'ai'));
         });
 
-        // Preloader Fade-Out
         window.addEventListener('load', function () {
             const preloader = document.getElementById('preloader');
             preloader.classList.add('fade-out');
