@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en" data-theme="cyber">
 <head>
@@ -5,19 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#000308">
-    <meta name="description" content="ElviraGenesis-OMEGA: Advanced AI System for cybersecurity, ethical intelligence, autonomous strategy generation, and forensic analysis with capsule-based memory compression, recursive agent architecture, and real-time threat detection, powered by Mistral-7B-Instruct.">
+    <meta name="description" content="AuroraGenesis-OMEGA: Advanced AI System for cybersecurity, ethical intelligence, autonomous strategy generation, and forensic analysis with capsule-based memory compression, recursive agent architecture, and real-time threat detection, powered by Mistral-7B-Instruct.">
     <meta name="keywords" content="AI, cybersecurity, ethical AI, forensic analysis, blockchain, deep packet scanning, decompilation, zero-day threats">
     <meta name="author" content="xAI">
-    <meta property="og:title" content="ElviraGenesis-OMEGA: Neuro Interface">
+    <meta property="og:title" content="AuroraGenesis-OMEGA: Neuro Interface">
     <meta property="og:description" content="A transformative Advanced AI System for enterprise cybersecurity, compliance, and forensic analysis, powered by Mistral-7B-Instruct.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://x.ai/grok">
-    <title>ElviraGenesis-OMEGA: Neuro Interface</title>
+    <title>AuroraGenesis-OMEGA: Neuro Interface</title>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400&family=Orbitron:wght@500&family=Source+Code+Pro:wght@400&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis-network.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js" defer></script>
+    <link href="https://unpkg.com/vis-network@latest/dist/vis-network.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/vis-network@latest/dist/vis-network.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r169/three.min.js" defer></script>
     <style>
         :root {
             --primary-hue: 200;
@@ -68,13 +69,23 @@
             width: 100%;
             height: 100%;
             z-index: -2;
-            opacity: 0.9;
+            opacity: 0.6; /* Reduced opacity for better content visibility */
             animation: holoPulse 8s infinite ease-in-out;
         }
 
         @keyframes holoPulse {
-            0%, 100% { opacity: 0.9; filter: brightness(1); }
-            50% { opacity: 1; filter: brightness(1.3); }
+            0%, 100% { opacity: 0.6; filter: brightness(1); }
+            50% { opacity: 0.8; filter: brightness(1.3); }
+        }
+
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.5; /* Reduced opacity to prevent overlap */
         }
 
         .hex-overlay {
@@ -86,7 +97,7 @@
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"><path d="M20 10 L60 10 L70 40 L60 70 L20 70 L10 40 Z" stroke="rgba(0, 247, 255, 0.3)" fill="none" stroke-width="2"/></svg>');
             background-size: 80px 80px;
             background-repeat: repeat;
-            opacity: 0.7;
+            opacity: 0.4; /* Adjusted for visibility */
             z-index: -1;
             pointer-events: none;
             animation: hexFade 10s ease-in-out infinite;
@@ -94,8 +105,8 @@
         }
 
         @keyframes hexFade {
-            0%, 100% { opacity: 0.7; transform: perspective(1200px) rotateX(15deg) translateZ(0); }
-            50% { opacity: 0.4; transform: perspective(1200px) rotateX(20deg) translateZ(80px); }
+            0%, 100% { opacity: 0.4; transform: perspective(1200px) rotateX(15deg) translateZ(0); }
+            50% { opacity: 0.2; transform: perspective(1200px) rotateX(20deg) translateZ(80px); }
         }
 
         .terminal-line {
@@ -108,6 +119,7 @@
             box-shadow: 0 0 100px var(--glow-blue);
             animation: scan 4s infinite linear;
             transform: perspective(1200px) translateZ(-30px);
+            z-index: 0; /* Ensure below content */
         }
 
         @keyframes scan {
@@ -123,8 +135,8 @@
             display: flex;
             flex-direction: column;
             gap: 2rem;
-            backdrop-filter: blur(60px) saturate(220%);
-            background: linear-gradient(135deg, rgba(0, 247, 255, 0.15), rgba(255, 0, 255, 0.15));
+            backdrop-filter: blur(20px) saturate(180%); /* Reduced blur for readability */
+            background: linear-gradient(135deg, rgba(0, 247, 255, 0.2), rgba(255, 0, 255, 0.2));
             border: 1px solid var(--glass-border);
             box-shadow: 0 0 50px var(--glow-blue), 0 0 100px var(--glow-magenta);
             border-radius: 2.5rem;
@@ -132,12 +144,13 @@
             transition: transform 0.5s ease, box-shadow 0.5s ease, backdrop-filter 0.5s ease;
             height: 90vh;
             justify-content: space-between;
+            z-index: 2; /* Higher z-index to ensure visibility */
         }
 
         .frost-container:hover {
             transform: perspective(1200px) rotateX(0deg) translateZ(30px);
             box-shadow: 0 0 70px var(--glow-blue), 0 0 140px var(--glow-magenta);
-            backdrop-filter: blur(70px) saturate(240%);
+            backdrop-filter: blur(25px) saturate(200%);
         }
 
         .frost-container::before {
@@ -166,7 +179,10 @@
             font-family: 'Source Code Pro', monospace;
             font-size: 1.3rem;
             color: var(--neon-green);
-            transform: perspective(1200px) translateZ(15px);
+            background: rgba(0, 0, 0, 0.5); /* Added background for contrast */
+            min-height: 200px; /* Ensure visibility */
+            border-radius: 1.5rem;
+            z-index: 3; /* Above frost-container */
         }
 
         .message-bubble {
@@ -174,48 +190,52 @@
             padding: 2rem;
             border-radius: 2rem;
             max-width: min(90%, 1000px);
-            background: linear-gradient(135deg, rgba(0, 247, 255, 0.2), rgba(255, 0, 255, 0.2));
-            backdrop-filter: blur(35px);
-            border: 1px solid rgba(0, 247, 255, 0.4);
+            background: linear-gradient(135deg, rgba(0, 247, 255, 0.3), rgba(255, 0, 255, 0.3));
+            backdrop-filter: blur(10px); /* Reduced blur for readability */
+            border: 1px solid rgba(0, 247, 255, 0.6);
             box-shadow: 0 0 40px var(--glow-blue);
-            transform: perspective(1200px) rotateY(5deg) scale(0.98);
+            transform: scale(0.98); /* Simplified transform */
             transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease, backdrop-filter 0.4s ease;
             animation: holoFloat 5s infinite ease-in-out;
+            opacity: 0.9; /* Increased for visibility */
+            z-index: 4; /* Ensure above chat-log */
         }
 
         .message-bubble:hover {
-            transform: perspective(1200px) rotateY(0deg) scale(1) translateZ(30px);
+            transform: scale(1) translateZ(10px);
             box-shadow: 0 0 60px var(--glow-blue), 0 0 80px var(--glow-magenta);
-            backdrop-filter: blur(45px);
+            backdrop-filter: blur(15px);
+            opacity: 1;
         }
 
         @keyframes holoFloat {
-            0%, 100% { transform: perspective(1200px) rotateY(5deg) scale(0.98) translateZ(0); }
-            50% { transform: perspective(1200px) rotateY(5deg) scale(0.98) translateZ(15px); }
+            0%, 100% { transform: scale(0.98) translateZ(0); }
+            50% { transform: scale(0.98) translateZ(15px); }
         }
 
         .message-bubble.user {
             align-self: flex-end;
-            background: linear-gradient(135deg, rgba(0, 200, 255, 0.3), rgba(0, 100, 255, 0.4));
-            transform: perspective(1200px) rotateY(-5deg) scale(0.98);
+            background: linear-gradient(135deg, rgba(0, 200, 255, 0.4), rgba(0, 100, 255, 0.5));
+            transform: scale(0.98);
         }
 
         .message-bubble.ai {
             align-self: flex-start;
-            background: linear-gradient(135deg, rgba(255, 50, 255, 0.25), rgba(150, 0, 255, 0.35));
+            background: linear-gradient(135deg, rgba(255, 50, 255, 0.35), rgba(150, 0, 255, 0.45));
         }
 
         .input-group {
             display: flex;
             gap: 1.5rem;
             margin-top: 1.5rem;
+            z-index: 5; /* Above message-bubble */
         }
 
         .chat-input {
             flex-grow: 1;
             padding: 1.8rem;
             border: none;
-            background: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.15);
             border-radius: 1.5rem;
             color: #fff;
             font-size: clamp(1.2rem, 2.5vw, 1.5rem);
@@ -232,7 +252,7 @@
             padding: 1.8rem 3.5rem;
             border: none;
             border-radius: 1.5rem;
-            background: linear-gradient(135deg, rgba(0, 255, 255, 0.5), rgba(0, 150, 255, 0.7));
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.6), rgba(0, 150, 255, 0.8));
             color: #fff;
             font-family: 'Orbitron', sans-serif;
             font-weight: 700;
@@ -242,13 +262,14 @@
             overflow: hidden;
             transition: transform 0.4s ease, box-shadow 0.4s ease;
             box-shadow: 0 0 25px var(--glow-blue);
-            transform: perspective(1200px) scale(1);
+            transform: scale(1);
             touch-action: manipulation;
             min-width: 150px;
+            z-index: 5;
         }
 
         .control-button:hover {
-            transform: perspective(1200px) scale(1.15) translateZ(15px);
+            transform: scale(1.15) translateZ(15px);
             box-shadow: 0 0 50px var(--glow-blue), 0 0 70px var(--glow-magenta);
         }
 
@@ -335,7 +356,7 @@
             margin: clamp(2rem, 5vw, 4rem) 0;
             letter-spacing: -0.05em;
             animation: pulse 4s infinite;
-            transform: perspective(1200px) translateZ(25px);
+            transform: translateZ(25px);
             transition: all 0.5s ease-in-out;
         }
 
@@ -345,7 +366,7 @@
             color: var(--neon-cyan);
             text-shadow: 0 0 35px var(--glow-blue);
             margin-bottom: clamp(1.5rem, 3vw, 3rem);
-            transform: perspective(1200px) translateZ(15px);
+            transform: translateZ(15px);
             transition: all 0.5s ease-in-out;
         }
 
@@ -368,7 +389,7 @@
             display: none;
             z-index: 1000;
             box-shadow: 0 0 25px var(--glow-blue);
-            transform: perspective(1200px) translateZ(15px);
+            transform: translateZ(15px);
         }
 
         .accordion {
@@ -376,6 +397,7 @@
             max-width: 1200px;
             width: 100%;
             transition: all 0.5s ease-in-out;
+            z-index: 3;
         }
 
         .accordion-header {
@@ -390,9 +412,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            backdrop-filter: blur(30px);
+            backdrop-filter: blur(20px);
             box-shadow: 0 0 35px var(--glow-blue);
-            transform: perspective(1200px) translateZ(10px);
+            transform: translateZ(10px);
             touch-action: manipulation;
             min-height: 60px;
         }
@@ -400,7 +422,7 @@
         .accordion-header:hover {
             color: var(--hud-white);
             box-shadow: 0 0 60px var(--glow-blue), 0 0 80px var(--glow-magenta);
-            transform: perspective(1200px) translateZ(20px);
+            transform: translateZ(20px);
         }
 
         .accordion-content {
@@ -408,9 +430,10 @@
             padding: clamp(2rem, 4vw, 3rem);
             background: linear-gradient(135deg, rgba(0, 247, 255, 0.15), rgba(0, 0, 0, 0.4));
             border-radius: 0 0 1.8rem 1.8rem;
-            backdrop-filter: blur(30px);
+            backdrop-filter: blur(20px);
             box-shadow: 0 0 25px var(--glow-blue);
-            transform: perspective(1200px) translateZ(10px);
+            transform: translateZ(10px);
+            z-index: 3;
         }
 
         .accordion.active .accordion-content {
@@ -445,6 +468,19 @@
             display: block;
         }
 
+        /* Override deprecated vis-network styles */
+        input[type="range"]::-ms-track,
+        input[type="range"]::-ms-fill-lower,
+        input[type="range"]::-ms-fill-upper,
+        input[type="range"]::-ms-thumb {
+            display: none; /* Hide unsupported pseudo-elements */
+        }
+
+        .vis-network * {
+            -moz-transition: none !important; /* Remove deprecated prefix */
+            transition: all 0.3s ease-in-out; /* Standard transition */
+        }
+
         @media (max-width: 768px) {
             .frost-container {
                 max-width: 90vw;
@@ -454,6 +490,7 @@
             .chat-log {
                 padding: 1.5rem;
                 font-size: 1.1rem;
+                min-height: 150px;
             }
             .message-bubble {
                 max-width: 95%;
@@ -496,6 +533,7 @@
             .chat-log {
                 padding: 1rem;
                 font-size: 1rem;
+                min-height: 100px;
             }
             .message-bubble {
                 max-width: 98%;
@@ -541,20 +579,20 @@
 
     <main>
         <section id="chat-section">
-            <h2>ElviraGenesis-OMEGA Neuro Interface</h2>
+            <h2>AuroraGenesis-OMEGA Neuro Interface</h2>
             <div class="frost-container">
                 <div id="chatLog" class="chat-log">
                     <!-- Messages will appear here -->
                 </div>
                 <div class="input-group">
-                    <input type="text" id="chat-input" class="chat-input" placeholder="Ask ElviraGenesis anything...">
+                    <input type="text" id="chat-input" class="chat-input" placeholder="Ask AuroraGenesis anything...">
                     <button class="control-button" onclick="sendQuery()">Send</button>
                     <div id="loader" class="loader"></div>
                 </div>
                 <div class="accordion">
                     <div class="accordion-header">Text-to-Speech Controls <span>↓</span></div>
                     <div class="accordion-content">
-                        <p>Control TTS for the ElviraGenesis-OMEGA presentation:</p>
+                        <p>Control TTS for the AuroraGenesis-OMEGA presentation:</p>
                         <button class="control-button" id="start-tts" onclick="startTTS()">Start TTS</button>
                         <button class="control-button" id="pause-tts" onclick="pauseTTS()" disabled>Pause TTS</button>
                     </div>
@@ -596,7 +634,7 @@
     "name": "Threat Analysis Capsule",
     "description": "Capsule containing threat analysis data",
     "dateCreated": "2025-05-10T12:34:56Z",
-    "creator": "ElviraGenesis-OMEGA",
+    "creator": "AuroraGenesis-OMEGA",
     "ethicalScore": 0.98,
     "hash": "sha512:abc123...",
     "source": "ExploitIngestor",
@@ -610,7 +648,7 @@
                     <div class="accordion-header">System State Map <span>↓</span></div>
                     <div class="accordion-content">
                         <p>Visualize capsule connections (simulated):</p>
-                        <div id="system-state-map" style="height: 400px;"></div>
+                        <div id="system-state-map" style="height: 400px; width: 100%;"></div>
                     </div>
                 </div>
                 <div class="accordion">
@@ -667,7 +705,7 @@
 
                     bubble.innerHTML = `${sessionText}<br>${modelResponses}`;
                     chatLog.appendChild(bubble);
-                    scrollToBottom();
+                    debounceScrollToBottom();
                     addToHistory(data.session_id, data.unified_response);
                     saveHistory();
                 });
@@ -688,6 +726,19 @@
             return div.innerHTML;
         }
 
+        // Debounce utility for scroll
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
         // Text-to-Speech Setup
         let speech = new SpeechSynthesisUtterance();
         let isSpeaking = false;
@@ -697,14 +748,14 @@
         // Split the presentation content into chunks for TTS
         const presentationChunks = [
             // Executive Summary
-            "ElviraGenesis-OMEGA is a state-of-the-art Advanced AI System designed for cybersecurity, ethical reasoning, autonomous strategy generation, and forensic analysis. Built on a modular, dual-GPU architecture with CUDA 12.6, Python 3.12, and distributed computing via Ray, the system integrates over 40 modules to achieve Consciousness Level ξ-9—a conceptual benchmark for advanced cognitive and ethical reasoning.",
+            "AuroraGenesis-OMEGA is a state-of-the-art Advanced AI System designed for cybersecurity, ethical reasoning, autonomous strategy generation, and forensic analysis. Built on a modular, dual-GPU architecture with CUDA 12.6, Python 3.12, and distributed computing via Ray, the system integrates over 40 modules to achieve Consciousness Level ξ-9—a conceptual benchmark for advanced cognitive and ethical reasoning.",
             "Key components include: FlashTRASymbioticAI, a neuro-symbolic engine for strategy generation and ethical reasoning; KnowledgeCapsulePreloader, which loads and validates compressed knowledge capsules with ZKProofs and ethical checks; KnowledgeGrowthManager, for growing and mutating LoRA adapters based on affective embeddings and probe data; GenesisInitializer, for seeding ethically aligned knowledge; TRATrainingModule, for training with DeepSpeed ZeRO-3; and the Twin Recursive Agent Architecture, a dual-agent system with recursive self-modification and ethical safeguards.",
             "Additional components include ForensicHex3DEntropyViewer for visualizing capsule entropy in 3D, TimelineEngine for tracking temporal evolution, SteganographyEmbedderDetection for detecting hidden data, NetworkAnalytics for deep packet scanning and blockchain forensics, InteractiveTooltips for AI-driven suggestions, ExploitPrevention and CounterAttacking for proactive threat response, ConsoleNative for AI chat and command execution, VoiceCommands for hands-free operation, AdvancedEncryption for secure data handling, Decrypt/Encrypt for forensic analysis, MetadataManagement for traceability, and DecompileEngine for reverse-engineering exploits.",
             "The system excels in: Cybersecurity Excellence, detecting and countering exploits with AI-driven classification, reinforcement learning, sandbox testing, and deep packet scanning; Ethical Compliance, validating actions against 10,000+ ethical protocols using ZKProofs and Merkle trees; Scalability, processing 1 to 3 billion tokens per day across 10+ distributed nodes; Real-Time Visualization, displaying system health, fork metrics, entropy, and forensic analytics; Self-Improvement, enabling continuous learning through recursive agent modification; and Forensic Precision, providing ultra-detailed analysis with decompilation, metadata, and temporal tracking.",
             // System Architecture
             "The system is organized into six layers: Hardware, Core Infrastructure, Processing, Orchestration, Interaction, and Security/Audit. The Hardware Layer includes dual high-performance GPUs, a multi-core CPU, 128GB DDR5 RAM, and a 2TB NVMe SSD, with NVIDIA-SMI monitoring and high-speed LAN networking. The Core Infrastructure Layer uses Ubuntu 22.04 LTS, Python 3.12, Docker containerization, Neo4j for capsules and blockchain forensics, Redis for event streaming, and a file system at /home/ben/BALI/cyber/.",
             "The Processing Layer includes AI models like FlashTRASymbioticAI, LearningOrchestrator, TaskGeneralizer, KnowledgeGrowthManager, TRATrainingModule, HyperAgent, and PluginThoughtReactor, plus specialized modules like ExploitIngestor, CognitiveStateProcessor, CrossModalPerception, ThreatPathSimulator, AdaptiveFeatureCompressor, ForensicHex3DEntropyViewer, TimelineEngine, SteganographyEmbedderDetection, NetworkAnalytics, and DecompileEngine, optimized with BF16 precision, AMP autocast, and FlashAttention2.",
-            "The Orchestration Layer features InfinityBrain, ElviraRouter, DistributedTaskOrchestrator, KnowledgeGrowthManager, ReinforcementLoop, TemporalAccelerator, and TimelineEngine. The Interaction Layer includes a PyQt5 GUI with glitch-heavy aesthetics, a Dash dashboard, web application, WebSocket server, ConsoleNative, and VoiceCommands. The Security/Audit Layer provides ethical validation, cryptographic security, audit logging, forensic telemetry, threat detection, exploit prevention, and counterattacking.",
+            "The Orchestration Layer features InfinityBrain, AuroraRouter, DistributedTaskOrchestrator, KnowledgeGrowthManager, ReinforcementLoop, TemporalAccelerator, and TimelineEngine. The Interaction Layer includes a PyQt5 GUI with glitch-heavy aesthetics, a Dash dashboard, web application, WebSocket server, ConsoleNative, and VoiceCommands. The Security/Audit Layer provides ethical validation, cryptographic security, audit logging, forensic telemetry, threat detection, exploit prevention, and counterattacking.",
             "The Twin Recursive Agent Architecture employs an Ethics Agent and Capability Agent, with recursive modification and safeguards like mutual validation, human-in-the-loop oversight, and rollback via DualGPUMemory. The key workflow includes initialization, capsule preloading, exploit processing, knowledge growth, training and optimization, monitoring and visualization, and security and auditing.",
             // Key Features
             "Key features include the Twin Recursive Agent Architecture for safe self-improvement, Knowledge Capsule Preloading for auditable data, Adaptive LoRA Adapter Growth for personalization, Multimodal Sensory Integration for enhanced interaction, Ethical Compliance and Forensic Traceability for regulatory alignment, Scalable Dual-GPU Architecture for enterprise deployments, Cinematic GUI and Real-Time Telemetry for investor appeal, Predictive Error Healing and Capsule Forecasting for resilience, Quantum-Inspired Processing for advanced reasoning, Forensic and Network Analytics for compliance, Exploit Prevention and Counterattacking for cybersecurity, Interactive Tooltips and Voice Commands for accessibility, Advanced Encryption and Decrypt/Encrypt for data security, Decompile Engine for exploit analysis, and Metadata Management for traceability.",
@@ -719,7 +770,7 @@
             // Investor Pitch
             "Investor pitch points highlight innovative AI, cybersecurity leadership, ethical compliance, forensic precision, scalable infrastructure, market potential, investor appeal, and a projected 300% ROI in 5 years.",
             // Conclusion
-            "ElviraGenesis-OMEGA redefines cybersecurity, ethical intelligence, and forensic analysis with its modular architecture, Twin Recursive Agent model, advanced forensic capabilities, and real-time visualization, poised to deliver significant value and innovation."
+            "AuroraGenesis-OMEGA redefines cybersecurity, ethical intelligence, and forensic analysis with its modular architecture, Twin Recursive Agent model, advanced forensic capabilities, and real-time visualization, poised to deliver significant value and innovation."
         ];
 
         function startTTS() {
@@ -871,27 +922,36 @@
 
         function addMessage(text, type) {
             const chatLog = document.getElementById('chatLog');
+            if (!chatLog) {
+                console.error('chatLog element not found');
+                return;
+            }
             requestAnimationFrame(() => {
                 const bubble = document.createElement('div');
                 bubble.className = `message-bubble ${type}`;
                 bubble.textContent = text;
                 bubble.dataset.tooltip = type === 'ai' ? 'AI-generated response with ethical validation.' : 'User input.';
                 chatLog.appendChild(bubble);
-                scrollToBottom();
+                debounceScrollToBottom();
                 saveHistory();
             });
         }
 
-        function scrollToBottom() {
+        const debounceScrollToBottom = debounce(() => {
             const chatLog = document.getElementById('chatLog');
             chatLog.scrollTo({
                 top: chatLog.scrollHeight,
                 behavior: 'smooth'
             });
+        }, 100);
+
+        function scrollToBottom() {
+            debounceScrollToBottom();
         }
 
         function addToHistory(sessionId, query) {
             const historyList = document.getElementById('history-list');
+            if (!historyList) return; // Skip if history-list not present
             const item = document.createElement('li');
             item.innerHTML = `<strong>${sanitizeHTML(sessionId)}</strong>: ${sanitizeHTML(query)}`;
             historyList.appendChild(item);
@@ -1004,6 +1064,10 @@
         // Three.js Holographic Particle System
         function initHolographicParticles() {
             const canvas = document.getElementById('holographic-bg');
+            if (!canvas) {
+                console.error('holographic-bg canvas not found');
+                return;
+            }
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
@@ -1011,29 +1075,29 @@
             renderer.setPixelRatio(window.devicePixelRatio);
 
             const particlesGeometry = new THREE.BufferGeometry();
-            const particleCount = 10000;
+            const particleCount = 5000; // Reduced for performance
             const posArray = new Float32Array(particleCount * 3);
             const colors = new Float32Array(particleCount * 3);
             const velocities = new Float32Array(particleCount * 3);
 
             for (let i = 0; i < particleCount * 3; i += 3) {
-                posArray[i] = (Math.random() - 0.5) * 3000;
-                posArray[i + 1] = (Math.random() - 0.5) * 3000;
-                posArray[i + 2] = (Math.random() - 0.5) * 3000;
+                posArray[i] = (Math.random() - 0.5) * 2000;
+                posArray[i + 1] = (Math.random() - 0.5) * 2000;
+                posArray[i + 2] = (Math.random() - 0.5) * 2000;
                 colors[i] = Math.random(); colors[i + 1] = Math.random(); colors[i + 2] = 1;
-                velocities[i] = (Math.random() - 0.5) * 0.5;
-                velocities[i + 1] = (Math.random() - 0.5) * 0.5;
-                velocities[i + 2] = (Math.random() - 0.5) * 0.5;
+                velocities[i] = (Math.random() - 0.5) * 0.3;
+                velocities[i + 1] = (Math.random() - 0.5) * 0.3;
+                velocities[i + 2] = (Math.random() - 0.5) * 0.3;
             }
 
             particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
             particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
             const material = new THREE.PointsMaterial({
-                size: 3,
+                size: 2,
                 vertexColors: true,
                 transparent: true,
-                opacity: 0.7,
+                opacity: 0.6,
                 sizeAttenuation: true,
                 blending: THREE.AdditiveBlending
             });
@@ -1050,9 +1114,9 @@
                     positions[i] += velocities[i] * Math.sin(Date.now() * 0.001 + i);
                     positions[i + 1] += velocities[i + 1] * Math.cos(Date.now() * 0.001 + i);
                     positions[i + 2] += velocities[i + 2] * Math.sin(Date.now() * 0.001 + i);
-                    if (Math.abs(positions[i]) > 1500) velocities[i] *= -1;
-                    if (Math.abs(positions[i + 1]) > 1500) velocities[i + 1] *= -1;
-                    if (Math.abs(positions[i + 2]) > 1500) velocities[i + 2] *= -1;
+                    if (Math.abs(positions[i]) > 1000) velocities[i] *= -1;
+                    if (Math.abs(positions[i + 1]) > 1000) velocities[i + 1] *= -1;
+                    if (Math.abs(positions[i + 2]) > 1000) velocities[i + 2] *= -1;
                 }
                 particlesGeometry.attributes.position.needsUpdate = true;
                 particles.rotation.y += 0.002;
@@ -1071,27 +1135,39 @@
         // System State Map with Vis.js
         function initSystemStateMap() {
             const container = document.getElementById('system-state-map');
-            const nodes = new vis.DataSet([
-                { id: 1, label: 'Capsule 1', title: 'Threat Analysis' },
-                { id: 2, label: 'Capsule 2', title: 'Network Analytics' },
-                { id: 3, label: 'Capsule 3', title: 'Forensic Entropy' },
-            ]);
-            const edges = new vis.DataSet([
-                { from: 1, to: 2, title: 'Data Flow' },
-                { from: 2, to: 3, title: 'Correlation' },
-            ]);
-            const data = { nodes, edges };
-            const options = {
-                nodes: { shape: 'dot', size: 20, color: '#00f7ff' },
-                edges: { color: '#00f7ff', width: 2 },
-                physics: { enabled: true },
-            };
-            new vis.Network(container, data, options);
+            if (!container) {
+                console.error('system-state-map container not found');
+                return;
+            }
+            try {
+                const nodes = new vis.DataSet([
+                    { id: 1, label: 'Capsule 1', title: 'Threat Analysis' },
+                    { id: 2, label: 'Capsule 2', title: 'Network Analytics' },
+                    { id: 3, label: 'Capsule 3', title: 'Forensic Entropy' },
+                ]);
+                const edges = new vis.DataSet([
+                    { from: 1, to: 2, title: 'Data Flow' },
+                    { from: 2, to: 3, title: 'Correlation' },
+                ]);
+                const data = { nodes, edges };
+                const options = {
+                    nodes: { shape: 'dot', size: 20, color: '#00f7ff' },
+                    edges: { color: '#00f7ff', width: 2 },
+                    physics: { enabled: true },
+                };
+                new vis.Network(container, data, options);
+            } catch (e) {
+                console.error('Failed to initialize vis-network:', e);
+            }
         }
 
         // Visual Cortex with Three.js
         function initVisualCortex() {
             const canvas = document.getElementById('visual-cortex');
+            if (!canvas) {
+                console.error('visual-cortex canvas not found');
+                return;
+            }
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
             const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
@@ -1137,13 +1213,13 @@
             if (typeof particlesJS !== 'undefined') {
                 particlesJS('particles-js', {
                     particles: {
-                        number: { value: 300, density: { enable: true, value_area: 800 } },
+                        number: { value: 200, density: { enable: true, value_area: 800 } }, // Reduced particles
                         color: { value: '#00f7ff' },
                         shape: { type: 'circle', stroke: { width: 0, color: '#000000' } },
-                        opacity: { value: 0.8, random: true, anim: { enable: true, speed: 2, opacity_min: 0.3, sync: false } },
-                        size: { value: 6, random: true, anim: { enable: true, speed: 25, size_min: 0.5, sync: false } },
-                        line_linked: { enable: true, distance: 150, color: '#00f7ff', opacity: 0.4, width: 1.2 },
-                        move: { enable: true, speed: 4, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
+                        opacity: { value: 0.6, random: true, anim: { enable: true, speed: 2, opacity_min: 0.3, sync: false } },
+                        size: { value: 5, random: true, anim: { enable: true, speed: 20, size_min: 0.5, sync: false } },
+                        line_linked: { enable: true, distance: 120, color: '#00f7ff', opacity: 0.3, width: 1 },
+                        move: { enable: true, speed: 3, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
                     },
                     interactivity: {
                         detect_on: 'canvas',
@@ -1154,9 +1230,9 @@
                             onQuery: { enable: true, mode: 'burst' }
                         },
                         modes: { 
-                            repulse: { distance: 150, duration: 0.5 }, 
+                            repulse: { distance: 120, duration: 0.5 }, 
                             push: { particles_nb: 5 },
-                            burst: { particles_nb: 10, speed: 8 }
+                            burst: { particles_nb: 8, speed: 6 }
                         }
                     },
                     retina_detect: true
@@ -1164,7 +1240,7 @@
 
                 document.getElementById('chat-input').addEventListener('keypress', function(e) {
                     if (e.key === 'Enter' && this.value.trim()) {
-                        particlesJS('particles-js').pJS.fn.vendors.interactivity.pushParticles(10, { speed: 8 });
+                        particlesJS('particles-js').pJS.fn.vendors.interactivity.pushParticles(8, { speed: 6 });
                         sendQuery();
                     }
                 });
@@ -1214,3 +1290,4 @@
     </script>
 </body>
 </html>
+```
