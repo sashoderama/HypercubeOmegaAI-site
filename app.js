@@ -47,20 +47,23 @@
     };
 
     // Session Context Memory
-    let sessionContext = JSON.parse(localStorage.getItem('proChat-session') || '[]');
-    const saveSession = () => localStorage.setItem('proChat-session', JSON.stringify(sessionContext));
+    let sessionContext = JSON.parse(localStorage.getItem('aurora-session') || '[]');
+    const saveSession = () => localStorage.setItem('aurora-session', JSON.stringify(sessionContext));
 
     // WebGPU Particle System
     async function initWebGPUParticles() {
         try {
             if (!navigator.gpu) throw new Error('WebGPU not supported');
             const canvas = document.createElement('canvas');
+            canvas.id = 'particles-js';
             canvas.style.position = 'fixed';
             canvas.style.top = '0';
             canvas.style.left = '0';
             canvas.style.width = '100%';
             canvas.style.height = '100%';
             canvas.style.zIndex = '-3';
+            canvas.style.filter = 'blur(1px)';
+            canvas.style.opacity = '0.7';
             document.body.appendChild(canvas);
             const adapter = await navigator.gpu.requestAdapter();
             const device = await adapter.requestDevice();
@@ -220,6 +223,13 @@
                 try {
                     if (!HF_TOKEN) throw new Error('Missing Hugging Face token');
                     const url = `https://api-inference.huggingface.co/models/${HF_MODEL}`;
+                    const contextStr = sessionContext.slice(-5).map(c => 
+                        `${c.userMsg ? 'User' : 'Bot'}: ${c.userMsg || c.botMsg}`).join('\n');
+                    const payload = {
+                        inputs: `[CONTEXT]\n${contextStr}\n\nUser: ${prompt}\nBot:`,
+                        stream: true,
+                        parameters: { max_new_tokens: 200, temperature: 0.7, top_p: 0.9, stop: ['</s>'] }
+                    };
                     const res = await fetch(url, {
                         method: 'POST',
                         headers: {
@@ -228,11 +238,7 @@
                             'Accept': 'application/json',
                             'X-Use-Stream': 'true'
                         },
-                        body: JSON.stringify({
-                            inputs: `[CONTEXT]\n${sessionContext.slice(-5).map(c => `User: ${c.userMsg}\nBot: ${c.botMsg}`).join('\n')}\n\nUser: ${prompt}\nBot: `,
-                            parameters: { max_new_tokens: 200, temperature: 0.7, top_p: 0.9, stop: ['</s>'] },
-                            stream: true
-                        }),
+                        body: JSON.stringify(payload),
                         signal: controller.signal
                     });
                     clearTimeout(timeout);
@@ -277,7 +283,7 @@
         const addMessage = (text, type, tooltip = '') => {
             requestAnimationFrame(() => {
                 const bubble = document.createElement('div');
-                bubble.className = `message-bubble ${type}`;
+                bubble.className = `message-bubble card ${type}`;
                 bubble.textContent = sanitizeHTML(text);
                 bubble.dataset.tooltip = tooltip || (type === 'ai' ? 'AI-generated response with ethical validation.' : 'User input.');
                 chatLog.appendChild(bubble);
@@ -296,11 +302,11 @@
                 text: el.textContent,
                 type: el.classList.contains('user') ? 'user' : 'ai'
             }));
-            localStorage.setItem('mainChat-history', JSON.stringify(messages));
+            localStorage.setItem('aurora-session', JSON.stringify(messages));
         };
 
         const loadHistory = () => {
-            const history = JSON.parse(localStorage.getItem('mainChat-history') || '[]');
+            const history = JSON.parse(localStorage.getItem('aurora-session') || '[]');
             history.forEach(msg => addMessage(msg.text, msg.type));
         };
 
@@ -317,7 +323,7 @@
             input.value = '';
             try {
                 const botSpan = document.createElement('div');
-                botSpan.className = 'message-bubble ai';
+                botSpan.className = 'message-bubble card ai';
                 chatLog.appendChild(botSpan);
                 const answer = await streamHF(q, chunk => {
                     botSpan.textContent += chunk;
@@ -497,11 +503,10 @@
     }
 
     function showToast(message) {
-        const toast = document.createElement('div');
-        toast.className = 'toast';
+        const toast = document.getElementById('toast');
         toast.textContent = message;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
+        toast.style.display = 'block';
+        setTimeout(() => toast.style.display = 'none', 3000);
     }
 
     /* ─── INITIALIZATION ─────────────────────────────────────────── */
@@ -560,10 +565,10 @@
                 .then(reg => console.log('✅ Service worker registered:', reg))
                 .catch(err => console.error('❌ Service worker registration failed:', err));
         }
-    });
 
-    window.addEventListener('load', () => {
+        // Auto-load setup
         document.getElementById('preloader').classList.add('fade-out');
+        document.body.classList.add('loaded');
     });
 
     // Audit Listener
