@@ -1,419 +1,748 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="aurora-dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#0d1117" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="description" content="AuroraGenesis-OMEGA: Advanced AI Cybersecurity System." />
-  <meta name="keywords" content="AI, cybersecurity, AGI, forensic, memory compression, dual-GPU" />
-  <meta name="author" content="xAI" />
-  <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    script-src 'self' 'unsafe-inline' http://127.0.0.1:8000;
-    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com;
-    img-src * data:;
-    font-src 'self' https://fonts.gstatic.com;
-    connect-src *;
-    worker-src 'self';
-  " />
-  <title>AuroraGenesis-OMEGA</title>
-  <link rel="manifest" href="/manifest.json" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" />
-  <style>
-    :root {
-      --bg-main: #0d1117;
-      --bg-panel: #161b22;
-      --bg-glass: rgba(255, 255, 255, 0.03);
-      --text-main: #d0d6e0;
-      --text-muted: #7a8594;
-      --accent: #2f81f7;
-      --border: #2c313c;
-      --radius: 12px;
-      --blur: blur(14px);
-      --glow: 0 0 40px rgba(47, 129, 247, 0.25);
-      --transition: all 0.3s ease-in-out;
-      --vh: 1vh;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0d1117">
+    <meta name="description" content="AuroraGenesis-OMEGA: Advanced AI System for cybersecurity, ethical intelligence, autonomous strategy generation, and forensic analysis with capsule-based memory compression, recursive agent architecture, and real-time threat detection.">
+    <meta name="keywords" content="AI, cybersecurity, AGI, forensic, memory compression, dual-GPU">
+    <meta name="author" content="xAI">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'strict-dynamic' http://127.0.0.1:8000 https://*.x.ai;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com;
+        img-src 'self' data: https://images.unsplash.com;
+        font-src 'self' https://fonts.gstatic.com;
+        connect-src 'self' http://127.0.0.1:8000 wss://*.x.ai https://api-inference.huggingface.co;
+        worker-src 'self';
+    ">
+    <title>AuroraGenesis-OMEGA</title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Source+Code+Pro:wght@400;600&display=swap">
+    <style>
+        /* ─── ROOT VARIABLES ─────────────────────────────────────────────── */
+        :root {
+            --bg-main: #0d1117;
+            --bg-panel: #161b22;
+            --bg-glass: rgba(255, 255, 255, 0.03);
+            --text-main: #d0d6e0;
+            --text-muted: #7a8594;
+            --accent: #2f81f7;
+            --border: #2c313c;
+            --radius: 12px;
+            --blur: blur(14px);
+            --glow: 0 0 40px rgba(47, 129, 247, 0.25);
+            --transition: all 0.3s ease-in-out;
+            --vh: 1vh;
+            --transition-duration: 0.4s;
+            --transition-timing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --holographic-gradient: linear-gradient(
+                45deg,
+                rgba(0, 247, 255, 0.2),
+                rgba(255, 0, 255, 0.2),
+                rgba(0, 255, 204, 0.2)
+            );
+        }
 
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+        /* ─── GLOBAL RESETS ──────────────────────────────────────────────── */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Inter', sans-serif;
+            will-change: transform, opacity, filter;
+            backface-visibility: hidden;
+        }
 
-    html, body {
-      height: 100%;
-      background: var(--bg-main);
-      font-family: 'Inter', sans-serif;
-      color: var(--text-main);
-      overflow: hidden;
-    }
+        html, body {
+            height: 100%;
+            background: var(--bg-main);
+            color: var(--text-main);
+            overflow: hidden;
+        }
 
-    body.loaded {
-      overflow: auto;
-    }
+        @media (prefers-reduced-motion: no-preference) {
+            html {
+                scroll-behavior: smooth;
+            }
+        }
 
-    .background-aurora {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background:
-        radial-gradient(ellipse at center, rgba(47,129,247,0.05), transparent 70%),
-        linear-gradient(to bottom, #0d1117 0%, #161b22 100%);
-      z-index: -10;
-      pointer-events: none;
-    }
+        body.loaded {
+            overflow: auto;
+        }
 
-    .main-wrapper {
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      padding: 2rem clamp(1rem, 5vw, 4rem);
-      gap: 2rem;
-    }
+        /* ─── DYNAMIC BACKGROUND EFFECTS ─────────────────────────────────── */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, 
+                rgba(0, 247, 255, 0.05),
+                rgba(0, 0, 0, 0));
+            pointer-events: none;
+            z-index: -1;
+            animation: holographic-bg 12s infinite alternate;
+        }
 
-    .frost-container {
-      background: var(--bg-glass);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--glow);
-      padding: 2rem;
-      backdrop-filter: var(--blur);
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-      height: 80vh;
-      overflow: hidden;
-    }
+        @keyframes holographic-bg {
+            0% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.2); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 0.3; }
+        }
 
-    .chat-log {
-      flex: 1;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
-      scroll-behavior: smooth;
-      padding-right: 0.5rem;
-    }
+        /* ─── BACKGROUND AURORA ──────────────────────────────────────────── */
+        .background-aurora {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at center, rgba(47, 129, 247, 0.05), transparent 70%),
+                linear-gradient(to bottom, #0d1117 0%, #161b22 100%);
+            z-index: -10;
+            pointer-events: none;
+        }
 
-    .chat-log::-webkit-scrollbar {
-      width: 8px;
-    }
+        /* ─── MAIN WRAPPER ───────────────────────────────────────────────── */
+        .main-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 2rem clamp(1rem, 5vw, 4rem);
+            gap: 2rem;
+        }
 
-    .chat-log::-webkit-scrollbar-thumb {
-      background: var(--accent);
-      border-radius: 4px;
-    }
+        /* ─── FROST CONTAINER ────────────────────────────────────────────── */
+        .frost-container {
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--glow);
+            padding: 2rem;
+            backdrop-filter: var(--blur);
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            height: 80vh;
+            overflow: hidden;
+            transition: all var(--transition-duration) var(--transition-timing);
+        }
 
-    .message-bubble {
-      background: var(--bg-panel);
-      border: 1px solid var(--border);
-      padding: 1rem 1.5rem;
-      border-radius: var(--radius);
-      box-shadow: var(--glow);
-      max-width: 80%;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: bubbleIn 0.4s ease forwards;
-    }
+        /* ─── CHAT LOG ───────────────────────────────────────────────────── */
+        .chat-log {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            scroll-behavior: smooth;
+            padding-right: 0.5rem;
+            scrollbar-width: none;
+        }
 
-    @keyframes bubbleIn {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+        .chat-log::-webkit-scrollbar {
+            width: 0;
+        }
 
-    .message-bubble.user {
-      align-self: flex-end;
-      background: #1f6feb;
-    }
+        /* ─── MESSAGE BUBBLE ─────────────────────────────────────────────── */
+        .message-bubble {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--glow);
+            max-width: 80%;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: bubbleIn 0.4s var(--transition-timing) forwards;
+            transition: all var(--transition-duration) var(--transition-timing);
+            position: relative;
+            overflow: hidden;
+        }
 
-    .message-bubble.ai {
-      align-self: flex-start;
-      background: var(--bg-panel);
-    }
+        @keyframes bubbleIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-    .input-group {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-    }
+        .message-bubble.user {
+            align-self: flex-end;
+            background: #1f6feb;
+        }
 
-    .chat-input {
-      flex: 1;
-      padding: 1rem;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      background: var(--bg-panel);
-      color: var(--text-main);
-      font-size: 1rem;
-    }
+        .message-bubble.ai {
+            align-self: flex-start;
+            background: var(--bg-panel);
+        }
 
-    .control-button {
-      padding: 1rem 1.4rem;
-      background: var(--accent);
-      border: none;
-      color: #fff;
-      border-radius: var(--radius);
-      font-weight: 600;
-      cursor: pointer;
-      transition: var(--transition);
-    }
+        .message-bubble::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: var(--holographic-gradient);
+            opacity: 0;
+            transform: rotate(45deg);
+            transition: opacity var(--transition-duration) var(--transition-timing);
+            mix-blend-mode: screen;
+        }
 
-    .control-button:hover {
-      background: #1a5cd8;
-    }
+        .message-bubble:hover::after {
+            opacity: 0.3;
+            animation: holographic-shine 1.5s var(--transition-timing);
+        }
 
-    .loader {
-      display: none;
-      width: 28px;
-      height: 28px;
-      border: 4px solid var(--accent);
-      border-top-color: transparent;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
+        .message-bubble:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 0 15px rgba(47, 129, 247, 0.3);
+        }
 
-    .loader.active {
-      display: inline-block;
-    }
+        @keyframes holographic-shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
 
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-  </style>
+        /* ─── INPUT GROUP ────────────────────────────────────────────────── */
+        .input-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 1rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background: var(--bg-panel);
+            color: var(--text-main);
+            font-size: 1rem;
+            transition: all var(--transition-duration) var(--transition-timing);
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 6px var(--accent);
+        }
+
+        .control-button {
+            padding: 1rem 1.4rem;
+            background: var(--accent);
+            border: none;
+            color: #fff;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-duration) var(--transition-timing),
+                        transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .control-button:hover {
+            background: #1a5cd8;
+            box-shadow: 0 0 25px rgba(47, 129, 247, 0.3);
+        }
+
+        .control-button:active {
+            transform: scale(0.95);
+        }
+
+        /* ─── LOADER ─────────────────────────────────────────────────────── */
+        .loader {
+            display: none;
+            width: 28px;
+            height: 28px;
+            border: 4px solid var(--accent);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .loader.active {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ─── PRELOADER ──────────────────────────────────────────────────── */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.8s var(--transition-timing);
+        }
+
+        #preloader.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .preloader-hexagon {
+            width: 100px;
+            height: 100px;
+            border: 8px solid var(--accent);
+            border-radius: 20px;
+            transform: rotate(45deg);
+            animation: holographic-pulse 2s infinite alternate,
+                       spin 3s infinite linear;
+        }
+
+        @keyframes holographic-pulse {
+            0% { filter: drop-shadow(0 0 5px var(--accent)); }
+            100% { filter: drop-shadow(0 0 20px rgba(47, 129, 247, 0.5)); }
+        }
+
+        /* ─── PRO CHATBOX ────────────────────────────────────────────────── */
+        #proChat-root {
+            position: fixed;
+            bottom: 5.5rem;
+            right: 1.5rem;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: all var(--transition-duration) var(--transition-timing);
+        }
+
+        #proChat-root:not(.hidden) {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .proChat-frame {
+            width: 360px;
+            height: 480px;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-panel);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--glow);
+            overflow: hidden;
+            backdrop-filter: var(--blur);
+            transition: all var(--transition-duration) var(--transition-timing);
+        }
+
+        .proChat-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .proChat-header span {
+            font-weight: 600;
+            text-shadow: 0 0 15px var(--glow);
+        }
+
+        .proChat-header button {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: all var(--transition-duration) var(--transition-timing);
+        }
+
+        .proChat-header button:hover {
+            color: var(--accent);
+        }
+
+        .proChat-log {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            font-size: 0.95rem;
+            scrollbar-width: none;
+        }
+
+        .proChat-log::-webkit-scrollbar {
+            width: 0;
+        }
+
+        .proChat-inputRow {
+            display: flex;
+            padding: 0.8rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .proChat-inputRow input {
+            flex: 1;
+            padding: 0.6rem 1rem;
+            border-radius: var(--radius);
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            outline: none;
+            transition: all var(--transition-duration) var(--transition-timing);
+        }
+
+        .proChat-inputRow input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 6px var(--accent);
+        }
+
+        .proChat-inputRow button {
+            width: 48px;
+            margin-left: 0.6rem;
+            border-radius: var(--radius);
+            background: var(--accent);
+            color: white;
+            border: none;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all var(--transition-duration) var(--transition-timing);
+        }
+
+        .proChat-inputRow button:hover {
+            background: #1a5cd8;
+        }
+
+        .proChat-launcher {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: white;
+            border: none;
+            font-size: 1.6rem;
+            cursor: pointer;
+            box-shadow: var(--glow);
+            z-index: 999;
+            transition: all var(--transition-duration) var(--transition-timing);
+        }
+
+        .proChat-launcher:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 25px rgba(47, 129, 247, 0.3);
+        }
+
+        /* ─── TOAST ──────────────────────────────────────────────────────── */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1rem 2rem;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: var(--radius);
+            z-index: 2000;
+            opacity: 0;
+            animation: toastFade 3s var(--transition-timing) forwards;
+        }
+
+        @keyframes toastFade {
+            0% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            10% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            90% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            100% { opacity: 0; transform: translateX(-50%) translateY(20px); }
+        }
+
+        /* ─── MODULES GROUP ──────────────────────────────────────────────── */
+        .modules-group {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        /* ─── ACCORDION CLUSTER ──────────────────────────────────────────── */
+        .accordion-cluster {
+            display: grid;
+            gap: 1.5rem;
+            background: var(--bg-glass);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            transition: all var(--transition-duration) var(--transition-timing);
+        }
+
+        .accordion {
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            padding: 1.2rem;
+            cursor: pointer;
+            border-radius: var(--radius);
+            color: var(--text-main);
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all var(--transition-duration) var(--transition-timing);
+            text-shadow: 0 0 15px var(--glow);
+        }
+
+        .accordion-header:hover {
+            background: var(--highlight);
+            color: var(--text-main);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            padding: 0 1.2rem;
+            background: var(--bg-panel);
+            border-radius: 0 0 var(--radius) var(--radius);
+            box-shadow: 0 0 8px var(--glow);
+            transition: max-height var(--transition-duration) var(--transition-timing),
+                        opacity var(--transition-duration) var(--transition-timing);
+            opacity: 0;
+        }
+
+        .accordion.active .accordion-content {
+            max-height: 1000px;
+            padding: 1.2rem;
+            opacity: 1;
+        }
+
+        /* ─── DEMO SECTION ───────────────────────────────────────────────── */
+        .demo-section {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .output-field {
+            padding: 1rem;
+            background: var(--bg-panel);
+            border: 1px dashed var(--border);
+            border-radius: var(--radius);
+            word-break: break-all;
+        }
+
+        /* ─── HOLOGRAPHIC TEXT EFFECTS ───────────────────────────────────── */
+        h1, h2 {
+            text-shadow: 0 0 15px var(--glow),
+                         0 0 30px rgba(0, 247, 255, 0.2),
+                         0 0 45px rgba(255, 0, 255, 0.1);
+        }
+
+        /* ─── MOBILE-SPECIFIC OPTIMIZATIONS ──────────────────────────────── */
+        @media (max-width: 768px) {
+            .main-wrapper {
+                padding: 1rem;
+                gap: 1.2rem;
+            }
+            .frost-container {
+                height: calc(85 * var(--vh));
+                padding: 1rem;
+                gap: 1.2rem;
+            }
+            .input-group {
+                grid-template-columns: 1fr;
+                bottom: 1rem;
+                padding-top: 1rem;
+            }
+            #proChat-root {
+                bottom: 3.5rem;
+                right: 1rem;
+                width: 320px;
+                height: 440px;
+            }
+            .proChat-frame {
+                width: 100%;
+                height: 100%;
+            }
+            .chat-log {
+                gap: 1rem;
+            }
+            .message-bubble {
+                max-width: 95%;
+                padding: 1rem;
+            }
+            .control-button {
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+            .message-bubble:hover, .control-button:hover, .proChat-launcher:hover {
+                transform: none;
+                box-shadow: 0 0 15px rgba(47, 129, 247, 0.1);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .frost-container {
+                padding: 0.8rem;
+                gap: 1rem;
+                border-radius: 8px;
+            }
+            .chat-log {
+                padding: 0.8rem;
+            }
+            #proChat-root {
+                width: 280px;
+                height: 400px;
+            }
+        }
+
+        /* ─── ACCESSIBILITY AND REDUCED MOTION ───────────────────────────── */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+
+        /* ─── TOUCH OPTIMIZATION ─────────────────────────────────────────── */
+        @media (hover: none) {
+            .message-bubble:hover, .control-button:hover, .proChat-launcher:hover {
+                transform: none;
+                box-shadow: 0 0 25px rgba(47, 129, 247, 0.1);
+            }
+        }
+
+        /* ─── PERFORMANCE OPTIMIZATIONS ──────────────────────────────────── */
+        .grid {
+            perspective: 1000px;
+        }
+
+        .message-bubble, .control-button {
+            transform-style: preserve-3d;
+        }
+    </style>
 </head>
 <body class="main-wrapper">
-  <!-- Background FX -->
-  <div class="background-aurora"></div>
+    <!-- ─── BACKGROUND FX ──────────────────────────────────────────────── -->
+    <div class="background-aurora"></div>
 
-  <!-- Preloader -->
-  <div id="preloader" style="
-    position:fixed;top:0;left:0;width:100%;height:100%;
-    background:var(--bg-main);display:flex;align-items:center;
-    justify-content:center;z-index:9999;">
-    <div style="
-      width:100px;height:100px;border:8px solid var(--accent);
-      border-top-color:transparent;border-radius:50%;
-      animation:spin 1s linear infinite;"></div>
-  </div>
-
-  <!-- MAIN INTERFACE -->
-  <div class="frost-container">
-    <!-- CHAT LOG -->
-    <div class="chat-log" id="chatLog" role="log" aria-live="polite"></div>
-
-    <!-- INPUT -->
-    <div class="input-group">
-      <input id="chat-input" type="text" class="chat-input" placeholder="Ask AuroraGenesis anything…" />
-      <button class="control-button" id="send-button">Send</button>
-      <div id="loader" class="loader"></div>
+    <!-- ─── PRELOADER ──────────────────────────────────────────────────── -->
+    <div id="preloader">
+        <div class="preloader-hexagon"></div>
     </div>
-  </div>
 
-  <!-- ASSISTANT -->
-  <div id="proChat-root" class="hidden" style="
-    position:fixed;bottom:5.5rem;right:1.5rem;z-index:1000;
-    transition:var(--transition);opacity:0;pointer-events:none;">
-    <div class="proChat-frame" style="
-      width:360px;height:480px;display:flex;flex-direction:column;
-      background:var(--bg-panel);border-radius:var(--radius);
-      border:1px solid var(--border);box-shadow:var(--glow);
-      overflow:hidden;backdrop-filter:var(--blur);">
-      <header class="proChat-header" style="
-        padding:1rem;border-bottom:1px solid var(--border);
-        display:flex;justify-content:space-between;align-items:center;">
-        <span style="font-weight:600">Aurora Assistant</span>
-        <button id="proChat-close" aria-label="Close chat" style="
-          background:none;border:none;color:var(--text-muted);
-          font-size:1.4rem;cursor:pointer;">×</button>
-      </header>
-      <ul id="proChat-log" class="proChat-log" style="
-        flex:1;overflow-y:auto;padding:1rem;
-        font-size:0.95rem;"></ul>
-      <form id="proChat-form" class="proChat-inputRow" style="
-        display:flex;padding:0.8rem;border-top:1px solid var(--border);">
-        <input id="proChat-input" type="text" placeholder="Type a message…" style="
-          flex:1;padding:0.6rem 1rem;border-radius:var(--radius);
-          background:var(--bg-panel);border:1px solid var(--border);
-          color:var(--text-main);outline:none;" />
-        <button type="submit" style="
-          width:48px;margin-left:0.6rem;border-radius:var(--radius);
-          background:var(--accent);color:white;border:none;
-          font-size:1.1rem;cursor:pointer;">⮞</button>
-      </form>
+    <!-- ─── MAIN INTERFACE ─────────────────────────────────────────────── -->
+    <div class="frost-container grid">
+        <!-- CHAT LOG -->
+        <div class="chat-log" id="chatLog"></div>
+
+        <!-- INPUT -->
+        <div class="input-group">
+            <input id="chat-input" type="text" class="chat-input" placeholder="Ask AuroraGenesis anything…" aria-label="Main chat input">
+            <button class="control-button cyber-button" id="send-button">Send</button>
+            <div id="loader" class="loader"></div>
+        </div>
+
+        <!-- MODULES -->
+        <div class="modules-group grid">
+            <div class="accordion-cluster">
+                <div class="accordion">
+                    <div class="accordion-header">
+                        <span>Text-to-Speech Controls</span>
+                        <span aria-hidden="true">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Control TTS for AuroraGenesis presentation:</p>
+                        <button class="control-button cyber-button" id="start-tts">Start TTS</button>
+                        <button class="control-button cyber-button" id="pause-tts" disabled>Pause TTS</button>
+                    </div>
+                </div>
+                <div class="accordion">
+                    <div class="accordion-header">
+                        <span>Encrypt/Decrypt Demo</span>
+                        <span aria-hidden="true">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Simulate encryption/decryption for forensic analysis:</p>
+                        <div class="grid-2col">
+                            <div class="demo-section">
+                                <textarea id="encrypt-input" placeholder="Enter text to encrypt"></textarea>
+                                <button class="control-button cyber-button" id="encrypt-button">Encrypt</button>
+                                <p id="encrypt-output" class="output-field">Encrypted output will appear here...</p>
+                            </div>
+                            <div class="demo-section">
+                                <textarea id="decrypt-input" placeholder="Enter encrypted text to decrypt"></textarea>
+                                <button class="control-button cyber-button" id="decrypt-button">Decrypt</button>
+                                <p id="decrypt-output" class="output-field">Decrypted output will appear here...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion">
+                    <div class="accordion-header">
+                        <span>Decompilation Demo</span>
+                        <span aria-hidden="true">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Simulate decompilation of compiled code:</p>
+                        <textarea id="decompile-input" placeholder="Enter compiled code (e.g., base64-encoded binary)"></textarea>
+                        <button class="control-button cyber-button" id="decompile-button">Decompile</button>
+                        <p id="decompile-output" class="output-field">Decompiled output will appear here...</p>
+                    </div>
+                </div>
+                <div class="accordion">
+                    <div class="accordion-header">
+                        <span>Metadata Example</span>
+                        <span aria-hidden="true">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Example metadata for a capsule:</p>
+                        <pre class="json-ld">
+{
+    "@context": "http://schema.org",
+    "@type": "DataRecord",
+    "identifier": "capsule_20250515_123456",
+    "name": "Threat Analysis Capsule",
+    "description": "Capsule containing threat analysis data",
+    "dateCreated": "2025-05-15T08:02:00Z",
+    "creator": "AuroraGenesis-OMEGA",
+    "ethicalScore": 0.99,
+    "hash": "sha512:def456...",
+    "source": "ExploitIngestor",
+    "userId": "default_user",
+    "cryptographicKey": "RSA:abc123..."
+}
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- ASSISTANT TOGGLE -->
-  <button id="proChat-launcher" aria-label="Launch Aurora Assistant" class="proChat-launcher" style="
-    position:fixed;bottom:1.5rem;right:1.5rem;width:56px;height:56px;
-    border-radius:50%;background:var(--accent);color:white;
-    border:none;font-size:1.6rem;cursor:pointer;box-shadow:var(--glow);
-    z-index:999;">💬</button>
+    <!-- ─── PRO CHATBOX ────────────────────────────────────────────────── -->
+    <div id="proChat-root" class="hidden">
+        <div class="proChat-frame">
+            <header class="proChat-header">
+                <span>Aurora Assistant</span>
+                <button id="proChat-close" aria-label="Close chat">✕</button>
+            </header>
+            <ul id="proChat-log" class="proChat-log"></ul>
+            <form id="proChat-form" class="proChat-inputRow" autocomplete="off">
+                <input id="proChat-input" type="text" placeholder="Type your message…" aria-label="Message text" />
+                <button class="cyber-button" aria-label="Send">⮞</button>
+            </form>
+        </div>
+    </div>
 
-  <!-- TOAST -->
-  <div id="toast" class="toast" style="
-    display:none;position:fixed;bottom:2rem;left:50%;
-    transform:translateX(-50%);padding:1rem 2rem;
-    background:var(--bg-panel);border:1px solid var(--border);
-    color:var(--text-main);border-radius:var(--radius);
-    z-index:2000;"></div>
+    <!-- ─── ASSISTANT TOGGLE ───────────────────────────────────────────── */
+    <button id="proChat-launcher" class="proChat-launcher cyber-button" aria-label="Launch Aurora Assistant">💬</button>
 
-  <script>
-    // Auto-load setup
-    window.addEventListener('load', () => {
-      document.getElementById('preloader').style.display = 'none';
-      document.body.classList.add('loaded');
-    });
+    <!-- ─── TOAST ──────────────────────────────────────────────────────── -->
+    <div id="toast" class="toast"></div>
 
-    // Chat launcher logic
-    const launcher = document.getElementById('proChat-launcher');
-    const root = document.getElementById('proChat-root');
-    const closeBtn = document.getElementById('proChat-close');
-
-    launcher.onclick = () => {
-      root.classList.remove('hidden');
-      root.style.opacity = 1;
-      root.style.pointerEvents = 'auto';
-      document.getElementById('proChat-input').focus();
-    };
-
-    closeBtn.onclick = () => {
-      root.style.opacity = 0;
-      root.style.pointerEvents = 'none';
-      setTimeout(() => root.classList.add('hidden'), 300);
-    };
-  </script>
-<script type="module">
-  const chatLog = document.getElementById('chatLog');
-  const inputEl = document.getElementById('chat-input');
-  const sendBtn = document.getElementById('send-button');
-  const loader = document.getElementById('loader');
-  const HF_MODEL = 'NousResearch/Hermes-2-Pro-Mistral-7B';
-  const HF_TOKEN = document.querySelector('meta[name=HUGGINGFACE_TOKEN]')?.content || '';
-
-  let sessionMemory = JSON.parse(localStorage.getItem('aurora-session') || '[]');
-
-  const scrollDown = () => chatLog.scrollTo({ top: chatLog.scrollHeight, behavior: 'smooth' });
-
-  const saveSession = () => {
-    const messages = Array.from(chatLog.children).map(el => ({
-      text: el.textContent,
-      type: el.classList.contains('user') ? 'user' : 'ai'
-    }));
-    localStorage.setItem('aurora-session', JSON.stringify(messages));
-  };
-
-  const showToast = (msg) => {
-    const toast = document.getElementById('toast');
-    toast.textContent = msg;
-    toast.style.display = 'block';
-    setTimeout(() => toast.style.display = 'none', 2500);
-  };
-
-  const renderMessage = (text, type = 'ai') => {
-    const bubble = document.createElement('div');
-    bubble.className = `message-bubble ${type}`;
-    bubble.textContent = text;
-    chatLog.appendChild(bubble);
-    requestAnimationFrame(() => bubble.classList.add('visible'));
-    scrollDown();
-    saveSession();
-  };
-
-  const renderStreamed = () => {
-    const bubble = document.createElement('div');
-    bubble.className = 'message-bubble ai';
-    chatLog.appendChild(bubble);
-    bubble.classList.add('visible');
-    scrollDown();
-    return bubble;
-  };
-
-  async function streamHF(prompt, onToken) {
-    const url = `https://api-inference.huggingface.co/models/${HF_MODEL}`;
-    const contextStr = sessionMemory.slice(-5).map(m =>
-      `${m.type === 'user' ? 'User' : 'Bot'}: ${m.text}`).join('\n');
-
-    const payload = {
-      inputs: `[CONTEXT]\n${contextStr}\n\nUser: ${prompt}\nBot:`,
-      stream: true,
-      parameters: { max_new_tokens: 200, temperature: 0.7 }
-    };
-
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${HF_TOKEN}`,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'X-Use-Stream': 'true'
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (!res.ok) throw new Error(`${res.status}: ${res.statusText}`);
-
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-    let full = '';
-
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) break;
-      const chunk = decoder.decode(value, { stream: true });
-      chunk.split('\n').forEach(line => {
-        if (!line.trim()) return;
-        try {
-          const parsed = JSON.parse(line);
-          const tok = parsed.token?.text || '';
-          onToken(tok);
-          full += tok;
-        } catch (_) {}
-      });
-    }
-
-    return full.trim();
-  }
-
-  async function handleSend() {
-    const q = inputEl.value.trim();
-    if (!q) return;
-    renderMessage(q, 'user');
-    inputEl.value = '';
-    loader.classList.add('active');
-    const streamEl = renderStreamed();
-
-    try {
-      const answer = await streamHF(q, tok => {
-        streamEl.textContent += tok;
-        scrollDown();
-      });
-      sessionMemory.push({ text: q, type: 'user' }, { text: answer, type: 'ai' });
-      saveSession();
-    } catch (e) {
-      streamEl.textContent = `(error) ${e.message}`;
-      showToast('Streaming failed.');
-    } finally {
-      loader.classList.remove('active');
-    }
-  }
-
-  sendBtn.onclick = handleSend;
-  inputEl.addEventListener('keydown', e => {
-    if (e.key === 'Enter') handleSend();
-  });
-
-  // Replay session on load
-  sessionMemory.forEach(msg => renderMessage(msg.text, msg.type));
-
-  // Scroll auto-adjust on resize
-  window.addEventListener('resize', scrollDown);
-</script>
+    <script src="./app.js" type="module"></script>
+</body>
+</html>
