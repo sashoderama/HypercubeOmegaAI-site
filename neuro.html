@@ -1,1293 +1,371 @@
-
 <!DOCTYPE html>
-<html lang="en" data-theme="cyber">
+<html lang="en" data-theme="deep">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#000308">
-    <meta name="description" content="AuroraGenesis-OMEGA: Advanced AI System for cybersecurity, ethical intelligence, autonomous strategy generation, and forensic analysis with capsule-based memory compression, recursive agent architecture, and real-time threat detection, powered by Mistral-7B-Instruct.">
-    <meta name="keywords" content="AI, cybersecurity, ethical AI, forensic analysis, blockchain, deep packet scanning, decompilation, zero-day threats">
-    <meta name="author" content="xAI">
-    <meta property="og:title" content="AuroraGenesis-OMEGA: Neuro Interface">
-    <meta property="og:description" content="A transformative Advanced AI System for enterprise cybersecurity, compliance, and forensic analysis, powered by Mistral-7B-Instruct.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://x.ai/grok">
-    <title>AuroraGenesis-OMEGA: Neuro Interface</title>
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400&family=Orbitron:wght@500&family=Source+Code+Pro:wght@400&display=swap" rel="stylesheet">
-    <link href="https://unpkg.com/vis-network@latest/dist/vis-network.min.css" rel="stylesheet">
-    <script src="https://unpkg.com/vis-network@latest/dist/vis-network.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" defer></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r169/three.min.js" defer></script>
-    <style>
-        :root {
-            --primary-hue: 200;
-            --secondary-hue: 280;
-            --particle-color: hsl(180, 100%, 70%);
-            --glass-bg: rgba(255, 255, 255, 0.06);
-            --glass-border: rgba(255, 255, 255, 0.12);
-            --neon-glow: 0 0 20px hsla(var(--primary-hue), 100%, 50%, 0.3);
-            --void-black: #000308;
-            --cyber-steel: #1a1a1a;
-            --neon-cyan: #00f7ff;
-            --neon-blue: #00f7ff;
-            --neon-magenta: #ff00ff;
-            --neon-green: #00ffcc;
-            --neon-red: #ff3b30;
-            --glow-blue: rgba(0, 247, 255, 0.5);
-            --glow-magenta: rgba(255, 0, 255, 0.5);
-            --glow-green: rgba(0, 255, 204, 0.5);
-            --glow-red: rgba(255, 59, 48, 0.5);
-            --slick-gray: #2a2a2a;
-            --hud-white: rgba(240, 240, 240, 0.95);
-            --accent-red: #FF3B30;
-            --shadow: rgba(0, 0, 0, 0.85);
-            --glow: rgba(0, 247, 255, 0.35);
-            --border: rgba(0, 247, 255, 0.15);
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0e1117" />
+  <meta name="description" content="AuroraGenesis-OMEGA: Advanced AI System for cybersecurity, ethical intelligence, autonomous strategy generation, and forensic analysis." />
+  <meta name="keywords" content="AI, cybersecurity, ethical AI, forensic analysis, neural interface" />
+  <meta name="author" content="xAI" />
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' 'unsafe-eval';
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com;
+    img-src 'self' data: https://images.unsplash.com;
+    font-src 'self' https://fonts.gstatic.com;
+    connect-src 'self' wss://* https://api-inference.huggingface.co;
+    worker-src 'self';
+  " />
+  <title>AuroraGenesis-OMEGA</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" />
+  <style>
+    :root {
+      --bg-main: #0e1117;
+      --bg-panel: #161b22;
+      --text-main: #c9d1d9;
+      --text-muted: #8b949e;
+      --border: #30363d;
+      --accent: #2f81f7;
+      --radius: 12px;
+      --transition: all 0.3s ease;
+      --vh: 1vh;
+      --blur: blur(18px);
+      --shadow-glow: 0 0 20px rgba(47, 129, 247, 0.25);
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
 
-        html, body {
-            height: 100%;
-            overflow: hidden;
-            font-family: 'Exo 2', sans-serif;
-            background: radial-gradient(ellipse at center, #0a0e1a 0%, #000308 100%);
-            color: #fff;
-        }
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
 
-        #holographic-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
-            opacity: 0.6; /* Reduced opacity for better content visibility */
-            animation: holoPulse 8s infinite ease-in-out;
-        }
+    body.loaded {
+      overflow: auto;
+    }
 
-        @keyframes holoPulse {
-            0%, 100% { opacity: 0.6; filter: brightness(1); }
-            50% { opacity: 0.8; filter: brightness(1.3); }
-        }
+    .stars-overlay, .nebula-glow {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
 
-        #particles-js {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.5; /* Reduced opacity to prevent overlap */
-        }
+    .stars-overlay {
+      background: transparent;
+      animation: twinkle 5s ease-in-out infinite;
+    }
 
-        .hex-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"><path d="M20 10 L60 10 L70 40 L60 70 L20 70 L10 40 Z" stroke="rgba(0, 247, 255, 0.3)" fill="none" stroke-width="2"/></svg>');
-            background-size: 80px 80px;
-            background-repeat: repeat;
-            opacity: 0.4; /* Adjusted for visibility */
-            z-index: -1;
-            pointer-events: none;
-            animation: hexFade 10s ease-in-out infinite;
-            transform: perspective(1200px) rotateX(15deg);
-        }
+    .nebula-glow {
+      background: radial-gradient(circle at 50% 50%, rgba(47,129,247,0.1), transparent 70%);
+      animation: pulse 12s infinite;
+    }
 
-        @keyframes hexFade {
-            0%, 100% { opacity: 0.4; transform: perspective(1200px) rotateX(15deg) translateZ(0); }
-            50% { opacity: 0.2; transform: perspective(1200px) rotateX(20deg) translateZ(80px); }
-        }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.6; filter: brightness(1); }
+      50% { opacity: 0.3; filter: brightness(1.5); }
+    }
 
-        .terminal-line {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 10px;
-            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-            box-shadow: 0 0 100px var(--glow-blue);
-            animation: scan 4s infinite linear;
-            transform: perspective(1200px) translateZ(-30px);
-            z-index: 0; /* Ensure below content */
-        }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.3; }
+      50% { transform: scale(1.1); opacity: 0.5; }
+    }
 
-        @keyframes scan {
-            0% { transform: perspective(1200px) translateX(-100%) translateZ(-30px); }
-            100% { transform: perspective(1200px) translateX(100%) translateZ(-30px); }
-        }
+    #preloader {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: var(--bg-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.6s ease;
+    }
 
-        .frost-container {
-            position: relative;
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 2.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-            backdrop-filter: blur(20px) saturate(180%); /* Reduced blur for readability */
-            background: linear-gradient(135deg, rgba(0, 247, 255, 0.2), rgba(255, 0, 255, 0.2));
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 0 50px var(--glow-blue), 0 0 100px var(--glow-magenta);
-            border-radius: 2.5rem;
-            transform: perspective(1200px) rotateX(5deg);
-            transition: transform 0.5s ease, box-shadow 0.5s ease, backdrop-filter 0.5s ease;
-            height: 90vh;
-            justify-content: space-between;
-            z-index: 2; /* Higher z-index to ensure visibility */
-        }
+    #preloader.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
 
-        .frost-container:hover {
-            transform: perspective(1200px) rotateX(0deg) translateZ(30px);
-            box-shadow: 0 0 70px var(--glow-blue), 0 0 140px var(--glow-magenta);
-            backdrop-filter: blur(25px) saturate(200%);
-        }
+    .preloader-spinner {
+      width: 80px;
+      height: 80px;
+      border: 6px solid var(--accent);
+      border-top: 6px solid transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
 
-        .frost-container::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(45deg, rgba(255,255,255,0.07), rgba(0,247,255,0.15));
-            z-index: -1;
-            border-radius: 2.5rem;
-            animation: prismGlow 6s infinite ease-in-out;
-        }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
 
-        @keyframes prismGlow {
-            0%, 100% { opacity: 0.8; filter: brightness(1); }
-            50% { opacity: 1; filter: brightness(1.4); }
-        }
+    .main-wrapper {
+      display: flex;
+      flex-direction: column;
+      min-height: 100dvh;
+      padding: 2rem;
+      gap: 2rem;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
 
-        .chat-log {
-            overflow-y: auto;
-            padding: 2.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 2.5rem;
-            scroll-behavior: smooth;
-            flex-grow: 1;
-            font-family: 'Source Code Pro', monospace;
-            font-size: 1.3rem;
-            color: var(--neon-green);
-            background: rgba(0, 0, 0, 0.5); /* Added background for contrast */
-            min-height: 200px; /* Ensure visibility */
-            border-radius: 1.5rem;
-            z-index: 3; /* Above frost-container */
-        }
+    .frost-container {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      backdrop-filter: var(--blur);
+      box-shadow: var(--shadow-glow);
+      flex: 1;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      gap: 1.5rem;
+      overflow: hidden;
+    }
 
-        .message-bubble {
-            position: relative;
-            padding: 2rem;
-            border-radius: 2rem;
-            max-width: min(90%, 1000px);
-            background: linear-gradient(135deg, rgba(0, 247, 255, 0.3), rgba(255, 0, 255, 0.3));
-            backdrop-filter: blur(10px); /* Reduced blur for readability */
-            border: 1px solid rgba(0, 247, 255, 0.6);
-            box-shadow: 0 0 40px var(--glow-blue);
-            transform: scale(0.98); /* Simplified transform */
-            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease, backdrop-filter 0.4s ease;
-            animation: holoFloat 5s infinite ease-in-out;
-            opacity: 0.9; /* Increased for visibility */
-            z-index: 4; /* Ensure above chat-log */
-        }
+    .chat-log {
+      background: var(--bg-panel);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      overflow-y: auto;
+      max-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      scroll-behavior: smooth;
+    }
 
-        .message-bubble:hover {
-            transform: scale(1) translateZ(10px);
-            box-shadow: 0 0 60px var(--glow-blue), 0 0 80px var(--glow-magenta);
-            backdrop-filter: blur(15px);
-            opacity: 1;
-        }
+    .chat-input {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1rem;
+    }
 
-        @keyframes holoFloat {
-            0%, 100% { transform: scale(0.98) translateZ(0); }
-            50% { transform: scale(0.98) translateZ(15px); }
-        }
+    .chat-input input {
+      padding: 1rem;
+      background: var(--bg-main);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-main);
+      font-size: 1rem;
+    }
 
-        .message-bubble.user {
-            align-self: flex-end;
-            background: linear-gradient(135deg, rgba(0, 200, 255, 0.4), rgba(0, 100, 255, 0.5));
-            transform: scale(0.98);
-        }
+    .chat-input button {
+      padding: 1rem 2rem;
+      background: var(--accent);
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: var(--transition);
+    }
 
-        .message-bubble.ai {
-            align-self: flex-start;
-            background: linear-gradient(135deg, rgba(255, 50, 255, 0.35), rgba(150, 0, 255, 0.45));
-        }
+    .chat-input button:hover {
+      background: #1f6feb;
+    }
 
-        .input-group {
-            display: flex;
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-            z-index: 5; /* Above message-bubble */
-        }
+    .message {
+      padding: 1rem;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: var(--transition);
+    }
 
-        .chat-input {
-            flex-grow: 1;
-            padding: 1.8rem;
-            border: none;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 1.5rem;
-            color: #fff;
-            font-size: clamp(1.2rem, 2.5vw, 1.5rem);
-            transition: all 0.4s ease;
-            box-shadow: 0 0 20px var(--glow-blue);
-        }
+    .message.user {
+      align-self: flex-end;
+      background: rgba(47,129,247,0.08);
+    }
 
-        .chat-input:focus {
-            outline: 2px solid var(--particle-color);
-            box-shadow: 0 0 40px var(--glow-blue), 0 0 60px var(--glow-magenta);
-        }
-
-        .control-button {
-            padding: 1.8rem 3.5rem;
-            border: none;
-            border-radius: 1.5rem;
-            background: linear-gradient(135deg, rgba(0, 255, 255, 0.6), rgba(0, 150, 255, 0.8));
-            color: #fff;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-            font-size: 1.3rem;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-            box-shadow: 0 0 25px var(--glow-blue);
-            transform: scale(1);
-            touch-action: manipulation;
-            min-width: 150px;
-            z-index: 5;
-        }
-
-        .control-button:hover {
-            transform: scale(1.15) translateZ(15px);
-            box-shadow: 0 0 50px var(--glow-blue), 0 0 70px var(--glow-magenta);
-        }
-
-        .control-button::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            background: radial-gradient(circle, rgba(255,255,255,0.4), transparent);
-            transform: translate(-50%, -50%);
-            transition: width 0.4s ease, height 0.4s ease;
-            border-radius: 50%;
-        }
-
-        .control-button:hover::before {
-            width: 200%;
-            height: 200%;
-        }
-
-        #preloader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--void-black);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease-in-out;
-        }
-
-        #preloader.fade-out {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .preloader-hexagon {
-            width: 100px;
-            height: 100px;
-            border: 8px solid var(--neon-cyan);
-            border-radius: 20px;
-            transform: rotate(45deg);
-            animation: spin 1.2s infinite linear;
-            box-shadow: 0 0 50px var(--glow-blue), 0 0 80px var(--glow-magenta);
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        main {
-            position: relative;
-            z-index: 1;
-            overflow-y: auto;
-        }
-
-        section {
-            min-height: 100vh;
-            padding: 8rem 4rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            transition: all 0.5s ease-in-out;
-        }
-
-        #chat-section {
-            min-height: auto;
-            padding: clamp(2rem, 5vw, 4rem);
-        }
-
-        h1 {
-            font-family: 'Orbitron', 'Source Code Pro', monospace;
-            font-size: clamp(4rem, 8vw, 6.5rem);
-            color: var(--neon-cyan);
-            text-shadow: 0 0 60px var(--glow-blue), 0 0 90px var(--glow-magenta);
-            margin: clamp(2rem, 5vw, 4rem) 0;
-            letter-spacing: -0.05em;
-            animation: pulse 4s infinite;
-            transform: translateZ(25px);
-            transition: all 0.5s ease-in-out;
-        }
-
-        h2 {
-            font-family: 'Orbitron', 'Source Code Pro', monospace;
-            font-size: clamp(2rem, 5vw, 3.8rem);
-            color: var(--neon-cyan);
-            text-shadow: 0 0 35px var(--glow-blue);
-            margin-bottom: clamp(1.5rem, 3vw, 3rem);
-            transform: translateZ(15px);
-            transition: all 0.5s ease-in-out;
-        }
-
-        p {
-            max-width: 1200px;
-            margin: 0 auto clamp(1rem, 2vw, 2rem);
-            font-size: clamp(1.2rem, 2vw, 1.8rem);
-            opacity: 0.9;
-            transition: all 0.5s ease-in-out;
-            text-shadow: 0 0 12px var(--glow-blue);
-        }
-
-        .tooltip {
-            position: absolute;
-            background: linear-gradient(135deg, rgba(0, 247, 255, 0.6), rgba(255, 0, 255, 0.6));
-            color: #fff;
-            padding: 10px 15px;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            display: none;
-            z-index: 1000;
-            box-shadow: 0 0 25px var(--glow-blue);
-            transform: translateZ(15px);
-        }
-
-        .accordion {
-            margin: clamp(2rem, 5vw, 4rem) 0;
-            max-width: 1200px;
-            width: 100%;
-            transition: all 0.5s ease-in-out;
-            z-index: 3;
-        }
-
-        .accordion-header {
-            background: linear-gradient(135deg, rgba(0, 247, 255, 0.25), rgba(0, 0, 0, 0.5));
-            border: 2px solid var(--neon-cyan);
-            padding: clamp(1.5rem, 3vw, 2.5rem);
-            cursor: pointer;
-            border-radius: 1.8rem;
-            transition: all 0.4s ease-in-out;
-            color: var(--neon-cyan);
-            font-size: clamp(1.5rem, 2.5vw, 2.2rem);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 0 35px var(--glow-blue);
-            transform: translateZ(10px);
-            touch-action: manipulation;
-            min-height: 60px;
-        }
-
-        .accordion-header:hover {
-            color: var(--hud-white);
-            box-shadow: 0 0 60px var(--glow-blue), 0 0 80px var(--glow-magenta);
-            transform: translateZ(20px);
-        }
-
-        .accordion-content {
-            display: none;
-            padding: clamp(2rem, 4vw, 3rem);
-            background: linear-gradient(135deg, rgba(0, 247, 255, 0.15), rgba(0, 0, 0, 0.4));
-            border-radius: 0 0 1.8rem 1.8rem;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 0 25px var(--glow-blue);
-            transform: translateZ(10px);
-            z-index: 3;
-        }
-
-        .accordion.active .accordion-content {
-            display: block;
-        }
-
-        .json-ld {
-            background: #000;
-            border: 1px solid var(--neon-cyan);
-            padding: 2rem;
-            border-radius: 1.2rem;
-            font-family: 'Source Code Pro', monospace;
-            font-size: 1.2rem;
-            color: #0ff;
-            max-height: 400px;
-            overflow-y: auto;
-            box-shadow: 0 0 25px var(--glow-blue);
-        }
-
-        .loader {
-            display: none;
-            width: 40px;
-            height: 40px;
-            border: 5px solid var(--neon-cyan);
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 1s linear infinite;
-            margin: 1rem auto;
-        }
-
-        .loader.active {
-            display: block;
-        }
-
-        /* Override deprecated vis-network styles */
-        input[type="range"]::-ms-track,
-        input[type="range"]::-ms-fill-lower,
-        input[type="range"]::-ms-fill-upper,
-        input[type="range"]::-ms-thumb {
-            display: none; /* Hide unsupported pseudo-elements */
-        }
-
-        .vis-network * {
-            -moz-transition: none !important; /* Remove deprecated prefix */
-            transition: all 0.3s ease-in-out; /* Standard transition */
-        }
-
-        @media (max-width: 768px) {
-            .frost-container {
-                max-width: 90vw;
-                padding: 1.5rem;
-                height: 85vh;
-            }
-            .chat-log {
-                padding: 1.5rem;
-                font-size: 1.1rem;
-                min-height: 150px;
-            }
-            .message-bubble {
-                max-width: 95%;
-                padding: 1.5rem;
-            }
-            .chat-input {
-                padding: 1.2rem;
-                font-size: 1.2rem;
-            }
-            .control-button {
-                padding: 1.2rem 2rem;
-                font-size: 1.1rem;
-                min-width: 120px;
-            }
-            h1 {
-                font-size: 4rem;
-            }
-            h2 {
-                font-size: 2.5rem;
-            }
-            p {
-                font-size: 1.4rem;
-            }
-            .accordion-header {
-                padding: 1.2rem;
-                font-size: 1.5rem;
-                min-height: 50px;
-            }
-            .accordion-content {
-                padding: 1.5rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .frost-container {
-                max-width: 95vw;
-                padding: 1rem;
-                height: 80vh;
-            }
-            .chat-log {
-                padding: 1rem;
-                font-size: 1rem;
-                min-height: 100px;
-            }
-            .message-bubble {
-                max-width: 98%;
-                padding: 1rem;
-            }
-            .chat-input {
-                padding: 1rem;
-                font-size: 1rem;
-            }
-            .control-button {
-                padding: 1rem 1.5rem;
-                font-size: 1rem;
-                min-width: 100px;
-            }
-            h1 {
-                font-size: 3rem;
-            }
-            h2 {
-                font-size: 1.8rem;
-            }
-            p {
-                font-size: 1.2rem;
-            }
-            .accordion-header {
-                padding: 1rem;
-                font-size: 1.3rem;
-                min-height: 45px;
-            }
-            .accordion-content {
-                padding: 1rem;
-            }
-        }
-    </style>
+    .message.ai {
+      align-self: flex-start;
+      background: rgba(255,255,255,0.02);
+    }
+  </style>
 </head>
-<body>
-    <div id="preloader">
-        <div class="preloader-hexagon"></div>
+<body class="main-wrapper">
+  <div id="preloader"><div class="preloader-spinner"></div></div>
+  <div class="stars-overlay"></div>
+  <div class="nebula-glow"></div>
+  <main>
+    <section class="frost-container">
+      <div class="chat-log" id="chatLog" role="log" aria-live="polite"></div>
+      <div class="chat-input">
+        <input
+          id="chat-input"
+          type="text"
+          placeholder="Ask AuroraGenesis anything..."
+          aria-label="Chat input"
+        />
+        <button id="send-button">Send</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Aurora Assistant Floating Chat -->
+  <div id="proChat-root" class="hidden" role="dialog" aria-modal="true" aria-label="Aurora Assistant">
+    <div class="proChat-frame">
+      <header class="proChat-header">
+        <span>Aurora Assistant</span>
+        <button id="proChat-close" aria-label="Close chat">✕</button>
+      </header>
+      <ul id="proChat-log" class="proChat-log" role="list" aria-live="polite"></ul>
+      <form id="proChat-form" class="proChat-inputRow" autocomplete="off" aria-label="Send a message">
+        <input id="proChat-input" type="text" placeholder="Type your message…" aria-label="Assistant message input" />
+        <button aria-label="Send message">⮞</button>
+      </form>
     </div>
-    <canvas id="holographic-bg"></canvas>
-    <div id="particles-js"></div>
-    <div class="hex-overlay"></div>
-    <div class="terminal-line"></div>
+  </div>
 
-    <main>
-        <section id="chat-section">
-            <h2>AuroraGenesis-OMEGA Neuro Interface</h2>
-            <div class="frost-container">
-                <div id="chatLog" class="chat-log">
-                    <!-- Messages will appear here -->
-                </div>
-                <div class="input-group">
-                    <input type="text" id="chat-input" class="chat-input" placeholder="Ask AuroraGenesis anything...">
-                    <button class="control-button" onclick="sendQuery()">Send</button>
-                    <div id="loader" class="loader"></div>
-                </div>
-                <div class="accordion">
-                    <div class="accordion-header">Text-to-Speech Controls <span>↓</span></div>
-                    <div class="accordion-content">
-                        <p>Control TTS for the AuroraGenesis-OMEGA presentation:</p>
-                        <button class="control-button" id="start-tts" onclick="startTTS()">Start TTS</button>
-                        <button class="control-button" id="pause-tts" onclick="pauseTTS()" disabled>Pause TTS</button>
-                    </div>
-                </div>
-                <div class="accordion">
-                    <div class="accordion-header">Encrypt/Decrypt Demo <span>↓</span></div>
-                    <div class="accordion-content">
-                        <p>Simulate encryption/decryption for forensic analysis:</p>
-                        <div class="encrypt-demo">
-                            <textarea id="encrypt-input" placeholder="Enter text to encrypt"></textarea>
-                            <button class="control-button" onclick="encryptText()">Encrypt</button>
-                            <p id="encrypt-output">Encrypted output will appear here...</p>
-                        </div>
-                        <div class="decrypt-demo">
-                            <textarea id="decrypt-input" placeholder="Enter encrypted text to decrypt"></textarea>
-                            <button class="control-button" onclick="decryptText()">Decrypt</button>
-                            <p id="decrypt-output">Decrypted output will appear here...</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion">
-                    <div class="accordion-header">Decompilation Demo <span>↓</span></div>
-                    <div class="accordion-content">
-                        <p>Simulate decompilation of compiled code:</p>
-                        <textarea id="decompile-input" placeholder="Enter compiled code (e.g., base64-encoded binary)"></textarea>
-                        <button class="control-button" onclick="decompileCode()">Decompile</button>
-                        <p id="decompile-output">Decompiled output will appear here...</p>
-                    </div>
-                </div>
-                <div class="accordion">
-                    <div class="accordion-header">Metadata Example <span>↓</span></div>
-                    <div class="accordion-content">
-                        <p>Example metadata for a capsule:</p>
-                        <pre class="json-ld">
-{
-    "@context": "http://schema.org",
-    "@type": "DataRecord",
-    "identifier": "capsule_20250510_123456",
-    "name": "Threat Analysis Capsule",
-    "description": "Capsule containing threat analysis data",
-    "dateCreated": "2025-05-10T12:34:56Z",
-    "creator": "AuroraGenesis-OMEGA",
-    "ethicalScore": 0.98,
-    "hash": "sha512:abc123...",
-    "source": "ExploitIngestor",
-    "userId": "default_user",
-    "cryptographicKey": "RSA:xyz789..."
-}
-                        </pre>
-                    </div>
-                </div>
-                <div class="accordion">
-                    <div class="accordion-header">System State Map <span>↓</span></div>
-                    <div class="accordion-content">
-                        <p>Visualize capsule connections (simulated):</p>
-                        <div id="system-state-map" style="height: 400px; width: 100%;"></div>
-                    </div>
-                </div>
-                <div class="accordion">
-                    <div class="accordion-header">Visual Cortex <span>↓</span></div>
-                    <div class="accordion-content">
-                        <p>Animated 3D Graph Neural Network (simulated):</p>
-                        <canvas id="visual-cortex" style="width: 100%; height: 400px;"></canvas>
-                    </div>
-                </div>
-                <div class="accordion">
-                    <div class="accordion-header">Voice Command Activation <span>↓</span></div>
-                    <div class="accordion-content">
-                        <p>Activate voice commands:</p>
-                        <button class="control-button" onclick="startVoiceCommand()">Start Voice</button>
-                        <p id="voice-output">Voice output will appear here...</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
+  <!-- Launcher Button -->
+  <button id="proChat-launcher" class="proChat-launcher" aria-label="Toggle Aurora Assistant">
+    💬
+  </button>
 
-    <script>
-        // Environment Toggle
-        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-        const API_URL = isLocal ? 'http://localhost:8000/process_query' : '/api/process_query';
-        const WS_URL = isLocal ? 'ws://localhost:8000/events' : 'wss://your-api-id.execute-api.us-east-1.amazonaws.com/prod/events';
-        const OPENROUTER_API_KEY = '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'; // Replace with your key
+  <!-- Scripts for interactivity -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.body.classList.add('loaded');
+      document.getElementById('preloader').classList.add('fade-out');
 
-        // WebSocket Connection
-        const ws = new WebSocket(WS_URL);
+      const chatLog = document.getElementById('chatLog');
+      const input = document.getElementById('chat-input');
+      const sendButton = document.getElementById('send-button');
 
-        ws.onmessage = function(event) {
-            try {
-                const data = JSON.parse(event.data);
-                const chatLog = document.getElementById('chatLog');
-                if (!chatLog) {
-                    console.warn("⚠️ chatLog element not found.");
-                    return;
-                }
+      function appendMessage(content, sender) {
+        const msg = document.createElement('div');
+        msg.className = 'message ' + sender;
+        msg.textContent = content;
+        chatLog.appendChild(msg);
+        chatLog.scrollTo({ top: chatLog.scrollHeight, behavior: 'smooth' });
+      }
 
-                requestAnimationFrame(() => {
-                    const bubble = document.createElement('div');
-                    bubble.className = 'message-bubble ai';
-                    bubble.dataset.tooltip = 'AI-generated response with ethical validation.';
+      function handleSend() {
+        const value = input.value.trim();
+        if (!value) return;
+        appendMessage(value, 'user');
+        input.value = '';
+        setTimeout(() => {
+          appendMessage("Aurora is thinking... [mock reply]", 'ai');
+        }, 600);
+      }
 
-                    const sessionText = `<strong>Session ${sanitizeHTML(data.session_id)}</strong>: ${sanitizeHTML(data.unified_response || 'No response')}`;
-                    const modelResponses = (data.model_responses && typeof data.model_responses === 'object')
-                        ? Object.entries(data.model_responses).map(([model, res]) => {
-                            const modelResponse = sanitizeHTML(res.response || 'N/A');
-                            const ethicalScore = res.ethical_score !== undefined ? res.ethical_score : 'N/A';
-                            return `<strong>${sanitizeHTML(model)}</strong>: ${modelResponse} (Ethical: ${ethicalScore})`;
-                        }).join('<br>')
-                        : '';
+      sendButton.addEventListener('click', handleSend);
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') handleSend();
+      });
 
-                    bubble.innerHTML = `${sessionText}<br>${modelResponses}`;
-                    chatLog.appendChild(bubble);
-                    debounceScrollToBottom();
-                    addToHistory(data.session_id, data.unified_response);
-                    saveHistory();
-                });
-            } catch (err) {
-                console.error("❌ WebSocket message handling failed:", err);
-            }
-        };
+      // Assistant toggle
+      const launcher = document.getElementById('proChat-launcher');
+      const root = document.getElementById('proChat-root');
+      const close = document.getElementById('proChat-close');
 
-        ws.onerror = (err) => {
-            console.error('WebSocket error:', err);
-            addMessage('WebSocket connection failed. Please check the server.', 'ai');
-        };
+      launcher.onclick = () => root.classList.toggle('hidden');
+      close.onclick = () => root.classList.add('hidden');
 
-        // Safe HTML sanitization
-        function sanitizeHTML(str) {
-            const div = document.createElement('div');
-            div.textContent = str || '';
-            return div.innerHTML;
+      // Auto-hide assistant if inactive
+      let lastPing = Date.now();
+      setInterval(() => {
+        if (!root.classList.contains('hidden') && Date.now() - lastPing > 30000) {
+          root.classList.add('hidden');
         }
+      }, 5000);
+    });
+  </script>
+  <!-- Effects, TTS, Encrypt/Decrypt, Decompiler -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const encryptBtn = document.getElementById('encrypt-button');
+      const decryptBtn = document.getElementById('decrypt-button');
+      const decompileBtn = document.getElementById('decompile-button');
 
-        // Debounce utility for scroll
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
+      encryptBtn?.addEventListener('click', () => {
+        const input = document.getElementById('encrypt-input').value;
+        const output = document.getElementById('encrypt-output');
+        if (!input) return (output.textContent = 'No input.');
+        output.textContent = `Encrypted: ${btoa(input)}`;
+      });
+
+      decryptBtn?.addEventListener('click', () => {
+        const input = document.getElementById('decrypt-input').value;
+        const output = document.getElementById('decrypt-output');
+        try {
+          output.textContent = `Decrypted: ${atob(input)}`;
+        } catch {
+          output.textContent = 'Invalid base64 input.';
         }
+      });
 
-        // Text-to-Speech Setup
-        let speech = new SpeechSynthesisUtterance();
-        let isSpeaking = false;
-        let currentChunkIndex = 0;
-        let isPaused = false;
+      decompileBtn?.addEventListener('click', () => {
+        const input = document.getElementById('decompile-input').value;
+        const output = document.getElementById('decompile-output');
+        output.textContent = `Simulated Decompiled Output of ${input.length} bytes. Function main() detected.`;
+      });
 
-        // Split the presentation content into chunks for TTS
-        const presentationChunks = [
-            // Executive Summary
-            "AuroraGenesis-OMEGA is a state-of-the-art Advanced AI System designed for cybersecurity, ethical reasoning, autonomous strategy generation, and forensic analysis. Built on a modular, dual-GPU architecture with CUDA 12.6, Python 3.12, and distributed computing via Ray, the system integrates over 40 modules to achieve Consciousness Level ξ-9—a conceptual benchmark for advanced cognitive and ethical reasoning.",
-            "Key components include: FlashTRASymbioticAI, a neuro-symbolic engine for strategy generation and ethical reasoning; KnowledgeCapsulePreloader, which loads and validates compressed knowledge capsules with ZKProofs and ethical checks; KnowledgeGrowthManager, for growing and mutating LoRA adapters based on affective embeddings and probe data; GenesisInitializer, for seeding ethically aligned knowledge; TRATrainingModule, for training with DeepSpeed ZeRO-3; and the Twin Recursive Agent Architecture, a dual-agent system with recursive self-modification and ethical safeguards.",
-            "Additional components include ForensicHex3DEntropyViewer for visualizing capsule entropy in 3D, TimelineEngine for tracking temporal evolution, SteganographyEmbedderDetection for detecting hidden data, NetworkAnalytics for deep packet scanning and blockchain forensics, InteractiveTooltips for AI-driven suggestions, ExploitPrevention and CounterAttacking for proactive threat response, ConsoleNative for AI chat and command execution, VoiceCommands for hands-free operation, AdvancedEncryption for secure data handling, Decrypt/Encrypt for forensic analysis, MetadataManagement for traceability, and DecompileEngine for reverse-engineering exploits.",
-            "The system excels in: Cybersecurity Excellence, detecting and countering exploits with AI-driven classification, reinforcement learning, sandbox testing, and deep packet scanning; Ethical Compliance, validating actions against 10,000+ ethical protocols using ZKProofs and Merkle trees; Scalability, processing 1 to 3 billion tokens per day across 10+ distributed nodes; Real-Time Visualization, displaying system health, fork metrics, entropy, and forensic analytics; Self-Improvement, enabling continuous learning through recursive agent modification; and Forensic Precision, providing ultra-detailed analysis with decompilation, metadata, and temporal tracking.",
-            // System Architecture
-            "The system is organized into six layers: Hardware, Core Infrastructure, Processing, Orchestration, Interaction, and Security/Audit. The Hardware Layer includes dual high-performance GPUs, a multi-core CPU, 128GB DDR5 RAM, and a 2TB NVMe SSD, with NVIDIA-SMI monitoring and high-speed LAN networking. The Core Infrastructure Layer uses Ubuntu 22.04 LTS, Python 3.12, Docker containerization, Neo4j for capsules and blockchain forensics, Redis for event streaming, and a file system at /home/ben/BALI/cyber/.",
-            "The Processing Layer includes AI models like FlashTRASymbioticAI, LearningOrchestrator, TaskGeneralizer, KnowledgeGrowthManager, TRATrainingModule, HyperAgent, and PluginThoughtReactor, plus specialized modules like ExploitIngestor, CognitiveStateProcessor, CrossModalPerception, ThreatPathSimulator, AdaptiveFeatureCompressor, ForensicHex3DEntropyViewer, TimelineEngine, SteganographyEmbedderDetection, NetworkAnalytics, and DecompileEngine, optimized with BF16 precision, AMP autocast, and FlashAttention2.",
-            "The Orchestration Layer features InfinityBrain, AuroraRouter, DistributedTaskOrchestrator, KnowledgeGrowthManager, ReinforcementLoop, TemporalAccelerator, and TimelineEngine. The Interaction Layer includes a PyQt5 GUI with glitch-heavy aesthetics, a Dash dashboard, web application, WebSocket server, ConsoleNative, and VoiceCommands. The Security/Audit Layer provides ethical validation, cryptographic security, audit logging, forensic telemetry, threat detection, exploit prevention, and counterattacking.",
-            "The Twin Recursive Agent Architecture employs an Ethics Agent and Capability Agent, with recursive modification and safeguards like mutual validation, human-in-the-loop oversight, and rollback via DualGPUMemory. The key workflow includes initialization, capsule preloading, exploit processing, knowledge growth, training and optimization, monitoring and visualization, and security and auditing.",
-            // Key Features
-            "Key features include the Twin Recursive Agent Architecture for safe self-improvement, Knowledge Capsule Preloading for auditable data, Adaptive LoRA Adapter Growth for personalization, Multimodal Sensory Integration for enhanced interaction, Ethical Compliance and Forensic Traceability for regulatory alignment, Scalable Dual-GPU Architecture for enterprise deployments, Cinematic GUI and Real-Time Telemetry for investor appeal, Predictive Error Healing and Capsule Forecasting for resilience, Quantum-Inspired Processing for advanced reasoning, Forensic and Network Analytics for compliance, Exploit Prevention and Counterattacking for cybersecurity, Interactive Tooltips and Voice Commands for accessibility, Advanced Encryption and Decrypt/Encrypt for data security, Decompile Engine for exploit analysis, and Metadata Management for traceability.",
-            // Market Fit
-            "Target markets include Cybersecurity ($200B market), Healthcare AI ($50B market), Legal and Compliance ($20B market), and Enterprise AI SaaS ($150B market). The competitive edge lies in its unique architecture, ethical safeguards, multimodal and forensic capabilities, scalability, and investor appeal through cinematic visualizations.",
-            // Technical Specifications
-            "Technical specifications include dual high-performance GPUs, 128GB DDR5 RAM, 2TB NVMe SSD, Ubuntu 22.04 LTS, Python 3.12, CUDA 12.6, and dependencies like PyTorch, DeepSpeed, Neo4j, and FAISS. Performance metrics show 1200 req/s throughput, 1–3B tokens/day capacity, 99.5% ethical compliance, and 95% forensic precision.",
-            // Roadmap
-            "The roadmap includes Core Integration by Q2 2025, Scalability and Optimization by Q4 2025, Market Deployment by Q2 2026, and Continuous Learning and Expansion from Q4 2026, targeting $50M annual revenue and 300% ROI in 5 years.",
-            // Cost Estimation
-            "Cost estimation covers $210K for 3-month development, $3M for 1-year deployment, $550K annual maintenance, totaling $4.7M over 3 years.",
-            // Investor Pitch
-            "Investor pitch points highlight innovative AI, cybersecurity leadership, ethical compliance, forensic precision, scalable infrastructure, market potential, investor appeal, and a projected 300% ROI in 5 years.",
-            // Conclusion
-            "AuroraGenesis-OMEGA redefines cybersecurity, ethical intelligence, and forensic analysis with its modular architecture, Twin Recursive Agent model, advanced forensic capabilities, and real-time visualization, poised to deliver significant value and innovation."
-        ];
-
-        function startTTS() {
-            if (!('speechSynthesis' in window)) {
-                addMessage('Text-to-speech is not supported in this browser.', 'ai');
-                return;
-            }
-            if (isSpeaking) return;
-
-            isSpeaking = true;
-            isPaused = false;
-            document.getElementById('start-tts').disabled = true;
-            document.getElementById('pause-tts').disabled = false;
-
-            speech = new SpeechSynthesisUtterance();
-            speech.lang = 'en-US';
-            speech.volume = 1;
-            speech.rate = 1;
-            speech.pitch = 1;
-
-            readNextChunk();
-        }
-
-        function readNextChunk() {
-            if (currentChunkIndex >= presentationChunks.length) {
-                isSpeaking = false;
-                document.getElementById('start-tts').disabled = false;
-                document.getElementById('pause-tts').disabled = true;
-                currentChunkIndex = 0;
-                return;
-            }
-
-            if (!isPaused) {
-                addMessage(presentationChunks[currentChunkIndex], 'ai');
-                speech.text = presentationChunks[currentChunkIndex];
-                speech.onend = () => {
-                    currentChunkIndex++;
-                    readNextChunk();
-                };
-                window.speechSynthesis.speak(speech);
-            }
-        }
-
-        function pauseTTS() {
-            if (isSpeaking) {
-                if (isPaused) {
-                    isPaused = false;
-                    document.getElementById('pause-tts').textContent = 'Pause TTS';
-                    window.speechSynthesis.resume();
-                    readNextChunk();
-                } else {
-                    isPaused = true;
-                    document.getElementById('pause-tts').textContent = 'Resume TTS';
-                    window.speechSynthesis.pause();
-                }
-            }
-        }
-
-        async function sendQuery() {
-            const input = document.getElementById('chat-input').value.trim();
-            if (!input) return;
-            addMessage(input, 'user');
-            const loader = document.getElementById('loader');
-            loader.classList.add('active');
-
-            try {
-                const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${OPENROUTER_API_KEY}`
-                    },
-                    body: JSON.stringify({
-                        model: 'mistral/mistral-7b-instruct',
-                        messages: [{ role: 'user', content: input }]
-                    })
-                });
-
-                const data = await response.json();
-                const content = data.choices?.[0]?.message?.content || '[No response]';
-                addMessage(content, 'ai');
-
-                // Sync to capsule memory
-                const sessionId = `session_${Date.now()}`;
-                await fetch(isLocal ? 'http://localhost:8000/sync_history' : '/api/sync_history', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        session_id: sessionId,
-                        query: input,
-                        response: content,
-                        user_id: 'web_user',
-                        timestamp: new Date().toISOString(),
-                        vector_embedding: 'placeholder' // Replace with actual embedding
-                    })
-                });
-
-                ws.send(JSON.stringify({ command: 'process_query', data: input, user_id: 'web_user' }));
-                addToHistory(sessionId, content);
-                saveHistory();
-            } catch (e) {
-                console.error('Query failed:', e);
-                addMessage(`Error: ${e.message}`, 'ai');
-            } finally {
-                loader.classList.remove('active');
-                document.getElementById('chat-input').value = '';
-            }
-        }
-
-        async function sendFile() {
-            const fileInput = document.getElementById('file-input');
-            const file = fileInput.files[0];
-            if (!file) return;
-            const allowedTypes = ['text/csv', 'application/json', 'application/zip'];
-            if (!allowedTypes.includes(file.type)) {
-                addMessage('Invalid file type. Allowed: .csv, .json, .zip', 'ai');
-                return;
-            }
-            addMessage(`File: ${file.name}`, 'user');
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('user_id', 'web_user');
-            await fetch(isLocal ? 'http://localhost:8000/upload' : '/api/upload', {
-                method: 'POST',
-                body: formData
-            });
-            fileInput.value = '';
-        }
-
-        async function sendDataset() {
-            const datasetInput = document.getElementById('dataset-input');
-            const file = datasetInput.files[0];
-            if (!file) return;
-            const allowedTypes = ['text/csv', 'application/json', 'application/zip'];
-            if (!allowedTypes.includes(file.type)) {
-                addMessage('Invalid dataset type. Allowed: .csv, .json, .zip', 'ai');
-                return;
-            }
-            addMessage(`Dataset: ${file.name}`, 'user');
-            const formData = new FormData();
-            formData.append('dataset', file);
-            formData.append('user_id', 'web_user');
-            await fetch(isLocal ? 'http://localhost:8000/upload_dataset' : '/api/upload_dataset', {
-                method: 'POST',
-                body: formData
-            });
-            datasetInput.value = '';
-        }
-
-        function addMessage(text, type) {
-            const chatLog = document.getElementById('chatLog');
-            if (!chatLog) {
-                console.error('chatLog element not found');
-                return;
-            }
-            requestAnimationFrame(() => {
-                const bubble = document.createElement('div');
-                bubble.className = `message-bubble ${type}`;
-                bubble.textContent = text;
-                bubble.dataset.tooltip = type === 'ai' ? 'AI-generated response with ethical validation.' : 'User input.';
-                chatLog.appendChild(bubble);
-                debounceScrollToBottom();
-                saveHistory();
-            });
-        }
-
-        const debounceScrollToBottom = debounce(() => {
-            const chatLog = document.getElementById('chatLog');
-            chatLog.scrollTo({
-                top: chatLog.scrollHeight,
-                behavior: 'smooth'
-            });
-        }, 100);
-
-        function scrollToBottom() {
-            debounceScrollToBottom();
-        }
-
-        function addToHistory(sessionId, query) {
-            const historyList = document.getElementById('history-list');
-            if (!historyList) return; // Skip if history-list not present
-            const item = document.createElement('li');
-            item.innerHTML = `<strong>${sanitizeHTML(sessionId)}</strong>: ${sanitizeHTML(query)}`;
-            historyList.appendChild(item);
-            saveHistory();
-        }
-
-        function saveHistory() {
-            const messages = Array.from(document.getElementById('chatLog').children)
-                .map(el => ({
-                    text: el.textContent,
-                    type: el.classList.contains('user') ? 'user' : 'ai'
-                }));
-            localStorage.setItem('neuroChatHistory', JSON.stringify(messages));
-        }
-
-        function loadHistory() {
-            const history = JSON.parse(localStorage.getItem('neuroChatHistory') || '[]');
-            history.forEach(msg => addMessage(msg.text, msg.type));
-            if (!isLocal) {
-                loadBackendHistory();
-            }
-        }
-
-        async function loadBackendHistory() {
-            try {
-                const response = await fetch(isLocal ? 'http://localhost:8000/get_history' : '/api/get_history', {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json' }
-                });
-                const history = await response.json();
-                history.forEach(entry => {
-                    addMessage(`Session ${entry.session_id}: ${entry.query}`, 'user');
-                    addMessage(entry.response, 'ai');
-                    addToHistory(entry.session_id, entry.response);
-                });
-            } catch (e) {
-                console.error('Failed to load backend history:', e);
-            }
-        }
-
-        // Encrypt/Decrypt Simulation
-        function encryptText() {
-            const input = document.getElementById('encrypt-input').value;
-            const output = document.getElementById('encrypt-output');
-            if (!input) {
-                output.textContent = 'Please enter text to encrypt.';
-                return;
-            }
-            const encoded = btoa(input);
-            output.textContent = `Encrypted: ${encoded}`;
-        }
-
-        function decryptText() {
-            const input = document.getElementById('decrypt-input').value;
-            const output = document.getElementById('decrypt-output');
-            if (!input) {
-                output.textContent = 'Please enter encrypted text to decrypt.';
-                return;
-            }
-            try {
-                const decoded = atob(input);
-                output.textContent = `Decrypted: ${decoded}`;
-            } catch (e) {
-                output.textContent = 'Invalid encrypted text.';
-            }
-        }
-
-        // Decompilation Simulation
-        function decompileCode() {
-            const input = document.getElementById('decompile-input').value;
-            const output = document.getElementById('decompile-output');
-            if (!input) {
-                output.textContent = 'Please enter compiled code to decompile.';
-                return;
-            }
-            output.textContent = `Decompiled Output: Simulated decompilation of ${input.length} bytes. Detected function: main() with 3 calls to unknown libraries.`;
-        }
-
-        // Voice Command Activation
-        function startVoiceCommand() {
-            const output = document.getElementById('voice-output');
-            if (!('webkitSpeechRecognition' in window)) {
-                output.textContent = 'Speech recognition not supported in this browser.';
-                return;
-            }
-            const recognition = new webkitSpeechRecognition();
-            recognition.lang = 'en-US';
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
-
-            recognition.onresult = (event) => {
-                const transcript = event.results[0][0].transcript;
-                output.textContent = `Recognized: ${transcript}`;
-                document.getElementById('chat-input').value = transcript;
-                sendQuery();
-            };
-
-            recognition.onerror = (event) => {
-                output.textContent = `Voice recognition error: ${event.error}`;
-            };
-
-            recognition.onend = () => {
-                output.textContent = 'Voice recognition stopped.';
-            };
-
-            recognition.start();
-            output.textContent = 'Listening...';
-        }
-
-        // Three.js Holographic Particle System
-        function initHolographicParticles() {
-            const canvas = document.getElementById('holographic-bg');
-            if (!canvas) {
-                console.error('holographic-bg canvas not found');
-                return;
-            }
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
-
-            const particlesGeometry = new THREE.BufferGeometry();
-            const particleCount = 5000; // Reduced for performance
-            const posArray = new Float32Array(particleCount * 3);
-            const colors = new Float32Array(particleCount * 3);
-            const velocities = new Float32Array(particleCount * 3);
-
-            for (let i = 0; i < particleCount * 3; i += 3) {
-                posArray[i] = (Math.random() - 0.5) * 2000;
-                posArray[i + 1] = (Math.random() - 0.5) * 2000;
-                posArray[i + 2] = (Math.random() - 0.5) * 2000;
-                colors[i] = Math.random(); colors[i + 1] = Math.random(); colors[i + 2] = 1;
-                velocities[i] = (Math.random() - 0.5) * 0.3;
-                velocities[i + 1] = (Math.random() - 0.5) * 0.3;
-                velocities[i + 2] = (Math.random() - 0.5) * 0.3;
-            }
-
-            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-            particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-            const material = new THREE.PointsMaterial({
-                size: 2,
-                vertexColors: true,
-                transparent: true,
-                opacity: 0.6,
-                sizeAttenuation: true,
-                blending: THREE.AdditiveBlending
-            });
-
-            const particles = new THREE.Points(particlesGeometry, material);
-            scene.add(particles);
-
-            camera.position.z = 600;
-
-            function animate() {
-                requestAnimationFrame(animate);
-                const positions = particlesGeometry.attributes.position.array;
-                for (let i = 0; i < particleCount * 3; i += 3) {
-                    positions[i] += velocities[i] * Math.sin(Date.now() * 0.001 + i);
-                    positions[i + 1] += velocities[i + 1] * Math.cos(Date.now() * 0.001 + i);
-                    positions[i + 2] += velocities[i + 2] * Math.sin(Date.now() * 0.001 + i);
-                    if (Math.abs(positions[i]) > 1000) velocities[i] *= -1;
-                    if (Math.abs(positions[i + 1]) > 1000) velocities[i + 1] *= -1;
-                    if (Math.abs(positions[i + 2]) > 1000) velocities[i + 2] *= -1;
-                }
-                particlesGeometry.attributes.position.needsUpdate = true;
-                particles.rotation.y += 0.002;
-                particles.rotation.x += 0.001;
-                renderer.render(scene, camera);
-            }
-            animate();
-
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            });
-        }
-
-        // System State Map with Vis.js
-        function initSystemStateMap() {
-            const container = document.getElementById('system-state-map');
-            if (!container) {
-                console.error('system-state-map container not found');
-                return;
-            }
-            try {
-                const nodes = new vis.DataSet([
-                    { id: 1, label: 'Capsule 1', title: 'Threat Analysis' },
-                    { id: 2, label: 'Capsule 2', title: 'Network Analytics' },
-                    { id: 3, label: 'Capsule 3', title: 'Forensic Entropy' },
-                ]);
-                const edges = new vis.DataSet([
-                    { from: 1, to: 2, title: 'Data Flow' },
-                    { from: 2, to: 3, title: 'Correlation' },
-                ]);
-                const data = { nodes, edges };
-                const options = {
-                    nodes: { shape: 'dot', size: 20, color: '#00f7ff' },
-                    edges: { color: '#00f7ff', width: 2 },
-                    physics: { enabled: true },
-                };
-                new vis.Network(container, data, options);
-            } catch (e) {
-                console.error('Failed to initialize vis-network:', e);
-            }
-        }
-
-        // Visual Cortex with Three.js
-        function initVisualCortex() {
-            const canvas = document.getElementById('visual-cortex');
-            if (!canvas) {
-                console.error('visual-cortex canvas not found');
-                return;
-            }
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
-            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
-
-            const nodes = new THREE.InstancedMesh(
-                new THREE.SphereGeometry(0.5, 16, 16),
-                new THREE.MeshBasicMaterial({ color: 0x00f7ff, transparent: true, opacity: 0.8 }),
-                50
-            );
-            const dummy = new THREE.Object3D();
-            for (let i = 0; i < 50; i++) {
-                dummy.position.set(
-                    (Math.random() - 0.5) * 20,
-                    (Math.random() - 0.5) * 20,
-                    (Math.random() - 0.5) * 20
-                );
-                dummy.updateMatrix();
-                nodes.setMatrixAt(i, dummy.matrix);
-            }
-            scene.add(nodes);
-
-            camera.position.z = 30;
-
-            function animate() {
-                requestAnimationFrame(animate);
-                nodes.rotation.y += 0.005;
-                nodes.rotation.x += 0.002;
-                renderer.render(scene, camera);
-            }
-            animate();
-
-            window.addEventListener('resize', () => {
-                camera.aspect = canvas.clientWidth / canvas.clientHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-            });
-        }
-
-        // Initialize particles.js and holographic particles
-        document.addEventListener('DOMContentLoaded', function () {
-            if (typeof particlesJS !== 'undefined') {
-                particlesJS('particles-js', {
-                    particles: {
-                        number: { value: 200, density: { enable: true, value_area: 800 } }, // Reduced particles
-                        color: { value: '#00f7ff' },
-                        shape: { type: 'circle', stroke: { width: 0, color: '#000000' } },
-                        opacity: { value: 0.6, random: true, anim: { enable: true, speed: 2, opacity_min: 0.3, sync: false } },
-                        size: { value: 5, random: true, anim: { enable: true, speed: 20, size_min: 0.5, sync: false } },
-                        line_linked: { enable: true, distance: 120, color: '#00f7ff', opacity: 0.3, width: 1 },
-                        move: { enable: true, speed: 3, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
-                    },
-                    interactivity: {
-                        detect_on: 'canvas',
-                        events: { 
-                            onhover: { enable: true, mode: 'repulse' }, 
-                            onclick: { enable: true, mode: 'push' }, 
-                            resize: true,
-                            onQuery: { enable: true, mode: 'burst' }
-                        },
-                        modes: { 
-                            repulse: { distance: 120, duration: 0.5 }, 
-                            push: { particles_nb: 5 },
-                            burst: { particles_nb: 8, speed: 6 }
-                        }
-                    },
-                    retina_detect: true
-                });
-
-                document.getElementById('chat-input').addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter' && this.value.trim()) {
-                        particlesJS('particles-js').pJS.fn.vendors.interactivity.pushParticles(8, { speed: 6 });
-                        sendQuery();
-                    }
-                });
-            } else {
-                console.error('particlesJS is not defined.');
-            }
-
-            initHolographicParticles();
-            initSystemStateMap();
-            initVisualCortex();
-            loadHistory();
-
-            document.querySelectorAll('[data-tooltip]').forEach(element => {
-                element.addEventListener('mouseenter', function (e) {
-                    const tooltip = document.createElement('div');
-                    tooltip.className = 'tooltip';
-                    tooltip.textContent = this.dataset.tooltip;
-                    document.body.appendChild(tooltip);
-                    const rect = this.getBoundingClientRect();
-                    tooltip.style.left = `${rect.left + window.scrollX + rect.width / 2}px`;
-                    tooltip.style.top = `${rect.top + window.scrollY - 40}px`;
-                    tooltip.style.display = 'block';
-                });
-                element.addEventListener('mouseleave', function () {
-                    document.querySelectorAll('.tooltip').forEach(t => t.remove());
-                });
-            });
-
-            document.querySelectorAll('.accordion-header').forEach(header => {
-                header.addEventListener('click', () => {
-                    const accordion = header.parentElement;
-                    accordion.classList.toggle('active');
-                });
-                header.addEventListener('touchstart', () => {
-                    const accordion = header.parentElement;
-                    accordion.classList.toggle('active');
-                });
-            });
-
-            presentationChunks.forEach(chunk => addMessage(chunk, 'ai'));
+      // Accordion toggle
+      document.querySelectorAll('.accordion-header').forEach(header => {
+        header.addEventListener('click', () => {
+          const accordion = header.closest('.accordion');
+          accordion.classList.toggle('active');
+          const expanded = header.getAttribute('aria-expanded') === 'true';
+          header.setAttribute('aria-expanded', !expanded);
         });
+      });
 
-        window.addEventListener('load', function () {
-            const preloader = document.getElementById('preloader');
-            preloader.classList.add('fade-out');
-        });
-    </script>
+      // Text-to-Speech
+      const ttsChunks = [
+        "AuroraGenesis-OMEGA is the future of secure AI cognition.",
+        "It runs forensic modules, multi-agent mutation, and capsule memory.",
+        "Powered by ethical inference and GPU acceleration."
+      ];
+      let ttsIndex = 0;
+      let isSpeaking = false;
+      let speech = new SpeechSynthesisUtterance();
+
+      const speakNext = () => {
+        if (ttsIndex >= ttsChunks.length) {
+          isSpeaking = false;
+          return;
+        }
+        speech.text = ttsChunks[ttsIndex++];
+        speech.onend = speakNext;
+        speechSynthesis.speak(speech);
+      };
+
+      document.getElementById('start-tts')?.addEventListener('click', () => {
+        if (isSpeaking) return;
+        isSpeaking = true;
+        ttsIndex = 0;
+        speakNext();
+      });
+
+      document.getElementById('pause-tts')?.addEventListener('click', () => {
+        if (speechSynthesis.paused) {
+          speechSynthesis.resume();
+        } else {
+          speechSynthesis.pause();
+        }
+      });
+
+      // Responsive height fix
+      const fixVH = () => {
+        document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+      };
+      fixVH();
+      window.addEventListener('resize', fixVH);
+    });
+  </script>
 </body>
 </html>
-```
