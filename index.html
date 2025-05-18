@@ -16,11 +16,9 @@
             --neon-cyan: #00f7ff;
             --neon-blue: #00f7ff;
             --neon-magenta: #ff00ff;
-            --neon-green: #00ffcc;
             --neon-red: #ff3b30;
             --glow-blue: rgba(0, 247, 255, 0.3);
             --glow-magenta: rgba(255, 0, 255, 0.3);
-            --glow-green: rgba(0, 255, 204, 0.3);
             --glow-red: rgba(255, 59, 48, 0.3);
             --slick-gray: #2a2a2a;
             --hud-white: rgba(240, 240, 240, 0.95);
@@ -61,12 +59,12 @@
 
         .neuron {
             position: absolute;
-            width: var(--size, 10px);
-            height: var(--size, 10px);
+            width: var(--size, 12px);
+            height: var(--size, 12px);
             background: radial-gradient(circle, var(--neon-cyan) 20%, transparent 70%);
             border-radius: 50%;
             opacity: var(--opacity, 0.5);
-            box-shadow: 0 0 20px var(--glow-blue), 0 0 40px var(--glow-blue);
+            box-shadow: 0 0 30px var(--glow-blue), 0 0 60px var(--glow-blue);
             will-change: transform, opacity;
             animation: pulseNeuron 3s ease-in-out infinite, moveNeuron linear infinite;
             filter: blur(var(--blur, 2px));
@@ -75,17 +73,17 @@
         .neuron::before {
             content: '';
             position: absolute;
-            width: 100px;
-            height: 2px;
-            background: linear-gradient(to right, transparent, var(--neon-cyan), transparent);
-            opacity: 0.3;
+            width: 150px;
+            height: 3px;
+            background: linear-gradient(to right, transparent, var(--neon-cyan) 50%, transparent);
+            opacity: 0.4;
             transform: rotate(var(--trail-angle, 45deg));
             transform-origin: 0 0;
         }
 
         @keyframes pulseNeuron {
             0%, 100% { transform: scale(1); opacity: var(--opacity, 0.5); }
-            50% { transform: scale(1.3); opacity: calc(var(--opacity) * 0.7); }
+            50% { transform: scale(1.5); opacity: calc(var(--opacity) * 0.8); }
         }
 
         @keyframes moveNeuron {
@@ -410,7 +408,7 @@
 
         .accordion {
             margin: 4rem 0;
-            max-width: 1100px;
+            max-width: 1200px;
             width: 100%;
         }
 
@@ -560,8 +558,8 @@
 
         .network-graph {
             width: 100%;
-            max-width: 1100px;
-            height: 650px;
+            max-width: 1200px;
+            height: 800px;
             margin: 4rem auto;
             border: 1px solid var(--border);
             border-radius: 12px;
@@ -574,12 +572,13 @@
         .network-graph svg {
             width: 100%;
             height: 100%;
+            display: block;
         }
 
         .network-node {
             fill: var(--neon-cyan);
             stroke: var(--glow-blue);
-            stroke-width: 2;
+            stroke-width: 3;
             cursor: pointer;
             transition: transform 0.3s ease, opacity 0.3s ease;
         }
@@ -587,13 +586,13 @@
         .network-node:hover, .network-node.active {
             transform: scale(1.3);
             opacity: 1;
-            filter: drop-shadow(0 0 10px var(--glow-blue));
+            filter: drop-shadow(0 0 15px var(--glow-blue));
         }
 
         .network-edge {
             stroke: var(--neon-cyan);
-            stroke-width: 2;
-            opacity: 0.6;
+            stroke-width: 3;
+            opacity: 0.7;
             transition: opacity 0.3s ease;
             animation: flowEdge 3s linear infinite;
         }
@@ -609,7 +608,7 @@
 
         .network-label {
             font-family: 'Orbitron', sans-serif;
-            font-size: 12px;
+            font-size: 16px;
             fill: var(--neon-cyan);
             text-anchor: middle;
             pointer-events: none;
@@ -617,21 +616,21 @@
 
         @media (max-width: 768px) {
             .network-graph {
-                height: 550px;
+                height: 600px;
                 margin: 2.5rem auto;
             }
             .network-label {
-                font-size: 10px;
+                font-size: 14px;
             }
         }
 
         @media (max-width: 480px) {
             .network-graph {
-                height: 350px;
+                height: 400px;
                 margin: 2rem auto;
             }
             .network-label {
-                font-size: 8px;
+                font-size: 12px;
             }
         }
 
@@ -698,7 +697,7 @@
             box-shadow: 0 0 15px var(--glow);
             backdrop-filter: blur(5px);
             pointer-events: none;
-            z-index: 1001;
+            z IndexedDB: 1001;
         }
     </style>
 </head>
@@ -1306,7 +1305,7 @@
 
             // Neuron Background
             const neuronContainer = document.getElementById('neuron-background');
-            const neuronCount = 300;
+            const neuronCount = 400;
 
             for (let i = 0; i < neuronCount; i++) {
                 const neuron = document.createElement('div');
@@ -1315,7 +1314,7 @@
                 const yStart = Math.random() * window.innerHeight;
                 const xMove = (Math.random() - 0.5) * window.innerWidth * 1.5;
                 const yMove = (Math.random() - 0.5) * window.innerHeight * 1.5;
-                const size = 8 + Math.random() * 7;
+                const size = 10 + Math.random() * 10;
                 const opacity = 0.2 + Math.random() * 0.5;
                 const blur = 1 + Math.random() * 3;
                 const duration = 4 + Math.random() * 8;
@@ -1335,123 +1334,142 @@
 
             // Network Graph Utility
             function createNetworkGraph(graphId, nodesData, edgesData) {
-                const graph = document.getElementById(graphId);
-                const svg = graph.querySelector('svg');
-                const ns = "http://www.w3.org/2000/svg";
+                try {
+                    const graph = document.getElementById(graphId);
+                    if (!graph) throw new Error(`Graph container #${graphId} not found`);
+                    const svg = graph.querySelector('svg');
+                    if (!svg) throw new Error(`SVG element for #${graphId} not found`);
+                    const ns = "http://www.w3.org/2000/svg";
 
-                // Set node radius based on screen width
-                const getNodeRadius = () => {
-                    if (window.innerWidth <= 480) return 12;
-                    if (window.innerWidth <= 768) return 15;
-                    return 20;
-                };
+                    const graphRect = graph.getBoundingClientRect();
+                    const width = graphRect.width;
+                    const height = graphRect.height;
 
-                nodesData.forEach(node => {
-                    const circle = document.createElementNS(ns, 'circle');
-                    circle.className = 'network-node';
-                    circle.setAttribute('cx', `${node.x * 50 + 50}%`);
-                    circle.setAttribute('cy', `${node.y * 50 + 50}%`);
-                    circle.setAttribute('r', getNodeRadius());
-                    circle.dataset.id = node.id;
-                    circle.dataset.title = node.title;
-                    svg.appendChild(circle);
+                    // Set node radius based on screen width
+                    const getNodeRadius = () => {
+                        if (window.innerWidth <= 480) return 15;
+                        if (window.innerWidth <= 768) return 20;
+                        return 30;
+                    };
 
-                    const text = document.createElementNS(ns, 'text');
-                    text.className = 'network-label';
-                    text.setAttribute('x', `${node.x * 50 + 50}%`);
-                    text.setAttribute('y', `${node.y * 50 + 55}%`);
-                    text.textContent = node.label;
-                    svg.appendChild(text);
-                });
+                    nodesData.forEach(node => {
+                        const x = (node.x * 100 + 600); // Center nodes in 1200px width
+                        const y = (node.y * 100 + 400); // Center nodes in 800px height
+                        const circle = document.createElementNS(ns, 'circle');
+                        circle.className = 'network-node';
+                        circle.setAttribute('cx', x);
+                        circle.setAttribute('cy', y);
+                        circle.setAttribute('r', getNodeRadius());
+                        circle.dataset.id = node.id;
+                        circle.dataset.title = node.title;
+                        svg.appendChild(circle);
 
-                edgesData.forEach(edge => {
-                    const fromNode = nodesData.find(n => n.id === edge.from);
-                    const toNode = nodesData.find(n => n.id === edge.to);
-                    const line = document.createElementNS(ns, 'line');
-                    line.className = 'network-edge';
-                    line.setAttribute('x1', `${fromNode.x * 50 + 50}%`);
-                    line.setAttribute('y1', `${fromNode.y * 50 + 50}%`);
-                    line.setAttribute('x2', `${toNode.x * 50 + 50}%`);
-                    line.setAttribute('y2', `${toNode.y * 50 + 50}%`);
-                    line.setAttribute('stroke-dasharray', '10,5');
-                    svg.appendChild(line);
-                });
-
-                let panX = 0;
-                let isDragging = false;
-                let startX = 0;
-
-                graph.addEventListener('mousedown', (e) => {
-                    isDragging = true;
-                    startX = e.clientX;
-                });
-
-                graph.addEventListener('mousemove', (e) => {
-                    if (isDragging) {
-                        const deltaX = e.clientX - startX;
-                        panX += deltaX * 0.1;
-                        svg.style.transform = `translateX(${panX}px)`;
-                        startX = e.clientX;
-                    }
-                });
-
-                graph.addEventListener('mouseup', () => {
-                    isDragging = false;
-                });
-
-                graph.addEventListener('mouseleave', () => {
-                    isDragging = false;
-                });
-
-                svg.addEventListener('click', (e) => {
-                    const target = e.target;
-                    if (target.classList.contains('network-node')) {
-                        const nodes = svg.querySelectorAll('.network-node');
-                        const edges = svg.querySelectorAll('.network-edge');
-                        nodes.forEach(n => n.classList.remove('active'));
-                        edges.forEach(e => e.classList.remove('active'));
-                        target.classList.add('active');
-
-                        const nodeId = target.dataset.id;
-                        edgesData.forEach(edge => {
-                            if (edge.from === nodeId || edge.to === nodeId) {
-                                const edgeElement = Array.from(edges).find(e =>
-                                    (e.getAttribute('x1') === `${nodesData.find(n => n.id === edge.from).x * 50 + 50}%` &&
-                                     e.getAttribute('y1') === `${nodesData.find(n => n.id === edge.from).y * 50 + 50}%` &&
-                                     e.getAttribute('x2') === `${nodesData.find(n => n.id === edge.to).x * 50 + 50}%` &&
-                                     e.getAttribute('y2') === `${nodesData.find(n => n.id === edge.to).y * 50 + 50}%`) ||
-                                    (e.getAttribute('x1') === `${nodesData.find(n => n.id === edge.to).x * 50 + 50}%` &&
-                                     e.getAttribute('y1') === `${nodesData.find(n => n.id === edge.to).y * 50 + 50}%` &&
-                                     e.getAttribute('x2') === `${nodesData.find(n => n.id === edge.from).x * 50 + 50}%` &&
-                                     e.getAttribute('y2') === `${nodesData.find(n => n.id === edge.from).y * 50 + 50}%`)
-                                );
-                                if (edgeElement) edgeElement.classList.add('active');
-                            }
-                        });
-
-                        let tooltip = document.querySelector('.tooltip');
-                        if (tooltip) document.body.removeChild(tooltip);
-                        tooltip = document.createElement('div');
-                        tooltip.className = 'tooltip';
-                        tooltip.textContent = target.dataset.title;
-                        tooltip.style.left = `${e.clientX + 10}px`;
-                        tooltip.style.top = `${e.clientY + 10}px`;
-                        document.body.appendChild(tooltip);
-                    }
-                });
-
-                graph.addEventListener('mouseleave', () => {
-                    const tooltip = document.querySelector('.tooltip');
-                    if (tooltip) document.body.removeChild(tooltip);
-                });
-
-                // Update node radii on resize
-                window.addEventListener('resize', () => {
-                    const nodes = svg.querySelectorAll('.network-node');
-                    nodes.forEach(node => {
-                        node.setAttribute('r', getNodeRadius());
+                        const text = document.createElementNS(ns, 'text');
+                        text.className = 'network-label';
+                        text.setAttribute('x', x);
+                        text.setAttribute('y', y + getNodeRadius() + 20);
+                        text.textContent = node.label;
+                        svg.appendChild(text);
                     });
-                });
+
+                    edgesData.forEach(edge => {
+                        const fromNode = nodesData.find(n => n.id === edge.from);
+                        const toNode = nodesData.find(n => n.id === edge.to);
+                        if (!fromNode || !toNode) return;
+                        const x1 = (fromNode.x * 100 + 600);
+                        const y1 = (fromNode.y * 100 + 400);
+                        const x2 = (toNode.x * 100 + 600);
+                        const y2 = (toNode.y * 100 + 400);
+                        const line = document.createElementNS(ns, 'line');
+                        line.className = 'network-edge';
+                        line.setAttribute('x1', x1);
+                        line.setAttribute('y1', y1);
+                        line.setAttribute('x2', x2);
+                        line.setAttribute('y2', y2);
+                        line.setAttribute('stroke-dasharray', '10,5');
+                        svg.appendChild(line);
+                    });
+
+                    let panX = 0;
+                    let isDragging = false;
+                    let startX = 0;
+
+                    graph.addEventListener('mousedown', (e) => {
+                        isDragging = true;
+                        startX = e.clientX;
+                    });
+
+                    graph.addEventListener('mousemove', (e) => {
+                        if (isDragging) {
+                            const deltaX = e.clientX - startX;
+                            panX += deltaX * 0.1;
+                            svg.style.transform = `translateX(${panX}px)`;
+                            startX = e.clientX;
+                        }
+                    });
+
+                    graph.addEventListener('mouseup', () => {
+                        isDragging = false;
+                    });
+
+                    graph.addEventListener('mouseleave', () => {
+                        isDragging = false;
+                    });
+
+                    svg.addEventListener('click', (e) => {
+                        const target = e.target;
+                        if (target.classList.contains('network-node')) {
+                            const nodes = svg.querySelectorAll('.network-node');
+                            const edges = svg.querySelectorAll('.network-edge');
+                            nodes.forEach(n => n.classList.remove('active'));
+                            edges.forEach(e => e.classList.remove('active'));
+                            target.classList.add('active');
+
+                            const nodeId = target.dataset.id;
+                            edgesData.forEach(edge => {
+                                if (edge.from === nodeId || edge.to === nodeId) {
+                                    const edgeElement = Array.from(edges).find(e =>
+                                        (parseFloat(e.getAttribute('x1')) === (nodesData.find(n => n.id === edge.from).x * 100 + 600) &&
+                                         parseFloat(e.getAttribute('y1')) === (nodesData.find(n => n.id === edge.from).y * 100 + 400) &&
+                                         parseFloat(e.getAttribute('x2')) === (nodesData.find(n => n.id === edge.to).x * 100 + 600) &&
+                                         parseFloat(e.getAttribute('y2')) === (nodesData.find(n => n.id === edge.to).y * 100 + 400)) ||
+                                        (parseFloat(e.getAttribute('x1')) === (nodesData.find(n => n.id === edge.to).x * 100 + 600) &&
+                                         parseFloat(e.getAttribute('y1')) === (nodesData.find(n => n.id === edge.to).y * 100 + 400) &&
+                                         parseFloat(e.getAttribute('x2')) === (nodesData.find(n => n.id === edge.from).x * 100 + 600) &&
+                                         parseFloat(e.getAttribute('y2')) === (nodesData.find(n => n.id === edge.from).y * 100 + 400))
+                                    );
+                                    if (edgeElement) edgeElement.classList.add('active');
+                                }
+                            });
+
+                            let tooltip = document.querySelector('.tooltip');
+                            if (tooltip) document.body.removeChild(tooltip);
+                            tooltip = document.createElement('div');
+                            tooltip.className = 'tooltip';
+                            tooltip.textContent = target.dataset.title;
+                            tooltip.style.left = `${e.clientX + 15}px`;
+                            tooltip.style.top = `${e.clientY + 15}px`;
+                            document.body.appendChild(tooltip);
+                        }
+                    });
+
+                    graph.addEventListener('mouseleave', () => {
+                        const tooltip = document.querySelector('.tooltip');
+                        if (tooltip) document.body.removeChild(tooltip);
+                    });
+
+                    // Update node radii on resize
+                    window.addEventListener('resize', () => {
+                        const nodes = svg.querySelectorAll('.network-node');
+                        nodes.forEach(node => {
+                            node.setAttribute('r', getNodeRadius());
+                        });
+                    });
+
+                    console.log(`Graph ${graphId} initialized with ${nodesData.length} nodes and ${edgesData.length} edges`);
+                } catch (error) {
+                    console.error(`Failed to initialize graph ${graphId}:`, error);
+                }
             }
 
             // Tech Stack Graph
@@ -1508,7 +1526,7 @@
 
             createNetworkGraph('ethical-validation-graph', ethicalValidationNodes, ethicalValidationEdges);
 
-            // Neo4j Graph
+// Neo4j Graph
             const neo4jNodes = [
                 { id: '1', label: '📊 Neo4j Core', x: 0, y: 0, title: 'Graph database for real-time analytics and causality tracing' },
                 { id: '2', label: '🔒 Audit Logging', x: 2, y: 2, title: 'Immutable audit trails with zstd compression and blockchain integration' },
@@ -1542,7 +1560,7 @@
                 });
             });
 
-// LLM Call Simulation
+            // LLM Call Simulation
             async function callLLM() {
                 const query = document.getElementById('llm-query').value;
                 const provider = document.getElementById('llm-provider').value;
@@ -1580,6 +1598,7 @@
                     responseDiv.textContent = responseText;
                 } catch (error) {
                     responseDiv.textContent = `Error: ${error.message}`;
+                    console.error('LLM Call Error:', error);
                 }
             }
 
@@ -1704,9 +1723,9 @@
                 graphs.forEach(id => {
                     const container = document.getElementById(id);
                     if (container) {
-                        const width = Math.min(window.innerWidth - 40, 1100);
+                        const width = Math.min(window.innerWidth - 40, 1200);
                         container.style.width = `${width}px`;
-                        container.style.height = `${Math.min(width * 0.6, 650)}px`;
+                        container.style.height = `${Math.min(width * 0.667, 800)}px`;
                     }
                 });
             };
