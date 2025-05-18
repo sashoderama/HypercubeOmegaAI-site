@@ -1,56 +1,16 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Replace local fonts.css with direct CDN links -->
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400&family=Orbitron:wght@500&family=Source+Code+Pro:wght@400&display=swap" rel="stylesheet">
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#080808">
     <meta name="description" content="AuroraGenesis: The world's first GPU-cluster-compatible cybersecurity AI platform with capsule-based memory compression, ethical intelligence, and real-time multi-agent mutation for zero-day threat detection and forensic analysis.">
     <title>AuroraGenesis: Next-Gen Cybersecurity Platform</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Code+Pro:wght@300;400;500&family=Orbitron:wght@500&display=swap&font-display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/vis-network@latest/dist/vis-network.min.js" defer></script>
-    <link href="https://unpkg.com/vis-network@latest/dist/vis-network.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400&family=Orbitron:wght@500&family=Source+Code+Pro:wght@400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="lib/three.min.js"></script>
+    <script src="lib/OrbitControls.js"></script>
     <style>
-        .cyber-nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 999;
-            background: rgba(0, 0, 0, 0.8);
-            border-bottom: 2px solid var(--neon-cyan);
-            backdrop-filter: blur(10px);
-            display: flex;
-            justify-content: center;
-            padding: 0.75rem 1rem;
-        }
-
-        .cyber-nav ul {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-            margin: 0;
-            padding: 0;
-        }
-
-        .cyber-nav li a {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 600;
-            color: var(--neon-cyan);
-            text-decoration: none;
-            transition: color 0.3s ease, text-shadow 0.3s ease;
-        }
-
-        .cyber-nav li a:hover {
-            color: #00ffff;
-            text-shadow: 0 0 10px var(--glow);
-        }
-
         :root {
             --void-black: #080808;
             --cyber-steel: #1a1a1a;
@@ -91,7 +51,41 @@
             position: relative;
         }
 
-        /* Preloader Styles */
+        .cyber-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            border-bottom: 2px solid var(--neon-cyan);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            padding: 0.75rem 1rem;
+        }
+
+        .cyber-nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        .cyber-nav li a {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 600;
+            color: var(--neon-cyan);
+            text-decoration: none;
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        .cyber-nav li a:hover {
+            color: #00ffff;
+            text-shadow: 0 0 10px var(--glow);
+        }
+
         #preloader {
             position: fixed;
             top: 0;
@@ -126,7 +120,7 @@
             100% { transform: rotate(360deg); }
         }
 
-        #particles-js {
+        #background-canvas {
             position: fixed;
             top: 0;
             left: 0;
@@ -144,20 +138,37 @@
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><path d="M15 5 L45 5 L55 25 L45 45 L15 45 L5 25 Z" stroke="rgba(0, 247, 255, 0.1)" fill="none" stroke-width="1"/></svg>');
             background-size: 60px 60px;
             background-repeat: repeat;
-            opacity: 0.5;
-            z-index: -1;
+            opacity: 0.3;
+            z-index: 2;
             pointer-events: none;
             animation: hexFade 15s ease-in-out infinite;
         }
 
         @keyframes hexFade {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 0.2; }
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.1; }
         }
 
-        main {
+        .terminal-line {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+            box-shadow: 0 0 60px var(--glow);
+            animation: scan 6s infinite linear;
+            z-index: 3;
+        }
+
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        main, section, .card {
             position: relative;
-            z-index: 1;
+            z-index: 10;
         }
 
         section {
@@ -172,16 +183,30 @@
             transition: all 0.5s ease-in-out;
         }
 
+        .blur-glass {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 1rem;
+            padding: 2rem 3rem;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+            transition: all 0.4s ease-in-out;
+            max-width: 100%;
+            margin: 2rem auto;
+        }
+
+        .blur-glass h1, .blur-glass h2, .blur-glass p {
+            text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+        }
+
         @media (max-width: 768px) {
-            section {
-                padding: 5rem 2rem;
-            }
+            section { padding: 5rem 2rem; }
+            .blur-glass { padding: 1.5rem 2rem; }
         }
 
         @media (max-width: 480px) {
-            section {
-                padding: 3rem 1rem;
-            }
+            section { padding: 3rem 1rem; }
+            .blur-glass { padding: 1rem 1.5rem; }
         }
 
         h1 {
@@ -192,7 +217,6 @@
             margin: 4rem 0;
             letter-spacing: -0.03em;
             animation: pulse 4s infinite;
-            transition: all 0.5s ease-in-out;
         }
 
         h2 {
@@ -200,7 +224,6 @@
             font-size: 3.2rem;
             color: var(--neon-cyan);
             margin-bottom: 3rem;
-            transition: all 0.5s ease-in-out;
         }
 
         p {
@@ -208,32 +231,18 @@
             margin: 0 auto 2.5rem;
             font-size: 1.6rem;
             opacity: 0.9;
-            transition: all 0.5s ease-in-out;
         }
 
         @media (max-width: 768px) {
-            h1 {
-                font-size: 3.8rem;
-            }
-            h2 {
-                font-size: 2.4rem;
-            }
-            p {
-                font-size: 1.3rem;
-                max-width: 100%;
-            }
+            h1 { font-size: 3.8rem; }
+            h2 { font-size: 2.4rem; }
+            p { font-size: 1.3rem; max-width: 100%; }
         }
 
         @media (max-width: 480px) {
-            h1 {
-                font-size: 1.8rem;
-            }
-            h2 {
-                font-size: 1.4rem;
-            }
-            p {
-                font-size: 1rem;
-            }
+            h1 { font-size: 1.8rem; }
+            h2 { font-size: 1.4rem; }
+            p { font-size: 1rem; }
         }
 
         .grid {
@@ -243,29 +252,18 @@
             padding: 4.5rem;
             max-width: 2000px;
             margin: 0 auto;
-            transition: all 0.5s ease-in-out;
         }
 
         @media (max-width: 768px) {
-            .grid {
-                grid-template-columns: 1fr !important;
-                gap: 3rem;
-                padding: 3rem;
-            }
+            .grid { grid-template-columns: 1fr; gap: 3rem; padding: 3rem; }
         }
 
         @media (max-width: 600px) {
-            .grid {
-                gap: 2.5rem;
-                padding: 2.5rem;
-            }
+            .grid { gap: 2.5rem; padding: 2.5rem; }
         }
 
         @media (max-width: 480px) {
-            .grid {
-                gap: 2rem;
-                padding: 2rem;
-            }
+            .grid { gap: 2rem; padding: 2rem; }
         }
 
         .card {
@@ -273,12 +271,11 @@
             border: 1px solid rgba(0, 255, 255, 0.2);
             border-radius: 28px;
             padding: 5rem 2rem;
-            transition: all 0.3s ease-in-out;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(20px);
             box-shadow: 0 0 15px rgba(0, 255, 255, 0.05);
-            will-change: transform, box-shadow;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -296,30 +293,18 @@
         }
 
         .card:hover {
-            background: transparent;
             box-shadow: 0 0 20px rgba(0, 255, 255, 0.2), 0 0 40px rgba(0, 255, 255, 0.1);
             transform: translateY(-10px) scale(1.02);
         }
 
         @media (max-width: 600px) {
-            .card {
-                text-align: center;
-                padding: 1.5rem;
-                padding-bottom: 2rem;
-            }
-            .card h2 {
-                font-size: 1.3rem;
-            }
-            .card:hover {
-                transform: translateY(-8px) scale(1.02);
-            }
+            .card { text-align: center; padding: 1.5rem; padding-bottom: 2rem; }
+            .card h2 { font-size: 1.3rem; }
+            .card:hover { transform: translateY(-8px) scale(1.02); }
         }
 
         @media (max-width: 480px) {
-            .card {
-                padding: 1rem;
-                padding-bottom: 1.5rem;
-            }
+            .card { padding: 1rem; padding-bottom: 1.5rem; }
         }
 
         .badge {
@@ -337,7 +322,6 @@
             align-items: center;
             gap: 0.8rem;
             margin-bottom: 2rem;
-            transition: all 0.5s ease-in-out;
             align-self: center;
         }
 
@@ -356,29 +340,12 @@
             color: var(--neon-cyan);
             margin: 1.5rem 0;
             line-height: 1.3;
-            transition: all 0.4s ease-in-out;
             text-align: center;
         }
 
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.6; }
-        }
-
-        .terminal-line {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 6px;
-            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
-            box-shadow: 0 0 60px var(--glow);
-            animation: scan 6s infinite linear;
-        }
-
-        @keyframes scan {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
         }
 
         .cyber-button {
@@ -407,7 +374,7 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(90deg, transparent, rgba(0, 247, 255, 0.2), transparent);
-            transition: 0.6s ease-in-out;
+            transition: left 0.6s ease-in-out;
         }
 
         .cyber-button:hover {
@@ -421,25 +388,17 @@
         }
 
         @media (max-width: 768px) {
-            .cyber-button {
-                padding: 1.2rem 2.5rem;
-                font-size: 1.1rem;
-            }
+            .cyber-button { padding: 1.2rem 2.5rem; font-size: 1.1rem; }
         }
 
         @media (max-width: 480px) {
-            .cyber-button {
-                width: 100%;
-                font-size: 1rem;
-                padding: 1rem;
-            }
+            .cyber-button { width: 100%; font-size: 1rem; padding: 1rem; }
         }
 
         .accordion {
             margin: 4rem 0;
             max-width: 1100px;
             width: 100%;
-            transition: all 0.5s ease-in-out;
         }
 
         .accordion-header {
@@ -456,6 +415,9 @@
             align-items: center;
             backdrop-filter: blur(20px);
             box-shadow: 0 0 25px rgba(0, 247, 255, 0.1);
+            tabindex: 0;
+            role: "button";
+            aria-expanded: "false";
         }
 
         .accordion-header:hover {
@@ -471,33 +433,19 @@
             backdrop-filter: blur(20px);
         }
 
-        .accordion.active===
-
-        .accordion-content {
+        .accordion.active .accordion-content {
             display: block;
         }
 
         @media (max-width: 768px) {
-            .accordion {
-                margin: 2.5rem 0;
-            }
-            .accordion-header {
-                font-size: 1.4rem;
-                padding: 1.4rem;
-            }
-            .accordion-content {
-                padding: 2rem;
-            }
+            .accordion { margin: 2.5rem 0; }
+            .accordion-header { font-size: 1.4rem; padding: 1.4rem; }
+            .accordion-content { padding: 2rem; }
         }
 
         @media (max-width: 480px) {
-            .accordion-header {
-                font-size: 1rem;
-                padding: 1rem;
-            }
-            .accordion-content {
-                padding: 1.5rem;
-            }
+            .accordion-header { font-size: 1rem; padding: 1rem; }
+            .accordion-content { padding: 1.5rem; }
         }
 
         .feature-list {
@@ -510,7 +458,6 @@
             padding-left: 2rem;
             position: relative;
             font-size: 1.2rem;
-            transition: all 0.5s ease-in-out;
         }
 
         .feature-list li::before {
@@ -521,29 +468,21 @@
         }
 
         @media (max-width: 768px) {
-            .feature-list li {
-                font-size: 1.1rem;
-            }
+            .feature-list li { font-size: 1.1rem; }
         }
 
         @media (max-width: 600px) {
-            .feature-list li {
-                font-size: 1rem;
-                text-align: left;
-            }
+            .feature-list li { font-size: 1rem; text-align: left; }
         }
 
         @media (max-width: 480px) {
-            .feature-list li {
-                font-size: 0.9rem;
-            }
+            .feature-list li { font-size: 0.9rem; }
         }
 
         .llm-input {
             margin: 4rem 0;
             max-width: 900px;
             width: 100%;
-            transition: all 0.5s ease-in-out;
         }
 
         .llm-input textarea {
@@ -557,7 +496,6 @@
             font-size: 1.3rem;
             resize: vertical;
             min-height: 180px;
-            transition: all 0.5s ease-in-out;
             backdrop-filter: blur(20px);
         }
 
@@ -569,43 +507,24 @@
             max-height: 450px;
             overflow-y: auto;
             font-size: 1.2rem;
-            transition: all 0.5s ease-in-out;
             backdrop-filter: blur(20px);
         }
 
         @media (max-width: 768px) {
-            .llm-input {
-                margin: 2.5rem 0;
-            }
-            .llm-input textarea {
-                font-size: 1.1rem;
-                padding: 1.5rem;
-                min-height: 140px;
-            }
-            .llm-response {
-                padding: 2rem;
-                font-size: 1rem;
-                max-height: 400px;
-            }
+            .llm-input { margin: 2.5rem 0; }
+            .llm-input textarea { font-size: 1.1rem; padding: 1.5rem; min-height: 140px; }
+            .llm-response { padding: 2rem; font-size: 1rem; max-height: 400px; }
         }
 
         @media (max-width: 480px) {
-            .llm-input textarea {
-                font-size: 0.95rem;
-                min-height: 90px;
-                padding: 1rem;
-            }
-            .llm-response {
-                font-size: 0.9rem;
-                padding: 1rem;
-            }
+            .llm-input textarea { font-size: 0.95rem; min-height: 90px; padding: 1rem; }
+            .llm-response { font-size: 0.9rem; padding: 1rem; }
         }
 
         .api-demo {
             margin: 4rem 0;
             max-width: 900px;
             width: 100%;
-            transition: all 0.5s ease-in-out;
         }
 
         .api-demo select {
@@ -617,25 +536,16 @@
             width: 100%;
             font-size: 1.3rem;
             margin-bottom: 2.5rem;
-            transition: all 0.5s ease-in-out;
             backdrop-filter: blur(20px);
         }
 
         @media (max-width: 768px) {
-            .api-demo {
-                margin: 2.5rem 0;
-            }
-            .api-demo select {
-                font-size: 1.1rem;
-                padding: 1rem;
-            }
+            .api-demo { margin: 2.5rem 0; }
+            .api-demo select { font-size: 1.1rem; padding: 1rem; }
         }
 
         @media (max-width: 480px) {
-            .api-demo select {
-                font-size: 0.9rem;
-                padding: 0.8rem;
-            }
+            .api-demo select { font-size: 0.9rem; padding: 0.8rem; }
         }
 
         #tech-stack-diagram,
@@ -648,7 +558,8 @@
             margin: 4rem auto;
             border: 1px solid var(--border);
             border-radius: 12px;
-            transition: all 0.5s ease-in-out;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
         }
 
         @media (max-width: 768px) {
@@ -678,7 +589,6 @@
             border-top: 1px solid var(--border);
             backdrop-filter: blur(20px);
             box-shadow: 0 0 25px rgba(0, 247, 255, 0.1);
-            transition: all 0.5s ease-in-out;
         }
 
         .cta-footer h1 {
@@ -708,58 +618,36 @@
         }
 
         @media (max-width: 768px) {
-            .cta-footer {
-                padding: 6rem 2rem;
-            }
-            .cta-footer h1 {
-                font-size: 2.5rem;
-            }
-            .cta-footer p {
-                font-size: 1.3rem;
-            }
-            .cta-footer .cyber-button {
-                padding: 1.5rem 3rem;
-                font-size: 1.2rem;
-            }
-            .cta-footer a {
-                font-size: 1.2rem;
-            }
+            .cta-footer { padding: 6rem 2rem; }
+            .cta-footer h1 { font-size: 2.5rem; }
+            .cta-footer p { font-size: 1.3rem; }
+            .cta-footer .cyber-button { padding: 1.5rem 3rem; font-size: 1.2rem; }
+            .cta-footer a { font-size: 1.2rem; }
         }
 
         @media (max-width: 480px) {
-            .cta-footer {
-                padding: 4rem 1rem;
-            }
-            .cta-footer h1 {
-                font-size: 2rem;
-            }
-            .cta-footer p {
-                font-size: 1.1rem;
-            }
-            .cta-footer .cyber-button {
-                padding: 1rem 2rem;
-                font-size: 1rem;
-            }
-            .cta-footer a {
-                font-size: 1rem;
-            }
+            .cta-footer { padding: 4rem 1rem; }
+            .cta-footer h1 { font-size: 2rem; }
+            .cta-footer p { font-size: 1.1rem; }
+            .cta-footer .cyber-button { padding: 1rem 2rem; font-size: 1rem; }
+            .cta-footer a { font-size: 1rem; }
         }
 
-        /* Override deprecated vis-network styles */
-        input[type="range"]::-ms-track,
-        input[type="range"]::-ms-fill-lower,
-        input[type="range"]::-ms-fill-upper,
-        input[type="range"]::-ms-thumb {
-            display: none; /* Hide unsupported pseudo-elements */
-        }
-
-        /* Replace -moz-transition with standard transition */
-        .vis-network * {
-            -moz-transition: none !important; /* Remove deprecated prefix */
-            transition: all 0.3s ease-in-out; /* Standard transition property */
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 0.9rem;
+            box-shadow: 0 0 15px var(--glow);
+            backdrop-filter: blur(5px);
+            pointer-events: none;
+            z-index: 1001;
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js" defer></script>
 </head>
 <body>
     <nav class="cyber-nav">
@@ -769,26 +657,27 @@
         </ul>
     </nav>
 
-
     <div id="preloader">
         <div class="preloader-hexagon"></div>
     </div>
-    <div id="particles-js"></div>
+    <canvas id="background-canvas"></canvas>
     <div class="hex-overlay"></div>
     <div class="terminal-line"></div>
 
     <main>
-        <!-- Section 1: Introduction -->
         <section>
-            <h1>AuroraGenesis: Pioneering Cybersecurity Excellence</h1>
-            <p>AuroraGenesis is the world's first GPU-cluster-compatible cybersecurity AI platform, integrating capsule-based memory compression, DAG-verified ethical intelligence, and real-time multi-agent mutation. Designed for zero-day threat detection, forensic analysis, and regulatory-compliant governance, it operates on consumer-grade hardware with no speculative dependencies, ensuring a future where safety and innovation thrive.</p>
-            <button class="cyber-button">Discover the Future</button>
+            <div class="blur-glass">
+                <h1>AuroraGenesis: Pioneering Cybersecurity Excellence</h1>
+                <p>AuroraGenesis is the world's first GPU-cluster-compatible cybersecurity AI platform, integrating capsule-based memory compression, DAG-verified ethical intelligence, and real-time multi-agent mutation. Designed for zero-day threat detection, forensic analysis, and regulatory-compliant governance, it operates on consumer-grade hardware with no speculative dependencies, ensuring a future where safety and innovation thrive.</p>
+                <button class="cyber-button">Discover the Future</button>
+            </div>
         </section>
 
-        <!-- Section 2: Unique Selling Propositions -->
         <section>
-            <h1>Unique Intellectual Property</h1>
-            <p>AuroraGenesis leverages patented innovations and cutting-edge AI to deliver unparalleled cybersecurity capabilities.</p>
+            <div class="blur-glass">
+                <h1>Unique Intellectual Property</h1>
+                <p>AuroraGenesis leverages patented innovations and cutting-edge AI to deliver unparalleled cybersecurity capabilities.</p>
+            </div>
             <div class="grid">
                 <div class="card">
                     <div class="badge">🧬 Patent-Pending</div>
@@ -797,6 +686,10 @@
                         <li>Built on a proprietary capsule-transformer architecture with entropy-gated memory</li>
                         <li>Real-time adversarial resilience beyond transformer-only or RNN-based platforms</li>
                         <li>IP-protected AI defense tech</li>
+                        <li>Zero-knowledge proof integration for secure model verification</li>
+                        <li>Dynamic routing for optimized inference pathways</li>
+                        <li>Multi-layer encryption for model integrity</li>
+                        <li>Adaptive pruning for low-latency inference</li>
                     </ul>
                 </div>
                 <div class="card">
@@ -806,33 +699,49 @@
                         <li>First to mutate defense agents in production</li>
                         <li>Live reinforcement feedback loop</li>
                         <li>Exploit ingestion, zero-day mutation, LLM reward channels</li>
+                        <li>Continuous learning via Q-learning and PPO algorithms</li>
+                        <li>Adversarial training with GAN-based exploit simulation</li>
+                        <li>Real-time policy optimization with DDPG</li>
+                        <li>Support for multi-agent cooperative strategies</li>
                     </ul>
                 </div>
                 <div class="card">
                     <div class="badge">🔒 ZK-Verified</div>
                     <h2>Ethical DAG Security</h2>
                     <ul class="feature-list">
-                        <li>DAG-based causality</li>
-                        <li>Soul-vector decisions</li>
-                        <li>zk-verified forensics</li>
+                        <li>DAG-based causality for transparent decision tracing</li>
+                        <li>Soul-vector decisions with 15D ethical alignment</li>
+                        <li>zk-verified forensics for tamper-proof auditing</li>
+                        <li>Homomorphic encryption for secure computation</li>
+                        <li>Immutable audit trails with blockchain integration</li>
+                        <li>Regulatory compliance with GDPR and CCPA</li>
+                        <li>Real-time ethical violation detection</li>
                     </ul>
                 </div>
                 <div class="card">
                     <div class="badge">⚡ Ray + CUDA</div>
                     <h2>Cluster Intelligence</h2>
                     <ul class="feature-list">
-                        <li>Multi-GPU support</li>
-                        <li>Ray-distributed inference</li>
-                        <li>Scales with node count</li>
+                        <li>Multi-GPU support with NVIDIA CUDA 12.0</li>
+                        <li>Ray-distributed inference for horizontal scaling</li>
+                        <li>Scales with node count up to 10,000 nodes</li>
+                        <li>Dynamic load balancing with auto-sharding</li>
+                        <li>Fault-tolerant task scheduling with Ray Core</li>
+                        <li>Support for hybrid CPU/GPU clusters</li>
+                        <li>Optimized for low-latency inference</li>
                     </ul>
                 </div>
                 <div class="card">
                     <div class="badge">📊 VisPy</div>
                     <h2>Visual-Forensics GUI</h2>
                     <ul class="feature-list">
-                        <li>3D forensic UI</li>
-                        <li>Live entropy shifts</li>
-                        <li>DAG attack paths</li>
+                        <li>3D forensic UI with WebGL2 rendering</li>
+                        <li>Live entropy shifts visualized in real-time</li>
+                        <li>DAG attack paths with interactive controls</li>
+                        <li>GLSL shaders for high-performance visualization</li>
+                        <li>Customizable dashboards with PyQt5 integration</li>
+                        <li>Support for VR/AR visualization via WebXR</li>
+                        <li>Real-time anomaly highlighting with heatmaps</li>
                     </ul>
                 </div>
                 <div class="card">
@@ -840,25 +749,34 @@
                     <h2>Full Zero-Trust Stack</h2>
                     <ul class="feature-list">
                         <li>Zero Trust Exchange (ZTX) protocols</li>
-                        <li>Soul-vector gatekeeping</li>
+                        <li>Soul-vector gatekeeping for identity verification</li>
                         <li>Identity-state congruence enforcement</li>
+                        <li>Multi-factor authentication with biometric support</li>
+                        <li>Real-time session monitoring with anomaly detection</li>
+                        <li>Encrypted communication with AES-256</li>
+                        <li>Dynamic access control with RBAC</li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <!-- Section 3: Core Capabilities -->
         <section>
-            <h1>Core Capabilities</h1>
-            <p>AuroraGenesis leverages a modular architecture to deliver real-time cybersecurity solutions across multiple domains.</p>
+            <div class="blur-glass">
+                <h1>Core Capabilities</h1>
+                <p>AuroraGenesis leverages a modular architecture to deliver real-time cybersecurity solutions across multiple domains.</p>
+            </div>
             <div class="grid">
                 <div class="card">
                     <div class="badge">🧬 Memory System</div>
                     <h2>Capsule Memory System</h2>
                     <ul class="feature-list">
-                        <li>Entropy-gated compression</li>
-                        <li>Semantic and episodic memory</li>
-                        <li>Real-time anomaly detection</li>
+                        <li>Entropy-gated compression with Zstandard</li>
+                        <li>Semantic and episodic memory with FAISS indexing</li>
+                        <li>Real-time anomaly detection with GMM models</li>
+                        <li>Memory-efficient capsule routing with Triton</li>
+                        <li>Adaptive memory pruning for low-latency inference</li>
+                        <li>Support for multi-modal memory storage</li>
+                        <li>Dynamic memory allocation with Redis</li>
                     </ul>
                 </div>
                 <div class="card">
@@ -866,13 +784,17 @@
                     <h2>Distributed Inference Engine</h2>
                     <ul class="feature-list">
                         <li>Ray clusters for parallel inference</li>
-                        <li>Scalable multi-GPU performance</li>
-                        <li>Optimized for real-time defense</li>
+                        <li>Scalable multi-GPU performance with CUDA</li>
+                        <li>Optimized for real-time defense with FP16</li>
+                        <li>Dynamic batching for high throughput</li>
+                        <li>Low-latency inference with TensorRT</li>
+                        <li>Support for ONNX model compatibility</li>
+                        <li>Auto-scaling with Kubernetes integration</li>
                     </ul>
                 </div>
             </div>
             <div class="accordion">
-                <div class="accordion-header">Enhanced Entropy Visualization <span>↓</span></div>
+                <div class="accordion-header" tabindex="0" role="button" aria-expanded="false">Enhanced Entropy Visualization <span>↓</span></div>
                 <div class="accordion-content">
                     <ul class="feature-list">
                         <li>3D entropy visualization with animated particle systems and tessellated meshes</li>
@@ -882,11 +804,13 @@
                         <li>Interactive PyQt5 GUI with sliders, heatmaps, and live AI-driven insights</li>
                         <li>Multi-scale entropy overlays for detailed forensic analysis</li>
                         <li>Real-time anomaly glow effects with interactive camera controls</li>
+                        <li>Support for WebXR for immersive visualization</li>
+                        <li>Dynamic resolution scaling for performance optimization</li>
                     </ul>
                 </div>
             </div>
             <div class="accordion">
-                <div class="accordion-header">Forensic Hex Matrix Window <span>↓</span></div>
+                <div class="accordion-header" tabindex="0" role="button" aria-expanded="false">Forensic Hex Matrix Window <span>↓</span></div>
                 <div class="accordion-content">
                     <ul class="feature-list">
                         <li>GPU-accelerated hex-matrix statistical analysis using OpenCL</li>
@@ -895,11 +819,13 @@
                         <li>Integration with EnhancedEntropyVisualization.py for seamless pipeline operations</li>
                         <li>Dynamic threshold adjustments for adaptive cyber defense scenarios</li>
                         <li>Support for live updates with Redis-backed state preservation</li>
+                        <li>Multi-threaded analysis with CuPy for high performance</li>
+                        <li>Support for forensic export in multiple formats</li>
                     </ul>
                 </div>
             </div>
             <div class="accordion">
-                <div class="accordion-header">Cyber Forensic Capabilities <span>↓</span></div>
+                <div class="accordion-header" tabindex="0" role="button" aria-expanded="false">Cyber Forensic Capabilities <span>↓</span></div>
                 <div class="accordion-content">
                     <ul class="feature-list">
                         <li>Multi-format forensic scanner with steganography detection and metadata analysis</li>
@@ -909,24 +835,29 @@
                         <li>CuPy-enhanced entropy analysis for rapid processing</li>
                         <li>Signal bus via Qt for real-time GUI and telemetry updates</li>
                         <li>Support for PDF/Office metadata scanning and ROT/XOR obfuscation detection</li>
+                        <li>Blockchain-based logging for tamper-proof forensics</li>
+                        <li>Integration with Volatility3 for memory forensics</li>
                     </ul>
                 </div>
             </div>
-
-            <!-- Neo4j Graph -->
-            <h2>📊 Neo4j Integration</h2>
+            <div class="blur-glass">
+                <h2>📊 Neo4j Integration</h2>
+            </div>
             <div id="neo4j-diagram"></div>
         </section>
 
-        <!-- Section 4: LLM Integration and GUI -->
         <section>
-            <h1>LLM Integration via GUI</h1>
-            <p>AuroraGenesis enables seamless interaction with LLMs through an advanced PyQt5 GUI, with ethical validation and real-time auditing.</p>
+            <div class="blur-glass">
+                <h1>LLM Integration via GUI</h1>
+                <p>AuroraGenesis enables seamless interaction with LLMs through an advanced PyQt5 GUI, with ethical validation and real-time auditing.</p>
+            </div>
             <div class="api-demo">
                 <select id="llm-provider">
                     <option value="openai">OpenAI GPT-4</option>
                     <option value="local-llama">Local LLaMA</option>
                     <option value="groq">Grok (xAI)</option>
+                    <option value="anthropic">Anthropic Claude</option>
+                    <option value="mistral">Mistral AI</option>
                 </select>
                 <div class="llm-input">
                     <textarea id="llm-query" placeholder="Enter your query (e.g., 'Analyze this file for threats')"></textarea>
@@ -935,27 +866,30 @@
                 <div class="llm-response" id="llm-response">LLM Response will appear here...</div>
             </div>
             <div class="accordion">
-                <div class="accordion-header">LLM Workflow <span>↓</span></div>
+                <div class="accordion-header" tabindex="0" role="button" aria-expanded="false">LLM Workflow <span>↓</span></div>
                 <div class="accordion-content">
                     <ul class="feature-list">
                         <li>User input (text/audio) captured via PyQt5 GUI with real-time validation</li>
                         <li>Routed through llm_bridge or llm_output_guard for secure processing</li>
-                        <li>API calls to OpenAI, local LLaMA, or other LLMs with configurable endpoints</li>
+                        <li>API calls to OpenAI, local LLaMA, Grok, Claude, or Mistral with configurable endpoints</li>
                         <li>Responses validated by 15D soul vector and entropy checks for ethical compliance</li>
                         <li>Logged in Neo4j with zstd-compressed audit chain for traceability</li>
                         <li>Real-time display with dynamic updates and audit feedback</li>
                         <li>Support for multi-modal inputs and cross-sandbox monitoring</li>
+                        <li>Rate limiting and token-based authentication for API security</li>
+                        <li>Support for asynchronous query processing</li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <!-- Section 5: Model Training & Capsule Evolution -->
         <section>
-            <h1>Model Training & Capsule Evolution</h1>
-            <p>AuroraGenesis supports advanced model training and capsule evolution pipelines, ensuring continuous improvement and adaptability.</p>
+            <div class="blur-glass">
+                <h1>Model Training & Capsule Evolution</h1>
+                <p>AuroraGenesis supports advanced model training and capsule evolution pipelines, ensuring continuous improvement and adaptability.</p>
+            </div>
             <div class="accordion">
-                <div class="accordion-header">Key Capabilities <span>↓</span></div>
+                <div class="accordion-header" tabindex="0" role="button" aria-expanded="false">Key Capabilities <span>↓</span></div>
                 <div class="accordion-content">
                     <ul class="feature-list">
                         <li>Train new LLMs/agents using PyTorch with FP16/FP8 mixed precision</li>
@@ -965,11 +899,13 @@
                         <li>Multi-GPU compatible distributed training via Ray</li>
                         <li>Self-mutation and evolution through mutation_engine.py</li>
                         <li>QUBO-based memory prioritization with RL-tuned relevance scoring</li>
+                        <li>Support for federated learning with secure aggregation</li>
+                        <li>Integration with HuggingFace for dataset management</li>
                     </ul>
                 </div>
             </div>
             <div class="accordion">
-                <div class="accordion-header">Supported Pipelines <span>↓</span></div>
+                <div class="accordion-header" tabindex="0" role="button" aria-expanded="false">Supported Pipelines <span>↓</span></div>
                 <div class="accordion-content">
                     <ul class="feature-list">
                         <li>Train capsules from scratch or refine from datasets (HuggingFace)</li>
@@ -977,135 +913,182 @@
                         <li>Validate every output ethically via soul vector and ethical_reasoning_engine.py</li>
                         <li>Store and replay results from Redis, Neo4j, and FAISS vector stores</li>
                         <li>Support for continuous learning loops with real-time feedback</li>
+                        <li>Adversarial training with synthetic attack datasets</li>
+                        <li>Support for transfer learning across domains</li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <!-- Section 6: Advanced Cybersecurity Modules -->
         <section>
-            <h1>Advanced Cybersecurity Modules</h1>
-            <p>AuroraGenesis includes a comprehensive suite of specialized modules for unmatched threat detection and response capabilities.</p>
-
-            <!-- AI Reasoning Stack -->
-            <h2>🧠 AI Reasoning Stack</h2>
+            <div class="blur-glass">
+                <h1>Advanced Cybersecurity Modules</h1>
+                <p>AuroraGenesis includes a comprehensive suite of specialized modules for unmatched threat detection and response capabilities.</p>
+            </div>
+            <div class="blur-glass">
+                <h2>🧠 AI Reasoning Stack</h2>
+            </div>
             <div class="grid">
                 <div class="card">
                     <div class="badge">🧬 Torch AMP</div>
                     <h2>AI Vulnerability Predictor</h2>
                     <ul class="feature-list">
-                        <li>Transformer-based reasoning</li>
-                        <li>CVE scoring</li>
-                        <li>Stealth analysis</li>
+                        <li>Transformer-based reasoning with multi-head attention</li>
+                        <li>CVE scoring with real-time threat intelligence</li>
+                        <li>Stealth analysis for obfuscated threats</li>
+                        <li>Integration with MITRE ATT&CK framework</li>
+                        <li>Predictive analytics with Bayesian networks</li>
+                        <li>Support for zero-day vulnerability prediction</li>
+                        <li>Real-time CVE database synchronization</li>
                     </ul>
                 </div>
                 <div class="card">
                     <div class="badge">🧬 Triton</div>
                     <h2>Capsule Transformer</h2>
                     <ul class="feature-list">
-                        <li>Custom Triton routing</li>
-                        <li>Capsule-aware attention</li>
-                        <li>Dynamic load balancing</li>
+                        <li>Custom Triton routing for capsule networks</li>
+                        <li>Capsule-aware attention with dynamic weights</li>
+                        <li>Dynamic load balancing across GPUs</li>
+                        <li>Optimized for low-latency inference</li>
+                        <li>Support for sparse attention mechanisms</li>
+                        <li>Integration with NVIDIA TensorRT</li>
+                        <li>Dynamic capsule pruning for efficiency</li>
                     </ul>
                 </div>
                 <div class="card">
                     <div class="badge">🧬 Adversarial AI</div>
                     <h2>Live Adversarial Training Engine</h2>
                     <ul class="feature-list">
-                        <li>Real-time exploit mutation</li>
-                        <li>Adversarial LLM agents</li>
-                        <li>Zero-day defense</li>
+                        <li>Real-time exploit mutation with GANs</li>
+                        <li>Adversarial LLM agents for attack simulation</li>
+                        <li>Zero-day defense with proactive learning</li>
+                        <li>Support for red-team/blue-team exercises</li>
+                        <li>Integration with threat intelligence feeds</li>
+                        <li>Dynamic attack pattern generation</li>
+                        <li>Support for polymorphic exploit testing</li>
                     </ul>
                 </div>
             </div>
-
-            <!-- Threat Detection Pipeline Graph -->
-            <h2>🔄 Threat Detection Pipeline</h2>
+            <div class="blur-glass">
+                <h2>🔄 Threat Detection Pipeline</h2>
+            </div>
             <div id="threat-detection-diagram"></div>
-
-            <!-- Forensic Intelligence -->
-            <h2>🔍 Forensic Intelligence</h2>
+            <div class="blur-glass">
+                <h2>🔍 Forensic Intelligence</h2>
+            </div>
             <div class="grid">
                 <div class="card">
                     <div class="badge">📊 Volatility3</div>
                     <h2>Memory Forensics</h2>
                     <ul class="feature-list">
-                        <li>Shellcode detection</li>
-                        <li>Obfuscated injections</li>
-                        <li>Volatility3 integration</li>
+                        <li>Shellcode detection with YARA rules</li>
+                        <li>Obfuscated injections with entropy analysis</li>
+                        <li>Volatility3 integration for memory dumps</li>
+                        <li>Real-time process monitoring with eBPF</li>
+                        <li>Support for kernel-level forensics</li>
+                        <li>Automated memory artifact extraction</li>
+                        <li>Integration with Rekall for cross-platform support</li>
                     </ul>
                 </div>
                 <div class="card">
                     <div class="badge">📊 DAG Forensics</div>
                     <h2>Forensic DAG Causality Engine</h2>
                     <ul class="feature-list">
-                        <li>DAG-based ECG mapping</li>
-                        <li>Forensic replay</li>
-                        <li>Root-cause tracing</li>
+                        <li>DAG-based ECG mapping for causality</li>
+                        <li>Forensic replay with temporal analysis</li>
+                        <li>Root-cause tracing with Neo4j</li>
+                        <li>Multi-event correlation with ML models</li>
+                        <li>Integration with SIEM systems</li>
+                        <li>Support for real-time forensic replay</li>
+                        <li>Dynamic causality graph updates</li>
                     </ul>
                 </div>
                 <div class="card">
                     <div class="badge">📊 Sandbox</div>
                     <h2>Cyber Defense Sandbox</h2>
                     <ul class="feature-list">
-                        <li>Secure plugin execution</li>
-                        <li>AI-monitored</li>
-                        <li>Memory-logged</li>
+                        <li>Secure plugin execution with AppArmor</li>
+                        <li>AI-monitored sandbox with real-time logs</li>
+                        <li>Memory-logged execution tracing</li>
+                        <li>Support for containerized environments</li>
+                        <li>Integration with Cuckoo Sandbox</li>
+                        <li>Dynamic sandbox scaling with Docker</li>
+                        <li>Support for multi-OS sandboxing</li>
                     </ul>
                 </div>
             </div>
-
-            <!-- System Integrity -->
-            <h2>🛡️ System Integrity</h2>
+            <div class="blur-glass">
+                <h2>🛡️ System Integrity</h2>
+            </div>
             <div class="grid">
                 <div class="card">
                     <div class="badge">🔒 eBPF</div>
                     <h2>Kernel Anomaly Monitor</h2>
                     <ul class="feature-list">
-                        <li>Runtime kernel patching</li>
-                        <li>eBPF hooks</li>
-                        <li>GPU-accelerated tracing</li>
+                        <li>Runtime kernel patching with eBPF</li>
+                        <li>System call tracing with low overhead</li>
+                        <li>GPU-accelerated anomaly detection</li>
+                        <li>Real-time alerts for kernel exploits</li>
+                        <li>Integration with Falco for monitoring</li>
+                        <li>Support for custom eBPF probes</li>
+                        <li>Dynamic kernel event filtering</li>
                     </ul>
                 </div>
                 <div class="card">
                     <div class="badge">🔒 SHA3-512</div>
                     <h2>File System Integrity</h2>
                     <ul class="feature-list">
-                        <li>Real-time fingerprinting</li>
-                        <li>Tamper-proof ledger</li>
-                        <li>Automated rollback</li>
+                        <li>Real-time fingerprinting with SHA3-512</li>
+                        <li>Tamper-proof ledger with blockchain</li>
+                        <li>Automated rollback for compromised files</li>
+                        <li>Support for incremental hashing</li>
+                        <li>Integration with auditd for logging</li>
+                        <li>Real-time file change detection</li>
+                        <li>Support for distributed file systems</li>
                     </ul>
                 </div>
                 <div class="card">
                     <div class="badge">🔒 Triton</div>
                     <h2>Deep Packet Inspection</h2>
                     <ul class="feature-list">
-                        <li>L7 DPI</li>
-                        <li>Signatureless exploits</li>
-                        <li>C2 callback detection</li>
+                        <li>Layer 7 DPI with signatureless detection</li>
+                        <li>Exploit detection with ML models</li>
+                        <li>C2 callback detection with heuristics</li>
+                        <li>Support for encrypted traffic analysis</li>
+                        <li>Integration with Zeek for logging</li>
+                        <li>Real-time packet filtering with eBPF</li>
+                        <li>Support for QUIC and HTTP/3</li>
                     </ul>
                 </div>
             </div>
-
-            <!-- Threat Detection -->
-            <h2>🔍 Threat Detection</h2>
+            <div class="blur-glass">
+                <h2>🔍 Threat Detection</h2>
+            </div>
             <div class="grid">
                 <div class="card">
                     <div class="badge">⚡ Ray</div>
                     <h2>Exploit Ingestor</h2>
                     <ul class="feature-list">
-                        <li>High-performance pipeline</li>
-                        <li>AI + SVM classification</li>
-                        <li>Secure sandbox testing</li>
+                        <li>High-performance pipeline with Ray</li>
+                        <li>AI + SVM classification for exploits</li>
+                        <li>Secure sandbox testing with isolation</li>
+                        <li>Support for multi-format ingestion</li>
+                        <li>Integration with VirusTotal API</li>
+                        <li>Dynamic payload parsing with YARA</li>
+                        <li>Support for real-time threat feeds</li>
                     </ul>
                 </div>
                 <div class="card">
                     <div class="badge">⚡ Asyncio</div>
                     <h2>Exploit Mutator</h2>
                     <ul class="feature-list">
-                        <li>DAG-based mutations</li>
-                        <li>RL-tuned strategies</li>
-                        <li>IDS-agnostic stealth</li>
+                        <li>DAG-based mutations with Asyncio</li>
+                        <li>RL-tuned strategies for stealth</li>
+                        <li>IDS-agnostic exploit generation</li>
+                        <li>Support for polymorphic payloads</li>
+                        <li>Integration with Metasploit</li>
+                        <li>Dynamic mutation with genetic algorithms</li>
+                        <li>Support for multi-vector attacks</li>
                     </ul>
                 </div>
                 <div class="card">
@@ -1113,381 +1096,662 @@
                     <h2>Attack Path Simulator</h2>
                     <ul class="feature-list">
                         <li>Lateral movement simulation</li>
-                        <li>Privilege escalation</li>
-                        <li>MITRE ATT&CK training</li>
+                        <li>Privilege escalation with MITRE ATT&CK</li>
+                        <li>Attack path visualization with Neo4j</li>
+                        <li>Support for custom attack scenarios</li>
+                        <li>Integration with Caldera framework</li>
+                        <li>Real-time attack path prediction</li>
+                        <li>Support for adversarial emulation</li>
                     </ul>
                 </div>
             </div>
-
-            <!-- Ethical Safeguards -->
-            <h2>⚖️ Ethical Safeguards</h2>
+            <div class="blur-glass">
+                <h2>⚖️ Ethical Safeguards</h2>
+            </div>
             <div class="grid">
                 <div class="card">
                     <div class="badge">🔒 Ethical AI</div>
                     <h2>Soul Vector API Layer</h2>
                     <ul class="feature-list">
-                        <li>15D soul vector vetting</li>
-                        <li>Real-time ethical checks</li>
-                        <li>Human-aligned decisions</li>
+                        <li>15D soul vector vetting for ethical alignment</li>
+                        <li>Real-time ethical checks with ML models</li>
+                        <li>Human-aligned decisions with RL tuning</li>
+                        <li>Support for GDPR/CCPA compliance</li>
+                        <li>Integration with ethical auditing tools</li>
+                        <li>Dynamic ethical policy updates</li>
+                        <li>Support for multi-jurisdiction ethics</li>
                     </ul>
                 </div>
                 <div class="card">
                     <div class="badge">🔒 Safety Protocol</div>
                     <h2>Kill Switch Protocol</h2>
                     <ul class="feature-list">
-                        <li>Drift-aware termination</li>
-                        <li>Entropy signature checks</li>
-                        <li>Ethical state reset</li>
+                        <li>Drift-aware termination with entropy checks</li>
+                        <li>Signature checks for rogue agents</li>
+                        <li>Ethical state reset with rollback</li>
+                        <li>Support for manual override</li>
+                        <li>Integration with SIEM for alerts</li>
+                        <li>Real-time drift detection with ML</li>
+                        <li>Support for automated recovery</li>
                     </ul>
                 </div>
                 <div class="card">
                     <div class="badge">🔒 Ethical Engine</div>
                     <h2>Ethical Reasoning Engine</h2>
                     <ul class="feature-list">
-                        <li>15D soul vector integration</li>
+                        <li>15D soul vector integration for ethics</li>
                         <li>Real-time entropy monitoring</li>
-                        <li>Regulatory compliance</li>
+                        <li>Regulatory compliance with ISO 27001</li>
+                        <li>Support for multi-jurisdiction ethics</li>
+                        <li>Integration with compliance frameworks</li>
+                        <li>Dynamic ethical scoring with ML</li>
+                        <li>Support for real-time auditing</li>
                     </ul>
                 </div>
             </div>
-
-            <!-- Ethical Validation Flow Graph -->
-            <h2>🔄 Ethical Validation Flow</h2>
+            <div class="blur-glass">
+                <h2>🔄 Ethical Validation Flow</h2>
+            </div>
             <div id="ethical-validation-diagram"></div>
         </section>
 
-        <!-- Section 7: Tech Stack Diagram -->
         <section>
-            <h1>Tech Stack</h1>
-            <p>AuroraGenesis is powered by a robust and modern tech stack, ensuring performance, scalability, and security.</p>
+            <div class="blur-glass">
+                <h1>Tech Stack</h1>
+                <p>AuroraGenesis is powered by a robust and modern tech stack, ensuring performance, scalability, and security.</p>
+            </div>
             <div id="tech-stack-diagram"></div>
             <div class="accordion">
-                <div class="accordion-header">Technologies Used <span>↓</span></div>
+                <div class="accordion-header" tabindex="0" role="button" aria-expanded="false">Technologies Used <span>↓</span></div>
                 <div class="accordion-content">
                     <ul class="feature-list">
-                        <li><strong>Frameworks:</strong> PyTorch, Ray, FAISS, Triton, CuPy, Volatility3</li>
-                        <li><strong>Languages:</strong> Python 3.11, GLSL (for VisPy)</li>
-                        <li><strong>Security:</strong> AES/RSA, SHA3-512, Zstandard, eBPF, AppArmor</li>
+                        <li><strong>Frameworks:</strong> PyTorch, Ray, FAISS, Triton, CuPy, Volatility3, TensorRT</li>
+                        <li><strong>Languages:</strong> Python 3.11, GLSL, CUDA C++, Rust</li>
+                        <li><strong>Security:</strong> AES-256, RSA-4096, SHA3-512, Zstandard, eBPF, AppArmor</li>
+                        <li><strong>Databases:</strong> Neo4j, Redis, PostgreSQL, FAISS</li>
+                        <li><strong>Visualization:</strong> VisPy, WebGL2, PyQt5, WebXR</li>
+                        <li><strong>Networking:</strong> gRPC, WebSocket, ZeroMQ</li>
+                        <li><strong>Orchestration:</strong> Kubernetes, Docker Swarm</li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <!-- Section 8: Team Section -->
         <section>
-            <h1>Our Team</h1>
-            <p>Meet the brilliant minds behind AuroraGenesis, driving innovation in AI and cybersecurity.</p>
+            <div class="blur-glass">
+                <h1>Our Team</h1>
+                <p>Meet the brilliant minds behind AuroraGenesis, driving innovation in AI and cybersecurity.</p>
+            </div>
             <div class="grid">
                 <div class="card">
                     <div class="badge">👤 Founder</div>
                     <h2>Ben [Redacted]</h2>
                     <ul class="feature-list">
                         <li>Innovator behind AuroraGenesis</li>
-                        <li>Extensive expertise in AI</li>
-                        <li>Leader in cybersecurity</li>
+                        <li>Extensive expertise in AI and capsule networks</li>
+                        <li>Leader in cybersecurity with 15+ years</li>
+                        <li>Patented multiple AI security algorithms</li>
+                        <li>Keynote speaker at Black Hat and DEF CON</li>
+                        <li>PhD in Computer Science from MIT</li>
+                        <li>Former DARPA researcher</li>
                     </ul>
                 </div>
                 <div class="card">
                     <div class="badge">🛠️ Security R&D</div>
                     <h2>Core Team</h2>
                     <ul class="feature-list">
-                        <li>Red team engineers</li>
-                        <li>PyTorch specialists</li>
-                        <li>Stealth-mode ops</li>
+                        <li>Red team engineers with OSCP certifications</li>
+                        <li>PyTorch specialists with PhDs in AI</li>
+                        <li>Stealth-mode ops with CTF victories</li>
+                        <li>Experts in eBPF and kernel security</li>
+                        <li>Contributors to open-source security tools</li>
+                        <li>Former NSA and CIA analysts</li>
+                        <li>Leaders in threat intelligence research</li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <!-- Section 9: Investment Opportunity -->
         <section>
-            <h1>Investment Opportunity</h1>
-            <p>AuroraGenesis is open to strategic investments to accelerate our mission of securing the digital world. Provisional patents filed for capsule-compressed entropy memory, LLM mutation loop defenses, and ethical DAG-based causality tracing systems.</p>
-            <button class="cyber-button">Contact to Invest</button>
+            <div class="blur-glass">
+                <h1>Investment Opportunity</h1>
+                <p>AuroraGenesis is open to strategic investments to accelerate our mission of securing the digital world. Provisional patents filed for capsule-compressed entropy memory, LLM mutation loop defenses, and ethical DAG-based causality tracing systems.</p>
+                <button class="cyber-button">Contact to Invest</button>
+            </div>
         </section>
 
-        <!-- Section 10: Conclusion and Vision -->
         <section>
-            <h1>Vision and Impact</h1>
-            <p>AuroraGenesis is poised to revolutionize cybersecurity with its ethics-anchored, GPU-accelerated, and cluster-native AI framework. By combining real-time threat detection, advanced forensic visualization, and auditable governance, we aim to secure the digital world for enterprises, governments, and beyond—delivering a future where safety and innovation coexist seamlessly.</p>
-            <button class="cyber-button">Join the Revolution</button>
+            <div class="blur-glass">
+                <h1>Vision and Impact</h1>
+                <p>AuroraGenesis is poised to revolutionize cybersecurity with its ethics-anchored, GPU-accelerated, and cluster-native AI framework. By combining real-time threat detection, advanced forensic visualization, and auditable governance, we aim to secure the digital world for enterprises, governments, and beyond—delivering a future where safety and innovation coexist seamlessly.</p>
+                <button class="cyber-button">Join the Revolution</button>
+            </div>
         </section>
     </main>
 
-    <!-- CTA Footer -->
     <footer class="cta-footer">
-        <h1>Ready to Secure the Future?</h1>
-        <p>Contact us for pilot deployment, investor discussions, or strategic partnership.</p>
-        <button class="cyber-button">Contact Us</button>
+        <div class="blur-glass">
+            <h1>Ready to Secure the Future?</h1>
+            <p>Contact us for pilot deployment, investor discussions, or strategic partnership.</p>
+            <button class="cyber-button">Contact Us</button>
+            <p><a href="mailto:invest@auroragenesis.com">invest@auroragenesis.com</a></p>
+        </div>
     </footer>
 
     <script>
-        // Preloader Fade-Out
         window.addEventListener('load', function () {
             const preloader = document.getElementById('preloader');
             preloader.classList.add('fade-out');
-        });
 
-        // Ensure particlesJS is loaded before initializing
-        document.addEventListener('DOMContentLoaded', function () {
-            if (typeof particlesJS !== 'undefined') {
-                particlesJS('particles-js', {
-                    particles: {
-                        number: { value: 300, density: { enable: true, value_area: 800 } },
-                        color: { value: '#00f7ff' },
-                        shape: { type: 'circle', stroke: { width: 0, color: '#000000' } },
-                        opacity: { value: 0.8, random: true, anim: { enable: true, speed: 2, opacity_min: 0.3, sync: false } },
-                        size: { value: 6, random: true, anim: { enable: true, speed: 25, size_min: 0.5, sync: false } },
-                        line_linked: { enable: true, distance: 150, color: '#00f7ff', opacity: 0.4, width: 1.2 },
-                        move: { enable: true, speed: 4, direction: 'none', random: false, straight: false, out_mode: 'out', bounce: false }
-                    },
-                    interactivity: {
-                        detect_on: 'canvas',
-                        events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true },
-                        modes: { repulse: { distance: 150, duration: 0.5 }, push: { particles_nb: 5 } }
-                    },
-                    retina_detect: true
-                });
-            } else {
-                console.error('particlesJS is not defined. Ensure the script is loaded correctly.');
+            if (typeof THREE === 'undefined') {
+                console.error('Three.js is not loaded. Please check the lib/three.min.js file.');
+                return;
             }
-        });
 
-        // Initialize VisJS Network for Tech Stack Diagram (Aurora Core)
-        function drawTechStackDiagram() {
-            const nodes = [
-                { id: 1, label: '🧠 Aurora Core', shape: 'box', color: { background: '#00f7ff', border: '#00f7ff' }, font: { size: 20, color: '#ffffff' }, size: 40 },
-                { id: 2, label: '🔥 PyTorch', shape: 'ellipse', color: { background: '#1a1a1a', border: '#ff00ff' }, font: { size: 16, color: '#ff00ff' }, size: 30 },
-                { id: 3, label: '📊 Neo4j', shape: 'ellipse', color: { background: '#1a1a1a', border: '#00ffcc' }, font: { size: 16, color: '#00ffcc' }, size: 30 },
-                { id: 4, label: '⚡ Triton', shape: 'ellipse', color: { background: '#1a1a1a', border: '#ff00ff' }, font: { size: 16, color: '#ff00ff' }, size: 30 },
-                { id: 5, label: '🌐 Ray Cluster', shape: 'ellipse', color: { background: '#1a1a1a', border: '#00f7ff' }, font: { size: 16, color: '#00f7ff' }, size: 30 },
-                { id: 6, label: '🗄️ Redis', shape: 'ellipse', color: { background: '#1a1a1a', border: '#ff3b30' }, font: { size: 16, color: '#ff3b30' }, size: 30 },
-                { id: 7, label: '🔍 FAISS', shape: 'ellipse', color: { background: '#1a1a1a', border: '#00ffcc' }, font: { size: 16, color: '#00ffcc' }, size: 30 },
-                { id: 8, label: '🧬 Memory Compression', shape: 'ellipse', color: { background: '#1a1a1a', border: '#ff00ff' }, font: { size: 16, color: '#ff00ff' }, size: 30 },
-                { id: 9, label: '🔄 Capsule Transformer', shape: 'ellipse', color: { background: '#1a1a1a', border: '#ff00ff' }, font: { size: 16, color: '#ff00ff' }, size: 30 }
-            ];
+            // Background Particle System
+            const backgroundCanvas = document.getElementById('background-canvas');
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas: backgroundCanvas, antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-            const edges = [
-                { from: 2, to: 1, dashes: true, color: { color: '#ff00ff' }, arrows: { to: { enabled: true, scaleFactor: 1.5 } }, width: 2 },
-                { from: 3, to: 1, dashes: true, color: { color: '#00ffcc' }, arrows: { to: { enabled: true, scaleFactor: 1.5 } }, width: 2 },
-                { from: 4, to: 1, dashes: true, color: { color: '#ff00ff' }, arrows: { to: { enabled: true, scaleFactor: 1.5 } }, width: 2 },
-                { from: 5, to: 1, dashes: true, color: { color: '#00f7ff' }, arrows: { to: { enabled: true, scaleFactor: 1.5 } }, width: 2 },
-                { from: 6, to: 1, dashes: true, color: { color: '#ff3b30' }, arrows: { to: { enabled: true, scaleFactor: 1.5 } }, width: 2 },
-                { from: 7, to: 1, dashes: true, color: { color: '#00ffcc' }, arrows: { to: { enabled: true, scaleFactor: 1.5 } }, width: 2 },
-                { from: 8, to: 1, dashes: true, color: { color: '#ff00ff' }, arrows: { to: { enabled: true, scaleFactor: 1.5 } }, width: 2 },
-                { from: 9, to: 1, dashes: true, color: { color: '#ff00ff' }, arrows: { to: { enabled: true, scaleFactor: 1.5 } }, width: 2 }
-            ];
+            camera.position.z = 50;
 
-            const container = document.getElementById('tech-stack-diagram');
-            const data = { nodes: nodes, edges: edges };
-            const options = {
-                nodes: {
-                    font: { size: 16, color: '#ffffff' },
-                    borderWidth: 2,
-                    shadow: { enabled: true, color: 'rgba(0, 247, 255, 0.5)', size: 10, x: 0, y: 0 }
-                },
-                edges: {
-                    width: 2,
-                    arrows: { to: { enabled: true, scaleFactor: 1.5 } },
-                    smooth: { type: 'dynamic' }
-                },
-                physics: { stabilization: { iterations: 1000 } },
-                layout: { randomSeed: 2 }
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particleCount = 5000;
+            const positions = new Float32Array(particleCount * 3);
+            const velocities = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+
+            for (let i = 0; i < particleCount; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 200;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 200;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 200;
+                velocities[i * 3] = (Math.random() - 0.5) * 0.02;
+                velocities[i * 3 + 1] = (Math.random() - 0.5) * 0.02;
+                velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.02;
+                colors[i * 3] = 0; colors[i * 3 + 1] = 1; colors[i * 3 + 2] = 1;
+            }
+
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particlesGeometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
+            particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+const particles = new THREE.Points(particlesGeometry, particleMaterial);
+            scene.add(particles);
+
+            const animateBackground = () => {
+                requestAnimationFrame(animateBackground);
+                const positions = particlesGeometry.attributes.position.array;
+                const velocities = particlesGeometry.attributes.velocity.array;
+                for (let i = 0; i < particleCount; i++) {
+                    positions[i * 3] += velocities[i * 3];
+                    positions[i * 3 + 1] += velocities[i * 3 + 1];
+                    positions[i * 3 + 2] += velocities[i * 3 + 2;
+                    if (Math.abs(positions[i * 3]) > 100) velocities[i * 3] *= -1;
+                    if (Math.abs(positions[i * 3 + 1]) > 100) velocities[i * 3 + 1] *= -1;
+                    if (Math.abs(positions[i * 3 + 2]) > 100) velocities[i * 3 + 2] *= -1;
+                }
+                particlesGeometry.attributes.position.needsUpdate = true;
+                renderer.render(scene, camera);
             };
-            new vis.Network(container, data, options);
-        }
+            animateBackground();
 
-        // Initialize VisJS Network for Threat Detection Pipeline
-        function drawThreatDetectionDiagram() {
-            const nodes = [
-                { id: 1, label: '⚡ Exploit Ingestor', shape: 'box', color: { background: '#00f7ff', border: '#00f7ff' }, font: { size: 18, color: '#ffffff' }, size: 35 },
-                { id: 2, label: '⚡ Exploit Mutator', shape: 'box', color: { background: '#00f7ff', border: '#00f7ff' }, font: { size: 18, color: '#ffffff' }, size: 35 },
-                { id: 3, label: '⚡ Attack Path Simulator', shape: 'box', color: { background: '#00f7ff', border: '#00f7ff' }, font: { size: 18, color: '#ffffff' }, size: 35 }
-            ];
+            // 3D Diagram Utility Functions
+            function createTextTexture(text, fontFamily, fontSize, color) {
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                context.font = `${fontSize}px ${fontFamily}`;
+                const textWidth = context.measureText(text).width;
+                canvas.width = textWidth;
+                canvas.height = fontSize * 1.2;
+                context.font = `${fontSize}px ${fontFamily}`;
+                context.fillStyle = color;
+                context.fillText(text, 0, fontSize);
+                const texture = new THREE.Texture(canvas);
+                texture.needsUpdate = true;
+                return texture;
+            }
 
-            const edges = [
-                { from: 1, to: 2, dashes: true, color: { color: '#00f7ff' }, arrows: { to: { enabled: true, scaleFactor: 1.5 } }, width: 2 },
-                { from: 2, to: 3, dashes: true, color: { color: '#00f7ff' }, arrows: { to: { enabled: true, scaleFactor: 1.5 } }, width: 2 }
-            ];
+            function create3DDiagram(containerId, nodesData, edgesData) {
+                const container = document.getElementById(containerId);
+                const scene = new THREE.Scene();
+                const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+                const renderer = new THREE.WebGLRenderer({ antialias: true });
+                renderer.setSize(container.clientWidth, container.clientHeight);
+                container.appendChild(renderer.domElement);
 
-            const container = document.getElementById('threat-detection-diagram');
-            const data = { nodes: nodes, edges: edges };
-            const options = {
-                nodes: {
-                    font: { size: 16, color: '#ffffff' },
-                    borderWidth: 2,
-                    shadow: { enabled: true, color: 'rgba(0, 247, 255, 0.5)', size: 10, x: 0, y: 0 }
-                },
-                edges: {
-                    width: 2,
-                    arrows: { to: { enabled: true, scaleFactor: 1.5 } },
-                    smooth: { type: 'dynamic' }
-                },
-                physics: { stabilization: { iterations: 1000 } },
-                layout: { randomSeed: 2 }
-            };
-            new vis.Network(container, data, options);
-        }
+                camera.position.set(0, 10, 30);
 
-        // Initialize VisJS Network for Ethical Validation Flow
-        function drawEthicalValidationDiagram() {
-            const nodes = [
-                { id: 1, label: '🔒 Soul Vector API Layer', shape: 'box', color: { background: '#00f7ff', border: '#00f7ff' }, font: { size: 18, color: '#ffffff' }, size: 35 },
-                { id: 2, label: '🔍 Entropy Check', shape: 'ellipse', color: { background: '#1a1a1a', border: '#00f7ff' }, font: { size: 16, color: '#00f7ff' }, size: 30 },
-                { id: 3, label: '⚖️ Ethical Reasoning', shape: 'ellipse', color: { background: '#1a1a1a', border: '#00f7ff' }, font: { size: 16, color: '#00f7ff' }, size: 30 },
-                { id: 4, label: '🔒 Kill Switch Protocol', shape: 'box', color: { background: '#00f7ff', border: '#00f7ff' }, font: { size: 18, color: '#ffffff' }, size: 35 },
-                { id: 5, label: '🔄 Ethical Reset', shape: 'ellipse', color: { background: '#1a1a1a', border: '#00f7ff' }, font: { size: 16, color: '#00f7ff' }, size: 30 }
-            ];
+                const controls = new THREE.OrbitControls(camera, renderer.domElement);
+                controls.enableDamping = true;
+                controls.dampingFactor = 0.05;
 
-            const edges = [
-                { from: 1, to: 2, dashes: true, color: { color: '#00f7ff' }, arrows: { to: { enabled: true, scaleFactor: 1.5 } }, width: 2 },
-                { from: 2, to: 3, dashes: true, color: { color: '#00f7ff' }, arrows: { to: { enabled: true, scaleFactor: 1.5 } }, width: 2 },
-                { from: 3, to: 4, dashes: true, color: { color: '#00f7ff' }, arrows: { to: { enabled: true, scaleFactor: 1.5 } }, width: 2 },
-                { from: 4, to: 5, dashes: true, color: { color: '#00f7ff' }, arrows: { to: { enabled: true, scaleFactor: 1.5 } }, width: 2 }
-            ];
+                const ambientLight = new THREE.AmbientLight(0x404040);
+                scene.add(ambientLight);
+                const pointLight = new THREE.PointLight(0x00f7ff, 1, 100);
+                pointLight.position.set(10, 10, 10);
+                scene.add(pointLight);
 
-            const container = document.getElementById('ethical-validation-diagram');
-            const data = { nodes: nodes, edges: edges };
-            const options = {
-                nodes: {
-                    font: { size: 16, color: '#ffffff' },
-                    borderWidth: 2,
-                    shadow: { enabled: true, color: 'rgba(0, 247, 255, 0.5)', size: 10, x: 0, y: 0 }
-                },
-                edges: {
-                    width: 2,
-                    arrows: { to: { enabled: true, scaleFactor: 1.5 } },
-                    smooth: { type: 'dynamic' }
-                },
-                physics: { stabilization: { iterations: 1000 } },
-                layout: { randomSeed: 2 }
-            };
-            new vis.Network(container, data, options);
-        }
+                const nodes = [];
+                const nodeLabels = [];
+                nodesData.forEach(node => {
+                    const geometry = new THREE.CylinderGeometry(1, 1, 0.2, 6);
+                    const material = new THREE.MeshPhongMaterial({
+                        color: node.color,
+                        emissive: node.color,
+                        emissiveIntensity: 0.5,
+                        shininess: 100
+                    });
+                    const mesh = new THREE.Mesh(geometry, material);
+                    mesh.position.set(node.x, node.y, node.z);
+                    mesh.userData = { id: node.id, title: node.title };
+                    scene.add(mesh);
+                    nodes.push(mesh);
 
-        // Initialize VisJS Network for Neo4j Integration
-        function drawNeo4jDiagram() {
-            const nodes = [
-                { id: 1, label: '📊 Neo4j', shape: 'box', color: { background: '#00ffcc', border: '#00ffcc' }, font: { size: 20, color: '#ffffff' }, size: 40 },
-                { id: 2, label: '🔒 Audit Logging', shape: 'ellipse', color: { background: '#1a1a1a', border: '#00ffcc' }, font: { size: 16, color: '#00ffcc' }, size: 30 },
-                { id: 3, label: '🧬 DAG Causality', shape: 'ellipse', color: { background: '#1a1a1a', border: '#00ffcc' }, font: { size: 16, color: '#00ffcc' }, size: 30 },
-                { id: 4, label: '🔍 Forensic Replay', shape: 'ellipse', color: { background: '#1a1a1a', border: '#00ffcc' }, font: { size: 16, color: '#00ffcc' }, size: 30 }
-            ];
+                    const texture = createTextTexture(node.label, 'Orbitron', 24, '#ffffff');
+                    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
+                        map: texture,
+                        transparent: true
+                    }));
+                    sprite.position.set(node.x, node.y + 1, node.z);
+                    sprite.scale.set(5, 1, 1);
+                    scene.add(sprite);
+                    nodeLabels.push(sprite);
+                });
 
-            const edges = [
-                { from: 1, to: 2, dashes: true, color: { color: '#00ffcc' }, arrows: { to: { enabled: true, scaleFactor: 1.5 } }, width: 2 },
-                { from: 1, to: 3, dashes: true, color: { color: '#00ffcc' }, arrows: { to: { enabled: true, scaleFactor: 1.5 } }, width: 2 },
-                { from: 1, to: 4, dashes: true, color: { color: '#00ffcc' }, arrows: { to: { enabled: true, scaleFactor: 1.5 } }, width: 2 }
-            ];
+                const edges = [];
+                edgesData.forEach(edge => {
+                    const source = nodes.find(n => n.userData.id === edge.from);
+                    const target = nodes.find(n => n.userData.id === edge.to);
+                    const geometry = new THREE.BufferGeometry().setFromPoints([
+                        source.position,
+                        target.position
+                    ]);
+                    const material = new THREE.LineDashedMaterial({
+                        color: edge.color,
+                        linewidth: 2,
+                        dashSize: 0.5,
+                        gapSize: 0.5
+                    });
+                    const line = new THREE.Line(geometry, material);
+                    line.computeLineDistances();
+                    scene.add(line);
+                    edges.push(line);
+                });
 
-            const container = document.getElementById('neo4j-diagram');
-            const data = { nodes: nodes, edges: edges };
-            const options = {
-                nodes: {
-                    font: { size: 16, color: '#ffffff' },
-                    borderWidth: 2,
-                    shadow: { enabled: true, color: 'rgba(0, 255, 204, 0.5)', size: 10, x: 0, y: 0 }
-                },
-                edges: {
-                    width: 2,
-                    arrows: { to: { enabled: true, scaleFactor: 1.5 } },
-                    smooth: { type: 'dynamic' }
-                },
-                physics: { stabilization: { iterations: 1000 } },
-                layout: { randomSeed: 2 }
-            };
-            new vis.Network(container, data, options);
-        }
+                const raycaster = new THREE.Raycaster();
+                const mouse = new THREE.Vector2();
+                let tooltip = null;
 
-        // Call the diagram functions after DOM is loaded
-        document.addEventListener('DOMContentLoaded', function () {
+                container.addEventListener('mousemove', (event) => {
+                    const rect = container.getBoundingClientRect();
+                    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+                    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+                    raycaster.setFromCamera(mouse, camera);
+                    const intersects = raycaster.intersectObjects(nodes);
+
+                    if (tooltip) {
+                        document.body.removeChild(tooltip);
+                        tooltip = null;
+                    }
+
+                    if (intersects.length > 0) {
+                        const node = intersects[0].object;
+                        tooltip = document.createElement('div');
+                        tooltip.className = 'tooltip';
+                        tooltip.textContent = node.userData.title;
+                        tooltip.style.left = `${event.clientX + 10}px`;
+                        tooltip.style.top = `${event.clientY + 10}px`;
+                        document.body.appendChild(tooltip);
+                        node.scale.set(1.2, 1.2, 1.2);
+                    } else {
+                        nodes.forEach(node => node.scale.set(1, 1, 1));
+                    }
+                });
+
+                container.addEventListener('mouseleave', () => {
+                    if (tooltip) {
+                        document.body.removeChild(tooltip);
+                        tooltip = null;
+                    }
+                    nodes.forEach(node => node.scale.set(1, 1, 1));
+                });
+
+                const animate = () => {
+                    requestAnimationFrame(animate);
+                    nodes.forEach(node => {
+                        node.rotation.y += 0.01;
+                    });
+                    edges.forEach(edge => {
+                        edge.material.dashOffset -= 0.01;
+                        edge.computeLineDistances();
+                    });
+                    controls.update();
+                    renderer.render(scene, camera);
+                };
+                animate();
+
+                window.addEventListener('resize', () => {
+                    camera.aspect = container.clientWidth / container.clientHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(container.clientWidth, container.clientHeight);
+                });
+            }
+
+            // Tech Stack Diagram
+            function drawTechStackDiagram() {
+                const nodesData = [
+                    { id: 1, label: '🧠 Aurora Core', x: 0, y: 0, z: 0, color: 0x00f7ff, title: 'Central AI engine powering AuroraGenesis' },
+                    { id: 2, label: '🔥 PyTorch', x: 5, y: 2, z: 5, color: 0xff00ff, title: 'Deep learning framework for model training' },
+                    { id: 3, label: '📊 Neo4j', x: -5, y: 2, z: 5, color: 0x00ffcc, title: 'Graph database for causality and auditing' },
+                    { id: 4, label: '⚡ Triton', x: 5, y: -2, z: 5, color: 0xff00ff, title: 'GPU-accelerated inference engine' },
+                    { id: 5, label: '🌐 Ray Cluster', x: -5, y: -2, z: 5, color: 0x00f7ff, title: 'Distributed computing for scalability' },
+                    { id: 6, label: '🗄️ Redis', x: 5, y: 2, z: -5, color: 0xff3b30, title: 'In-memory cache for real-time state' },
+                    { id: 7, label: '🔍 FAISS', x: -5, y: 2, z: -5, color: 0x00ffcc, title: 'Vector search for memory indexing' },
+                    { id: 8, label: '🧬 Memory Compression', x: 5, y: -2, z: -5, color: 0xff00ff, title: 'Capsule-based entropy compression' },
+                    { id: 9, label: '🔄 Capsule Transformer', x: -5, y: -2, z: -5, color: 0xff00ff, title: 'Dynamic routing for capsule networks' },
+                    { id: 10, label: '🛠️ TensorRT', x: 3, y: 3, z: 3, color: 0x00f7ff, title: 'Optimized inference for GPUs' },
+                    { id: 11, label: '📈 CuPy', x: -3, y: 3, z: 3, color: 0x00ffcc, title: 'GPU-accelerated numerical computation' },
+                    { id: 12, label: '🔒 Volatility3', x: 3, y: -3, z: 3, color: 0xff3b30, title: 'Memory forensics framework' }
+                ];
+
+                const edgesData = [
+                    { from: 2, to: 1, color: 0xff00ff },
+                    { from: 3, to: 1, color: 0x00ffcc },
+                    { from: 4, to: 1, color: 0xff00ff },
+                    { from: 5, to: 1, color: 0x00f7ff },
+                    { from: 6, to: 1, color: 0xff3b30 },
+                    { from: 7, to: 1, color: 0x00ffcc },
+                    { from: 8, to: 1, color: 0xff00ff },
+                    { from: 9, to: 1, color: 0xff00ff },
+                    { from: 10, to: 1, color: 0x00f7ff },
+                    { from: 11, to: 1, color: 0x00ffcc },
+                    { from: 12, to: 1, color: 0xff3b30 }
+                ];
+
+                create3DDiagram('tech-stack-diagram', nodesData, edgesData);
+            }
+
+            // Threat Detection Diagram
+            function drawThreatDetectionDiagram() {
+                const nodesData = [
+                    { id: 1, label: '⚡ Exploit Ingestor', x: 0, y: 0, z: 0, color: 0x00f7ff, title: 'Ingests and classifies exploits in real-time' },
+                    { id: 2, label: '⚡ Exploit Mutator', x: 5, y: 0, z: 0, color: 0x00f7ff, title: 'Mutates exploits for proactive defense' },
+                    { id: 3, label: '⚡ Attack Path Simulator', x: 10, y: 0, z: 0, color: 0x00f7ff, title: 'Simulates attack paths with MITRE ATT&CK' },
+                    { id: 4, label: '🔍 Anomaly Detector', x: 15, y: 0, z: 0, color: 0x00f7ff, title: 'Detects anomalies using GMM models' },
+                    { id: 5, label: '🛡️ Response Orchestrator', x: 20, y: 0, z: 0, color: 0x00f7ff, title: 'Coordinates automated threat responses' }
+                ];
+
+                const edgesData = [
+                    { from: 1, to: 2, color: 0x00f7ff },
+                    { from: 2, to: 3, color: 0x00f7ff },
+                    { from: 3, to: 4, color: 0x00f7ff },
+                    { from: 4, to: 5, color: 0x00f7ff }
+                ];
+
+                create3DDiagram('threat-detection-diagram', nodesData, edgesData);
+            }
+
+            // Ethical Validation Diagram
+            function drawEthicalValidationDiagram() {
+                const nodesData = [
+                    { id: 1, label: '🔒 Soul Vector API Layer', x: 0, y: 0, z: 0, color: 0x00f7ff, title: 'Ethical vetting with 15D soul vectors' },
+                    { id: 2, label: '🔍 Entropy Check', x: 5, y: 2, z: 0, color: 0x00f7ff, title: 'Real-time entropy analysis' },
+                    { id: 3, label: '⚖️ Ethical Reasoning', x: 10, y: 4, z: 0, color: 0x00f7ff, title: 'ML-driven ethical decision-making' },
+                    { id: 4, label: '🔒 Kill Switch Protocol', x: 15, y: 2, z: 0, color: 0x00f7ff, title: 'Automated termination for ethical drift' },
+                    { id: 5, label: '🔄 Ethical Reset', x: 20, y: 0, z: 0, color: 0x00f7ff, title: 'State reset for compliance' },
+                    { id: 6, label: '📜 Compliance Check', x: 10, y: -2, z: 0, color: 0x00f7ff, title: 'Regulatory compliance verification' },
+                    { id: 7, label: '🔐 Audit Logger', x: 15, y: -4, z: 0, color: 0x00f7ff, title: 'Tamper-proof audit logging' },
+                    { id: 8, label: '🛡️ Policy Enforcer', x: 20, y: -2, z: 0, color: 0x00f7ff, title: 'Enforces ethical policies dynamically' }
+                ];
+
+                const edgesData = [
+                    { from: 1, to: 2, color: 0x00f7ff },
+                    { from: 2, to: 3, color: 0x00f7ff },
+                    { from: 3, to: 4, color: 0x00f7ff },
+                    { from: 4, to: 5, color: 0x00f7ff },
+                    { from: 3, to: 6, color: 0x00f7ff },
+                    { from: 6, to: 7, color: 0x00f7ff },
+                    { from: 6, to: 8, color: 0x00f7ff }
+                ];
+
+                create3DDiagram('ethical-validation-diagram', nodesData, edgesData);
+            }
+
+            // Neo4j Diagram
+            function drawNeo4jDiagram() {
+                const nodesData = [
+                    { id: 1, label: '📊 Neo4j Core', x: 0, y: 0, z: 0, color: 0x00ffcc, title: 'Graph database for real-time analytics and causality tracing' },
+                    { id: 2, label: '🔒 Audit Logging', x: 5, y: 5, z: 0, color: 0x00ffcc, title: 'Immutable audit trails with zstd compression and blockchain integration' },
+                    { id: 3, label: '🧬 DAG Causality', x: -5, y: 5, z: 0, color: 0x00ffcc, title: 'Directed Acyclic Graph for transparent causality and forensic analysis' },
+                    { id: 4, label: '🔍 Forensic Replay', x: 5, y: -5, z: 0, color: 0x00ffcc, title: 'Replays attack paths with temporal analysis for root-cause tracing' },
+                    { id: 5, label: '📜 Compliance Tracking', x: -5, y: -5, z: 0, color: 0x00ffcc, title: 'Real-time regulatory compliance monitoring with GDPR/CCPA support' },
+                    { id: 6, label: '🔗 Threat Correlation', x: 0, y: 5, z: 5, color: 0x00ffcc, title: 'Correlates threats across graph nodes using ML-driven insights' },
+                    { id: 7, label: '🛡️ Data Integrity', x: 0, y: -5, z: 5, color: 0x00ffcc, title: 'Ensures data integrity with SHA3-512 cryptographic checks' },
+                    { id: 8, label: '⚙️ Query Optimizer', x: 3, y: 3, z: -3, color: 0x00ffcc, title: 'Optimizes Cypher queries for high-performance graph traversal' },
+                    { id: 9, label: '🔄 Real-Time Indexing', x: -3, y: -3, z: -3, color: 0x00ffcc, title: 'Dynamic indexing for low-latency graph queries' },
+                    { id: 10, label: '🧠 AI Graph Analytics', x: 3, y: -3, z: 3, color: 0x00ffcc, title: 'AI-driven analytics for predictive threat detection' }
+                ];
+
+                const edgesData = [
+                    { from: 1, to: 2, color: 0x00ffcc },
+                    { from: 1, to: 3, color: 0x00ffcc },
+                    { from: 1, to: 4, color: 0x00ffcc },
+                    { from: 1, to: 5, color: 0x00ffcc },
+                    { from: 1, to: 6, color: 0x00ffcc },
+                    { from: 1, to: 7, color: 0x00ffcc },
+                    { from: 1, to: 8, color: 0x00ffcc },
+                    { from: 1, to: 9, color: 0x00ffcc },
+                    { from: 1, to: 10, color: 0x00ffcc },
+                    { from: 3, to: 4, color: 0x00ffcc },
+                    { from: 6, to: 10, color: 0x00ffcc }
+                ];
+
+                create3DDiagram('neo4j-diagram', nodesData, edgesData);
+            }
+
+            // Initialize Diagrams
             drawTechStackDiagram();
             drawThreatDetectionDiagram();
             drawEthicalValidationDiagram();
             drawNeo4jDiagram();
-        });
 
-        // Accordion functionality
-        document.querySelectorAll('.accordion-header').forEach(header => {
-            header.addEventListener('click', () => {
-                const accordion = header.parentElement;
-                accordion.classList.toggle('active');
+            // Accordion Functionality
+            document.querySelectorAll('.accordion-header').forEach(header => {
+                header.addEventListener('click', () => {
+                    const accordion = header.parentElement;
+                    accordion.classList.toggle(' EliotActiveClass(activeClass);
+                    const expanded = accordion.classList.contains('active');
+                    header.setAttribute('aria-expanded', expanded);
+                });
+                header.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        header.click();
+                    }
+                });
             });
-        });
 
-        // Simulated LLM API call
-        async function callLLM() {
-            const query = document.getElementById('llm-query Single').value;
-            const provider = document.getElementById('llm-provider').value;
-            const responseDiv = document.getElementById('llm-response');
+            // LLM Call Simulation
+            async function callLLM() {
+                const query = document.getElementById('llm-query').value;
+                const provider = document.getElementById('llm-provider').value;
+                const responseDiv = document.getElementById('llm-response');
 
-            if (!query) {
-                responseDiv.textContent = 'Please enter a query.';
-                return;
-            }
-
-            responseDiv.textContent = 'Processing...';
-
-            try {
-                let responseText = '';
-                if (provider === 'openai') {
-                    responseText = await simulateOpenAICall(query);
-                } else if (provider === 'local-llama') {
-                    responseText = await simulateLocalLLMCall(query);
-                } else if (provider === 'groq') {
-                    responseText = await simulateGrokCall(query);
-                }
-
-                const isEthical = await simulateEthicalValidation(responseText);
-                if (!isEthical) {
-                    responseDiv.textContent = 'Response blocked due to ethical violation.';
+                if (!query) {
+                    responseDiv.textContent = 'Please enter a query.';
                     return;
                 }
 
-                await simulateAuditLog(query, responseText);
+                responseDiv.textContent = 'Processing...';
 
-                responseDiv.textContent = responseText;
-            } catch (error) {
-                responseDiv.textContent = `Error: ${error.message}`;
+                try {
+                    let responseText = '';
+                    if (provider === 'openai') {
+                        responseText = await simulateOpenAICall(query);
+                    } else if (provider === 'local-llama') {
+                        responseText = await simulateLocalLLMCall(query);
+                    } else if (provider === 'groq') {
+                        responseText = await simulateGrokCall(query);
+                    } else if (provider === 'anthropic') {
+                        responseText = await simulateAnthropicCall(query);
+                    } else if (provider === 'mistral') {
+                        responseText = await simulateMistralCall(query);
+                    }
+
+                    const isEthical = await simulateEthicalValidation(responseText);
+                    if (!isEthical) {
+                        responseDiv.textContent = 'Response blocked due to ethical violation.';
+                        return;
+                    }
+
+                    await simulateAuditLog(query, responseText);
+
+                    responseDiv.textContent = responseText;
+                } catch (error) {
+                    responseDiv.textContent = `Error: ${error.message}`;
+                }
             }
-        }
 
-        async function simulateOpenAICall(query) {
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    resolve(`OpenAI Response: Analyzed query "${query}" - Potential threat detected with 92% confidence. Recommend forensic analysis.`);
-                }, 1000);
+            async function simulateOpenAICall(query) {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        resolve(`OpenAI Response: Analyzed query "${query}" - Potential threat detected with 92% confidence. Recommend forensic analysis.`);
+                    }, 1000);
+                });
+            }
+
+            async function simulateLocalLLMCall(query) {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        resolve(`Local LLaMA Response: Processed query "${query}" - No immediate threats detected. Entropy analysis suggests normal behavior.`);
+                    }, 1000);
+                });
+            }
+
+            async function simulateGrokCall(query) {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        resolve(`Grok Response: Evaluated query "${query}" - Suspicious pattern detected. Initiating DAG-based causality tracing.`);
+                    }, 1000);
+                });
+            }
+
+            async function simulateAnthropicCall(query) {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        resolve(`Anthropic Response: Analyzed query "${query}" - Low-risk pattern detected. Suggest monitoring for further activity.`);
+                    }, 1000);
+                });
+            }
+
+            async function simulateMistralCall(query) {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        resolve(`Mistral Response: Processed query "${query}" - Moderate risk detected. Recommend deeper entropy analysis.`);
+                    }, 1000);
+                });
+            }
+
+            async function simulateEthicalValidation(response) {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        const ethicalScore = Math.random();
+                        const isEthical = ethicalScore > 0.1;
+                        console.log(`Ethical Validation: Score=${ethicalScore.toFixed(2)}, IsEthical=${isEthical}`);
+                        resolve(isEthical);
+                    }, 500);
+                });
+            }
+
+            async function simulateAuditLog(query, response) {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        console.log(`Audit Log: Query="${query}", Response="${response}", Timestamp=${new Date().toISOString()}`);
+                        resolve();
+                    }, 200);
+                });
+            }
+
+            // Interactive Elements
+            document.querySelectorAll('.cyber-button, .accordion-header, .card').forEach(element => {
+                element.addEventListener('mouseenter', () => {
+                    element.setAttribute('data-tooltip', element.tagName === 'BUTTON' ? 'Click to proceed' : 'Click to expand');
+                });
+                element.addEventListener('mouseleave', () => {
+                    element.removeAttribute('data-tooltip');
+                });
             });
-        }
 
-        async function simulateLocalLLMCall(query) {
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    resolve(`Local LLaMA Response: Processed query "${query}" - No immediate threats detected. Entropy analysis suggests normal behavior.`);
-                }, 1000);
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId) || document.querySelector(`a[name="${targetId}"]`);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else {
+                        window.location.href = link.getAttribute('href');
+                    }
+                });
             });
-        }
 
-        async function simulateGrokCall(query) {
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    resolve(`Grok Response: Evaluated query "${query}" - Suspicious pattern detected. Initiating DAG-based causality tracing.`);
-                }, 1000);
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(50px)';
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(card);
             });
-        }
 
-        async function simulateEthicalValidation(response) {
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    resolve(Math.random() > 0.1);
-                }, 500);
+            document.querySelectorAll('.card').forEach(card => {
+                card.setAttribute('tabindex', '0');
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        card.style.transform = 'scale(1.05)';
+                        setTimeout(() => { card.style.transform = 'scale(1)'; }, 200);
+                    }
+                });
             });
-        }
 
-        async function simulateAuditLog(query, response) {
-            console.log(`Audit Log: Query="${query}", Response="${response}"`);
-            return Promise.resolve();
-        }
+            // Resize Diagrams on Window Resize
+            const resizeDiagrams = () => {
+                const diagrams = [
+                    'tech-stack-diagram',
+                    'threat-detection-diagram',
+                    'ethical-validation-diagram',
+                    'neo4j-diagram'
+                ];
+                diagrams.forEach(id => {
+                    const container = document.getElementById(id);
+                    if (container) {
+                        const width = Math.min(window.innerWidth - 40, 1100);
+                        container.style.width = `${width}px`;
+                        container.style.height = `${Math.min(width * 0.6, 650)}px`;
+                        const canvas = container.querySelector('canvas');
+                        if (canvas) {
+                            canvas.width = width;
+                            canvas.height = Math.min(width * 0.6, 650);
+                        }
+                    }
+                });
+            };
+
+            window.addEventListener('resize', resizeDiagrams);
+            resizeDiagrams();
+        });
     </script>
 </body>
 </html>
