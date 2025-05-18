@@ -23,7 +23,7 @@
   <!-- ───── FONTS ─────────────────────────────────────────────────── -->
   <link rel="preload" href="https://fonts.gstatic.com/s/orbitron/v25/yMJRMIlzdpvBhQPP_D6Bnx0.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
   <link rel="preload" href="https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
-  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400&family=Orbitron:wght@500&family=Source+Code+Pro:wght@400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400&family=Orbitron:wght@500&family=Source+Code+Pro:wght@400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" id="font-stylesheet">
 
   <!-- ───── CRITICAL STYLE ───────────────────────────────────────── -->
   <style nonce="CSP_NONCE">
@@ -776,7 +776,7 @@
   </div>
   <div class="consent-popup">
     <p>We use cookies for analytics. Accept?</p>
-    <button class="cyber-button" onclick="acceptConsent()">Accept</button>
+    <button class="cyber-button consent-accept" aria-label="Accept Cookies">Accept</button>
   </div>
   <div class="dev-panel">
     <h2>DevTools</h2>
@@ -786,15 +786,15 @@
   </div>
   <div class="replay-controls">
     <input type="range" id="replay-slider" min="0" max="100" value="0">
-    <button onclick="playReplay()">Play</button>
-    <button onclick="pauseReplay()">Pause</button>
+    <button class="replay-play" aria-label="Play Replay">Play</button>
+    <button class="replay-pause" aria-label="Pause Replay">Pause</button>
   </div>
   <main id="home" tabindex="-1">
     <section aria-labelledby="hero-heading">
       <div class="blur-glass">
         <h1 id="hero-heading">AuroraGenesis: Pioneering Cybersecurity Excellence</h1>
         <p>AuroraGenesis is the world's first GPU-cluster-compatible cybersecurity AI platform, integrating capsule-based memory compression, DAG-verified ethical intelligence, and real-time multi-agent mutation. Designed for zero-day threat detection, forensic analysis, and regulatory-compliant governance, it operates on consumer-grade hardware with no speculative dependencies, ensuring a future where safety and innovation thrive.</p>
-        <button class="cyber-button" aria-label="Discover the Future">Discover the Future</button>
+        <button class="cyber-button hero-action" aria-label="Discover the Future">Discover the Future</button>
       </div>
     </section>
     <section id="ip" aria-labelledby="ip-heading">
@@ -985,8 +985,8 @@
         </select>
         <div class="llm-input">
           <textarea id="llm-query" placeholder="Enter your query (e.g., 'Analyze this file for threats')" aria-label="LLM Query Input"></textarea>
-          <button class="cyber-button" onclick="callLLM()" aria-label="Submit LLM Query">Submit Query</button>
-          <button class="cyber-button" onclick="startSpeechRecognition()" aria-label="Start Speech-to-Text">🎤</button>
+          <button class="cyber-button llm-submit" aria-label="Submit LLM Query">Submit Query</button>
+          <button class="cyber-button speech-to-text" aria-label="Start Speech-to-Text">🎤</button>
         </div>
         <div class="llm-response" id="llm-response" aria-live="polite">
           LLM Response will appear here...
@@ -1345,15 +1345,764 @@
       <div class="blur-glass">
         <h1 id="investment-heading">Investment Opportunity</h1>
         <p>AuroraGenesis is open to strategic investments to accelerate our mission of securing the digital world. Provisional patents filed for capsule-compressed entropy memory, LLM mutation loop defenses, and ethical DAG-based causality tracing systems.</p>
-        <button class="cyber-button" aria-label="Contact to Invest">Contact to Invest</button>
+        <button class="cyber-button investment-contact" aria-label="Contact to Invest">Contact to Invest</button>
       </div>
     </section>
     <section id="vision" aria-labelledby="vision-heading">
       <div class="blur-glass">
         <h1 id="vision-heading">Vision and Impact</h1>
         <p>AuroraGenesis is poised to revolutionize cybersecurity with its ethics-anchored, GPU-accelerated, and cluster-native AI framework. By combining real-time threat detection, advanced forensic visualization, and auditable governance, we aim to secure the digital world for enterprises, governments, and beyond—delivering a future where safety and innovation coexist seamlessly.</p>
-        <button class="cyber-button" aria-label="Join the Revolution">Join the Revolution</button>
+        <button class="cyber-button join-revolution" aria-label="Join the Revolution">Join the Revolution</button>
       </div>
     </section>
   </main>
-  <footer
+  <footer style="text-align:center;padding:4rem 1.5rem;border-top:1px solid var(--border)">
+    <div class="blur-glass">
+      <h1>Ready to Secure the Future?</h1>
+      <p>Contact us for pilot deployment, investor discussions, or strategic partnership.</p>
+      <button class="cyber-button footer-contact" aria-label="Contact Us">Contact Us</button>
+      <p><a href="mailto:ceo@aurora-core.net" aria-label="Email ceo@aurora-core.net">ceo@aurora-core.net</a></p>
+      <button class="snapshot-button" aria-label="Export Session Snapshot">Export Snapshot</button>
+      <div class="compliance-indicator">
+        <script type="application/ld+json" nonce="CSP_NONCE">
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "AuroraGenesis",
+            "complianceStatus": {
+              "GDPR": "Compliant",
+              "CCPA": "Compliant",
+              "lastAudit": "2025-05-01",
+              "tracking": "No active trackers"
+            }
+          }
+        </script>
+        GDPR/CCPA Compliant | Last Audit: May 2025
+      </div>
+    </div>
+  </footer>
+  <script type="module" nonce="CSP_NONCE">
+    // Utilities
+    const $ = s => document.querySelector(s);
+    const $$ = s => document.querySelectorAll(s);
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const isMobile = window.innerWidth < 600;
+    const prefersRM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const neuronCap = isMobile ? 0 : window.innerWidth < 1024 ? 60 : 120;
+    let llmCallCount = 0;
+    let fps = 0;
+    let lastFrameTime = performance.now();
+
+    // Font Lazy-Loading Fix
+    $('#font-stylesheet').media = 'all';
+
+    // Theme Toggle
+    const themeToggle = $('.theme-toggle');
+    const body = document.body;
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = body.dataset.theme === 'light' ? 'dark' : 'light';
+      body.dataset.theme = currentTheme;
+      localStorage.setItem('theme', currentTheme);
+      themeToggle.textContent = currentTheme === 'light' ? '🌙' : '🌗';
+    });
+    if (localStorage.getItem('theme')) {
+      body.dataset.theme = localStorage.getItem('theme');
+      themeToggle.textContent = body.dataset.theme === 'light' ? '🌙' : '🌗';
+    }
+
+// WebGL Flow Field Background
+      const canvas = $('#aurora-canvas');
+      const gl = canvas.getContext('webgl', { powerPreference: 'low-power' });
+      if (gl) {
+        const dpr = devicePixelRatio;
+        canvas.width = innerWidth * dpr;
+        canvas.height = innerHeight * dpr;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+        const vertexShaderSource = `
+          attribute vec2 a_position;
+          void main() {
+            gl_Position = vec4(a_position, 0.0, 1.0);
+          }
+        `;
+        const fragmentShaderSource = `
+          precision mediump float;
+          uniform vec2 u_resolution;
+          uniform float u_time;
+          vec2 curlNoise(vec2 p) {
+            float e = 0.0001;
+            float n1 = fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+            float n2 = fract(sin(dot(p + vec2(e, 0.0), vec2(127.1, 311.7))) * 43758.5453);
+            float n3 = fract(sin(dot(p + vec2(0.0, e), vec2(127.1, 311.7))) * 43758.5453);
+            return vec2(n2 - n1, n3 - n1) / e;
+          }
+          void main() {
+            vec2 uv = gl_FragCoord.xy / u_resolution;
+            vec2 noise = curlNoise(uv * 3.0 + u_time * 0.1);
+            vec3 color = vec3(0.0, 0.7, 1.0) * (0.5 + 0.5 * sin(noise.x + noise.y + u_time));
+            gl_FragColor = vec4(color, 0.8);
+          }
+        `;
+        const createShader = (type, source) => {
+          const shader = gl.createShader(type);
+          gl.shaderSource(shader, source);
+          gl.compileShader(shader);
+          if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+            console.error('Shader compile error:', gl.getShaderInfoLog(shader));
+            gl.deleteShader(shader);
+            return null;
+          }
+          return shader;
+        };
+        const vertexShader = createShader(gl.VERTEX_SHADER, vertexShaderSource);
+        const fragmentShader = createShader(gl.FRAGMENT_SHADER, fragmentShaderSource);
+        const program = gl.createProgram();
+        gl.attachShader(program, vertexShader);
+        gl.attachShader(program, fragmentShader);
+        gl.linkProgram(program);
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+          console.error('Program link error:', gl.getProgramInfoLog(program));
+        }
+        gl.useProgram(program);
+        const positionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+        const positionLocation = gl.getAttribLocation(program, 'a_position');
+        gl.enableVertexAttribArray(positionLocation);
+        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+        const resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
+        const timeLocation = gl.getUniformLocation(program, 'u_time');
+        const animate = time => {
+          if (!document.hidden && !prefersRM) {
+            gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+            gl.uniform1f(timeLocation, time * 0.001);
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+            requestAnimationFrame(animate);
+          }
+        };
+        requestAnimationFrame(animate);
+        addEventListener('resize', () => {
+          canvas.width = innerWidth * dpr;
+          canvas.height = innerHeight * dpr;
+          gl.viewport(0, 0, canvas.width, canvas.height);
+        });
+      }
+
+      // Background Neurons and Particles
+      if (neuronCap && !prefersRM) {
+        const container = document.body;
+        for (let i = 0; i < neuronCap; i++) {
+          const n = document.createElement('div');
+          n.className = 'neuron';
+          Object.assign(n.style, {
+            position: 'fixed',
+            zIndex: -1,
+            borderRadius: '50%',
+            pointerEvents: 'none',
+            width: `${6 + Math.random() * 12}px`,
+            height: `${6 + Math.random() * 12}px`,
+            top: `${Math.random() * 100}vh`,
+            left: `${Math.random() * 100}vw`,
+            background: `radial-gradient(circle, var(--neon) 25%, transparent 70%)`,
+            opacity: 0.15 + Math.random() * 0.4,
+            filter: `blur(${1 + Math.random() * 2}px)`,
+            animation: `float ${6 + Math.random() * 8}s ease-in-out infinite alternate`
+          });
+          container.appendChild(n);
+        }
+        for (let i = 0; i < neuronCap / 2; i++) {
+          const p = document.createElement('div');
+          p.className = 'particle';
+          Object.assign(p.style, {
+            width: `${4 + Math.random() * 8}px`,
+            height: `${4 + Math.random() * 8}px`,
+            top: `${Math.random() * 100}vh`,
+            left: `${Math.random() * 100}vw`,
+            animationDelay: `${-Math.random() * 10}s`
+          });
+          container.appendChild(p);
+        }
+      }
+
+      // IntersectionObserver for Dynamic Loading and Shadow Rendering
+      const graphObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const graphId = entry.target.id;
+            if (!entry.target.dataset.loaded) {
+              const nodes = graphNodes[graphId];
+              const edges = graphEdges[graphId];
+              if (nodes && edges) {
+                createGraph(graphId, nodes, edges);
+                entry.target.dataset.loaded = 'true';
+              }
+            }
+            $$('.network-node, .network-edge', entry.target).forEach(el => {
+              el.style.animationPlayState = 'running';
+            });
+          } else {
+            $$('.network-node, .network-edge', entry.target).forEach(el => {
+              el.style.animationPlayState = 'paused';
+            });
+          }
+        });
+      }, { threshold: 0.1 });
+
+      const shadowObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          entry.target.style.boxShadow = entry.isIntersecting ? '0 0 25px var(--glow)' : 'none';
+        });
+      }, { threshold: 0.1 });
+
+      $$('.card, .cyber-button').forEach(el => shadowObserver.observe(el));
+      $$('.network-graph').forEach(graph => graphObserver.observe(graph));
+
+      // GPU Memory Awareness
+      let maxNeurons = neuronCap;
+      if (gl && gl.getExtension('WEBGL_debug_renderer_info')) {
+        const memoryInfo = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+        if (memoryInfo < 16) maxNeurons = Math.floor(maxNeurons * 0.5);
+      }
+
+      // Keyboard Navigation Overlay
+      const keyboardOverlay = $('.keyboard-overlay');
+      addEventListener('keydown', e => {
+        if (e.altKey && e.key === '/') {
+          keyboardOverlay.classList.toggle('active');
+        }
+        if (e.key === 'Escape' && keyboardOverlay.classList.contains('active')) {
+          keyboardOverlay.classList.remove('active');
+        }
+      });
+
+      // Speech-to-Text
+      function startSpeechRecognition() {
+        if ('webkitSpeechRecognition' in window) {
+          const rec = new webkitSpeechRecognition();
+          rec.lang = 'en-US';
+          rec.onresult = e => {
+            $('#llm-query').value = e.results[0][0].transcript;
+            rec.stop();
+          };
+          rec.onerror = e => console.error('Speech recognition error:', e);
+          rec.start();
+        } else {
+          alert('Speech recognition not supported in this browser.');
+        }
+      }
+
+      // Clipboard for LLM Responses
+      $$('.copy-button').forEach(button => {
+        button.addEventListener('click', () => {
+          const text = button.parentElement.textContent.replace('📋 Copy', '').trim();
+          navigator.clipboard.writeText(text).then(() => {
+            button.classList.add('copied');
+            setTimeout(() => button.classList.remove('copied'), 1000);
+          });
+        });
+      });
+
+      // DevTools Panel
+      const devPanel = $('.dev-panel');
+      addEventListener('keydown', e => {
+        if (e.shiftKey && e.key === 'T') {
+          devPanel.classList.toggle('active');
+        }
+      });
+
+      // System HUD
+      function updateHUD() {
+        const memoryUsage = (performance.memory ? performance.memory.usedJSHeapSize / 1024 / 1024 : 0).toFixed(2);
+        $('#memory-usage').textContent = `${memoryUsage} MB`;
+        $('#gpu-usage').textContent = `${(Math.random() * 20 + 10).toFixed(0)}%`;
+        $('#cluster-load').textContent = `${(Math.random() * 30 + 20).toFixed(0)}%`;
+        requestAnimationFrame(updateHUD);
+      }
+      requestAnimationFrame(updateHUD);
+
+      // FPS Counter
+      function updateFPS() {
+        const now = performance.now();
+        fps = 1000 / (now - lastFrameTime);
+        lastFrameTime = now;
+        $('#fps').textContent = fps.toFixed(1);
+        requestAnimationFrame(updateFPS);
+      }
+      requestAnimationFrame(updateFPS);
+
+      // Consent Popup
+      function acceptConsent() {
+        const consentData = { timestamp: new Date().toISOString(), accepted: true };
+        const hash = btoa(JSON.stringify(consentData));
+        console.log('Consent logged:', hash);
+        $('.consent-popup').remove();
+        localStorage.setItem('consent', hash);
+      }
+      if (localStorage.getItem('consent')) {
+        $('.consent-popup').remove();
+      }
+      $('.consent-accept').addEventListener('click', acceptConsent);
+
+      // Snapshot Export
+      $('.snapshot-button').addEventListener('click', () => {
+        const snapshot = {
+          timestamp: new Date().toISOString(),
+          llmQueries: $('#llm-query').value,
+          llmResponses: $('#llm-response').textContent,
+          graphStates: Object.keys(graphNodes).map(id => ({ id, nodes: graphNodes[id], edges: graphEdges[id] }))
+        };
+        const blob = new Blob([JSON.stringify(snapshot)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `aurora-snapshot-${Date.now()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      // Audit Replay
+      const replaySlider = $('#replay-slider');
+      let replayEvents = [];
+      function simulateAuditEvents() {
+        replayEvents = [
+          { timestamp: Date.now() - 10000, graphId: 'tech-stack-graph', nodeId: '1', action: 'click' },
+          { timestamp: Date.now() - 5000, graphId: 'neo4j-graph', nodeId: '2', action: 'click' }
+        ];
+      }
+      simulateAuditEvents();
+
+      function playReplay() {
+        $('.replay-controls').classList.add('active');
+        let index = 0;
+        const interval = setInterval(() => {
+          if (index >= replayEvents.length) {
+            clearInterval(interval);
+            $('.replay-controls').classList.remove('active');
+            return;
+          }
+          const event = replayEvents[index];
+          const graph = $(`#${event.graphId}`);
+          if (graph) {
+            const node = graph.querySelector(`[data-id="${event.nodeId}"]`);
+            if (node) node.click();
+          }
+          index++;
+          replaySlider.value = (index / replayEvents.length) * 100;
+        }, 1000);
+      }
+
+      function pauseReplay() {
+        $('.replay-controls').classList.remove('active');
+      }
+
+      $('.replay-play').addEventListener('click', playReplay);
+      $('.replay-pause').addEventListener('click', pauseReplay);
+
+      replaySlider.addEventListener('input', () => {
+        const index = Math.floor((replaySlider.value / 100) * replayEvents.length);
+        const event = replayEvents[index];
+        if (event) {
+          const graph = $(`#${event.graphId}`);
+          if (graph) {
+            const node = graph.querySelector(`[data-id="${event.nodeId}"]`);
+            if (node) node.click();
+          }
+        }
+      });
+
+      // Graph Data
+      const graphNodes = {
+        'tech-stack-graph': [
+          { id: '1', label: 'Aurora Core', x: 0, y: 0, title: 'Central AI engine powering AuroraGenesis' },
+          { id: '2', label: 'PyTorch', x: 2, y: 1, title: 'Deep learning framework for model training' },
+          { id: '3', label: 'Neo4j', x: -2, y: 1, title: 'Graph database for causality and auditing' },
+          { id: '4', label: 'Triton', x: 2, y: -1, title: 'GPU-accelerated inference engine' },
+          { id: '5', label: 'Ray', x: -2, y: -1, title: 'Distributed computing for scalability' }
+        ],
+        'threat-detection-graph': [
+          { id: '1', label: 'Exploit Ingestor', x: 0, y: 0, title: 'Ingests and classifies exploits in real-time' },
+          { id: '2', label: 'Exploit Mutator', x: 2, y: 0, title: 'Mutates exploits for proactive defense' },
+          { id: '3', label: 'Attack Path', x: 4, y: 0, title: 'Simulates attack paths with MITRE ATT&CK' },
+          { id: '4', label: 'Anomaly Detector', x: 6, y: 0, title: 'Detects anomalies using GMM models' },
+          { id: '5', label: 'Response', x: 8, y: 0, title: 'Coordinates automated threat responses' }
+        ],
+        'ethical-validation-graph': [
+          { id: '1', label: 'Soul Vector', x: 0, y: 0, title: 'Ethical vetting with 15D soul vectors' },
+          { id: '2', label: 'Entropy Check', x: 2, y: 1, title: 'Real-time entropy analysis' },
+          { id: '3', label: 'Ethical Reasoning', x: 4, y: 2, title: 'ML-driven ethical decision-making' },
+          { id: '4', label: 'Kill Switch', x: 6, y: 1, title: 'Automated termination for ethical drift' },
+          { id: '5', label: 'Ethical Reset', x: 8, y: 0, title: 'State reset for compliance' }
+        ],
+        'neo4j-graph': [
+          { id: '1', label: 'Neo4j Core', x: 0, y: 0, title: 'Graph database for real-time analytics and causality tracing' },
+          { id: '2', label: 'Audit Logging', x: 2, y: 2, title: 'Immutable audit trails with zstd compression and blockchain integration' },
+          { id: '3', label: 'DAG Causality', x: -2, y: 2, title: 'Directed Acyclic Graph for transparent causality and forensic analysis' },
+          { id: '4', label: 'Forensic Replay', x: 2, y: -2, title: 'Replays attack paths with temporal analysis for root-cause tracing' },
+          { id: '5', label: 'Compliance', x: -2, y: -2, title: 'Real-time regulatory compliance monitoring with GDPR/CCPA support' }
+        ]
+      };
+
+      const graphEdges = {
+        'tech-stack-graph': [
+          { from: '2', to: '1' },
+          { from: '3', to: '1' },
+          { from: '4', to: '1' },
+          { from: '5', to: '1' }
+        ],
+        'threat-detection-graph': [
+          { from: '1', to: '2' },
+          { from: '2', to: '3' },
+          { from: '3', to: '4' },
+          { from: '4', to: '5' }
+        ],
+        'ethical-validation-graph': [
+          { from: '1', to: '2' },
+          { from: '2', to: '3' },
+          { from: '3', to: '4' },
+          { from: '4', to: '5' }
+        ],
+        'neo4j-graph': [
+          { from: '1', to: '2' },
+          { from: '1', to: '3' },
+          { from: '1', to: '4' },
+          { from: '1', to: '5' }
+        ]
+      };
+
+      // Graph Rendering
+      function createGraph(id, nodes, edges) {
+        try {
+          if (!nodes || !edges) throw new Error('Missing nodes or edges data');
+          const wrap = $(`#${id}`);
+          if (!wrap) throw new Error(`Graph container #${id} not found`);
+          const svg = wrap.querySelector('svg');
+          if (!svg) throw new Error(`SVG element for #${id} not found`);
+          const scale = () => innerWidth < 480 ? 14 : innerWidth < 768 ? 18 : 26;
+
+          nodes.forEach(nd => {
+            const c = document.createElementNS(svgNS, 'circle');
+            const x = nd.x * 100 + 300, y = nd.y * 100 + 350;
+            c.setAttribute('cx', x);
+            c.setAttribute('cy', y);
+            c.setAttribute('r', scale());
+            c.setAttribute('class', 'network-node');
+            c.setAttribute('tabindex', '0');
+            c.dataset.id = nd.id;
+            c.dataset.title = nd.title;
+            c.setAttribute('aria-label', `Node: ${nd.label}`);
+            svg.appendChild(c);
+
+            const t = document.createElementNS(svgNS, 'text');
+            t.setAttribute('x', x);
+            t.setAttribute('y', y + scale() + 14);
+            t.setAttribute('class', 'network-label');
+            t.textContent = nd.label;
+            svg.appendChild(t);
+
+            c.addEventListener('click', e => {
+              $$('.network-node, .network-edge', svg).forEach(el => el.classList.remove('active'));
+              c.classList.add('active');
+              edges.forEach(edge => {
+                if (edge.from === nd.id || edge.to === nd.id) {
+                  const edgeEl = Array.from(svg.querySelectorAll('.network-edge')).find(e =>
+                    (parseFloat(e.getAttribute('x1')) === (nodes.find(n => n.id === edge.from).x * 100 + 300) &&
+                     parseFloat(e.getAttribute('y1')) === (nodes.find(n => n.id === edge.from).y * 100 + 350) &&
+                     parseFloat(e.getAttribute('x2')) === (nodes.find(n => n.id === edge.to).x * 100 + 300) &&
+                     parseFloat(e.getAttribute('y2')) === (nodes.find(n => n.id === edge.to).y * 100 + 350)) ||
+                    (parseFloat(e.getAttribute('x1')) === (nodes.find(n => n.id === edge.to).x * 100 + 300) &&
+                     parseFloat(e.getAttribute('y1')) === (nodes.find(n => n.id === edge.to).y * 100 + 350) &&
+                     parseFloat(e.getAttribute('x2')) === (nodes.find(n => n.id === edge.from).x * 100 + 300) &&
+                     parseFloat(e.getAttribute('y2')) === (nodes.find(n => n.id === edge.from).y * 100 + 350))
+                  );
+                  if (edgeEl) edgeEl.classList.add('active');
+                }
+              });
+
+              let tooltip = $('.tooltip');
+              if (tooltip) tooltip.remove();
+              tooltip = document.createElement('div');
+              tooltip.className = 'tooltip';
+              tooltip.textContent = nd.title || 'Node description';
+              tooltip.style.left = `${e.clientX + 15}px`;
+              tooltip.style.top = `${e.clientY + 15}px`;
+              document.body.appendChild(tooltip);
+            });
+
+            c.addEventListener('keydown', e => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                c.click();
+              }
+            });
+
+            c.addEventListener('mouseleave', () => {
+              const tooltip = $('.tooltip');
+              if (tooltip) tooltip.remove();
+            });
+          });
+
+          edges.forEach(e => {
+            const f = nodes.find(n => n.id === e.from), t = nodes.find(n => n.id === e.to);
+            if (!f || !t) return;
+            const l = document.createElementNS(svgNS, 'line');
+            l.setAttribute('x1', f.x * 100 + 300);
+            l.setAttribute('y1', f.y * 100 + 350);
+            l.setAttribute('x2', t.x * 100 + 300);
+            l.setAttribute('y2', t.y * 100 + 350);
+            l.setAttribute('class', 'network-edge');
+            svg.appendChild(l);
+          });
+
+          let panX = 0;
+          let isDragging = false;
+          let startX = 0;
+
+          wrap.addEventListener('mousedown', e => {
+            isDragging = true;
+            startX = e.clientX;
+          });
+
+          wrap.addEventListener('mousemove', e => {
+            if (isDragging) {
+              const deltaX = e.clientX - startX;
+              panX += deltaX * 0.1;
+              svg.style.transform = `translateX(${panX}px)`;
+              startX = e.clientX;
+            }
+          });
+
+          wrap.addEventListener('mouseup', () => isDragging = false);
+          wrap.addEventListener('mouseleave', () => isDragging = false);
+
+          addEventListener('resize', () => {
+            const nodes = svg.querySelectorAll('.network-node');
+            const labels = svg.querySelectorAll('.network-label');
+            nodes.forEach((node, i) => {
+              node.setAttribute('r', scale());
+              const x = nodes[i].x * 100 + 300;
+              const y = nodes[i].y * 100 + 350;
+              node.setAttribute('cx', x);
+              node.setAttribute('cy', y);
+              const label = labels[i];
+              if (label) {
+                label.setAttribute('x', x);
+                label.setAttribute('y', y + scale() + 14);
+              }
+            });
+          });
+
+          $('#node-count').textContent = nodes.length;
+          console.log(`Graph ${id} initialized with ${nodes.length} nodes and ${edges.length} edges`);
+        } catch (error) {
+          console.error(`Failed to initialize graph ${id}:`, error);
+        }
+      }
+
+      // Initialize Graphs
+      createGraph('tech-stack-graph', graphNodes['tech-stack-graph'], graphEdges['tech-stack-graph']);
+      $('#tech-stack-graph').dataset.loaded = 'true';
+
+      // Accordion Functionality
+      $$('.accordion-header').forEach(header => {
+        header.addEventListener('click', () => {
+          const accordion = header.parentElement;
+          accordion.classList.toggle('active');
+          header.setAttribute('aria-expanded', accordion.classList.contains('active'));
+        });
+        header.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            header.click();
+          }
+        });
+      });
+
+      // LLM Call Simulation
+      async function callLLM() {
+        const query = $('#llm-query').value;
+        const provider = $('#llm-provider').value;
+        const responseDiv = $('#llm-response');
+        if (!query) {
+          responseDiv.textContent = 'Please enter a query.';
+          return;
+        }
+        responseDiv.textContent = 'Processing...';
+        llmCallCount++;
+        $('#llm-calls').textContent = llmCallCount;
+        try {
+          let responseText = '';
+          switch (provider) {
+            case 'openai':
+              responseText = await simulateOpenAICall(query);
+              break;
+            case 'local-llama':
+              responseText = await simulateLocalLLMCall(query);
+              break;
+            case 'groq':
+              responseText = await simulateGrokCall(query);
+              break;
+            case 'anthropic':
+              responseText = await simulateAnthropicCall(query);
+              break;
+            case 'mistral':
+              responseText = await simulateMistralCall(query);
+              break;
+          }
+          const isEthical = await simulateEthicalValidation(responseText);
+          if (!isEthical) {
+            responseDiv.textContent = 'Response blocked due to ethical violation.';
+            return;
+          }
+          await simulateAuditLog(query, responseText);
+          responseDiv.textContent = responseText;
+          responseDiv.appendChild($('.copy-button'));
+        } catch (error) {
+          responseDiv.textContent = `Error: ${error.message}`;
+          console.error('LLM Call Error:', error);
+        }
+      }
+
+      async function simulateOpenAICall(query) {
+        return new Promise(resolve => {
+          setTimeout(() => resolve(`OpenAI Response: Analyzed query "${query}" - Potential threat detected with 92% confidence. Recommend forensic analysis.`), 1000);
+        });
+      }
+      async function simulateLocalLLMCall(query) {
+        return new Promise(resolve => {
+          setTimeout(() => resolve(`Local LLaMA Response: Processed query "${query}" - No immediate threats detected. Entropy analysis suggests normal behavior.`), 1000);
+        });
+      }
+      async function simulateGrokCall(query) {
+        return new Promise(resolve => {
+          setTimeout(() => resolve(`Grok Response: Evaluated query "${query}" - Suspicious pattern detected. Initiating DAG-based causality tracing.`), 1000);
+        });
+      }
+      async function simulateAnthropicCall(query) {
+        return new Promise(resolve => {
+          setTimeout(() => resolve(`Anthropic Response: Analyzed query "${query}" - Low-risk pattern detected. Suggest monitoring for further activity.`), 1000);
+        });
+      }
+      async function simulateMistralCall(query) {
+        return new Promise(resolve => {
+          setTimeout(() => resolve(`Mistral Response: Processed query "${query}" - Moderate risk detected. Recommend deeper entropy analysis.`), 1000);
+        });
+      }
+      async function simulateEthicalValidation(response) {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            const ethicalScore = Math.random();
+            const isEthical = ethicalScore > 0.1;
+            console.log(`Ethical Validation: Score=${ethicalScore.toFixed(2)}, IsEthical=${isEthical}`);
+            resolve(isEthical);
+          }, 500);
+        });
+      }
+      async function simulateAuditLog(query, response) {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            console.log(`Audit Log: Query="${query}", Response="${response}", Timestamp=${new Date().toISOString()}`);
+            resolve();
+          }, 200);
+        });
+      }
+
+      $('.llm-submit').addEventListener('click', callLLM);
+      $('.speech-to-text').addEventListener('click', startSpeechRecognition);
+
+      // Interactive Elements with Tooltips
+      $$('.cyber-button, .accordion-header, .card').forEach(el => {
+        el.addEventListener('mouseenter', e => {
+          let tooltip = $('.tooltip');
+          if (tooltip) tooltip.remove();
+          tooltip = document.createElement('div');
+          tooltip.className = 'tooltip';
+          tooltip.textContent = el.dataset.title || (el.tagName === 'BUTTON' ? 'Click to proceed' : 'Click to expand');
+          tooltip.style.left = `${e.clientX + 15}px`;
+          tooltip.style.top = `${e.clientY + 15}px`;
+          document.body.appendChild(tooltip);
+        });
+        el.addEventListener('mouseleave', () => {
+          const tooltip = $('.tooltip');
+          if (tooltip) tooltip.remove();
+        });
+        el.addEventListener('focus', e => {
+          let tooltip = $('.tooltip');
+          if (tooltip) tooltip.remove();
+          tooltip = document.createElement('div');
+          tooltip.className = 'tooltip';
+          tooltip.textContent = el.dataset.title || (el.tagName === 'BUTTON' ? 'Click to proceed' : 'Click to expand');
+          tooltip.style.left = `${e.target.getBoundingClientRect().left + 15}px`;
+          tooltip.style.top = `${e.target.getBoundingClientRect().top + 15}px`;
+          document.body.appendChild(tooltip);
+        });
+        el.addEventListener('blur', () => {
+          const tooltip = $('.tooltip');
+          if (tooltip) tooltip.remove();
+        });
+        el.addEventListener('mouseover', () => {
+          el.classList.add('canvas-active');
+          setTimeout(() => el.classList.remove('canvas-active'), 1000);
+        });
+      });
+
+      // Navigation
+      $$('.nav-link').forEach(link => {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          const targetId = link.getAttribute('href').substring(1);
+          const targetElement = $(`#${targetId}`);
+          if (targetElement) {
+            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            targetElement.focus();
+          } else {
+            window.location.href = link.getAttribute('href');
+          }
+        });
+      });
+
+      // Card Fade-In
+      const cardObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+            cardObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+
+      $$('.card').forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(50px)';
+        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        cardObserver.observe(card);
+      });
+
+      // Animation Pause on Tab Hide
+      document.addEventListener('visibilitychange', () => {
+        const elements = $$('.neuron, .particle, .terminal-line');
+        elements.forEach(n => {
+          n.style.animationPlayState = document.hidden ? 'paused' : 'running';
+        });
+      });
+
+      // Preloader
+      addEventListener('load', () => {
+        $('#preloader').classList.add('fade-out');
+      });
+
+      // Resize Graphs
+      const resizeGraphs = () => {
+        ['tech-stack-graph', 'threat-detection-graph', 'ethical-validation-graph', 'neo4j-graph'].forEach(id => {
+          const container = $(`#${id}`);
+          if (container) {
+            const width = Math.min(innerWidth - 40, 1200);
+            container.style.width = `${width}px`;
+            container.style.height = `${Math.min(width * 0.583, 700)}px`;
+          }
+        });
+      };
+      addEventListener('resize', resizeGraphs);
+      resizeGraphs();
+    </script>
+</body>
+</html>
