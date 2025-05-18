@@ -10,11 +10,11 @@
     <meta name="author" content="xAI">
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
-        script-src 'self' 'nonce-aurora-20250518' http://127.0.0.1:8000 https://*.x.ai https://cdn.jsdelivr.net https://aurora-core.net;
+        script-src 'self' 'nonce-aurora-20250518' http://127.0.0.1:8000 https://*.x.ai https://aurora-core.net;
         script-src-attr 'none';
         style-src 'self' 'nonce-aurora-20250518' https://fonts.googleapis.com;
         font-src 'self' https://fonts.gstatic.com;
-        img-src 'self' data: https://images.unsplash.com https://*.x.ai https://aurora-core.net;
+        img-src 'self' data: https://*.x.ai https://aurora-core.net;
         connect-src 'self' http://127.0.0.1:8000 wss://*.x.ai https://api-inference.huggingface.co https://*.x.ai https://aurora-core.net;
         worker-src 'self' blob:;
         frame-src 'self';
@@ -33,6 +33,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Source+Code+Pro:wght@400;500;600;700&display=swap" referrerpolicy="no-referrer" loading="lazy">
     <style nonce="aurora-20250518">
         /* ─── ROOT VARIABLES ─────────────────────────────────────────────── */
+        /* Define core variables for consistent theming */
         :root {
             --bg-main: #0d1117;
             --bg-panel: #161b22;
@@ -58,7 +59,7 @@
                 rgba(0, 247, 255, 0.25),
                 rgba(255, 0, 255, 0.2),
                 rgba(0, 255, 204, 0.25),
-                rgba(47, 129, 247, ස Sri Lanka
+                rgba(47, 129, 247, 0.2)
             );
             --aurora-gradient: linear-gradient(
                 135deg,
@@ -98,9 +99,11 @@
             overscroll-behavior: none;
         }
 
-        body.loaded {
-            overflow: auto;
+        @media (prefers-reduced-motion: no-preference) {
+            html { scroll-behavior: smooth; }
         }
+
+        body.loaded { overflow: auto; }
 
         /* ─── DYNAMIC BACKGROUND EFFECTS ─────────────────────────────────── */
         body::before {
@@ -253,6 +256,16 @@
         .frost-container:hover::after {
             opacity: 0.5;
             animation: holographic-border 2s var(--transition-timing) infinite;
+        }
+
+        .frost-container.interactive {
+            max-height: none;
+            overflow-y: visible;
+        }
+
+        .frost-container > * {
+            position: relative;
+            z-index: 2;
         }
 
         @keyframes aurora-pulse {
@@ -730,7 +743,6 @@
             position: absolute;
             inset: 0;
             background: var(--aurora-gradient);
-           =&gt;
             opacity: 0;
             transition: opacity var(--transition-duration) var(--transition-timing);
             z-index: -1;
@@ -862,6 +874,36 @@
             outline: none;
         }
 
+        /* ─── JSON-LD STYLING ────────────────────────────────────────────── */
+        .json-ld {
+            background: var(--bg-panel);
+            padding: clamp(0.8rem, 1.5vw, 1rem);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            font-family: 'Source+Code+Pro', monospace;
+            font-size: clamp(0.85rem, 1.8vw, 0.9rem);
+            color: var(--text-main);
+            white-space: pre-wrap;
+            overflow-x: auto;
+            scrollbar-width: var(--scrollbar-width);
+            scrollbar-color: var(--accent) var(--bg-panel);
+        }
+
+        .json-ld::-webkit-scrollbar {
+            height: var(--scrollbar-width);
+        }
+
+        .json-ld::-webkit-scrollbar-track {
+            background: var(--bg-panel);
+            border-radius: var(--radius-sm);
+        }
+
+        .json-ld::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--glow-accent);
+        }
+
         /* ─── MOBILE-SPECIFIC OPTIMIZATIONS ──────────────────────────────── */
         @media (max-width: 768px) {
             .main-wrapper {
@@ -916,6 +958,97 @@
             .grid-2col {
                 grid-template-columns: 1fr;
             }
+            .message-bubble:hover,
+            .control-button:hover,
+            .proChat-launcher:hover,
+            .accordion-header:hover {
+                transform: none;
+                box-shadow: var(--glow-accent);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .frost-container {
+                padding: clamp(0.6rem, 1.2vw, 0.8rem);
+                gap: clamp(0.6rem, 1.2vw, 1rem);
+                border-radius: var(--radius-sm);
+            }
+            .chat-log {
+                padding: clamp(0.6rem, 1.2vw, 0.8rem);
+            }
+            #proChat-root {
+                width: clamp(260px, 90vw, 280px);
+                height: clamp(340px, 65vh, 400px);
+            }
+            .proChat-frame {
+                border-radius: var(--radius-sm);
+            }
+        }
+
+        /* ─── HIGH-RESOLUTION DEVICES ────────────────────────────────────── */
+        @media (min-resolution: 2dppx) {
+            .frost-container,
+            .message-bubble,
+            .proChat-frame,
+            .accordion-cluster {
+                backdrop-filter: blur(20px) saturate(200%);
+            }
+        }
+
+        /* ─── LOW-MEMORY DEVICES ─────────────────────────────────────────── */
+        @media (max-width: 768px) {
+            .message-bubble,
+            .control-button,
+            .proChat-frame,
+            .proChat-launcher {
+                will-change: auto;
+            }
+        }
+
+        /* ─── ACCESSIBILITY AND REDUCED MOTION ───────────────────────────── */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+            .message-bubble,
+            .control-button,
+            .proChat-launcher {
+                transform: none !important;
+            }
+        }
+
+        @media (prefers-contrast: high) {
+            :root {
+                --text-main: #ffffff;
+                --text-muted: #cccccc;
+                --border: #ffffff;
+                --bg-panel: #000000;
+                --bg-glass: rgba(0, 0, 0, 0.8);
+            }
+            .frost-container,
+            .message-bubble,
+            .proChat-frame {
+                backdrop-filter: none;
+                border: 2px solid #ffffff;
+            }
+        }
+
+        /* ─── TOUCH OPTIMIZATION ─────────────────────────────────────────── */
+        @media (hover: none) {
+            .message-bubble:hover,
+            .control-button:hover,
+            .proChat-launcher:hover,
+            .accordion-header:hover {
+                transform: none;
+                box-shadow: var(--glow-accent);
+            }
+        }
+
+        /* ─── PERFORMANCE OPTIMIZATIONS ──────────────────────────────────── */
+        .grid {
+            perspective: 1000px;
+            transform-style: preserve-3d;
         }
 
         /* ─── FALLBACK STYLES ────────────────────────────────────────────── */
