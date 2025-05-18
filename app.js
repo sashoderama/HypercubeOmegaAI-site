@@ -20,14 +20,37 @@
         }
     }
 
+    class Store {
+        constructor() {
+            this.state = {
+                session: [],
+                config: { HUGGINGFACE_TOKEN: '' },
+                ui: { isProChatOpen: false, isSpeaking: false },
+                rateLimit: { bucket: 30, lastRefill: Date.now() }
+            };
+            this.listeners = new Set();
+        }
+        setState(updater) {
+            this.state = typeof updater === 'function' ? updater(this.state) : { ...this.state, ...updater };
+            this.listeners.forEach(listener => listener(this.state));
+        }
+        subscribe(listener) {
+            this.listeners.add(listener);
+            return () => this.listeners.delete(listener);
+        }
+    }
+
     // ─── CORE INITIALIZATION ──────────────────────────────────────────
     const emitter = new EventEmitter();
+    const store = new Store();
     const AUDIT_EVENT = 'aurora-audit';
     const NONCE = 'aurora-20250518-' + crypto.randomUUID();
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    let HF_TOKEN = '';
-    let sessionContext = [];
-    let bucket = 30, lastRefill = Date.now();
+    const WS_URL = isLocal ? 'ws://localhost:8080/llama' : 'wss://aurora-llm.x.ai';
+    const HF_MODEL = 'NousResearch/Hermes-2-Pro-Mistral-7B';
+    const SESSION_VERSION = '2.0.0';
+    const FALLBACK_CONFIG = { HUGGINGFACE_TOKEN: '' };
+    const FALLBACK_FAVICON = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACFSURBVDhP3ZCxDYAgEEW3ZyE2cAE7sAArsABTsAQz8AbOwH9kJtm2N+x9RMR5ni8AALlFURQBAABYxWazWWO3l7ZpmqZpmpIkCSGEEEVRVFW1XnutuR6u67rdbheEEN/3vV5V1fX9fn+apmmapt/vdzgcLpfLvu/7+/3+/gO8O+mL4TyOAAAAAElFTkSuQmCC';
 
     // ─── ERROR HANDLING ───────────────────────────────────────────────
     window.onerror = (msg, url, line, col, error) => {
@@ -79,8 +102,18 @@
     async function loadConfig() {
         try {
             const response = await fetchWithRetry('/config.json', { retries: 3, backoff: 1000 });
-            const config = await response.json();
-            HF_TOKEN = config.HUGGINGFACE_TOKEN || '';
+            if (!response.headers.get('content-type')?.includes('application/json')) {
+                throw new Error('Invalid content type for config.json');
+            }
+            const text = await response.text();
+            let config;
+            try {
+                config = JSON.parse(text);
+            } catch (e) {
+                console.warn('Invalid JSON in config.json:', e);
+                config = FALLBACK_CONFIG;
+            }
+            store.setState(state => ({ ...state, config }));
             console.log('Configuration loaded successfully.');
             emitter.emit(AUDIT_EVENT, {
                 id: crypto.randomUUID(),
@@ -89,8 +122,8 @@
                 ts: Date.now()
             });
         } catch (e) {
-            console.warn('Failed to load config.json, using empty HF_TOKEN:', e);
-            HF_TOKEN = '';
+            console.warn('Failed to load config.json, using fallback:', e);
+            store.setState(state => ({ ...state, config: FALLBACK_CONFIG }));
             emitter.emit(AUDIT_EVENT, {
                 id: crypto.randomUUID(),
                 type: 'config_load',
@@ -101,24 +134,49 @@
         }
     }
 
-    const HF_MODEL = 'NousResearch/Hermes-2-Pro-Mistral-7B';
-    const WS_URL = isLocal ? 'ws://localhost:8080/llama' : 'wss://aurora-llm.x.ai';
+    async function loadFavicon() {
+        try {
+            const response = await fetchWithRetry('/favicon.png', { retries: 2, backoff: 500 });
+            if (!response.ok) throw new Error('Favicon not found');
+            const favicon = document.querySelector('link[rel="icon"]');
+            favicon.href = response.url;
+        } catch (e) {
+            console.warn('Failed to load favicon, using fallback:', e);
+            const favicon = document.querySelector('link[rel="icon"]');
+            favicon.href = FALLBACK_FAVICON;
+            emitter.emit(AUDIT_EVENT, {
+                id: crypto.randomUUID(),
+                type: 'favicon_load',
+                status: 'failed',
+                error: e.message,
+                ts: Date.now()
+            });
+        }
+    }
 
     // ─── TOKEN BUCKET RATE LIMITING ───────────────────────────────────
     function takeToken() {
         const now = Date.now();
-        const delta = Math.floor((now - lastRefill) / 2000);
+        const delta = Math.floor((now - store.state.rateLimit.lastRefill) / 2000);
         if (delta > 0) {
-            bucket = Math.min(30, bucket + delta);
-            lastRefill = now;
+            store.setState(state => ({
+                ...state,
+                rateLimit: {
+                    bucket: Math.min(30, state.rateLimit.bucket + delta),
+                    lastRefill: now
+                }
+            }));
         }
-        if (bucket > 0) {
-            bucket--;
+        if (store.state.rateLimit.bucket > 0) {
+            store.setState(state => ({
+                ...state,
+                rateLimit: { ...state.rateLimit, bucket: state.rateLimit.bucket - 1 }
+            }));
             emitter.emit(AUDIT_EVENT, {
                 id: crypto.randomUUID(),
                 type: 'rate_limit',
                 status: 'allowed',
-                remaining: bucket,
+                remaining: store.state.rateLimit.bucket,
                 ts: Date.now()
             });
             return true;
@@ -127,7 +185,7 @@
             id: crypto.randomUUID(),
             type: 'rate_limit',
             status: 'exceeded',
-            remaining: bucket,
+            remaining: store.state.rateLimit.bucket,
             ts: Date.now()
         });
         return false;
@@ -137,18 +195,28 @@
     function loadSession() {
         try {
             const compressed = localStorage.getItem('aurora-session');
-            sessionContext = compressed ? decompressSession(compressed) : [];
-            console.log('Session context loaded:', sessionContext.length, 'entries');
+            if (!compressed) {
+                store.setState(state => ({ ...state, session: [] }));
+                return;
+            }
+            const data = decompressSession(compressed);
+            if (data.version !== SESSION_VERSION) {
+                console.warn('Session version mismatch, resetting session.');
+                store.setState(state => ({ ...state, session: [] }));
+                return;
+            }
+            store.setState(state => ({ ...state, session: data.entries }));
+            console.log('Session context loaded:', store.state.session.length, 'entries');
             emitter.emit(AUDIT_EVENT, {
                 id: crypto.randomUUID(),
                 type: 'session_load',
                 status: 'success',
-                count: sessionContext.length,
+                count: store.state.session.length,
                 ts: Date.now()
             });
         } catch (e) {
             console.warn('Failed to load session context:', e);
-            sessionContext = [];
+            store.setState(state => ({ ...state, session: [] }));
             emitter.emit(AUDIT_EVENT, {
                 id: crypto.randomUUID(),
                 type: 'session_load',
@@ -161,13 +229,14 @@
 
     function saveSession() {
         try {
-            const compressed = compressSession(sessionContext);
+            const data = { version: SESSION_VERSION, entries: store.state.session };
+            const compressed = compressSession(data);
             localStorage.setItem('aurora-session', compressed);
             emitter.emit(AUDIT_EVENT, {
                 id: crypto.randomUUID(),
                 type: 'session_save',
                 status: 'success',
-                count: sessionContext.length,
+                count: store.state.session.length,
                 ts: Date.now()
             });
         } catch (e) {
@@ -298,7 +367,6 @@
                 canvas.height = window.innerHeight * devicePixelRatio;
             }, 100));
 
-            // Cleanup on unload
             window.addEventListener('beforeunload', () => {
                 device.destroy();
                 canvas.remove();
@@ -325,21 +393,28 @@
 
     // ─── PRO CHATBOX MODULE ───────────────────────────────────────────
     const proChat = (function() {
-        const root = document.getElementById('proChat-root');
-        const launcher = document.getElementById('proChat-launcher');
-        const closeBtn = document.getElementById('proChat-close');
-        const logEl = document.getElementById('proChat-log');
-        const inputEl = document.getElementById('proChat-input');
-
-        let isHidden = true;
-        let lastActivity = Date.now();
+        function getElements() {
+            return {
+                root: document.getElementById('proChat-root'),
+                launcher: document.getElementById('proChat-launcher'),
+                closeBtn: document.getElementById('proChat-close'),
+                logEl: document.getElementById('proChat-log'),
+                form: document.getElementById('proChat-form'),
+                inputEl: document.getElementById('proChat-input')
+            };
+        }
 
         function toggleChat(open) {
-            isHidden = !open;
+            const { root } = getElements();
+            if (!root) {
+                console.warn('ProChat root element not found');
+                return;
+            }
+            store.setState(state => ({ ...state, ui: { ...state.ui, isProChatOpen: open } }));
             root.classList.toggle('hidden', !open);
             if (open) {
-                inputEl.focus();
-                lastActivity = Date.now();
+                const { inputEl } = getElements();
+                inputEl?.focus();
                 root.setAttribute('aria-hidden', 'false');
                 announce('Aurora Assistant chat opened.');
             } else {
@@ -355,14 +430,14 @@
         }
 
         function autoHide() {
-            if (!isHidden && Date.now() - lastActivity > 30000) {
+            if (store.state.ui.isProChatOpen && Date.now() - store.state.ui.lastActivity > 30000) {
                 toggleChat(false);
             }
         }
 
-        setInterval(autoHide, 1000);
-
         function addMsg(text, sender, id = crypto.randomUUID()) {
+            const { logEl } = getElements();
+            if (!logEl) return null;
             const li = document.createElement('li');
             li.className = 'proChat-msg';
             li.dataset.sender = sender;
@@ -372,7 +447,7 @@
             li.innerHTML = `<span>${sanitizeInput(text)}</span><span class="proChat-time">${time}</span>`;
             logEl.appendChild(li);
             logEl.scrollTo({ top: logEl.scrollHeight, behavior: 'smooth' });
-            lastActivity = Date.now();
+            store.setState(state => ({ ...state, ui: { ...state.ui, lastActivity: Date.now() } }));
             announce(`${sender === 'user' ? 'User' : 'Assistant'} message: ${text}`);
             emitter.emit(AUDIT_EVENT, {
                 id,
@@ -384,64 +459,85 @@
             return li.firstChild;
         }
 
-        launcher.addEventListener('click', () => toggleChat(true));
-        closeBtn.addEventListener('click', () => toggleChat(false));
-        inputEl.addEventListener('input', () => {
-            lastActivity = Date.now();
-        });
-
-        async function handleSubmit(e) {
-            e.preventDefault();
-            const q = sanitizeInput(inputEl.value.trim());
-            if (!q) return;
-            if (!takeToken()) {
-                addMsg('Rate limit: 30 messages / minute', 'bot');
-                showToast('Rate limit exceeded');
+        function init() {
+            const { launcher, closeBtn, form, inputEl } = getElements();
+            if (!launcher || !closeBtn || !form || !inputEl) {
+                console.warn('ProChat elements not found, deferring initialization');
+                setTimeout(init, 100);
                 return;
             }
-            const msgId = crypto.randomUUID();
-            addMsg(q, 'user', msgId);
-            inputEl.value = '';
-            const botSpan = addMsg('', 'bot');
-            try {
-                const answer = await streamHF(q, chunk => {
-                    botSpan.textContent += chunk;
-                    logEl.scrollTo({ top: logEl.scrollHeight, behavior: 'smooth' });
-                });
-                const signedAnswer = await signData(answer);
-                sessionContext.push({ id: msgId, userMsg: q, botMsg: answer, signature: signedAnswer, ts: Date.now() });
-                saveSession();
-                emitter.emit(AUDIT_EVENT, {
-                    id: msgId,
-                    type: 'prochat_response',
-                    userMsg: q,
-                    botMsg: answer,
-                    signature: signedAnswer,
-                    ts: Date.now()
-                });
-            } catch (err) {
-                botSpan.textContent = `(Error) ${err.message || err}`;
-                showToast(`Error: ${err.message}`);
-                emitter.emit(AUDIT_EVENT, {
-                    id: msgId,
-                    type: 'prochat_error',
-                    error: err.message,
-                    ts: Date.now()
-                });
-            }
+
+            launcher.addEventListener('click', () => toggleChat(true));
+            closeBtn.addEventListener('click', () => toggleChat(false));
+            inputEl.addEventListener('input', () => {
+                store.setState(state => ({ ...state, ui: { ...state.ui, lastActivity: Date.now() } }));
+            });
+
+            form.addEventListener('submit', async e => {
+                e.preventDefault();
+                const q = sanitizeInput(inputEl.value.trim());
+                if (!q) return;
+                if (!takeToken()) {
+                    addMsg('Rate limit: 30 messages / minute', 'bot');
+                    showToast('Rate limit exceeded');
+                    return;
+                }
+                const msgId = crypto.randomUUID();
+                addMsg(q, 'user', msgId);
+                inputEl.value = '';
+                const botSpan = addMsg('', 'bot');
+                try {
+                    const answer = await streamHF(q, chunk => {
+                        botSpan.textContent += chunk;
+                        const { logEl } = getElements();
+                        logEl?.scrollTo({ top: logEl.scrollHeight, behavior: 'smooth' });
+                    });
+                    const signedAnswer = await signData(answer);
+                    store.setState(state => ({
+                        ...state,
+                        session: [...state.session, { id: msgId, userMsg: q, botMsg: answer, signature: signedAnswer, ts: Date.now() }]
+                    }));
+                    saveSession();
+                    emitter.emit(AUDIT_EVENT, {
+                        id: msgId,
+                        type: 'prochat_response',
+                        userMsg: q,
+                        botMsg: answer,
+                        signature: signedAnswer,
+                        ts: Date.now()
+                    });
+                } catch (err) {
+                    botSpan.textContent = `(Error) ${err.message || err}`;
+                    showToast(`Error: ${err.message}`);
+                    emitter.emit(AUDIT_EVENT, {
+                        id: msgId,
+                        type: 'prochat_error',
+                        error: err.message,
+                        ts: Date.now()
+                    });
+                }
+            });
+
+            setInterval(autoHide, 1000);
         }
 
-        return { init: () => inputEl.addEventListener('submit', handleSubmit), toggleChat, addMsg };
+        return { init, toggleChat, addMsg };
     })();
 
     // ─── MAIN CHAT MODULE ─────────────────────────────────────────────
     const mainChat = (function() {
-        const chatLog = document.getElementById('chatLog');
-        const input = document.getElementById('chat-input');
-        const sendButton = document.getElementById('send-button');
-        const loader = document.getElementById('loader');
+        function getElements() {
+            return {
+                chatLog: document.getElementById('chatLog'),
+                input: document.getElementById('chat-input'),
+                sendButton: document.getElementById('send-button'),
+                loader: document.getElementById('loader')
+            };
+        }
 
         function addMessage(text, type, tooltip = '') {
+            const { chatLog } = getElements();
+            if (!chatLog) return;
             requestAnimationFrame(() => {
                 const bubble = document.createElement('div');
                 bubble.className = `message-bubble card ${type}`;
@@ -465,15 +561,18 @@
         }
 
         const scrollToBottom = debounce(() => {
-            chatLog.scrollTo({ top: chatLog.scrollHeight, behavior: 'smooth' });
+            const { chatLog } = getElements();
+            chatLog?.scrollTo({ top: chatLog.scrollHeight, behavior: 'smooth' });
         }, 100);
 
         function saveHistory() {
+            const { chatLog } = getElements();
+            if (!chatLog) return;
             const messages = Array.from(chatLog.children).map(el => ({
                 text: el.textContent,
                 type: el.classList.contains('user') ? 'user' : 'ai'
             }));
-            localStorage.setItem('aurora-history', compressSession(messages));
+            localStorage.setItem('aurora-history', compressSession({ version: SESSION_VERSION, entries: messages }));
             emitter.emit(AUDIT_EVENT, {
                 id: crypto.randomUUID(),
                 type: 'history_save',
@@ -485,12 +584,17 @@
         function loadHistory() {
             try {
                 const compressed = localStorage.getItem('aurora-history');
-                const history = compressed ? decompressSession(compressed) : [];
-                history.forEach(msg => addMessage(msg.text, msg.type));
+                if (!compressed) return;
+                const data = decompressSession(compressed);
+                if (data.version !== SESSION_VERSION) {
+                    console.warn('History version mismatch, resetting history.');
+                    return;
+                }
+                data.entries.forEach(msg => addMessage(msg.text, msg.type));
                 emitter.emit(AUDIT_EVENT, {
                     id: crypto.randomUUID(),
                     type: 'history_load',
-                    count: history.length,
+                    count: data.entries.length,
                     ts: Date.now()
                 });
             } catch (e) {
@@ -506,6 +610,8 @@
         }
 
         async function sendQuery() {
+            const { input, loader } = getElements();
+            if (!input || !loader) return;
             const q = sanitizeInput(input.value.trim());
             if (!q) return;
             if (!takeToken()) {
@@ -519,7 +625,8 @@
             try {
                 const botSpan = document.createElement('div');
                 botSpan.className = 'message-bubble card ai';
-                chatLog.appendChild(botSpan);
+                const { chatLog } = getElements();
+                chatLog?.appendChild(botSpan);
                 const answer = await streamHF(q, chunk => {
                     botSpan.textContent += chunk;
                     scrollToBottom();
@@ -528,7 +635,10 @@
                 botSpan.classList.add('visible');
                 const sessionId = `session_${Date.now()}`;
                 const signedAnswer = await signData(answer);
-                sessionContext.push({ id: sessionId, userMsg: q, botMsg: answer, signature: signedAnswer, ts: Date.now() });
+                store.setState(state => ({
+                    ...state,
+                    session: [...state.session, { id: sessionId, userMsg: q, botMsg: answer, signature: signedAnswer, ts: Date.now() }]
+                }));
                 saveSession();
                 emitter.emit(AUDIT_EVENT, {
                     id: sessionId,
@@ -552,22 +662,27 @@
             }
         }
 
-        input.addEventListener('keypress', e => {
-            if (e.key === 'Enter' && input.value.trim()) sendQuery();
-        });
-        sendButton.addEventListener('click', sendQuery);
+        function init() {
+            const { input, sendButton } = getElements();
+            if (!input || !sendButton) {
+                console.warn('MainChat elements not found, deferring initialization');
+                setTimeout(init, 100);
+                return;
+            }
+            input.addEventListener('keypress', e => {
+                if (e.key === 'Enter' && input.value.trim()) sendQuery();
+            });
+            sendButton.addEventListener('click', sendQuery);
+            loadHistory();
+        }
 
-        return { init: loadHistory, sendQuery, addMessage };
+        return { init, sendQuery, addMessage };
     })();
 
     // ─── TEXT-TO-SPEECH MODULE ────────────────────────────────────────
     const tts = (function() {
         let speech = new SpeechSynthesisUtterance();
-        let isSpeaking = false;
-        let isPaused = false;
-        let currentChunkIndex = 0;
         let voices = [];
-
         const chunks = [
             "AuroraGenesis-OMEGA is a cutting-edge AI system for cybersecurity, ethical reasoning, and forensic analysis, integrating over 40 modules for advanced cognitive capabilities.",
             "Key features include recursive agent architecture, capsule-based memory, real-time threat detection, and scalable dual-GPU processing.",
@@ -585,16 +700,17 @@
         window.speechSynthesis.onvoiceschanged = loadVoices;
 
         function startTTS() {
+            const { startBtn, pauseBtn } = getTTSElements();
+            if (!startBtn || !pauseBtn) return;
             if (!('speechSynthesis' in window)) {
                 mainChat.addMessage('Text-to-speech not supported.', 'ai');
                 showToast('TTS not supported');
                 return;
             }
-            if (isSpeaking) return;
-            isSpeaking = true;
-            isPaused = false;
-            document.getElementById('start-tts').disabled = true;
-            document.getElementById('pause-tts').disabled = false;
+            if (store.state.ui.isSpeaking) return;
+            store.setState(state => ({ ...state, ui: { ...state.ui, isSpeaking: true, isPaused: false, currentChunkIndex: 0 } }));
+            startBtn.disabled = true;
+            pauseBtn.disabled = false;
             speech = new SpeechSynthesisUtterance();
             speech.lang = 'en-US';
             speech.volume = 1;
@@ -605,17 +721,18 @@
             emitter.emit(AUDIT_EVENT, {
                 id: crypto.randomUUID(),
                 type: 'tts_start',
-                chunk: chunks[currentChunkIndex],
+                chunk: chunks[store.state.ui.currentChunkIndex],
                 ts: Date.now()
             });
         }
 
         function readNextChunk() {
-            if (currentChunkIndex >= chunks.length) {
-                isSpeaking = false;
-                document.getElementById('start-tts').disabled = false;
-                document.getElementById('pause-tts').disabled = true;
-                currentChunkIndex = 0;
+            const { startBtn, pauseBtn } = getTTSElements();
+            if (!startBtn || !pauseBtn) return;
+            if (store.state.ui.currentChunkIndex >= chunks.length) {
+                store.setState(state => ({ ...state, ui: { ...state.ui, isSpeaking: false, currentChunkIndex: 0 } }));
+                startBtn.disabled = false;
+                pauseBtn.disabled = true;
                 announce('Text-to-speech completed.');
                 emitter.emit(AUDIT_EVENT, {
                     id: crypto.randomUUID(),
@@ -624,29 +741,30 @@
                 });
                 return;
             }
-            if (!isPaused) {
-                mainChat.addMessage(chunks[currentChunkIndex], 'ai');
-                speech.text = chunks[currentChunkIndex];
+            if (!store.state.ui.isPaused) {
+                mainChat.addMessage(chunks[store.state.ui.currentChunkIndex], 'ai');
+                speech.text = chunks[store.state.ui.currentChunkIndex];
                 speech.onend = () => {
-                    currentChunkIndex++;
+                    store.setState(state => ({ ...state, ui: { ...state.ui, currentChunkIndex: state.ui.currentChunkIndex + 1 } }));
                     readNextChunk();
                 };
                 window.speechSynthesis.speak(speech);
                 emitter.emit(AUDIT_EVENT, {
                     id: crypto.randomUUID(),
                     type: 'tts_chunk',
-                    chunk: chunks[currentChunkIndex],
-                    index: currentChunkIndex,
+                    chunk: chunks[store.state.ui.currentChunkIndex],
+                    index: store.state.ui.currentChunkIndex,
                     ts: Date.now()
                 });
             }
         }
 
         function pauseTTS() {
-            if (!isSpeaking) return;
-            if (isPaused) {
-                isPaused = false;
-                document.getElementById('pause-tts').textContent = 'Pause TTS';
+            const { pauseBtn } = getTTSElements();
+            if (!pauseBtn || !store.state.ui.isSpeaking) return;
+            if (store.state.ui.isPaused) {
+                store.setState(state => ({ ...state, ui: { ...state.ui, isPaused: false } }));
+                pauseBtn.textContent = 'Pause TTS';
                 window.speechSynthesis.resume();
                 readNextChunk();
                 announce('Text-to-speech resumed.');
@@ -656,8 +774,8 @@
                     ts: Date.now()
                 });
             } else {
-                isPaused = true;
-                document.getElementById('pause-tts').textContent = 'Resume TTS';
+                store.setState(state => ({ ...state, ui: { ...state.ui, isPaused: true } }));
+                pauseBtn.textContent = 'Resume TTS';
                 window.speechSynthesis.pause();
                 announce('Text-to-speech paused.');
                 emitter.emit(AUDIT_EVENT, {
@@ -668,16 +786,32 @@
             }
         }
 
-        document.getElementById('start-tts').addEventListener('click', startTTS);
-        document.getElementById('pause-tts').addEventListener('click', pauseTTS);
+        function getTTSElements() {
+            return {
+                startBtn: document.getElementById('start-tts'),
+                pauseBtn: document.getElementById('pause-tts')
+            };
+        }
 
-        return { startTTS, pauseTTS };
+        function init() {
+            const { startBtn, pauseBtn } = getTTSElements();
+            if (!startBtn || !pauseBtn) {
+                console.warn('TTS elements not found, deferring initialization');
+                setTimeout(init, 100);
+                return;
+            }
+            startBtn.addEventListener('click', startTTS);
+            pauseBtn.addEventListener('click', pauseTTS);
+        }
+
+        return { init, startTTS, pauseTTS };
     })();
 
     // ─── ENCRYPT/DECRYPT MODULE ───────────────────────────────────────
     async function encryptText() {
-        const input = sanitizeInput(document.getElementById('encrypt-input').value);
+        const input = sanitizeInput(document.getElementById('encrypt-input')?.value || '');
         const outputEl = document.getElementById('encrypt-output');
+        if (!outputEl) return;
         if (!input) {
             outputEl.textContent = 'Please enter text to encrypt.';
             showToast('No input provided');
@@ -708,8 +842,9 @@
     }
 
     async function decryptText() {
-        const input = sanitizeInput(document.getElementById('decrypt-input').value);
+        const input = sanitizeInput(document.getElementById('decrypt-input')?.value || '');
         const outputEl = document.getElementById('decrypt-output');
+        if (!outputEl) return;
         if (!input) {
             outputEl.textContent = 'Please enter encrypted text to decrypt.';
             showToast('No input provided');
@@ -741,8 +876,9 @@
 
     // ─── DECOMPILE MODULE ─────────────────────────────────────────────
     async function decompileCode() {
-        const input = sanitizeInput(document.getElementById('decompile-input').value);
+        const input = sanitizeInput(document.getElementById('decompile-input')?.value || '');
         const outputEl = document.getElementById('decompile-output');
+        if (!outputEl) return;
         if (!input) {
             outputEl.textContent = 'Please enter compiled code to decompile.';
             showToast('No input provided');
@@ -787,19 +923,18 @@
 
     function sanitizeInput(str) {
         if (!str) return '';
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML.replace(/[<>&"']/g, match => ({
+        return str.replace(/[<>&"']/g, match => ({
             '<': '&lt;',
             '>': '&gt;',
             '&': '&amp;',
             '"': '&quot;',
             "'": '&#39;'
-        })[match]);
+        })[match]).replace(/[^\x20-\x7E\n\r\t]/g, '');
     }
 
     function showToast(message) {
         const toast = document.getElementById('toast');
+        if (!toast) return;
         toast.textContent = sanitizeInput(message);
         toast.style.display = 'block';
         setTimeout(() => toast.style.display = 'none', 3000);
@@ -862,22 +997,25 @@
         const timeout = setTimeout(() => controller.abort(), 10000);
         for (let i = 0; i < retries; i++) {
             try {
-                if (!HF_TOKEN) throw new Error('Missing Hugging Face token');
+                const token = store.state.config.HUGGINGFACE_TOKEN;
+                if (!token) throw new Error('Missing Hugging Face token');
                 const url = `https://api-inference.huggingface.co/models/${HF_MODEL}`;
-                const contextStr = sessionContext.slice(-5).map(c => 
+                const contextStr = store.state.session.slice(-5).map(c => 
                     `${c.userMsg ? 'User' : 'Bot'}: ${c.userMsg || c.botMsg}`).join('\n');
                 const payload = {
                     inputs: `[CONTEXT]\n${contextStr}\n\nUser: ${prompt}\nBot:`,
                     stream: true,
                     parameters: { max_new_tokens: 200, temperature: 0.7, top_p: 0.9, stop: ['</s>'] }
                 };
+                const csrfToken = crypto.randomUUID();
                 const res = await fetchWithRetry(url, {
                     method: 'POST',
                     headers: {
-                        'Authorization': `Bearer ${HF_TOKEN}`,
+                        'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
-                        'X-Use-Stream': 'true'
+                        'X-Use-Stream': 'true',
+                        'X-CSRF-Token': csrfToken
                     },
                     body: JSON.stringify(payload),
                     signal: controller.signal
@@ -926,43 +1064,91 @@
         }
     }
 
-    // ─── INITIALIZATION ───────────────────────────────────────────────
-    document.addEventListener('DOMContentLoaded', async () => {
-        try {
-            await loadConfig();
-            loadSession();
-            await initWebGPUParticles();
-            proChat.init();
-            mainChat.init();
-
-            // Accordion Interactions
-            document.querySelectorAll('.accordion-header').forEach(header => {
-                const toggleAccordion = () => {
-                    const accordion = header.parentElement;
-                    const content = header.nextElementSibling;
-                    const isExpanded = header.getAttribute('aria-expanded') === 'true';
-                    header.setAttribute('aria-expanded', !isExpanded);
+    // ─── EVENT DELEGATION ─────────────────────────────────────────────
+    function setupEventDelegation() {
+        document.addEventListener('click', e => {
+            const target = e.target.closest('[data-action]');
+            if (!target) return;
+            const action = target.dataset.action;
+            switch (action) {
+                case 'accordion-toggle':
+                    const accordion = target.parentElement;
+                    const content = target.nextElementSibling;
+                    const isExpanded = target.getAttribute('aria-expanded') === 'true';
+                    target.setAttribute('aria-expanded', !isExpanded);
                     accordion.classList.toggle('active');
-                    announce(`Accordion ${isExpanded ? 'collapsed' : 'expanded'}: ${header.textContent}`);
+                    announce(`Accordion ${isExpanded ? 'collapsed' : 'expanded'}: ${target.textContent}`);
                     emitter.emit(AUDIT_EVENT, {
                         id: crypto.randomUUID(),
                         type: 'accordion_toggle',
                         state: isExpanded ? 'collapsed' : 'expanded',
-                        title: header.textContent,
+                        title: target.textContent,
                         ts: Date.now()
                     });
-                };
-                header.addEventListener('click', toggleAccordion);
-                header.addEventListener('touchstart', toggleAccordion, { passive: true });
-            });
+                    break;
+                case 'encrypt':
+                    encryptText();
+                    break;
+                case 'decrypt':
+                    decryptText();
+                    break;
+                case 'decompile':
+                    decompileCode();
+                    break;
+            }
+        });
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                const target = e.target.closest('.accordion-header');
+                if (target) {
+                    e.preventDefault();
+                    const accordion = target.parentElement;
+                    const isExpanded = target.getAttribute('aria-expanded') === 'true';
+                    target.setAttribute('aria-expanded', !isExpanded);
+                    accordion.classList.toggle('active');
+                    announce(`Accordion ${isExpanded ? 'collapsed' : 'expanded'}: ${target.textContent}`);
+                    emitter.emit(AUDIT_EVENT, {
+                        id: crypto.randomUUID(),
+                        type: 'accordion_toggle',
+                        state: isExpanded ? 'collapsed' : 'expanded',
+                        title: target.textContent,
+                        ts: Date.now()
+                    });
+                }
+            }
+        });
+    }
+
+    // ─── INITIALIZATION ───────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            await loadConfig();
+            await loadFavicon();
+            loadSession();
+            await initWebGPUParticles();
+            proChat.init();
+            mainChat.init();
+            tts.init();
+            setupEventDelegation();
 
             // Dynamic ARIA Attributes
-            document.getElementById('chatLog').setAttribute('aria-label', 'Main chat log');
-            document.getElementById('proChat-root').setAttribute('aria-label', 'AuroraGenesis AI Assistant');
-            document.getElementById('proChat-form').setAttribute('aria-label', 'Send a message to Aurora Assistant');
+            const setAria = (id, attrs) => {
+                const el = document.getElementById(id);
+                if (el) Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, value));
+            };
+            setAria('chatLog', { 'aria-label': 'Main chat log' });
+            setAria('proChat-root', { 'aria-label': 'AuroraGenesis AI Assistant', 'aria-modal': 'true' });
+            setAria('proChat-form', { 'aria-label': 'Send a message to Aurora Assistant' });
             document.querySelectorAll('.accordion-content').forEach(content => {
                 content.setAttribute('aria-labelledby', content.previousElementSibling.id || `accordion-${crypto.randomUUID()}`);
             });
+            document.querySelectorAll('.accordion-header').forEach(header => {
+                header.dataset.action = 'accordion-toggle';
+            });
+            document.getElementById('encrypt-button')?.setAttribute('data-action', 'encrypt');
+            document.getElementById('decrypt-button')?.setAttribute('data-action', 'decrypt');
+            document.getElementById('decompile-button')?.setAttribute('data-action', 'decompile');
 
             // Dynamic VH Fix
             const setVH = debounce(() => {
@@ -997,14 +1183,10 @@
             }
 
             // Preloader Fade-Out
-            document.getElementById('preloader').classList.add('fade-out');
+            const preloader = document.getElementById('preloader');
+            if (preloader) preloader.classList.add('fade-out');
             document.body.classList.add('loaded');
             announce('AuroraGenesis interface loaded.');
-
-            // Bind Module Events
-            document.getElementById('encrypt-button').addEventListener('click', encryptText);
-            document.getElementById('decrypt-button').addEventListener('click', decryptText);
-            document.getElementById('decompile-button').addEventListener('click', decompileCode);
 
             emitter.emit(AUDIT_EVENT, {
                 id: crypto.randomUUID(),
@@ -1024,18 +1206,29 @@
     });
 
     // ─── AUDIT LOGGING ────────────────────────────────────────────────
-    emitter.on(AUDIT_EVENT, async event => {
-        const signedEvent = await signData(JSON.stringify(event));
-        console.log('Audit:', { ...event, signature: signedEvent });
-        // Simulate sending to a secure audit server
+    let auditQueue = [];
+    async function processAuditQueue() {
+        if (!auditQueue.length) return;
+        const batch = auditQueue.splice(0, 10);
         try {
+            const compressed = compressSession(batch);
             await fetchWithRetry(`${WS_URL}/audit`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...event, signature: signedEvent })
+                body: compressed
             });
+            console.log('Audit batch sent:', batch.length);
         } catch (e) {
-            console.warn('Failed to send audit log:', e);
+            console.warn('Failed to send audit batch:', e);
+            auditQueue.push(...batch);
         }
+        setTimeout(processAuditQueue, 5000);
+    }
+
+    emitter.on(AUDIT_EVENT, async event => {
+        const signedEvent = await signData(JSON.stringify(event));
+        console.log('Audit:', { ...event, signature: signedEvent });
+        auditQueue.push({ ...event, signature: signedEvent });
+        processAuditQueue();
     });
 })();
