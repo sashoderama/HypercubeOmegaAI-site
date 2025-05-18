@@ -7,9 +7,8 @@
     <meta name="theme-color" content="#080808">
     <meta name="description" content="AuroraGenesis: The world's first GPU-cluster-compatible cybersecurity AI platform with capsule-based memory compression, ethical intelligence, and real-time multi-agent mutation for zero-day threat detection and forensic analysis.">
     <title>AuroraGenesis: Next-Gen Cybersecurity Platform</title>
+    <link rel="icon" href="data:,">
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400&family=Orbitron:wght@500&family=Source+Code+Pro:wght@400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="lib/three.min.js"></script>
-    <script src="lib/OrbitControls.js"></script>
     <style>
         :root {
             --void-black: #080808;
@@ -48,6 +47,32 @@
             overflow-x: hidden;
             scroll-behavior: smooth;
             position: relative;
+        }
+
+        #particle-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--neon-cyan);
+            border-radius: 50%;
+            opacity: 0.6;
+            box-shadow: 0 0 10px var(--glow-blue);
+            animation: moveParticle linear infinite;
+        }
+
+        @keyframes moveParticle {
+            0% { transform: translate(0, 0); opacity: 0.6; }
+            100% { transform: translate(var(--x-move), var(--y-move)); opacity: 0; }
         }
 
         .cyber-nav {
@@ -117,15 +142,6 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
-
-        #background-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
         }
 
         .hex-overlay {
@@ -544,10 +560,7 @@
             .api-demo select { font-size: 0.9rem; padding: 0.8rem; }
         }
 
-        #tech-stack-diagram,
-        #threat-detection-diagram,
-        #ethical-validation-diagram,
-        #neo4j-diagram {
+        .diagram {
             width: 100%;
             max-width: 1100px;
             height: 650px;
@@ -556,25 +569,90 @@
             border-radius: 12px;
             background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(10px);
+            perspective: 1000px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .diagram-scene {
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+
+        .diagram-node {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: var(--neon-cyan);
+            border-radius: 8px;
+            box-shadow: 0 0 15px var(--glow-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            color: var(--hud-white);
+            text-align: center;
+            transform: translate3d(0, 0, 0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .diagram-node:hover {
+            box-shadow: 0 0 25px var(--glow-blue);
+            transform: translate3d(0, 0, 10px) scale(1.1);
+        }
+
+        .diagram-edge {
+            position: absolute;
+            background: linear-gradient(to right, transparent, var(--neon-cyan), transparent);
+            height: 2px;
+            transform-origin: 0 0;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .diagram-edge:hover {
+            opacity: 1;
+        }
+
+        .diagram-label {
+            position: absolute;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 5px var(--glow);
+            pointer-events: none;
         }
 
         @media (max-width: 768px) {
-            #tech-stack-diagram,
-            #threat-detection-diagram,
-            #ethical-validation-diagram,
-            #neo4j-diagram {
+            .diagram {
                 height: 550px;
                 margin: 2.5rem auto;
+            }
+            .diagram-node {
+                width: 50px;
+                height: 50px;
+                font-size: 0.8rem;
+            }
+            .diagram-label {
+                font-size: 0.7rem;
             }
         }
 
         @media (max-width: 480px) {
-            #tech-stack-diagram,
-            #threat-detection-diagram,
-            #ethical-validation-diagram,
-            #neo4j-diagram {
+            .diagram {
                 height: 350px;
                 margin: 2rem auto;
+            }
+            .diagram-node {
+                width: 40px;
+                height: 40px;
+                font-size: 0.7rem;
+            }
+            .diagram-label {
+                font-size: 0.6rem;
             }
         }
 
@@ -656,7 +734,7 @@
     <div id="preloader">
         <div class="preloader-hexagon"></div>
     </div>
-    <canvas id="background-canvas"></canvas>
+    <div id="particle-background"></div>
     <div class="hex-overlay"></div>
     <div class="terminal-line"></div>
 
@@ -839,7 +917,9 @@
             <div class="blur-glass">
                 <h2>📊 Neo4j Integration</h2>
             </div>
-            <div id="neo4j-diagram"></div>
+            <div id="neo4j-diagram" class="diagram">
+                <div class="diagram-scene"></div>
+            </div>
         </section>
 
         <section>
@@ -968,7 +1048,9 @@
             <div class="blur-glass">
                 <h2>🔄 Threat Detection Pipeline</h2>
             </div>
-            <div id="threat-detection-diagram"></div>
+            <div id="threat-detection-diagram" class="diagram">
+                <div class="diagram-scene"></div>
+            </div>
             <div class="blur-glass">
                 <h2>🔍 Forensic Intelligence</h2>
             </div>
@@ -1148,7 +1230,9 @@
             <div class="blur-glass">
                 <h2>🔄 Ethical Validation Flow</h2>
             </div>
-            <div id="ethical-validation-diagram"></div>
+            <div id="ethical-validation-diagram" class="diagram">
+                <div class="diagram-scene"></div>
+            </div>
         </section>
 
         <section>
@@ -1156,7 +1240,9 @@
                 <h1>Tech Stack</h1>
                 <p>AuroraGenesis is powered by a robust and modern tech stack, ensuring performance, scalability, and security.</p>
             </div>
-            <div id="tech-stack-diagram"></div>
+            <div id="tech-stack-diagram" class="diagram">
+                <div class="diagram-scene"></div>
+            </div>
             <div class="accordion">
                 <div class="accordion-header" tabindex="0" role="button" aria-expanded="false">Technologies Used <span>↓</span></div>
                 <div class="accordion-content">
@@ -1236,332 +1322,202 @@
 
     <script>
         window.addEventListener('load', function () {
+            // Preloader
             const preloader = document.getElementById('preloader');
             preloader.classList.add('fade-out');
 
-            if (typeof THREE === 'undefined') {
-                console.error('Three.js is not loaded. Please check the lib/three.min.js file.');
-                return;
-            }
-
-            // Background Particle System
-            const backgroundCanvas = document.getElementById('background-canvas');
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ canvas: backgroundCanvas, antialias: true, alpha: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-            camera.position.z = 50;
-
-            const particlesGeometry = new THREE.BufferGeometry();
-            const particleCount = 5000;
-            const positions = new Float32Array(particleCount * 3);
-            const velocities = new Float32Array(particleCount * 3);
-            const colors = new Float32Array(particleCount * 3);
+            // Particle Background
+            const particleContainer = document.getElementById('particle-background');
+            const particleCount = 100;
 
             for (let i = 0; i < particleCount; i++) {
-                positions[i * 3] = (Math.random() - 0.5) * 200;
-                positions[i * 3 + 1] = (Math.random() - 0.5) * 200;
-                positions[i * 3 + 2] = (Math.random() - 0.5) * 200;
-                velocities[i * 3] = (Math.random() - 0.5) * 0.02;
-                velocities[i * 3 + 1] = (Math.random() - 0.5) * 0.02;
-                velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.02;
-                colors[i * 3] = 0; colors[i * 3 + 1] = 1; colors[i * 3 + 2] = 1;
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const xStart = Math.random() * window.innerWidth;
+                const yStart = Math.random() * window.innerHeight;
+                const xMove = (Math.random() - 0.5) * window.innerWidth * 2;
+                const yMove = (Math.random() - 0.5) * window.innerHeight * 2;
+                const duration = 10 + Math.random() * 20;
+                particle.style.left = `${xStart}px`;
+                particle.style.top = `${yStart}px`;
+                particle.style.setProperty('--x-move', `${xMove}px`);
+                particle.style.setProperty('--y-move', `${yMove}px`);
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.animationDelay = `${-Math.random() * duration}s`;
+                particleContainer.appendChild(particle);
             }
 
-            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            particlesGeometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
-            particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-            const particleMaterial = new THREE.PointsMaterial({
-                size: 0.5,
-                vertexColors: true,
-                transparent: true,
-                opacity: 0.8,
-                blending: THREE.AdditiveBlending
-            });
-
-            const particles = new THREE.Points(particlesGeometry, particleMaterial);
-            scene.add(particles);
-
-            const animateBackground = () => {
-                requestAnimationFrame(animateBackground);
-                const positions = particlesGeometry.attributes.position.array;
-                const velocities = particlesGeometry.attributes.velocity.array;
-                for (let i = 0; i < particleCount; i++) {
-                    positions[i * 3] += velocities[i * 3];
-                    positions[i * 3 + 1] += velocities[i * 3 + 1];
-                    positions[i * 3 + 2] += velocities[i * 3 + 2;
-                    if (Math.abs(positions[i * 3]) > 100) velocities[i * 3] *= -1;
-                    if (Math.abs(positions[i * 3 + 1]) > 100) velocities[i * 3 + 1] *= -1;
-                    if (Math.abs(positions[i * 3 + 2]) > 100) velocities[i * 3 + 2] *= -1;
-                }
-                particlesGeometry.attributes.position.needsUpdate = true;
-                renderer.render(scene, camera);
-            };
-            animateBackground();
-
-            // 3D Diagram Utility Functions
-            function createTextTexture(text, fontFamily, fontSize, color) {
-                const canvas = document.createElement('canvas');
-                const context = canvas.getContext('2d');
-                context.font = `${fontSize}px ${fontFamily}`;
-                const textWidth = context.measureText(text).width;
-                canvas.width = textWidth;
-                canvas.height = fontSize * 1.2;
-                context.font = `${fontSize}px ${fontFamily}`;
-                context.fillStyle = color;
-                context.fillText(text, 0, fontSize);
-                const texture = new THREE.Texture(canvas);
-                texture.needsUpdate = true;
-                return texture;
-            }
-
-            function create3DDiagram(containerId, nodesData, edgesData) {
-                const container = document.getElementById(containerId);
-                const scene = new THREE.Scene();
-                const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-                const renderer = new THREE.WebGLRenderer({ antialias: true });
-                renderer.setSize(container.clientWidth, container.clientHeight);
-                container.appendChild(renderer.domElement);
-
-                camera.position.set(0, 10, 30);
-
-                const controls = new THREE.OrbitControls(camera, renderer.domElement);
-                controls.enableDamping = true;
-                controls.dampingFactor = 0.05;
-
-                const ambientLight = new THREE.AmbientLight(0x404040);
-                scene.add(ambientLight);
-                const pointLight = new THREE.PointLight(0x00f7ff, 1, 100);
-                pointLight.position.set(10, 10, 10);
-                scene.add(pointLight);
-
-                const nodes = [];
-                const nodeLabels = [];
+            // 3D Diagram Utility
+            function createDiagram(diagramId, nodesData, edgesData) {
+                const diagram = document.getElementById(diagramId);
+                const scene = diagram.querySelector('.diagram-scene');
+                
                 nodesData.forEach(node => {
-                    const geometry = new THREE.CylinderGeometry(1, 1, 0.2, 6);
-                    const material = new THREE.MeshPhongMaterial({
-                        color: node.color,
-                        emissive: node.color,
-                        emissiveIntensity: 0.5,
-                        shininess: 100
-                    });
-                    const mesh = new THREE.Mesh(geometry, material);
-                    mesh.position.set(node.x, node.y, node.z);
-                    mesh.userData = { id: node.id, title: node.title };
-                    scene.add(mesh);
-                    nodes.push(mesh);
+                    const nodeElement = document.createElement('div');
+                    nodeElement.className = 'diagram-node';
+                    nodeElement.style.left = `${node.x * 10 + 50}%`;
+                    nodeElement.style.top = `${node.y * 10 + 50}%`;
+                    nodeElement.style.transform = `translate3d(-50%, -50%, ${node.z * 10}px)`;
+                    nodeElement.textContent = node.label;
+                    nodeElement.dataset.title = node.title;
+                    scene.appendChild(nodeElement);
 
-                    const texture = createTextTexture(node.label, 'Orbitron', 24, '#ffffff');
-                    const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
-                        map: texture,
-                        transparent: true
-                    }));
-                    sprite.position.set(node.x, node.y + 1, node.z);
-                    sprite.scale.set(5, 1, 1);
-                    scene.add(sprite);
-                    nodeLabels.push(sprite);
+                    const label = document.createElement('div');
+                    label.className = 'diagram-label';
+                    label.textContent = node.label;
+                    label.style.left = `${node.x * 10 + 50}%`;
+                    label.style.top = `${node.y * 10 + 55}%`;
+                    label.style.transform = `translate3d(-50%, -50%, ${node.z * 10 + 5}px)`;
+                    scene.appendChild(label);
                 });
 
-                const edges = [];
                 edgesData.forEach(edge => {
-                    const source = nodes.find(n => n.userData.id === edge.from);
-                    const target = nodes.find(n => n.userData.id === edge.to);
-                    const geometry = new THREE.BufferGeometry().setFromPoints([
-                        source.position,
-                        target.position
-                    ]);
-                    const material = new THREE.LineDashedMaterial({
-                        color: edge.color,
-                        linewidth: 2,
-                        dashSize: 0.5,
-                        gapSize: 0.5
-                    });
-                    const line = new THREE.Line(geometry, material);
-                    line.computeLineDistances();
-                    scene.add(line);
-                    edges.push(line);
+                    const fromNode = nodesData.find(n => n.id === edge.from);
+                    const toNode = nodesData.find(n => n.id === edge.to);
+                    const edgeElement = document.createElement('div');
+                    edgeElement.className = 'diagram-edge';
+                    const x1 = fromNode.x * 10 + 50;
+                    const y1 = fromNode.y * 10 + 50;
+                    const x2 = toNode.x * 10 + 50;
+                    const y2 = toNode.y * 10 + 50;
+                    const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+                    const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+                    edgeElement.style.left = `${x1}%`;
+                    edgeElement.style.top = `${y1}%`;
+                    edgeElement.style.width = `${length}%`;
+                    edgeElement.style.transform = `rotate(${angle}deg)`;
+                    scene.appendChild(edgeElement);
                 });
 
-                const raycaster = new THREE.Raycaster();
-                const mouse = new THREE.Vector2();
-                let tooltip = null;
+                let rotationY = 0;
+                let isDragging = false;
+                let previousX = 0;
 
-                container.addEventListener('mousemove', (event) => {
-                    const rect = container.getBoundingClientRect();
-                    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-                    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+                diagram.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    previousX = e.clientX;
+                });
 
-                    raycaster.setFromCamera(mouse, camera);
-                    const intersects = raycaster.intersectObjects(nodes);
+                diagram.addEventListener('mousemove', (e) => {
+                    if (isDragging) {
+                        const deltaX = e.clientX - previousX;
+                        rotationY += deltaX * 0.5;
+                        scene.style.transform = `rotateY(${rotationY}deg)`;
+                        previousX = e.clientX;
+                    }
+                });
 
+                diagram.addEventListener('mouseup', () => {
+                    isDragging = false;
+                });
+
+                diagram.addEventListener('mouseleave', () => {
+                    isDragging = false;
+                });
+
+                diagram.addEventListener('mousemove', (e) => {
+                    const rect = diagram.getBoundingClientRect();
+                    const nodes = scene.querySelectorAll('.diagram-node');
+                    let tooltip = document.querySelector('.tooltip');
+                    
                     if (tooltip) {
                         document.body.removeChild(tooltip);
                         tooltip = null;
                     }
 
-                    if (intersects.length > 0) {
-                        const node = intersects[0].object;
-                        tooltip = document.createElement('div');
-                        tooltip.className = 'tooltip';
-                        tooltip.textContent = node.userData.title;
-                        tooltip.style.left = `${event.clientX + 10}px`;
-                        tooltip.style.top = `${event.clientY + 10}px`;
-                        document.body.appendChild(tooltip);
-                        node.scale.set(1.2, 1.2, 1.2);
-                    } else {
-                        nodes.forEach(node => node.scale.set(1, 1, 1));
-                    }
-                });
-
-                container.addEventListener('mouseleave', () => {
-                    if (tooltip) {
-                        document.body.removeChild(tooltip);
-                        tooltip = null;
-                    }
-                    nodes.forEach(node => node.scale.set(1, 1, 1));
-                });
-
-                const animate = () => {
-                    requestAnimationFrame(animate);
                     nodes.forEach(node => {
-                        node.rotation.y += 0.01;
+                        const nodeRect = node.getBoundingClientRect();
+                        if (e.clientX >= nodeRect.left && e.clientX <= nodeRect.right &&
+                            e.clientY >= nodeRect.top && e.clientY <= nodeRect.bottom) {
+                            tooltip = document.createElement('div');
+                            tooltip.className = 'tooltip';
+                            tooltip.textContent = node.dataset.title;
+                            tooltip.style.left = `${e.clientX + 10}px`;
+                            tooltip.style.top = `${e.clientY + 10}px`;
+                            document.body.appendChild(tooltip);
+                        }
                     });
-                    edges.forEach(edge => {
-                        edge.material.dashOffset -= 0.01;
-                        edge.computeLineDistances();
-                    });
-                    controls.update();
-                    renderer.render(scene, camera);
-                };
-                animate();
+                });
 
-                window.addEventListener('resize', () => {
-                    camera.aspect = container.clientWidth / container.clientHeight;
-                    camera.updateProjectionMatrix();
-                    renderer.setSize(container.clientWidth, container.clientHeight);
+                diagram.addEventListener('mouseleave', () => {
+                    const tooltip = document.querySelector('.tooltip');
+                    if (tooltip) {
+                        document.body.removeChild(tooltip);
+                    }
                 });
             }
 
             // Tech Stack Diagram
-            function drawTechStackDiagram() {
-                const nodesData = [
-                    { id: 1, label: '🧠 Aurora Core', x: 0, y: 0, z: 0, color: 0x00f7ff, title: 'Central AI engine powering AuroraGenesis' },
-                    { id: 2, label: '🔥 PyTorch', x: 5, y: 2, z: 5, color: 0xff00ff, title: 'Deep learning framework for model training' },
-                    { id: 3, label: '📊 Neo4j', x: -5, y: 2, z: 5, color: 0x00ffcc, title: 'Graph database for causality and auditing' },
-                    { id: 4, label: '⚡ Triton', x: 5, y: -2, z: 5, color: 0xff00ff, title: 'GPU-accelerated inference engine' },
-                    { id: 5, label: '🌐 Ray Cluster', x: -5, y: -2, z: 5, color: 0x00f7ff, title: 'Distributed computing for scalability' },
-                    { id: 6, label: '🗄️ Redis', x: 5, y: 2, z: -5, color: 0xff3b30, title: 'In-memory cache for real-time state' },
-                    { id: 7, label: '🔍 FAISS', x: -5, y: 2, z: -5, color: 0x00ffcc, title: 'Vector search for memory indexing' },
-                    { id: 8, label: '🧬 Memory Compression', x: 5, y: -2, z: -5, color: 0xff00ff, title: 'Capsule-based entropy compression' },
-                    { id: 9, label: '🔄 Capsule Transformer', x: -5, y: -2, z: -5, color: 0xff00ff, title: 'Dynamic routing for capsule networks' },
-                    { id: 10, label: '🛠️ TensorRT', x: 3, y: 3, z: 3, color: 0x00f7ff, title: 'Optimized inference for GPUs' },
-                    { id: 11, label: '📈 CuPy', x: -3, y: 3, z: 3, color: 0x00ffcc, title: 'GPU-accelerated numerical computation' },
-                    { id: 12, label: '🔒 Volatility3', x: 3, y: -3, z: 3, color: 0xff3b30, title: 'Memory forensics framework' }
-                ];
+            const techStackNodes = [
+                { id: 1, label: '🧠 Aurora Core', x: 0, y: 0, z: 0, title: 'Central AI engine powering AuroraGenesis' },
+                { id: 2, label: '🔥 PyTorch', x: 2, y: 1, z: 2, title: 'Deep learning framework for model training' },
+                { id: 3, label: '📊 Neo4j', x: -2, y: 1, z: 2, title: 'Graph database for causality and auditing' },
+                { id: 4, label: '⚡ Triton', x: 2, y: -1, z: 2, title: 'GPU-accelerated inference engine' },
+                { id: 5, label: '🌐 Ray Cluster', x: -2, y: -1, z: 2, title: 'Distributed computing for scalability' }
+            ];
 
-                const edgesData = [
-                    { from: 2, to: 1, color: 0xff00ff },
-                    { from: 3, to: 1, color: 0x00ffcc },
-                    { from: 4, to: 1, color: 0xff00ff },
-                    { from: 5, to: 1, color: 0x00f7ff },
-                    { from: 6, to: 1, color: 0xff3b30 },
-                    { from: 7, to: 1, color: 0x00ffcc },
-                    { from: 8, to: 1, color: 0xff00ff },
-                    { from: 9, to: 1, color: 0xff00ff },
-                    { from: 10, to: 1, color: 0x00f7ff },
-                    { from: 11, to: 1, color: 0x00ffcc },
-                    { from: 12, to: 1, color: 0xff3b30 }
-                ];
+            const techStackEdges = [
+                { from: 2, to: 1 },
+                { from: 3, to: 1 },
+                { from: 4, to: 1 },
+                { from: 5, to: 1 }
+            ];
 
-                create3DDiagram('tech-stack-diagram', nodesData, edgesData);
-            }
+            createDiagram('tech-stack-diagram', techStackNodes, techStackEdges);
 
             // Threat Detection Diagram
-            function drawThreatDetectionDiagram() {
-                const nodesData = [
-                    { id: 1, label: '⚡ Exploit Ingestor', x: 0, y: 0, z: 0, color: 0x00f7ff, title: 'Ingests and classifies exploits in real-time' },
-                    { id: 2, label: '⚡ Exploit Mutator', x: 5, y: 0, z: 0, color: 0x00f7ff, title: 'Mutates exploits for proactive defense' },
-                    { id: 3, label: '⚡ Attack Path Simulator', x: 10, y: 0, z: 0, color: 0x00f7ff, title: 'Simulates attack paths with MITRE ATT&CK' },
-                    { id: 4, label: '🔍 Anomaly Detector', x: 15, y: 0, z: 0, color: 0x00f7ff, title: 'Detects anomalies using GMM models' },
-                    { id: 5, label: '🛡️ Response Orchestrator', x: 20, y: 0, z: 0, color: 0x00f7ff, title: 'Coordinates automated threat responses' }
-                ];
+            const threatDetectionNodes = [
+                { id: 1, label: '⚡ Exploit Ingestor', x: 0, y: 0, z: 0, title: 'Ingests and classifies exploits in real-time' },
+                { id: 2, label: '⚡ Exploit Mutator', x: 2, y: 0, z: 0, title: 'Mutates exploits for proactive defense' },
+                { id: 3, label: '⚡ Attack Path', x: 4, y: 0, z: 0, title: 'Simulates attack paths with MITRE ATT&CK' },
+                { id: 4, label: '🔍 Anomaly Detector', x: 6, y: 0, z: 0, title: 'Detects anomalies using GMM models' },
+                { id: 5, label: '🛡️ Response', x: 8, y: 0, z: 0, title: 'Coordinates automated threat responses' }
+            ];
 
-                const edgesData = [
-                    { from: 1, to: 2, color: 0x00f7ff },
-                    { from: 2, to: 3, color: 0x00f7ff },
-                    { from: 3, to: 4, color: 0x00f7ff },
-                    { from: 4, to: 5, color: 0x00f7ff }
-                ];
+            const threatDetectionEdges = [
+                { from: 1, to: 2 },
+                { from: 2, to: 3 },
+                { from: 3, to: 4 },
+                { from: 4, to: 5 }
+            ];
 
-                create3DDiagram('threat-detection-diagram', nodesData, edgesData);
-            }
+            createDiagram('threat-detection-diagram', threatDetectionNodes, threatDetectionEdges);
 
-// Ethical Validation Diagram
-            function drawEthicalValidationDiagram() {
-                const nodesData = [
-                    { id: 1, label: '🔒 Soul Vector API Layer', x: 0, y: 0, z: 0, color: 0x00f7ff, title: 'Ethical vetting with 15D soul vectors' },
-                    { id: 2, label: '🔍 Entropy Check', x: 5, y: 2, z: 0, color: 0x00f7ff, title: 'Real-time entropy analysis' },
-                    { id: 3, label: '⚖️ Ethical Reasoning', x: 10, y: 4, z: 0, color: 0x00f7ff, title: 'ML-driven ethical decision-making' },
-                    { id: 4, label: '🔒 Kill Switch Protocol', x: 15, y: 2, z: 0, color: 0x00f7ff, title: 'Automated termination for ethical drift' },
-                    { id: 5, label: '🔄 Ethical Reset', x: 20, y: 0, z: 0, color: 0x00f7ff, title: 'State reset for compliance' },
-                    { id: 6, label: '📜 Compliance Check', x: 10, y: -2, z: 0, color: 0x00f7ff, title: 'Regulatory compliance verification' },
-                    { id: 7, label: '🔐 Audit Logger', x: 15, y: -4, z: 0, color: 0x00f7ff, title: 'Tamper-proof audit logging' },
-                    { id: 8, label: '🛡️ Policy Enforcer', x: 20, y: -2, z: 0, color: 0x00f7ff, title: 'Enforces ethical policies dynamically' }
-                ];
+            // Ethical Validation Diagram
+            const ethicalValidationNodes = [
+                { id: 1, label: '🔒 Soul Vector', x: 0, y: 0, z: 0, title: 'Ethical vetting with 15D soul vectors' },
+                { id: 2, label: '🔍 Entropy Check', x: 2, y: 1, z: 0, title: 'Real-time entropy analysis' },
+                { id: 3, label: '⚖️ Ethical Reasoning', x: 4, y: 2, z: 0, title: 'ML-driven ethical decision-making' },
+                { id: 4, label: '🔒 Kill Switch', x: 6, y: 1, z: 0, title: 'Automated termination for ethical drift' },
+                { id: 5, label: '🔄 Ethical Reset', x: 8, y: 0, z: 0, title: 'State reset for compliance' }
+            ];
 
-                const edgesData = [
-                    { from: 1, to: 2, color: 0x00f7ff },
-                    { from: 2, to: 3, color: 0x00f7ff },
-                    { from: 3, to: 4, color: 0x00f7ff },
-                    { from: 4, to: 5, color: 0x00f7ff },
-                    { from: 3, to: 6, color: 0x00f7ff },
-                    { from: 6, to: 7, color: 0x00f7ff },
-                    { from: 6, to: 8, color: 0x00f7ff }
-                ];
+            const ethicalValidationEdges = [
+                { from: 1, to: 2 },
+                { from: 2, to: 3 },
+                { from: 3, to: 4 },
+                { from: 4, to: 5 }
+            ];
 
-                create3DDiagram('ethical-validation-diagram', nodesData, edgesData);
-            }
+            createDiagram('ethical-validation-diagram', ethicalValidationNodes, ethicalValidationEdges);
 
             // Neo4j Diagram
-            function drawNeo4jDiagram() {
-                const nodesData = [
-                    { id: 1, label: '📊 Neo4j Core', x: 0, y: 0, z: 0, color: 0x00ffcc, title: 'Graph database for real-time analytics and causality tracing' },
-                    { id: 2, label: '🔒 Audit Logging', x: 5, y: 5, z: 0, color: 0x00ffcc, title: 'Immutable audit trails with zstd compression and blockchain integration' },
-                    { id: 3, label: '🧬 DAG Causality', x: -5, y: 5, z: 0, color: 0x00ffcc, title: 'Directed Acyclic Graph for transparent causality and forensic analysis' },
-                    { id: 4, label: '🔍 Forensic Replay', x: 5, y: -5, z: 0, color: 0x00ffcc, title: 'Replays attack paths with temporal analysis for root-cause tracing' },
-                    { id: 5, label: '📜 Compliance Tracking', x: -5, y: -5, z: 0, color: 0x00ffcc, title: 'Real-time regulatory compliance monitoring with GDPR/CCPA support' },
-                    { id: 6, label: '🔗 Threat Correlation', x: 0, y: 5, z: 5, color: 0x00ffcc, title: 'Correlates threats across graph nodes using ML-driven insights' },
-                    { id: 7, label: '🛡️ Data Integrity', x: 0, y: -5, z: 5, color: 0x00ffcc, title: 'Ensures data integrity with SHA3-512 cryptographic checks' },
-                    { id: 8, label: '⚙️ Query Optimizer', x: 3, y: 3, z: -3, color: 0x00ffcc, title: 'Optimizes Cypher queries for high-performance graph traversal' },
-                    { id: 9, label: '🔄 Real-Time Indexing', x: -3, y: -3, z: -3, color: 0x00ffcc, title: 'Dynamic indexing for low-latency graph queries' },
-                    { id: 10, label: '🧠 AI Graph Analytics', x: 3, y: -3, z: 3, color: 0x00ffcc, title: 'AI-driven analytics for predictive threat detection' }
-                ];
+            const neo4jNodes = [
+                { id: 1, label: '📊 Neo4j Core', x: 0, y: 0, z: 0, title: 'Graph database for real-time analytics and causality tracing' },
+                { id: 2, label: '🔒 Audit Logging', x: 2, y: 2, z: 0, title: 'Immutable audit trails with zstd compression and blockchain integration' },
+                { id: 3, label: '🧬 DAG Causality', x: -2, y: 2, z: 0, title: 'Directed Acyclic Graph for transparent causality and forensic analysis' },
+                { id: 4, label: '🔍 Forensic Replay', x: 2, y: -2, z: 0, title: 'Replays attack paths with temporal analysis for root-cause tracing' },
+                { id: 5, label: '📜 Compliance', x: -2, y: -2, z: 0, title: 'Real-time regulatory compliance monitoring with GDPR/CCPA support' }
+            ];
 
-                const edgesData = [
-                    { from: 1, to: 2, color: 0x00ffcc },
-                    { from: 1, to: 3, color: 0x00ffcc },
-                    { from: 1, to: 4, color: 0x00ffcc },
-                    { from: 1, to: 5, color: 0x00ffcc },
-                    { from: 1, to: 6, color: 0x00ffcc },
-                    { from: 1, to: 7, color: 0x00ffcc },
-                    { from: 1, to: 8, color: 0x00ffcc },
-                    { from: 1, to: 9, color: 0x00ffcc },
-                    { from: 1, to: 10, color: 0x00ffcc },
-                    { from: 3, to: 4, color: 0x00ffcc },
-                    { from: 6, to: 10, color: 0x00ffcc }
-                ];
+            const neo4jEdges = [
+                { from: 1, to: 2 },
+                { from: 1, to: 3 },
+                { from: 1, to: 4 },
+                { from: 1, to: 5 }
+            ];
 
-                create3DDiagram('neo4j-diagram', nodesData, edgesData);
-            }
-
-            // Initialize Diagrams
-            drawTechStackDiagram();
-            drawThreatDetectionDiagram();
-            drawEthicalValidationDiagram();
-            drawNeo4jDiagram();
+            createDiagram('neo4j-diagram', neo4jNodes, neo4jEdges);
 
             // Accordion Functionality
             document.querySelectorAll('.accordion-header').forEach(header => {
@@ -1620,7 +1576,7 @@
                 }
             }
 
-            async function simulateOpenAICall(query) {
+async function simulateOpenAICall(query) {
                 return new Promise(resolve => {
                     setTimeout(() => {
                         resolve(`OpenAI Response: Analyzed query "${query}" - Potential threat detected with 92% confidence. Recommend forensic analysis.`);
@@ -1744,11 +1700,6 @@
                         const width = Math.min(window.innerWidth - 40, 1100);
                         container.style.width = `${width}px`;
                         container.style.height = `${Math.min(width * 0.6, 650)}px`;
-                        const canvas = container.querySelector('canvas');
-                        if (canvas) {
-                            canvas.width = width;
-                            canvas.height = Math.min(width * 0.6, 650);
-                        }
                     }
                 });
             };
