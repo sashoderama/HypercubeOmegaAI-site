@@ -32,12 +32,14 @@
                     currentChunkIndex: 0, 
                     lastActivity: Date.now(),
                     theme: 'aurora-dark',
-                    focusElement: null
+                    focusElement: null,
+                    scriptLoaded: false
                 },
                 rateLimit: { bucket: 30, lastRefill: Date.now() },
                 network: { isOnline: navigator.onLine, lastChecked: Date.now() }
             };
             this.listeners = new Set();
+            this.elementCache = new Map();
         }
         setState(updater) {
             this.state = typeof updater === 'function' ? updater(this.state) : { ...this.state, ...updater };
@@ -45,7 +47,7 @@
             try {
                 localStorage.setItem('aurora-ui-state', compressSession(this.state.ui));
             } catch (e) {
-                console.warn('Failed to persist UI state:', e);
+                console.warn('[Aurora] Failed to persist UI state:', e);
                 this.audit('store_persist', 'failed', { error: e.message });
             }
         }
@@ -61,9 +63,19 @@
                     this.audit('store_load', 'success', { count: Object.keys(this.state.ui).length });
                 }
             } catch (e) {
-                console.warn('Failed to load UI state:', e);
+                console.warn('[Aurora] Failed to load UI state:', e);
                 this.audit('store_load', 'failed', { error: e.message });
             }
+        }
+        getElement(id) {
+            if (!this.elementCache.has(id)) {
+                const el = document.getElementById(id);
+                this.elementCache.set(id, el);
+                if (!el) {
+                    console.warn(`[Aurora] Element ${id} not found`);
+                }
+            }
+            return this.elementCache.get(id);
         }
         audit(type, status, details = {}) {
             emitter.emit(AUDIT_EVENT, {
@@ -91,7 +103,7 @@
 
     // ─── ERROR HANDLING ───────────────────────────────────────────────
     window.onerror = (msg, url, line, col, error) => {
-        console.error(`Uncaught Error: ${msg} at ${url}:${line}:${col}`, error);
+        console.error(`[Aurora] Uncaught Error: ${msg} at ${url}:${line}:${col}`, error);
         showToast('An unexpected error occurred. Please try again.');
         emitter.emit(AUDIT_EVENT, {
             id: crypto.randomUUID(),
@@ -106,7 +118,7 @@
     };
 
     window.addEventListener('unhandledrejection', event => {
-        console.error('Unhandled Promise Rejection:', event.reason);
+        console.error('[Aurora] Unhandled Promise Rejection:', event.reason);
         showToast('A promise was rejected. Check the console for details.');
         emitter.emit(AUDIT_EVENT, {
             id: crypto.randomUUID(),
@@ -120,15 +132,16 @@
     window.addEventListener('online', () => {
         store.setState(state => ({ ...state, network: { ...state.network, isOnline: true, lastChecked: Date.now() } }));
         showToast('Network connection restored.');
+        retryScriptLoad();
     });
 
     window.addEventListener('offline', () => {
         store.setState(state => ({ ...state, network: { ...state.network, isOnline: false, lastChecked: Date.now() } }));
-        showToast('Network connection lost. Some features may be unavailable.');
+        showToast('Network connection lost. Using cached resources.');
     });
 
     // ─── RUNTIME TEST ─────────────────────────────────────────────────
-    console.log('DOM loaded, JS initialized ✅');
+    console.log('[Aurora] DOM loaded, JS initialized ✅');
     const test = document.createElement('div');
     test.textContent = 'AuroraGenesis JS Active';
     test.style.cssText = `
@@ -144,79 +157,112 @@
     `;
     document.body.appendChild(test);
     setTimeout(() => test.remove(), 3000);
+    store.setState(state => ({ ...state, ui: { ...state.ui, scriptLoaded: true } }));
+    emitter.emit(AUDIT_EVENT, {
+        id: crypto.randomUUID(),
+        type: 'script_load',
+        status: 'success',
+        source: './app.js',
+        ts: Date.now()
+    });
+
+    // ─── SCRIPT LOAD RETRY ────────────────────────────────────────────
+    async function retryScriptLoad() {
+        if (store.state.ui.scriptLoaded) return;
+        try {
+            const response = await fetch('./app.js', { cache: 'no-store' });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            store.setState(state => ({ ...state, ui: { ...state.ui, scriptLoaded: true } }));
+            emitter.emit(AUDIT_EVENT, {
+                id: crypto.randomUUID(),
+                type: 'script_load_retry',
+                status: 'success',
+                source: './app.js',
+                ts: Date.now()
+            });
+        } catch (e) {
+            console.warn('[Aurora] Script load retry failed:', e);
+            emitter.emit(AUDIT_EVENT, {
+                id: crypto.randomUUID(),
+                type: 'script_load_retry',
+                status: 'failed',
+                error: e.message,
+                ts: Date.now()
+            });
+        }
+    }
 
     // ─── ENVIRONMENT CONFIGURATION ────────────────────────────────────
-async function loadConfig() {
-    let retries = 0;
-    while (retries < MAX_RETRIES) {
-        try {
-            const response = await fetch('/config.json', { cache: 'no-store' });
-            if (!response.ok) throw new Error(`HTTP ${response.status} - ${response.statusText}`);
-
-            const contentType = response.headers.get('content-type') || '';
-            if (!contentType.includes('application/json')) {
-                throw new Error(`Invalid content-type: ${contentType}`);
-            }
-
-            const text = await response.text();
-            let config;
+    async function loadConfig() {
+        let retries = 0;
+        while (retries < MAX_RETRIES) {
             try {
-                config = JSON.parse(text);
-                if (typeof config !== 'object' || config === null || Array.isArray(config)) {
-                    throw new Error('Parsed config is not a valid object');
+                const response = await fetch('/config.json', { cache: 'no-store' });
+                if (!response.ok) throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+
+                const contentType = response.headers.get('content-type') || '';
+                if (!contentType.includes('application/json')) {
+                    throw new Error(`Invalid content-type: ${contentType}`);
                 }
-            } catch (parseError) {
-                console.warn('[Aurora] Invalid JSON in config.json:', parseError);
-                config = FALLBACK_CONFIG;
-                emitter.emit(AUDIT_EVENT, {
-                    id: crypto.randomUUID(),
-                    type: 'config_parse',
-                    status: 'failed',
-                    error: parseError.message,
-                    ts: Date.now()
-                });
-            }
 
-            store.setState(state => ({ ...state, config }));
-            console.log('[Aurora] Config loaded:', config);
-            emitter.emit(AUDIT_EVENT, {
-                id: crypto.randomUUID(),
-                type: 'config_load',
-                status: 'success',
-                retryCount: retries,
-                ts: Date.now()
-            });
-            return;
+                const text = await response.text();
+                let config;
+                try {
+                    config = JSON.parse(text);
+                    if (typeof config !== 'object' || config === null || Array.isArray(config)) {
+                        throw new Error('Parsed config is not a valid object');
+                    }
+                } catch (parseError) {
+                    console.warn('[Aurora] Invalid JSON in config.json:', parseError);
+                    config = FALLBACK_CONFIG;
+                    emitter.emit(AUDIT_EVENT, {
+                        id: crypto.randomUUID(),
+                        type: 'config_parse',
+                        status: 'failed',
+                        error: parseError.message,
+                        ts: Date.now()
+                    });
+                }
 
-        } catch (fetchErr) {
-            retries++;
-            console.warn(`[Aurora] config.json fetch failed [${retries}/${MAX_RETRIES}]:`, fetchErr.message);
-            emitter.emit(AUDIT_EVENT, {
-                id: crypto.randomUUID(),
-                type: 'config_fetch',
-                status: 'retry',
-                retryCount: retries,
-                error: fetchErr.message,
-                ts: Date.now()
-            });
-
-            if (retries >= MAX_RETRIES) {
-                store.setState(state => ({ ...state, config: FALLBACK_CONFIG }));
-                console.warn('[Aurora] Fallback config used after retries.');
+                store.setState(state => ({ ...state, config }));
+                console.log('[Aurora] Config loaded:', config);
                 emitter.emit(AUDIT_EVENT, {
                     id: crypto.randomUUID(),
                     type: 'config_load',
-                    status: 'fallback',
+                    status: 'success',
+                    retryCount: retries,
                     ts: Date.now()
                 });
                 return;
-            }
 
-            await new Promise(r => setTimeout(r, RETRY_BACKOFF * 2 ** (retries - 1)));
+            } catch (fetchErr) {
+                retries++;
+                console.warn(`[Aurora] config.json fetch failed [${retries}/${MAX_RETRIES}]:`, fetchErr.message);
+                emitter.emit(AUDIT_EVENT, {
+                    id: crypto.randomUUID(),
+                    type: 'config_fetch',
+                    status: 'retry',
+                    retryCount: retries,
+                    error: fetchErr.message,
+                    ts: Date.now()
+                });
+
+                if (retries >= MAX_RETRIES) {
+                    store.setState(state => ({ ...state, config: FALLBACK_CONFIG }));
+                    console.warn('[Aurora] Fallback config used after retries.');
+                    emitter.emit(AUDIT_EVENT, {
+                        id: crypto.randomUUID(),
+                        type: 'config_load',
+                        status: 'fallback',
+                        ts: Date.now()
+                    });
+                    return;
+                }
+
+                await new Promise(r => setTimeout(r, RETRY_BACKOFF * 2 ** (retries - 1)));
+            }
         }
     }
-}
-
 
     // ─── TOKEN BUCKET RATE LIMITING ───────────────────────────────────
     function takeToken() {
@@ -265,7 +311,7 @@ async function loadConfig() {
             }
             const data = decompressSession(compressed);
             if (data.version !== SESSION_VERSION) {
-                console.warn('Session version mismatch, migrating session.');
+                console.warn('[Aurora] Session version mismatch, migrating session.');
                 store.setState(state => ({ ...state, session: migrateSession(data.entries) }));
                 emitter.emit(AUDIT_EVENT, {
                     id: crypto.randomUUID(),
@@ -278,7 +324,7 @@ async function loadConfig() {
                 return;
             }
             store.setState(state => ({ ...state, session: data.entries }));
-            console.log('Session context loaded:', store.state.session.length, 'entries');
+            console.log('[Aurora] Session context loaded:', store.state.session.length, 'entries');
             emitter.emit(AUDIT_EVENT, {
                 id: crypto.randomUUID(),
                 type: 'session_load',
@@ -287,7 +333,7 @@ async function loadConfig() {
                 ts: Date.now()
             });
         } catch (e) {
-            console.warn('Failed to load session context:', e);
+            console.warn('[Aurora] Failed to load session context:', e);
             store.setState(state => ({ ...state, session: [] }));
             emitter.emit(AUDIT_EVENT, {
                 id: crypto.randomUUID(),
@@ -312,7 +358,7 @@ async function loadConfig() {
                 ts: Date.now()
             });
         } catch (e) {
-            console.warn('Failed to save session context:', e);
+            console.warn('[Aurora] Failed to save session context:', e);
             emitter.emit(AUDIT_EVENT, {
                 id: crypto.randomUUID(),
                 type: 'session_save',
@@ -460,7 +506,7 @@ async function loadConfig() {
                 ts: Date.now()
             });
         } catch (e) {
-            console.warn('WebGPU particles failed:', e);
+            console.warn('[Aurora] WebGPU particles failed:', e);
             emitter.emit(AUDIT_EVENT, {
                 id: crypto.randomUUID(),
                 type: 'webgpu_init',
@@ -475,19 +521,19 @@ async function loadConfig() {
     const proChat = (function() {
         function getElements() {
             return {
-                root: document.getElementById('proChat-root'),
-                launcher: document.getElementById('proChat-launcher'),
-                closeBtn: document.getElementById('proChat-close'),
-                logEl: document.getElementById('proChat-log'),
-                form: document.getElementById('proChat-form'),
-                inputEl: document.getElementById('proChat-input')
+                root: store.getElement('proChat-root'),
+                launcher: store.getElement('proChat-launcher'),
+                closeBtn: store.getElement('proChat-close'),
+                logEl: store.getElement('proChat-log'),
+                form: store.getElement('proChat-form'),
+                inputEl: store.getElement('proChat-input')
             };
         }
 
         function toggleChat(open) {
             const { root, inputEl } = getElements();
             if (!root) {
-                console.warn('ProChat root element not found');
+                console.warn('[Aurora] ProChat root element not found');
                 emitter.emit(AUDIT_EVENT, {
                     id: crypto.randomUUID(),
                     type: 'prochat_toggle',
@@ -527,7 +573,7 @@ async function loadConfig() {
         function addMsg(text, sender, id = crypto.randomUUID()) {
             const { logEl } = getElements();
             if (!logEl) {
-                console.warn('ProChat log element not found');
+                console.warn('[Aurora] ProChat log element not found');
                 return null;
             }
             const li = document.createElement('li');
@@ -554,7 +600,7 @@ async function loadConfig() {
         function init() {
             const { launcher, closeBtn, form, inputEl } = getElements();
             if (!launcher || !closeBtn || !form || !inputEl) {
-                console.warn('ProChat elements not found, retrying initialization');
+                console.warn('[Aurora] ProChat elements not found, retrying initialization');
                 setTimeout(init, 100);
                 return;
             }
@@ -620,17 +666,17 @@ async function loadConfig() {
     const mainChat = (function() {
         function getElements() {
             return {
-                chatLog: document.getElementById('chatLog'),
-                input: document.getElementById('chat-input'),
-                sendButton: document.getElementById('send-button'),
-                loader: document.getElementById('loader')
+                chatLog: store.getElement('chatLog'),
+                input: store.getElement('chat-input'),
+                sendButton: store.getElement('send-button'),
+                loader: store.getElement('loader')
             };
         }
 
         function addMessage(text, type, tooltip = '') {
             const { chatLog } = getElements();
             if (!chatLog) {
-                console.warn('Main chat log element not found');
+                console.warn('[Aurora] Main chat log element not found');
                 return;
             }
             requestAnimationFrame(() => {
@@ -682,7 +728,7 @@ async function loadConfig() {
                 if (!compressed) return;
                 const data = decompressSession(compressed);
                 if (data.version !== SESSION_VERSION) {
-                    console.warn('History version mismatch, resetting history.');
+                    console.warn('[Aurora] History version mismatch, resetting history.');
                     emitter.emit(AUDIT_EVENT, {
                         id: crypto.randomUUID(),
                         type: 'history_migration',
@@ -701,7 +747,7 @@ async function loadConfig() {
                     ts: Date.now()
                 });
             } catch (e) {
-                console.warn('Failed to load chat history:', e);
+                console.warn('[Aurora] Failed to load chat history:', e);
                 emitter.emit(AUDIT_EVENT, {
                     id: crypto.randomUUID(),
                     type: 'history_load',
@@ -715,7 +761,7 @@ async function loadConfig() {
         async function sendQuery() {
             const { input, loader } = getElements();
             if (!input || !loader) {
-                console.warn('Main chat input or loader not found');
+                console.warn('[Aurora] Main chat input or loader not found');
                 return;
             }
             const q = sanitizeInput(input.value.trim());
@@ -771,7 +817,7 @@ async function loadConfig() {
         function init() {
             const { input, sendButton } = getElements();
             if (!input || !sendButton) {
-                console.warn('MainChat elements not found, retrying initialization');
+                console.warn('[Aurora] MainChat elements not found, retrying initialization');
                 setTimeout(init, 100);
                 return;
             }
@@ -808,7 +854,7 @@ async function loadConfig() {
         function startTTS() {
             const { startBtn, pauseBtn } = getTTSElements();
             if (!startBtn || !pauseBtn) {
-                console.warn('TTS elements not found');
+                console.warn('[Aurora] TTS elements not found');
                 return;
             }
             if (!('speechSynthesis' in window)) {
@@ -898,15 +944,15 @@ async function loadConfig() {
 
         function getTTSElements() {
             return {
-                startBtn: document.getElementById('start-tts'),
-                pauseBtn: document.getElementById('pause-tts')
+                startBtn: store.getElement('start-tts'),
+                pauseBtn: store.getElement('pause-tts')
             };
         }
 
         function init() {
             const { startBtn, pauseBtn } = getTTSElements();
             if (!startBtn || !pauseBtn) {
-                console.warn('TTS elements not found, retrying initialization');
+                console.warn('[Aurora] TTS elements not found, retrying initialization');
                 setTimeout(init, 100);
                 return;
             }
@@ -919,10 +965,10 @@ async function loadConfig() {
 
     // ─── ENCRYPT/DECRYPT MODULE ───────────────────────────────────────
     async function encryptText() {
-        const input = sanitizeInput(document.getElementById('encrypt-input')?.value || '');
-        const outputEl = document.getElementById('encrypt-output');
+        const input = sanitizeInput(store.getElement('encrypt-input')?.value || '');
+        const outputEl = store.getElement('encrypt-output');
         if (!outputEl) {
-            console.warn('Encrypt output element not found');
+            console.warn('[Aurora] Encrypt output element not found');
             return;
         }
         if (!input) {
@@ -955,10 +1001,10 @@ async function loadConfig() {
     }
 
     async function decryptText() {
-        const input = sanitizeInput(document.getElementById('decrypt-input')?.value || '');
-        const outputEl = document.getElementById('decrypt-output');
+        const input = sanitizeInput(store.getElement('decrypt-input')?.value || '');
+        const outputEl = store.getElement('decrypt-output');
         if (!outputEl) {
-            console.warn('Decrypt output element not found');
+            console.warn('[Aurora] Decrypt output element not found');
             return;
         }
         if (!input) {
@@ -992,10 +1038,10 @@ async function loadConfig() {
 
     // ─── DECOMPILE MODULE ─────────────────────────────────────────────
     async function decompileCode() {
-        const input = sanitizeInput(document.getElementById('decompile-input')?.value || '');
-        const outputEl = document.getElementById('decompile-output');
+        const input = sanitizeInput(store.getElement('decompile-input')?.value || '');
+        const outputEl = store.getElement('decompile-output');
         if (!outputEl) {
-            console.warn('Decompile output element not found');
+            console.warn('[Aurora] Decompile output element not found');
             return;
         }
         if (!input) {
@@ -1052,9 +1098,9 @@ async function loadConfig() {
     }
 
     function showToast(message) {
-        const toast = document.getElementById('toast');
+        const toast = store.getElement('toast');
         if (!toast) {
-            console.warn('Toast element not found');
+            console.warn('[Aurora] Toast element not found');
             return;
         }
         toast.textContent = sanitizeInput(message);
@@ -1084,7 +1130,7 @@ async function loadConfig() {
             );
             return Array.from(new Uint8Array(signature)).map(b => b.toString(16).padStart(2, '0')).join('');
         } catch (e) {
-            console.warn('Failed to sign data:', e);
+            console.warn('[Aurora] Failed to sign data:', e);
             emitter.emit(AUDIT_EVENT, {
                 id: crypto.randomUUID(),
                 type: 'sign_data',
@@ -1250,7 +1296,7 @@ async function loadConfig() {
 
             // Dynamic ARIA Attributes
             const setAria = (id, attrs) => {
-                const el = document.getElementById(id);
+                const el = store.getElement(id);
                 if (el) Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, value));
             };
             setAria('chatLog', { 'aria-label': 'Main chat log' });
@@ -1262,9 +1308,9 @@ async function loadConfig() {
             document.querySelectorAll('.accordion-header').forEach(header => {
                 header.dataset.action = 'accordion-toggle';
             });
-            document.getElementById('encrypt-button')?.setAttribute('data-action', 'encrypt');
-            document.getElementById('decrypt-button')?.setAttribute('data-action', 'decrypt');
-            document.getElementById('decompile-button')?.setAttribute('data-action', 'decompile');
+            store.getElement('encrypt-button')?.setAttribute('data-action', 'encrypt');
+            store.getElement('decrypt-button')?.setAttribute('data-action', 'decrypt');
+            store.getElement('decompile-button')?.setAttribute('data-action', 'decompile');
 
             // Dynamic VH Fix
             const setVH = debounce(() => {
@@ -1277,7 +1323,7 @@ async function loadConfig() {
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/service-worker.js', { scope: '/' })
                     .then(reg => {
-                        console.log('✅ Service worker registered:', reg);
+                        console.log('[Aurora] ✅ Service worker registered:', reg);
                         emitter.emit(AUDIT_EVENT, {
                             id: crypto.randomUUID(),
                             type: 'service_worker',
@@ -1287,7 +1333,7 @@ async function loadConfig() {
                         });
                     })
                     .catch(err => {
-                        console.error('❌ Service worker registration failed:', err);
+                        console.error('[Aurora] ❌ Service worker registration failed:', err);
                         emitter.emit(AUDIT_EVENT, {
                             id: crypto.randomUUID(),
                             type: 'service_worker',
@@ -1299,14 +1345,14 @@ async function loadConfig() {
             }
 
             // Preloader Fade-Out
-            const preloader = document.getElementById('preloader');
+            const preloader = store.getElement('preloader');
             if (preloader) preloader.classList.add('fade-out');
             document.body.classList.add('loaded');
             announce('AuroraGenesis interface loaded.');
 
             // Restore focus if set
             if (store.state.ui.focusElement) {
-                const focusEl = document.getElementById(store.state.ui.focusElement);
+                const focusEl = store.getElement(store.state.ui.focusElement);
                 if (focusEl) focusEl.focus();
             }
 
@@ -1316,7 +1362,7 @@ async function loadConfig() {
                 ts: Date.now()
             });
         } catch (e) {
-            console.error('Initialization failed:', e);
+            console.error('[Aurora] Initialization failed:', e);
             showToast('Initialization failed. Check the console for details.');
             emitter.emit(AUDIT_EVENT, {
                 id: crypto.randomUUID(),
@@ -1339,7 +1385,7 @@ async function loadConfig() {
                 headers: { 'Content-Type': 'application/json' },
                 body: compressed
             });
-            console.log('Audit batch sent:', batch.length);
+            console.log('[Aurora] Audit batch sent:', batch.length);
             emitter.emit(AUDIT_EVENT, {
                 id: crypto.randomUUID(),
                 type: 'audit_sync',
@@ -1348,7 +1394,7 @@ async function loadConfig() {
                 ts: Date.now()
             });
         } catch (e) {
-            console.warn('Failed to send audit batch:', e);
+            console.warn('[Aurora] Failed to send audit batch:', e);
             auditQueue.push(...batch);
             emitter.emit(AUDIT_EVENT, {
                 id: crypto.randomUUID(),
@@ -1363,7 +1409,7 @@ async function loadConfig() {
 
     emitter.on(AUDIT_EVENT, async event => {
         const signedEvent = await signData(JSON.stringify(event));
-        console.log('Audit:', { ...event, signature: signedEvent });
+        console.log('[Aurora] Audit:', { ...event, signature: signedEvent });
         auditQueue.push({ ...event, signature: signedEvent });
         processAuditQueue();
     });
