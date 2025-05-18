@@ -2,30 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#080808">
     <meta name="description" content="AuroraGenesis: The world's first GPU-cluster-compatible cybersecurity AI platform with capsule-based memory compression, ethical intelligence, and real-time multi-agent mutation for zero-day threat detection and forensic analysis.">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; script-src 'self' 'unsafe-inline'; connect-src 'self' https://api.aurora-core.net; img-src 'self' data:;">
     <title>AuroraGenesis: Next-Gen Cybersecurity Platform</title>
     <link rel="icon" href="data:,">
+    <link rel="preload" href="https://fonts.gstatic.com/s/orbitron/v25/yMJRMIlzdpvBhQPP_D6Bnx0.woff2" as="font" type="font/woff2" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400&family=Orbitron:wght@500&family=Source+Code+Pro:wght@400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --void-black: #080808;
             --cyber-steel: #1a1a1a;
-            --neon-cyan: #00f7ff;
-            --neon-blue: #00f7ff;
+            --neon-cyan: #00ffff;
             --neon-magenta: #ff00ff;
             --neon-red: #ff3b30;
-            --glow-blue: rgba(0, 247, 255, 0.3);
-            --glow-magenta: rgba(255, 0, 255, 0.3);
-            --glow-red: rgba(255, 59, 48, 0.3);
+            --glow-blue: rgba(0, 255, 255, 0.2);
+            --glow-magenta: rgba(255, 0, 255, 0.2);
+            --glow-red: rgba(255, 59, 48, 0.2);
             --slick-gray: #2a2a2a;
             --hud-white: rgba(240, 240, 240, 0.95);
             --accent-red: #FF3B30;
             --shadow: rgba(0, 0, 0, 0.85);
-            --glow: rgba(0, 247, 255, 0.25);
-            --border: rgba(0, 247, 255, 0.15);
+            --glow: rgba(0, 255, 255, 0.2);
+            --border: rgba(0, 255, 255, 0.15);
+            --node-radius: 30px;
+            --edge-width: 3px;
         }
 
         * {
@@ -68,6 +71,7 @@
             will-change: transform, opacity;
             animation: pulseNeuron 3s ease-in-out infinite, moveNeuron linear infinite;
             filter: blur(var(--blur, 2px));
+            transition: opacity 0.5s ease;
         }
 
         .neuron::before {
@@ -119,11 +123,17 @@
             color: var(--neon-cyan);
             text-decoration: none;
             transition: color 0.3s ease, text-shadow 0.3s ease;
+            text-shadow: 0 0 6px var(--glow);
         }
 
-        .cyber-nav li a:hover {
-            color: #00ffff;
+        .cyber-nav li a:hover, .cyber-nav li a:focus {
+            color: var(--hud-white);
             text-shadow: 0 0 10px var(--glow);
+        }
+
+        .cyber-nav li a:focus {
+            outline: 3px solid var(--neon-cyan);
+            box-shadow: 0 0 10px var(--glow);
         }
 
         #preloader {
@@ -207,7 +217,7 @@
         }
 
         .blur-glass h1, .blur-glass h2, .blur-glass p {
-            text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+            text-shadow: 0 0 8px rgba(0, 0, 0, 0.9);
         }
 
         @media (max-width: 768px) {
@@ -234,6 +244,7 @@
             font-family: 'Orbitron', 'Source Code Pro', monospace;
             font-size: 3.2rem;
             color: var(--neon-cyan);
+            text-shadow: 0 0 8px var(--glow);
             margin-bottom: 3rem;
         }
 
@@ -242,6 +253,7 @@
             margin: 0 auto 2.5rem;
             font-size: 1.6rem;
             opacity: 0.9;
+            text-shadow: 0 0 4px var(--shadow);
         }
 
         @media (max-width: 768px) {
@@ -266,20 +278,16 @@
         }
 
         @media (max-width: 768px) {
-            .grid { grid-template-columns: 1fr; gap: 3rem; padding: 3rem; }
-        }
-
-        @media (max-width: 600px) {
-            .grid { gap: 2.5rem; padding: 2.5rem; }
+            .grid { grid-template-columns: 1fr; gap: 3rem; padding: 2rem; }
         }
 
         @media (max-width: 480px) {
-            .grid { gap: 2rem; padding: 2rem; }
+            .grid { gap: 2rem; padding: 1rem; }
         }
 
         .card {
             background: transparent;
-            border: 1px solid rgba(0, 255, 255, 0.2);
+            border: 1px solid var(--border);
             border-radius: 28px;
             padding: 5rem 2rem;
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
@@ -299,19 +307,24 @@
             left: 0;
             height: 4px;
             width: 100%;
-            background: linear-gradient(90deg, #00f7ff, transparent);
+            background: linear-gradient(90deg, var(--neon-cyan), transparent);
             opacity: 0.25;
         }
 
-        .card:hover {
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2), 0 0 40px rgba(0, 255, 255, 0.1);
+        .card:hover, .card:focus {
+            box-shadow: 0 0 20px var(--glow), 0 0 40px var(--glow);
             transform: translateY(-10px) scale(1.02);
+        }
+
+        .card:focus {
+            outline: 3px solid var(--neon-cyan);
+            box-shadow: 0 0 10px var(--glow);
         }
 
         @media (max-width: 600px) {
             .card { text-align: center; padding: 1.5rem; padding-bottom: 2rem; }
             .card h2 { font-size: 1.3rem; }
-            .card:hover { transform: translateY(-8px) scale(1.02); }
+            .card:hover, .card:focus { transform: translateY(-8px) scale(1.02); }
         }
 
         @media (max-width: 480px) {
@@ -334,6 +347,7 @@
             gap: 0.8rem;
             margin-bottom: 2rem;
             align-self: center;
+            text-shadow: 0 0 4px var(--shadow);
         }
 
         .badge::before {
@@ -342,7 +356,7 @@
             height: 14px;
             background: var(--neon-cyan);
             border-radius: 50%;
-            box-shadow: 0 0 14px var(--neon-cyan);
+            box-shadow: 0 0 14px var(--glow);
         }
 
         .card h2 {
@@ -352,6 +366,7 @@
             margin: 1.5rem 0;
             line-height: 1.3;
             text-align: center;
+            text-shadow: 0 0 6px var(--shadow);
         }
 
         @keyframes pulse {
@@ -374,7 +389,8 @@
             margin-top: 2.5rem;
             font-size: 1.3rem;
             backdrop-filter: blur(20px);
-            box-shadow: 0 0 25px rgba(0, 247, 255, 0.1);
+            box-shadow: 0 0 25px var(--glow);
+            text-shadow: 0 0 4px var(--shadow);
         }
 
         .cyber-button::before {
@@ -384,18 +400,23 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 247, 255, 0.2), transparent);
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
             transition: left 0.6s ease-in-out;
         }
 
-        .cyber-button:hover {
+        .cyber-button:hover, .cyber-button:focus {
             color: var(--hud-white);
             box-shadow: 0 0 35px var(--glow);
             transform: scale(1.05);
         }
 
-        .cyber-button:hover::before {
+        .cyber-button:hover::before, .cyber-button:focus::before {
             left: 100%;
+        }
+
+        .cyber-button:focus {
+            outline: 3px solid var(--neon-cyan);
+            box-shadow: 0 0 10px var(--glow);
         }
 
         @media (max-width: 768px) {
@@ -425,12 +446,18 @@
             justify-content: space-between;
             align-items: center;
             backdrop-filter: blur(20px);
-            box-shadow: 0 0 25px rgba(0, 247, 255, 0.1);
+            box-shadow: 0 0 25px var(--glow);
+            text-shadow: 0 0 4px var(--shadow);
         }
 
-        .accordion-header:hover {
+        .accordion-header:hover, .accordion-header:focus {
             color: var(--hud-white);
             box-shadow: 0 0 35px var(--glow);
+        }
+
+        .accordion-header:focus {
+            outline: 3px solid var(--neon-cyan);
+            box-shadow: 0 0 10px var(--glow);
         }
 
         .accordion-content {
@@ -466,6 +493,7 @@
             padding-left: 2rem;
             position: relative;
             font-size: 1.2rem;
+            text-shadow: 0 0 4px var(--shadow);
         }
 
         .feature-list li::before {
@@ -505,6 +533,12 @@
             resize: vertical;
             min-height: 180px;
             backdrop-filter: blur(20px);
+            text-shadow: 0 0 4px var(--shadow);
+        }
+
+        .llm-input textarea:focus {
+            outline: 3px solid var(--neon-cyan);
+            box-shadow: 0 0 10px var(--glow);
         }
 
         .llm-response {
@@ -516,6 +550,7 @@
             overflow-y: auto;
             font-size: 1.2rem;
             backdrop-filter: blur(20px);
+            text-shadow: 0 0 4px var(--shadow);
         }
 
         @media (max-width: 768px) {
@@ -545,6 +580,12 @@
             font-size: 1.3rem;
             margin-bottom: 2.5rem;
             backdrop-filter: blur(20px);
+            text-shadow: 0 0 4px var(--shadow);
+        }
+
+        .api-demo select:focus {
+            outline: 3px solid var(--neon-cyan);
+            box-shadow: 0 0 10px var(--glow);
         }
 
         @media (max-width: 768px) {
@@ -567,6 +608,7 @@
             backdrop-filter: blur(10px);
             position: relative;
             overflow: hidden;
+            perspective: 1000px;
         }
 
         .network-graph svg {
@@ -578,20 +620,26 @@
         .network-node {
             fill: var(--neon-cyan);
             stroke: var(--glow-blue);
-            stroke-width: 3;
+            stroke-width: var(--edge-width);
             cursor: pointer;
-            transition: transform 0.3s ease, opacity 0.3s ease;
+            transition: transform 0.5s ease-out, opacity 0.3s ease;
+            transform-style: preserve-3d;
         }
 
-        .network-node:hover, .network-node.active {
-            transform: scale(1.3);
+        .network-node:hover, .network-node.active, .network-node:focus {
+            transform: rotateY(180deg) scale(1.3);
             opacity: 1;
             filter: drop-shadow(0 0 15px var(--glow-blue));
         }
 
+        .network-node:focus {
+            outline: 3px solid var(--neon-cyan);
+            box-shadow: 0 0 10px var(--glow);
+        }
+
         .network-edge {
             stroke: var(--neon-cyan);
-            stroke-width: 3;
+            stroke-width: var(--edge-width);
             opacity: 0.7;
             transition: opacity 0.3s ease;
             animation: flowEdge 3s linear infinite;
@@ -612,6 +660,7 @@
             fill: var(--neon-cyan);
             text-anchor: middle;
             pointer-events: none;
+            text-shadow: 0 0 4px var(--shadow);
         }
 
         @media (max-width: 768px) {
@@ -640,7 +689,7 @@
             background: transparent;
             border-top: 1px solid var(--border);
             backdrop-filter: blur(20px);
-            box-shadow: 0 0 25px rgba(0, 247, 255, 0.1);
+            box-shadow: 0 0 25px var(--glow);
         }
 
         .cta-footer h1 {
@@ -663,10 +712,16 @@
             text-decoration: none;
             font-size: 1.5rem;
             transition: color 0.3s ease-in-out;
+            text-shadow: 0 0 4px var(--shadow);
         }
 
-        .cta-footer a:hover {
+        .cta-footer a:hover, .cta-footer a:focus {
             color: var(--hud-white);
+        }
+
+        .cta-footer a:focus {
+            outline: 3px solid var(--neon-cyan);
+            box-shadow: 0 0 10px var(--glow);
         }
 
         @media (max-width: 768px) {
@@ -697,7 +752,8 @@
             box-shadow: 0 0 15px var(--glow);
             backdrop-filter: blur(5px);
             pointer-events: none;
-            z IndexedDB: 1001;
+            z-index: 1001;
+            text-shadow: 0 0 4px var(--shadow);
         }
     </style>
 </head>
@@ -720,7 +776,7 @@
             <div class="blur-glass">
                 <h1>AuroraGenesis: Pioneering Cybersecurity Excellence</h1>
                 <p>AuroraGenesis is the world's first GPU-cluster-compatible cybersecurity AI platform, integrating capsule-based memory compression, DAG-verified ethical intelligence, and real-time multi-agent mutation. Designed for zero-day threat detection, forensic analysis, and regulatory-compliant governance, it operates on consumer-grade hardware with no speculative dependencies, ensuring a future where safety and innovation thrive.</p>
-                <button class="cyber-button">Discover the Future</button>
+                <button class="cyber-button" aria-label="Discover the Future">Discover the Future</button>
             </div>
         </section>
 
@@ -730,7 +786,7 @@
                 <p>AuroraGenesis leverages patented innovations and cutting-edge AI to deliver unparalleled cybersecurity capabilities.</p>
             </div>
             <div class="grid">
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">🧬 Patent-Pending</div>
                     <h2>Proprietary Intelligence Architecture</h2>
                     <ul class="feature-list">
@@ -743,7 +799,7 @@
                         <li>Adaptive pruning for low-latency inference</li>
                     </ul>
                 </div>
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">🔄 RL-Tuned</div>
                     <h2>Live Reinforcement Mutation Loop</h2>
                     <ul class="feature-list">
@@ -756,7 +812,7 @@
                         <li>Support for multi-agent cooperative strategies</li>
                     </ul>
                 </div>
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">🔒 ZK-Verified</div>
                     <h2>Ethical DAG Security</h2>
                     <ul class="feature-list">
@@ -769,7 +825,7 @@
                         <li>Real-time ethical violation detection</li>
                     </ul>
                 </div>
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">⚡ Ray + CUDA</div>
                     <h2>Cluster Intelligence</h2>
                     <ul class="feature-list">
@@ -782,7 +838,7 @@
                         <li>Optimized for low-latency inference</li>
                     </ul>
                 </div>
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">📊 VisPy</div>
                     <h2>Visual-Forensics GUI</h2>
                     <ul class="feature-list">
@@ -795,7 +851,7 @@
                         <li>Real-time anomaly highlighting with heatmaps</li>
                     </ul>
                 </div>
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">🔐 ZTX Integration</div>
                     <h2>Full Zero-Trust Stack</h2>
                     <ul class="feature-list">
@@ -817,7 +873,7 @@
                 <p>AuroraGenesis leverages a modular architecture to deliver real-time cybersecurity solutions across multiple domains.</p>
             </div>
             <div class="grid">
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">🧬 Memory System</div>
                     <h2>Capsule Memory System</h2>
                     <ul class="feature-list">
@@ -830,7 +886,7 @@
                         <li>Dynamic memory allocation with Redis</li>
                     </ul>
                 </div>
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">⚡ Inference Engine</div>
                     <h2>Distributed Inference Engine</h2>
                     <ul class="feature-list">
@@ -884,10 +940,7 @@
                         <li>YARA signature triggers and binwalk analysis for embedded threat detection</li>
                         <li>Async thread pool architecture for high-volume file ingestion</li>
                         <li>CuPy-enhanced entropy analysis for rapid processing</li>
-                        <li>Signal bus via Qt for real-time GUI and telemetry updates</li>
-                        <li>Support for PDF/Office metadata scanning and ROT/XOR obfuscation detection</li>
-                        <li>Blockchain-based logging for tamper-proof forensics</li>
-                        <li>Integration with Volatility3 for memory forensics</li>
+                        <li>Forensic analysis with Volatility3 for memory forensics</li>
                     </ul>
                 </div>
             </div>
@@ -905,7 +958,7 @@
                 <p>AuroraGenesis enables seamless interaction with LLMs through an advanced PyQt5 GUI, with ethical validation and real-time auditing.</p>
             </div>
             <div class="api-demo">
-                <select id="llm-provider">
+                <select id="llm-provider" aria-label="Select LLM Provider">
                     <option value="openai">OpenAI GPT-4</option>
                     <option value="local-llama">Local LLaMA</option>
                     <option value="groq">Grok (xAI)</option>
@@ -913,10 +966,10 @@
                     <option value="mistral">Mistral AI</option>
                 </select>
                 <div class="llm-input">
-                    <textarea id="llm-query" placeholder="Enter your query (e.g., 'Analyze this file for threats')"></textarea>
-                    <button class="cyber-button" onclick="callLLM()">Submit Query</button>
+                    <textarea id="llm-query" placeholder="Enter your query (e.g., 'Analyze this file for threats')" aria-label="LLM Query Input"></textarea>
+                    <button class="cyber-button" onclick="callLLM()" aria-label="Submit LLM Query">Submit Query</button>
                 </div>
-                <div class="llm-response" id="llm-response">LLM Response will appear here...</div>
+                <div class="llm-response" id="llm-response" aria-live="polite">LLM Response will appear here...</div>
             </div>
             <div class="accordion">
                 <div class="accordion-header" tabindex="0" role="button" aria-expanded="false">LLM Workflow <span>↓</span></div>
@@ -982,7 +1035,7 @@
                 <h2>🧠 AI Reasoning Stack</h2>
             </div>
             <div class="grid">
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">🧬 Torch AMP</div>
                     <h2>AI Vulnerability Predictor</h2>
                     <ul class="feature-list">
@@ -995,7 +1048,7 @@
                         <li>Real-time CVE database synchronization</li>
                     </ul>
                 </div>
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">🧬 Triton</div>
                     <h2>Capsule Transformer</h2>
                     <ul class="feature-list">
@@ -1008,7 +1061,7 @@
                         <li>Dynamic capsule pruning for efficiency</li>
                     </ul>
                 </div>
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">🧬 Adversarial AI</div>
                     <h2>Live Adversarial Training Engine</h2>
                     <ul class="feature-list">
@@ -1032,7 +1085,7 @@
                 <h2>🔍 Forensic Intelligence</h2>
             </div>
             <div class="grid">
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">📊 Volatility3</div>
                     <h2>Memory Forensics</h2>
                     <ul class="feature-list">
@@ -1045,7 +1098,7 @@
                         <li>Integration with Rekall for cross-platform support</li>
                     </ul>
                 </div>
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">📊 DAG Forensics</div>
                     <h2>Forensic DAG Causality Engine</h2>
                     <ul class="feature-list">
@@ -1058,7 +1111,7 @@
                         <li>Dynamic causality graph updates</li>
                     </ul>
                 </div>
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">📊 Sandbox</div>
                     <h2>Cyber Defense Sandbox</h2>
                     <ul class="feature-list">
@@ -1076,7 +1129,7 @@
                 <h2>🛡️ System Integrity</h2>
             </div>
             <div class="grid">
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">🔒 eBPF</div>
                     <h2>Kernel Anomaly Monitor</h2>
                     <ul class="feature-list">
@@ -1089,7 +1142,7 @@
                         <li>Dynamic kernel event filtering</li>
                     </ul>
                 </div>
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">🔒 SHA3-512</div>
                     <h2>File System Integrity</h2>
                     <ul class="feature-list">
@@ -1102,7 +1155,7 @@
                         <li>Support for distributed file systems</li>
                     </ul>
                 </div>
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">🔒 Triton</div>
                     <h2>Deep Packet Inspection</h2>
                     <ul class="feature-list">
@@ -1120,7 +1173,7 @@
                 <h2>🔍 Threat Detection</h2>
             </div>
             <div class="grid">
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">⚡ Ray</div>
                     <h2>Exploit Ingestor</h2>
                     <ul class="feature-list">
@@ -1133,7 +1186,7 @@
                         <li>Support for real-time threat feeds</li>
                     </ul>
                 </div>
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">⚡ Asyncio</div>
                     <h2>Exploit Mutator</h2>
                     <ul class="feature-list">
@@ -1146,7 +1199,7 @@
                         <li>Support for multi-vector attacks</li>
                     </ul>
                 </div>
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">⚡ MITRE ATT&CK</div>
                     <h2>Attack Path Simulator</h2>
                     <ul class="feature-list">
@@ -1164,7 +1217,7 @@
                 <h2>⚖️ Ethical Safeguards</h2>
             </div>
             <div class="grid">
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">🔒 Ethical AI</div>
                     <h2>Soul Vector API Layer</h2>
                     <ul class="feature-list">
@@ -1177,7 +1230,7 @@
                         <li>Support for multi-jurisdiction ethics</li>
                     </ul>
                 </div>
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">🔒 Safety Protocol</div>
                     <h2>Kill Switch Protocol</h2>
                     <ul class="feature-list">
@@ -1190,7 +1243,7 @@
                         <li>Support for automated recovery</li>
                     </ul>
                 </div>
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">🔒 Ethical Engine</div>
                     <h2>Ethical Reasoning Engine</h2>
                     <ul class="feature-list">
@@ -1242,7 +1295,7 @@
                 <p>Meet the brilliant minds behind AuroraGenesis, driving innovation in AI and cybersecurity.</p>
             </div>
             <div class="grid">
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">👤 Founder</div>
                     <h2>Ben [Redacted]</h2>
                     <ul class="feature-list">
@@ -1255,7 +1308,7 @@
                         <li>Former DARPA researcher</li>
                     </ul>
                 </div>
-                <div class="card">
+                <div class="card" tabindex="0">
                     <div class="badge">🛠️ Security R&D</div>
                     <h2>Core Team</h2>
                     <ul class="feature-list">
@@ -1275,7 +1328,7 @@
             <div class="blur-glass">
                 <h1>Investment Opportunity</h1>
                 <p>AuroraGenesis is open to strategic investments to accelerate our mission of securing the digital world. Provisional patents filed for capsule-compressed entropy memory, LLM mutation loop defenses, and ethical DAG-based causality tracing systems.</p>
-                <button class="cyber-button">Contact to Invest</button>
+                <button class="cyber-button" aria-label="Contact to Invest">Contact to Invest</button>
             </div>
         </section>
 
@@ -1283,7 +1336,7 @@
             <div class="blur-glass">
                 <h1>Vision and Impact</h1>
                 <p>AuroraGenesis is poised to revolutionize cybersecurity with its ethics-anchored, GPU-accelerated, and cluster-native AI framework. By combining real-time threat detection, advanced forensic visualization, and auditable governance, we aim to secure the digital world for enterprises, governments, and beyond—delivering a future where safety and innovation coexist seamlessly.</p>
-                <button class="cyber-button">Join the Revolution</button>
+                <button class="cyber-button" aria-label="Join the Revolution">Join the Revolution</button>
             </div>
         </section>
     </main>
@@ -1292,22 +1345,23 @@
         <div class="blur-glass">
             <h1>Ready to Secure the Future?</h1>
             <p>Contact us for pilot deployment, investor discussions, or strategic partnership.</p>
-            <button class="cyber-button">Contact Us</button>
-            <p><a href="mailto:ceo@aurora-core.net">ceo@aurora-core.net</a></p>
+            <button class="cyber-button" aria-label="Contact Us">Contact Us</button>
+            <p><a href="mailto:ceo@aurora-core.net" aria-label="Email ceo@aurora-core.net">ceo@aurora-core.net</a></p>
         </div>
     </footer>
 
     <script>
-        window.addEventListener('load', function () {
+        window.addEventListener('load', () => {
             // Preloader
             const preloader = document.getElementById('preloader');
             preloader.classList.add('fade-out');
 
-            // Neuron Background
+            // Neuron Background with IntersectionObserver
             const neuronContainer = document.getElementById('neuron-background');
             const neuronCount = 400;
+            const neurons = [];
 
-            for (let i = 0; i < neuronCount; i++) {
+            const createNeuron = () => {
                 const neuron = document.createElement('div');
                 neuron.className = 'neuron';
                 const xStart = Math.random() * window.innerWidth;
@@ -1319,6 +1373,7 @@
                 const blur = 1 + Math.random() * 3;
                 const duration = 4 + Math.random() * 8;
                 const trailAngle = Math.random() * 360;
+                const delay = Math.random() * 2;
                 neuron.style.left = `${xStart}px`;
                 neuron.style.top = `${yStart}px`;
                 neuron.style.setProperty('--x-move', `${xMove}px`);
@@ -1328,13 +1383,33 @@
                 neuron.style.setProperty('--blur', `${blur}px`);
                 neuron.style.setProperty('--trail-angle', `${trailAngle}deg`);
                 neuron.style.animationDuration = `${duration}s, 3s`;
-                neuron.style.animationDelay = `${-Math.random() * duration}s, 0s`;
+                neuron.style.animationDelay = `${-delay}s, ${-delay}s`;
                 neuronContainer.appendChild(neuron);
+                return neuron;
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting && entry.target.classList.contains('neuron')) {
+                        entry.target.remove();
+                        neurons.splice(neurons.indexOf(entry.target), 1);
+                        if (neurons.length < neuronCount) {
+                            neurons.push(createNeuron());
+                        }
+                    }
+                });
+            }, { root: null, threshold: 0 });
+
+            for (let i = 0; i < neuronCount; i++) {
+                const neuron = createNeuron();
+                neurons.push(neuron);
+                observer.observe(neuron);
             }
 
             // Network Graph Utility
             function createNetworkGraph(graphId, nodesData, edgesData) {
                 try {
+                    if (!nodesData || !edgesData) throw new Error('Missing nodesData or edgesData');
                     const graph = document.getElementById(graphId);
                     if (!graph) throw new Error(`Graph container #${graphId} not found`);
                     const svg = graph.querySelector('svg');
@@ -1345,23 +1420,24 @@
                     const width = graphRect.width;
                     const height = graphRect.height;
 
-                    // Set node radius based on screen width
                     const getNodeRadius = () => {
                         if (window.innerWidth <= 480) return 15;
                         if (window.innerWidth <= 768) return 20;
                         return 30;
                     };
 
-                    nodesData.forEach(node => {
-                        const x = (node.x * 100 + 600); // Center nodes in 1200px width
-                        const y = (node.y * 100 + 400); // Center nodes in 800px height
+                    nodesData.forEach((node, index) => {
+                        const x = (node.x * 100 + 600);
+                        const y = (node.y * 100 + 400);
                         const circle = document.createElementNS(ns, 'circle');
                         circle.className = 'network-node';
                         circle.setAttribute('cx', x);
                         circle.setAttribute('cy', y);
                         circle.setAttribute('r', getNodeRadius());
+                        circle.setAttribute('tabindex', '0');
                         circle.dataset.id = node.id;
                         circle.dataset.title = node.title;
+                        circle.setAttribute('aria-label', `Node: ${node.label}`);
                         svg.appendChild(circle);
 
                         const text = document.createElementNS(ns, 'text');
@@ -1370,6 +1446,13 @@
                         text.setAttribute('y', y + getNodeRadius() + 20);
                         text.textContent = node.label;
                         svg.appendChild(text);
+
+                        circle.addEventListener('keydown', (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                circle.click();
+                            }
+                        });
                     });
 
                     edgesData.forEach(edge => {
@@ -1394,6 +1477,11 @@
                     let isDragging = false;
                     let startX = 0;
 
+                    const updatePan = () => {
+                        svg.style.transform = `translateX(${panX}px)`;
+                        requestAnimationFrame(updatePan);
+                    };
+
                     graph.addEventListener('mousedown', (e) => {
                         isDragging = true;
                         startX = e.clientX;
@@ -1403,7 +1491,6 @@
                         if (isDragging) {
                             const deltaX = e.clientX - startX;
                             panX += deltaX * 0.1;
-                            svg.style.transform = `translateX(${panX}px)`;
                             startX = e.clientX;
                         }
                     });
@@ -1453,18 +1540,38 @@
                         }
                     });
 
-                    graph.addEventListener('mouseleave', () => {
+                    svg.addEventListener('mouseleave', () => {
                         const tooltip = document.querySelector('.tooltip');
                         if (tooltip) document.body.removeChild(tooltip);
                     });
 
-                    // Update node radii on resize
+                    svg.addEventListener('mouseleave', () => {
+                        const tooltip = document.querySelector('.tooltip');
+                        if (tooltip) document.body.removeChild(tooltip);
+                    });
+
+                    // Update node radii and positions on resize
                     window.addEventListener('resize', () => {
                         const nodes = svg.querySelectorAll('.network-node');
+                        const labels = svg.querySelectorAll('.network-label');
                         nodes.forEach(node => {
                             node.setAttribute('r', getNodeRadius());
                         });
+                        nodes.forEach((node, index) => {
+                            const x = (nodesData[index].x * 100 + 600);
+                            const y = (nodesData[index].y * 100 + 400);
+                            node.setAttribute('cx', x);
+                            node.setAttribute('cy', y);
+                            const label = labels[index];
+                            if (label) {
+                                label.setAttribute('x', x);
+                                label.setAttribute('y', y + getNodeRadius() + 20);
+                            }
+                        });
                     });
+
+                    // Start animation loop
+                    requestAnimationFrame(updatePan);
 
                     console.log(`Graph ${graphId} initialized with ${nodesData.length} nodes and ${edgesData.length} edges`);
                 } catch (error) {
@@ -1526,7 +1633,7 @@
 
             createNetworkGraph('ethical-validation-graph', ethicalValidationNodes, ethicalValidationEdges);
 
-// Neo4j Graph
+            // Neo4j Graph
             const neo4jNodes = [
                 { id: '1', label: '📊 Neo4j Core', x: 0, y: 0, title: 'Graph database for real-time analytics and causality tracing' },
                 { id: '2', label: '🔒 Audit Logging', x: 2, y: 2, title: 'Immutable audit trails with zstd compression and blockchain integration' },
@@ -1699,17 +1806,6 @@
                 card.style.transform = 'translateY(50px)';
                 card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
                 observer.observe(card);
-            });
-
-            document.querySelectorAll('.card').forEach(card => {
-                card.setAttribute('tabindex', '0');
-                card.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        card.style.transform = 'scale(1.05)';
-                        setTimeout(() => { card.style.transform = 'scale(1)'; }, 200);
-                    }
-                });
             });
 
             // Resize Graphs on Window Resize
