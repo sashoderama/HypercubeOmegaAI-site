@@ -146,70 +146,77 @@
     setTimeout(() => test.remove(), 3000);
 
     // ─── ENVIRONMENT CONFIGURATION ────────────────────────────────────
-    async function loadConfig() {
-        let retries = 0;
-        while (retries < MAX_RETRIES) {
+async function loadConfig() {
+    let retries = 0;
+    while (retries < MAX_RETRIES) {
+        try {
+            const response = await fetch('/config.json', { cache: 'no-store' });
+            if (!response.ok) throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+
+            const contentType = response.headers.get('content-type') || '';
+            if (!contentType.includes('application/json')) {
+                throw new Error(`Invalid content-type: ${contentType}`);
+            }
+
+            const text = await response.text();
+            let config;
             try {
-                const response = await fetch('/config.json', { cache: 'no-store' });
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                config = JSON.parse(text);
+                if (typeof config !== 'object' || config === null || Array.isArray(config)) {
+                    throw new Error('Parsed config is not a valid object');
                 }
-                const contentType = response.headers.get('content-type') || '';
-                if (!contentType.includes('application/json')) {
-                    throw new Error('Invalid content type for config.json: ' + contentType);
-                }
-                const text = await response.text();
-                let config;
-                try {
-                    config = JSON.parse(text);
-                } catch (e) {
-                    console.warn('Invalid JSON in config.json:', e);
-                    config = FALLBACK_CONFIG;
-                    emitter.emit(AUDIT_EVENT, {
-                        id: crypto.randomUUID(),
-                        type: 'config_parse',
-                        status: 'failed',
-                        error: e.message,
-                        ts: Date.now()
-                    });
-                }
-                store.setState(state => ({ ...state, config }));
-                console.log('Configuration loaded successfully.');
+            } catch (parseError) {
+                console.warn('[Aurora] Invalid JSON in config.json:', parseError);
+                config = FALLBACK_CONFIG;
+                emitter.emit(AUDIT_EVENT, {
+                    id: crypto.randomUUID(),
+                    type: 'config_parse',
+                    status: 'failed',
+                    error: parseError.message,
+                    ts: Date.now()
+                });
+            }
+
+            store.setState(state => ({ ...state, config }));
+            console.log('[Aurora] Config loaded:', config);
+            emitter.emit(AUDIT_EVENT, {
+                id: crypto.randomUUID(),
+                type: 'config_load',
+                status: 'success',
+                retryCount: retries,
+                ts: Date.now()
+            });
+            return;
+
+        } catch (fetchErr) {
+            retries++;
+            console.warn(`[Aurora] config.json fetch failed [${retries}/${MAX_RETRIES}]:`, fetchErr.message);
+            emitter.emit(AUDIT_EVENT, {
+                id: crypto.randomUUID(),
+                type: 'config_fetch',
+                status: 'retry',
+                retryCount: retries,
+                error: fetchErr.message,
+                ts: Date.now()
+            });
+
+            if (retries >= MAX_RETRIES) {
+                store.setState(state => ({ ...state, config: FALLBACK_CONFIG }));
+                console.warn('[Aurora] Fallback config used after retries.');
                 emitter.emit(AUDIT_EVENT, {
                     id: crypto.randomUUID(),
                     type: 'config_load',
-                    status: 'success',
-                    retryCount: retries,
+                    status: 'fallback',
                     ts: Date.now()
                 });
                 return;
-            } catch (e) {
-                retries++;
-                console.warn(`Config load attempt ${retries}/${MAX_RETRIES} failed:`, e);
-                emitter.emit(AUDIT_EVENT, {
-                    id: crypto.randomUUID(),
-                    type: 'config_load',
-                    status: 'retry',
-                    retryCount: retries,
-                    error: e.message,
-                    ts: Date.now()
-                });
-                if (retries >= MAX_RETRIES) {
-                    console.warn('Failed to load config.json, using fallback:', e);
-                    store.setState(state => ({ ...state, config: FALLBACK_CONFIG }));
-                    emitter.emit(AUDIT_EVENT, {
-                        id: crypto.randomUUID(),
-                        type: 'config_load',
-                        status: 'failed',
-                        error: e.message,
-                        ts: Date.now()
-                    });
-                    return;
-                }
-                await new Promise(resolve => setTimeout(resolve, RETRY_BACKOFF * Math.pow(2, retries - 1)));
             }
+
+            await new Promise(r => setTimeout(r, RETRY_BACKOFF * 2 ** (retries - 1)));
         }
     }
+}
+
 
     // ─── TOKEN BUCKET RATE LIMITING ───────────────────────────────────
     function takeToken() {
