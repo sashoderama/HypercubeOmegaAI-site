@@ -620,9 +620,6 @@
                 height: 550px;
                 margin: 2.5rem auto;
             }
-            .network-node {
-                r: 15;
-            }
             .network-label {
                 font-size: 10px;
             }
@@ -632,9 +629,6 @@
             .network-graph {
                 height: 350px;
                 margin: 2rem auto;
-            }
-            .network-node {
-                r: 12;
             }
             .network-label {
                 font-size: 8px;
@@ -1143,7 +1137,7 @@
                 <div class="card">
                     <div class="badge">⚡ Asyncio</div>
                     <h2>Exploit Mutator</h2>
-                    <ul class="force-list">
+                    <ul class="feature-list">
                         <li>DAG-based mutations with Asyncio</li>
                         <li>RL-tuned strategies for stealth</li>
                         <li>IDS-agnostic exploit generation</li>
@@ -1345,12 +1339,19 @@
                 const svg = graph.querySelector('svg');
                 const ns = "http://www.w3.org/2000/svg";
 
+                // Set node radius based on screen width
+                const getNodeRadius = () => {
+                    if (window.innerWidth <= 480) return 12;
+                    if (window.innerWidth <= 768) return 15;
+                    return 20;
+                };
+
                 nodesData.forEach(node => {
                     const circle = document.createElementNS(ns, 'circle');
                     circle.className = 'network-node';
                     circle.setAttribute('cx', `${node.x * 50 + 50}%`);
                     circle.setAttribute('cy', `${node.y * 50 + 50}%`);
-                    circle.setAttribute('r', '20');
+                    circle.setAttribute('r', getNodeRadius());
                     circle.dataset.id = node.id;
                     circle.dataset.title = node.title;
                     svg.appendChild(circle);
@@ -1443,76 +1444,84 @@
                     const tooltip = document.querySelector('.tooltip');
                     if (tooltip) document.body.removeChild(tooltip);
                 });
+
+                // Update node radii on resize
+                window.addEventListener('resize', () => {
+                    const nodes = svg.querySelectorAll('.network-node');
+                    nodes.forEach(node => {
+                        node.setAttribute('r', getNodeRadius());
+                    });
+                });
             }
 
             // Tech Stack Graph
             const techStackNodes = [
-                { id: 1, label: '🧠 Aurora Core', x: 0, y: 0, title: 'Central AI engine powering AuroraGenesis' },
-                { id: 2, label: '🔥 PyTorch', x: 2, y: 1, title: 'Deep learning framework for model training' },
-                { id: 3, label: '📊 Neo4j', x: -2, y: 1, title: 'Graph database for causality and auditing' },
-                { id: 4, label: '⚡ Triton', x: 2, y: -1, title: 'GPU-accelerated inference engine' },
-                { id: 5, label: '🌐 Ray Cluster', x: -2, y: -1, title: 'Distributed computing for scalability' }
+                { id: '1', label: '🧠 Aurora Core', x: 0, y: 0, title: 'Central AI engine powering AuroraGenesis' },
+                { id: '2', label: '🔥 PyTorch', x: 2, y: 1, title: 'Deep learning framework for model training' },
+                { id: '3', label: '📊 Neo4j', x: -2, y: 1, title: 'Graph database for causality and auditing' },
+                { id: '4', label: '⚡ Triton', x: 2, y: -1, title: 'GPU-accelerated inference engine' },
+                { id: '5', label: '🌐 Ray Cluster', x: -2, y: -1, title: 'Distributed computing for scalability' }
             ];
 
             const techStackEdges = [
-                { from: 2, to: 1 },
-                { from: 3, to: 1 },
-                { from: 4, to: 1 },
-                { from: 5, to: 1 }
+                { from: '2', to: '1' },
+                { from: '3', to: '1' },
+                { from: '4', to: '1' },
+                { from: '5', to: '1' }
             ];
 
             createNetworkGraph('tech-stack-graph', techStackNodes, techStackEdges);
 
             // Threat Detection Graph
             const threatDetectionNodes = [
-                { id: 1, label: '⚡ Exploit Ingestor', x: 0, y: 0, title: 'Ingests and classifies exploits in real-time' },
-                { id: 2, label: '⚡ Exploit Mutator', x: 2, y: 0, title: 'Mutates exploits for proactive defense' },
-                { id: 3, label: '⚡ Attack Path', x: 4, y: 0, title: 'Simulates attack paths with MITRE ATT&CK' },
-                { id: 4, label: '🔍 Anomaly Detector', x: 6, y: 0, title: 'Detects anomalies using GMM models' },
-                { id: 5, label: '🛡️ Response', x: 8, y: 0, title: 'Coordinates automated threat responses' }
+                { id: '1', label: '⚡ Exploit Ingestor', x: 0, y: 0, title: 'Ingests and classifies exploits in real-time' },
+                { id: '2', label: '⚡ Exploit Mutator', x: 2, y: 0, title: 'Mutates exploits for proactive defense' },
+                { id: '3', label: '⚡ Attack Path', x: 4, y: 0, title: 'Simulates attack paths with MITRE ATT&CK' },
+                { id: '4', label: '🔍 Anomaly Detector', x: 6, y: 0, title: 'Detects anomalies using GMM models' },
+                { id: '5', label: '🛡️ Response', x: 8, y: 0, title: 'Coordinates automated threat responses' }
             ];
 
             const threatDetectionEdges = [
-                { from: 1, to: 2 },
-                { from: 2, to: 3 },
-                { from: 3, to: 4 },
-                { from: 4, to: 5 }
+                { from: '1', to: '2' },
+                { from: '2', to: '3' },
+                { from: '3', to: '4' },
+                { from: '4', to: '5' }
             ];
 
             createNetworkGraph('threat-detection-graph', threatDetectionNodes, threatDetectionEdges);
 
             // Ethical Validation Graph
             const ethicalValidationNodes = [
-                { id: 1, label: '🔒 Soul Vector', x: 0, y: 0, title: 'Ethical vetting with 15D soul vectors' },
-                { id: 2, label: '🔍 Entropy Check', x: 2, y: 1, title: 'Real-time entropy analysis' },
-                { id: 3, label: '⚖️ Ethical Reasoning', x: 4, y: 2, title: 'ML-driven ethical decision-making' },
-                { id: 4, label: '🔒 Kill Switch', x: 6, y: 1, title: 'Automated termination for ethical drift' },
-                { id: 5, label: '🔄 Ethical Reset', x: 8, y: 0, title: 'State reset for compliance' }
+                { id: '1', label: '🔒 Soul Vector', x: 0, y: 0, title: 'Ethical vetting with 15D soul vectors' },
+                { id: '2', label: '🔍 Entropy Check', x: 2, y: 1, title: 'Real-time entropy analysis' },
+                { id: '3', label: '⚖️ Ethical Reasoning', x: 4, y: 2, title: 'ML-driven ethical decision-making' },
+                { id: '4', label: '🔒 Kill Switch', x: 6, y: 1, title: 'Automated termination for ethical drift' },
+                { id: '5', label: '🔄 Ethical Reset', x: 8, y: 0, title: 'State reset for compliance' }
             ];
 
             const ethicalValidationEdges = [
-                { from: 1, to: 2 },
-                { from: 2, to: 3 },
-                { from: 3, to: 4 },
-                { from: 4, to: 5 }
+                { from: '1', to: '2' },
+                { from: '2', to: '3' },
+                { from: '3', to: '4' },
+                { from: '4', to: '5' }
             ];
 
             createNetworkGraph('ethical-validation-graph', ethicalValidationNodes, ethicalValidationEdges);
 
             // Neo4j Graph
             const neo4jNodes = [
-                { id: 1, label: '📊 Neo4j Core', x: 0, y: 0, title: 'Graph database for real-time analytics and causality tracing' },
-                { id: 2, label: '🔒 Audit Logging', x: 2, y: 2, title: 'Immutable audit trails with zstd compression and blockchain integration' },
-                { id: 3, label: '🧬 DAG Causality', x: -2, y: 2, title: 'Directed Acyclic Graph for transparent causality and forensic analysis' },
-                { id: 4, label: '🔍 Forensic Replay', x: 2, y: -2, title: 'Replays attack paths with temporal analysis for root-cause tracing' },
-                { id: 5, label: '📜 Compliance', x: -2, y: -2, title: 'Real-time regulatory compliance monitoring with GDPR/CCPA support' }
+                { id: '1', label: '📊 Neo4j Core', x: 0, y: 0, title: 'Graph database for real-time analytics and causality tracing' },
+                { id: '2', label: '🔒 Audit Logging', x: 2, y: 2, title: 'Immutable audit trails with zstd compression and blockchain integration' },
+                { id: '3', label: '🧬 DAG Causality', x: -2, y: 2, title: 'Directed Acyclic Graph for transparent causality and forensic analysis' },
+                { id: '4', label: '🔍 Forensic Replay', x: 2, y: -2, title: 'Replays attack paths with temporal analysis for root-cause tracing' },
+                { id: '5', label: '📜 Compliance', x: -2, y: -2, title: 'Real-time regulatory compliance monitoring with GDPR/CCPA support' }
             ];
 
             const neo4jEdges = [
-                { from: 1, to: 2 },
-                { from: 1, to: 3 },
-                { from: 1, to: 4 },
-                { from: 1, to: 5 }
+                { from: '1', to: '2' },
+                { from: '1', to: '3' },
+                { from: '1', to: '4' },
+                { from: '1', to: '5' }
             ];
 
             createNetworkGraph('neo4j-graph', neo4jNodes, neo4jEdges);
