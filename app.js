@@ -31,10 +31,11 @@
                     isPaused: false, 
                     currentChunkIndex: 0, 
                     lastActivity: Date.now(),
-                    theme: 'aurora-dark'
+                    theme: 'aurora-dark',
+                    focusElement: null
                 },
                 rateLimit: { bucket: 30, lastRefill: Date.now() },
-                network: { isOnline: navigator.onLine }
+                network: { isOnline: navigator.onLine, lastChecked: Date.now() }
             };
             this.listeners = new Set();
         }
@@ -45,6 +46,7 @@
                 localStorage.setItem('aurora-ui-state', compressSession(this.state.ui));
             } catch (e) {
                 console.warn('Failed to persist UI state:', e);
+                this.audit('store_persist', 'failed', { error: e.message });
             }
         }
         subscribe(listener) {
@@ -56,10 +58,21 @@
                 const uiState = localStorage.getItem('aurora-ui-state');
                 if (uiState) {
                     this.state.ui = { ...this.state.ui, ...decompressSession(uiState) };
+                    this.audit('store_load', 'success', { count: Object.keys(this.state.ui).length });
                 }
             } catch (e) {
                 console.warn('Failed to load UI state:', e);
+                this.audit('store_load', 'failed', { error: e.message });
             }
+        }
+        audit(type, status, details = {}) {
+            emitter.emit(AUDIT_EVENT, {
+                id: crypto.randomUUID(),
+                type: `store_${type}`,
+                status,
+                details,
+                ts: Date.now()
+            });
         }
     }
 
@@ -73,6 +86,8 @@
     const HF_MODEL = 'NousResearch/Hermes-2-Pro-Mistral-7B';
     const SESSION_VERSION = '2.0.0';
     const FALLBACK_CONFIG = { HUGGINGFACE_TOKEN: '' };
+    const MAX_RETRIES = 3;
+    const RETRY_BACKOFF = 1000;
 
     // ─── ERROR HANDLING ───────────────────────────────────────────────
     window.onerror = (msg, url, line, col, error) => {
@@ -103,12 +118,12 @@
     });
 
     window.addEventListener('online', () => {
-        store.setState(state => ({ ...state, network: { ...state.network, isOnline: true } }));
+        store.setState(state => ({ ...state, network: { ...state.network, isOnline: true, lastChecked: Date.now() } }));
         showToast('Network connection restored.');
     });
 
     window.addEventListener('offline', () => {
-        store.setState(state => ({ ...state, network: { ...state.network, isOnline: false } }));
+        store.setState(state => ({ ...state, network: { ...state.network, isOnline: false, lastChecked: Date.now() } }));
         showToast('Network connection lost. Some features may be unavailable.');
     });
 
@@ -132,37 +147,67 @@
 
     // ─── ENVIRONMENT CONFIGURATION ────────────────────────────────────
     async function loadConfig() {
-        try {
-            const response = await fetchWithRetry('/config.json', { retries: 3, backoff: 1000 });
-            if (!response.headers.get('content-type')?.includes('application/json')) {
-                throw new Error('Invalid content type for config.json');
-            }
-            const text = await response.text();
-            let config;
+        let retries = 0;
+        while (retries < MAX_RETRIES) {
             try {
-                config = JSON.parse(text);
+                const response = await fetch('/config.json', { cache: 'no-store' });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const contentType = response.headers.get('content-type') || '';
+                if (!contentType.includes('application/json')) {
+                    throw new Error('Invalid content type for config.json: ' + contentType);
+                }
+                const text = await response.text();
+                let config;
+                try {
+                    config = JSON.parse(text);
+                } catch (e) {
+                    console.warn('Invalid JSON in config.json:', e);
+                    config = FALLBACK_CONFIG;
+                    emitter.emit(AUDIT_EVENT, {
+                        id: crypto.randomUUID(),
+                        type: 'config_parse',
+                        status: 'failed',
+                        error: e.message,
+                        ts: Date.now()
+                    });
+                }
+                store.setState(state => ({ ...state, config }));
+                console.log('Configuration loaded successfully.');
+                emitter.emit(AUDIT_EVENT, {
+                    id: crypto.randomUUID(),
+                    type: 'config_load',
+                    status: 'success',
+                    retryCount: retries,
+                    ts: Date.now()
+                });
+                return;
             } catch (e) {
-                console.warn('Invalid JSON in config.json:', e);
-                config = FALLBACK_CONFIG;
+                retries++;
+                console.warn(`Config load attempt ${retries}/${MAX_RETRIES} failed:`, e);
+                emitter.emit(AUDIT_EVENT, {
+                    id: crypto.randomUUID(),
+                    type: 'config_load',
+                    status: 'retry',
+                    retryCount: retries,
+                    error: e.message,
+                    ts: Date.now()
+                });
+                if (retries >= MAX_RETRIES) {
+                    console.warn('Failed to load config.json, using fallback:', e);
+                    store.setState(state => ({ ...state, config: FALLBACK_CONFIG }));
+                    emitter.emit(AUDIT_EVENT, {
+                        id: crypto.randomUUID(),
+                        type: 'config_load',
+                        status: 'failed',
+                        error: e.message,
+                        ts: Date.now()
+                    });
+                    return;
+                }
+                await new Promise(resolve => setTimeout(resolve, RETRY_BACKOFF * Math.pow(2, retries - 1)));
             }
-            store.setState(state => ({ ...state, config }));
-            console.log('Configuration loaded successfully.');
-            emitter.emit(AUDIT_EVENT, {
-                id: crypto.randomUUID(),
-                type: 'config_load',
-                status: 'success',
-                ts: Date.now()
-            });
-        } catch (e) {
-            console.warn('Failed to load config.json, using fallback:', e);
-            store.setState(state => ({ ...state, config: FALLBACK_CONFIG }));
-            emitter.emit(AUDIT_EVENT, {
-                id: crypto.randomUUID(),
-                type: 'config_load',
-                status: 'failed',
-                error: e.message,
-                ts: Date.now()
-            });
         }
     }
 
@@ -215,6 +260,14 @@
             if (data.version !== SESSION_VERSION) {
                 console.warn('Session version mismatch, migrating session.');
                 store.setState(state => ({ ...state, session: migrateSession(data.entries) }));
+                emitter.emit(AUDIT_EVENT, {
+                    id: crypto.randomUUID(),
+                    type: 'session_migration',
+                    status: 'success',
+                    oldVersion: data.version,
+                    newVersion: SESSION_VERSION,
+                    ts: Date.now()
+                });
                 return;
             }
             store.setState(state => ({ ...state, session: data.entries }));
@@ -428,12 +481,22 @@
             const { root, inputEl } = getElements();
             if (!root) {
                 console.warn('ProChat root element not found');
+                emitter.emit(AUDIT_EVENT, {
+                    id: crypto.randomUUID(),
+                    type: 'prochat_toggle',
+                    status: 'failed',
+                    error: 'Root element not found',
+                    ts: Date.now()
+                });
                 return;
             }
             store.setState(state => ({ ...state, ui: { ...state.ui, isProChatOpen: open } }));
             root.classList.toggle('hidden', !open);
             if (open) {
-                inputEl?.focus();
+                if (inputEl) {
+                    inputEl.focus();
+                    store.setState(state => ({ ...state, ui: { ...state.ui, focusElement: 'proChat-input' } }));
+                }
                 root.setAttribute('aria-hidden', 'false');
                 announce('Aurora Assistant chat opened.');
             } else {
@@ -456,7 +519,10 @@
 
         function addMsg(text, sender, id = crypto.randomUUID()) {
             const { logEl } = getElements();
-            if (!logEl) return null;
+            if (!logEl) {
+                console.warn('ProChat log element not found');
+                return null;
+            }
             const li = document.createElement('li');
             li.className = 'proChat-msg';
             li.dataset.sender = sender;
@@ -556,7 +622,10 @@
 
         function addMessage(text, type, tooltip = '') {
             const { chatLog } = getElements();
-            if (!chatLog) return;
+            if (!chatLog) {
+                console.warn('Main chat log element not found');
+                return;
+            }
             requestAnimationFrame(() => {
                 const bubble = document.createElement('div');
                 bubble.className = `message-bubble card ${type}`;
@@ -607,6 +676,14 @@
                 const data = decompressSession(compressed);
                 if (data.version !== SESSION_VERSION) {
                     console.warn('History version mismatch, resetting history.');
+                    emitter.emit(AUDIT_EVENT, {
+                        id: crypto.randomUUID(),
+                        type: 'history_migration',
+                        status: 'success',
+                        oldVersion: data.version,
+                        newVersion: SESSION_VERSION,
+                        ts: Date.now()
+                    });
                     return;
                 }
                 data.entries.forEach(msg => addMessage(msg.text, msg.type));
@@ -630,7 +707,10 @@
 
         async function sendQuery() {
             const { input, loader } = getElements();
-            if (!input || !loader) return;
+            if (!input || !loader) {
+                console.warn('Main chat input or loader not found');
+                return;
+            }
             const q = sanitizeInput(input.value.trim());
             if (!q) return;
             if (!takeToken()) {
@@ -720,7 +800,10 @@
 
         function startTTS() {
             const { startBtn, pauseBtn } = getTTSElements();
-            if (!startBtn || !pauseBtn) return;
+            if (!startBtn || !pauseBtn) {
+                console.warn('TTS elements not found');
+                return;
+            }
             if (!('speechSynthesis' in window)) {
                 mainChat.addMessage('Text-to-speech not supported.', 'ai');
                 showToast('TTS not supported');
@@ -737,6 +820,7 @@
             speech.pitch = 1;
             loadVoices();
             readNextChunk();
+            announce('Text-to-speech started.');
             emitter.emit(AUDIT_EVENT, {
                 id: crypto.randomUUID(),
                 type: 'tts_start',
@@ -830,7 +914,10 @@
     async function encryptText() {
         const input = sanitizeInput(document.getElementById('encrypt-input')?.value || '');
         const outputEl = document.getElementById('encrypt-output');
-        if (!outputEl) return;
+        if (!outputEl) {
+            console.warn('Encrypt output element not found');
+            return;
+        }
         if (!input) {
             outputEl.textContent = 'Please enter text to encrypt.';
             showToast('No input provided');
@@ -863,7 +950,10 @@
     async function decryptText() {
         const input = sanitizeInput(document.getElementById('decrypt-input')?.value || '');
         const outputEl = document.getElementById('decrypt-output');
-        if (!outputEl) return;
+        if (!outputEl) {
+            console.warn('Decrypt output element not found');
+            return;
+        }
         if (!input) {
             outputEl.textContent = 'Please enter encrypted text to decrypt.';
             showToast('No input provided');
@@ -897,7 +987,10 @@
     async function decompileCode() {
         const input = sanitizeInput(document.getElementById('decompile-input')?.value || '');
         const outputEl = document.getElementById('decompile-output');
-        if (!outputEl) return;
+        if (!outputEl) {
+            console.warn('Decompile output element not found');
+            return;
+        }
         if (!input) {
             outputEl.textContent = 'Please enter compiled code to decompile.';
             showToast('No input provided');
@@ -953,7 +1046,10 @@
 
     function showToast(message) {
         const toast = document.getElementById('toast');
-        if (!toast) return;
+        if (!toast) {
+            console.warn('Toast element not found');
+            return;
+        }
         toast.textContent = sanitizeInput(message);
         toast.style.display = 'block';
         setTimeout(() => toast.style.display = 'none', 3000);
@@ -964,21 +1060,6 @@
             message,
             ts: Date.now()
         });
-    }
-
-    async function fetchWithRetry(url, options = {}) {
-        const { retries = 3, backoff = 1000 } = options;
-        for (let i = 0; i < retries; i++) {
-            try {
-                const response = await fetch(url, options);
-                if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
-                return response;
-            } catch (e) {
-                if (i === retries - 1) throw e;
-                console.warn(`Retry ${i + 1}/${retries} for ${url}:`, e);
-                await new Promise(resolve => setTimeout(resolve, backoff * Math.pow(2, i)));
-            }
-        }
     }
 
     async function signData(data) {
@@ -997,6 +1078,13 @@
             return Array.from(new Uint8Array(signature)).map(b => b.toString(16).padStart(2, '0')).join('');
         } catch (e) {
             console.warn('Failed to sign data:', e);
+            emitter.emit(AUDIT_EVENT, {
+                id: crypto.randomUUID(),
+                type: 'sign_data',
+                status: 'failed',
+                error: e.message,
+                ts: Date.now()
+            });
             return '';
         }
     }
@@ -1011,7 +1099,7 @@
         setTimeout(() => announcer.remove(), 1000);
     }
 
-    async function streamHF(prompt, onChunk, retries = 3) {
+    async function streamHF(prompt, onChunk, retries = MAX_RETRIES) {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 10000);
         for (let i = 0; i < retries; i++) {
@@ -1027,7 +1115,7 @@
                     parameters: { max_new_tokens: 200, temperature: 0.7, top_p: 0.9, stop: ['</s>'] }
                 };
                 const csrfToken = crypto.randomUUID();
-                const res = await fetchWithRetry(url, {
+                const response = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -1040,7 +1128,8 @@
                     signal: controller.signal
                 });
                 clearTimeout(timeout);
-                const reader = res.body.getReader();
+                if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+                const reader = response.body.getReader();
                 let full = '';
                 const decoder = new TextDecoder();
                 while (true) {
@@ -1063,6 +1152,7 @@
                     status: 'success',
                     prompt,
                     response: full,
+                    retryCount: i,
                     ts: Date.now()
                 });
                 return full.trim();
@@ -1074,11 +1164,11 @@
                     status: 'failed',
                     prompt,
                     error: e.message,
-                    retry: i + 1,
+                    retryCount: i + 1,
                     ts: Date.now()
                 });
                 if (i === retries - 1) throw e;
-                await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+                await new Promise(resolve => setTimeout(resolve, RETRY_BACKOFF * (i + 1)));
             }
         }
     }
@@ -1207,6 +1297,12 @@
             document.body.classList.add('loaded');
             announce('AuroraGenesis interface loaded.');
 
+            // Restore focus if set
+            if (store.state.ui.focusElement) {
+                const focusEl = document.getElementById(store.state.ui.focusElement);
+                if (focusEl) focusEl.focus();
+            }
+
             emitter.emit(AUDIT_EVENT, {
                 id: crypto.randomUUID(),
                 type: 'init_complete',
@@ -1231,15 +1327,29 @@
         const batch = auditQueue.splice(0, 10);
         try {
             const compressed = compressSession(batch);
-            await fetchWithRetry(`${WS_URL}/audit`, {
+            await fetch(`${WS_URL}/audit`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: compressed
             });
             console.log('Audit batch sent:', batch.length);
+            emitter.emit(AUDIT_EVENT, {
+                id: crypto.randomUUID(),
+                type: 'audit_sync',
+                status: 'success',
+                batchSize: batch.length,
+                ts: Date.now()
+            });
         } catch (e) {
             console.warn('Failed to send audit batch:', e);
             auditQueue.push(...batch);
+            emitter.emit(AUDIT_EVENT, {
+                id: crypto.randomUUID(),
+                type: 'audit_sync',
+                status: 'failed',
+                error: e.message,
+                ts: Date.now()
+            });
         }
         setTimeout(processAuditQueue, 5000);
     }
