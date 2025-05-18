@@ -45,7 +45,6 @@
             line-height: 1.8;
             font-size: 16px;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
             overflow-x: hidden;
             scroll-behavior: smooth;
             position: relative;
@@ -415,9 +414,6 @@
             align-items: center;
             backdrop-filter: blur(20px);
             box-shadow: 0 0 25px rgba(0, 247, 255, 0.1);
-            tabindex: 0;
-            role: "button";
-            aria-expanded: "false";
         }
 
         .accordion-header:hover {
@@ -1278,7 +1274,15 @@
             particlesGeometry.setAttribute('velocity', new THREE.BufferAttribute(velocities, 3));
             particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-const particles = new THREE.Points(particlesGeometry, particleMaterial);
+            const particleMaterial = new THREE.PointsMaterial({
+                size: 0.5,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending
+            });
+
+            const particles = new THREE.Points(particlesGeometry, particleMaterial);
             scene.add(particles);
 
             const animateBackground = () => {
@@ -1495,7 +1499,7 @@ const particles = new THREE.Points(particlesGeometry, particleMaterial);
                 create3DDiagram('threat-detection-diagram', nodesData, edgesData);
             }
 
-            // Ethical Validation Diagram
+// Ethical Validation Diagram
             function drawEthicalValidationDiagram() {
                 const nodesData = [
                     { id: 1, label: '🔒 Soul Vector API Layer', x: 0, y: 0, z: 0, color: 0x00f7ff, title: 'Ethical vetting with 15D soul vectors' },
@@ -1563,7 +1567,7 @@ const particles = new THREE.Points(particlesGeometry, particleMaterial);
             document.querySelectorAll('.accordion-header').forEach(header => {
                 header.addEventListener('click', () => {
                     const accordion = header.parentElement;
-                    accordion.classList.toggle(' EliotActiveClass(activeClass);
+                    accordion.classList.toggle('active');
                     const expanded = accordion.classList.contains('active');
                     header.setAttribute('aria-expanded', expanded);
                 });
