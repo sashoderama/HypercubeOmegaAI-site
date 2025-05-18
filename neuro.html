@@ -15,7 +15,7 @@
         style-src 'self' 'nonce-aurora-20250518' https://fonts.googleapis.com;
         font-src 'self' https://fonts.gstatic.com;
         img-src 'self' data: https://*.x.ai https://aurora-core.net;
-        connect-src 'self' http://127.0.0.1:8000 wss://*.x.ai https://api-inference.huggingface.co https://*.x.ai https://aurora-core.net;
+        connect-src 'self' http://127.0.0.1:8000 wss://*.x.ai https://*.x.ai https://aurora-core.net;
         worker-src 'self' blob:;
         frame-src 'self';
         media-src 'self' data:;
@@ -33,7 +33,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Source+Code+Pro:wght@400;500;600;700&display=swap" referrerpolicy="no-referrer" loading="lazy">
     <style nonce="aurora-20250518">
         /* ─── ROOT VARIABLES ─────────────────────────────────────────────── */
-        /* Define core variables for consistent theming */
+        /* Core variables for consistent theming */
         :root {
             --bg-main: #0d1117;
             --bg-panel: #161b22;
@@ -880,7 +880,7 @@
             padding: clamp(0.8rem, 1.5vw, 1rem);
             border-radius: var(--radius-sm);
             border: 1px solid var(--border);
-            font-family: 'Source+Code+Pro', monospace;
+            font-family: 'Source Code Pro', monospace;
             font-size: clamp(0.85rem, 1.8vw, 0.9rem);
             color: var(--text-main);
             white-space: pre-wrap;
