@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#0d1117">
-    <meta name="description" content="AuroraGenesis-OMEGA: Cutting-edge AI system for cybersecurity, ethical intelligence, autonomous strategy generation, and forensic analysis with capsule-based memory compression, recursive agent architecture, and real-time threat detection.">
+    <meta name="description" content="AuroraGenesis-OMEGA: Advanced AI system for cybersecurity, ethical intelligence, autonomous strategy generation, and forensic analysis with capsule-based memory compression, recursive agent architecture, and real-time threat detection.">
     <meta name="keywords" content="AI, cybersecurity, AGI, forensic, memory compression, dual-GPU, threat detection, ethical AI, real-time analysis">
     <meta name="author" content="xAI">
     <meta http-equiv="Content-Security-Policy" content="
@@ -28,11 +28,12 @@
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta name="format-detection" content="telephone=no">
     <title>AuroraGenesis-OMEGA</title>
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="/manifest.json" referrerpolicy="no-referrer">
     <link rel="icon" type="image/png" href="/favicon.png" data-fallback="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACFSURBVDhP3ZCxDYAgEEW3ZyE2cAE7sAArsABTsAQz8AbOwH9kJtm2N+x9RMR5ni8AALlFURQBAABYxWazWWO3l7ZpmqZpmpIkCSGEEEVRVFW1XnutuR6u67rdbheEEN/3vV5V1fX9fn+apmmapt/vdzgcLpfLvu/7+/3+/gO8O+mL4TyOAAAAAElFTkSuQmCC">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Source+Code+Pro:wght@400;500;600;700&display=swap" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Source+Code+Pro:wght@400;500;600;700&display=swap" referrerpolicy="no-referrer" loading="lazy">
     <style nonce="aurora-20250518">
         /* ─── ROOT VARIABLES ─────────────────────────────────────────────── */
+        /* Define core variables for consistent theming */
         :root {
             --bg-main: #0d1117;
             --bg-panel: #161b22;
@@ -85,8 +86,6 @@
             font-synthesis: none;
             text-rendering: optimizeLegibility;
             -webkit-font-smoothing: antialiased;
-            /* Replaced -moz-osx-font-smoothing with standard property */
-            font-smooth: always;
             backface-visibility: hidden;
             transform-style: preserve-3d;
         }
@@ -112,6 +111,7 @@
         }
 
         /* ─── DYNAMIC BACKGROUND EFFECTS ─────────────────────────────────── */
+        /* Background gradient for visual depth */
         body::before {
             content: '';
             position: fixed;
@@ -129,6 +129,7 @@
             animation: aurora-shift 15s ease-in-out infinite;
         }
 
+        /* Holographic background effect */
         body::after {
             content: '';
             position: fixed;
@@ -155,6 +156,7 @@
         }
 
         /* ─── BACKGROUND AURORA ──────────────────────────────────────────── */
+        /* Static background layer with aurora effect */
         .background-aurora {
             position: fixed;
             top: 0;
@@ -176,6 +178,7 @@
         }
 
         /* ─── MAIN WRAPPER ───────────────────────────────────────────────── */
+        /* Main container for layout */
         .main-wrapper {
             display: flex;
             flex-direction: column;
@@ -188,6 +191,7 @@
         }
 
         /* ─── FROST CONTAINER ────────────────────────────────────────────── */
+        /* Glassmorphic container for main content */
         .frost-container {
             background: linear-gradient(
                 135deg,
@@ -197,10 +201,7 @@
             ), rgba(13, 17, 23, 0.72);
             backdrop-filter: blur(18px) saturate(180%) brightness(1.1);
             border: 1px solid var(--border-light);
-            box-shadow: 
-                var(--shadow),
-                var(--glow-accent),
-                var(--shadow-inset);
+            box-shadow: var(--shadow), var(--glow-accent), var(--shadow-inset);
             border-radius: var(--radius);
             padding: clamp(1.5rem, 3vw, 2.5rem);
             display: flex;
@@ -289,6 +290,7 @@
         }
 
         /* ─── CHAT LOG ───────────────────────────────────────────────────── */
+        /* Container for chat messages */
         .chat-log {
             flex: 1;
             overflow-y: auto;
@@ -305,6 +307,7 @@
         }
 
         /* ─── MESSAGE BUBBLE ─────────────────────────────────────────────── */
+        /* Styling for individual chat messages */
         .message-bubble {
             background: linear-gradient(
                 135deg,
@@ -314,10 +317,7 @@
             );
             backdrop-filter: blur(10px) saturate(170%);
             border: 1px solid var(--border-light);
-            box-shadow: 
-                var(--glow-accent),
-                var(--shadow-inset),
-                0 4px 16px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--glow-accent), var(--shadow-inset), 0 4px 16px rgba(0, 0, 0, 0.3);
             border-radius: calc(var(--radius) * 0.8);
             padding: clamp(1rem, 2vw, 1.2rem) clamp(1.5rem, 3vw, 1.8rem);
             max-width: 85%;
@@ -362,9 +362,7 @@
 
         .message-bubble:hover {
             transform: translateY(-5px) scale(1.02);
-            box-shadow: 
-                0 0 20px rgba(0, 247, 255, 0.3),
-                var(--shadow-inset);
+            box-shadow: 0 0 20px rgba(0, 247, 255, 0.3), var(--shadow-inset);
         }
 
         .message-bubble:hover::after {
@@ -403,6 +401,7 @@
         }
 
         /* ─── INPUT GROUP ────────────────────────────────────────────────── */
+        /* Container for chat input and buttons */
         .input-group {
             display: grid;
             grid-template-columns: 1fr auto auto;
@@ -477,6 +476,7 @@
         }
 
         /* ─── LOADER ─────────────────────────────────────────────────────── */
+        /* Loading spinner */
         .loader {
             display: none;
             width: 28px;
@@ -496,6 +496,7 @@
         }
 
         /* ─── PRELOADER ──────────────────────────────────────────────────── */
+        /* Initial loading animation */
         #preloader {
             position: fixed;
             top: 0;
@@ -543,6 +544,7 @@
         }
 
         /* ─── PRO CHATBOX ────────────────────────────────────────────────── */
+        /* Floating chat interface */
         #proChat-root {
             position: fixed;
             bottom: clamp(4rem, 8vw, 5.5rem);
@@ -691,6 +693,7 @@
         }
 
         /* ─── TOAST ──────────────────────────────────────────────────────── */
+        /* Notification popup */
         .toast {
             position: fixed;
             bottom: clamp(1.5rem, 4vw, 2rem);
@@ -717,6 +720,7 @@
         }
 
         /* ─── MODULES GROUP ──────────────────────────────────────────────── */
+        /* Container for interactive modules */
         .modules-group {
             display: grid;
             gap: clamp(1rem, 2vw, 1.5rem);
@@ -724,6 +728,7 @@
         }
 
         /* ─── ACCORDION CLUSTER ──────────────────────────────────────────── */
+        /* Container for accordion components */
         .accordion-cluster {
             display: grid;
             gap: clamp(1rem, 2vw, 1.5rem);
@@ -851,6 +856,7 @@
         }
 
         /* ─── DEMO SECTION ───────────────────────────────────────────────── */
+        /* Container for demo inputs and outputs */
         .demo-section {
             display: grid;
             gap: clamp(0.8rem, 1.5vw, 1rem);
@@ -894,7 +900,8 @@
             outline: none;
         }
 
-        /* ─── HOLOGRAPH—as CSS ——————————————————————————————— */
+        /* ─── HOLOGRAPHIC TEXT EFFECTS ───────────────────────────────────── */
+        /* Styling for headings */
         h1, h2, h3 {
             text-shadow: 
                 0 0 10px rgba(47, 129, 247, 0.5),
@@ -1004,8 +1011,8 @@
         }
 
         /* ─── LOW-MEMORY DEVICES ─────────────────────────────────────────── */
-        /* Simplified media query to avoid invalid feature errors */
-        @media (max-width: 768px) and (max-height: 1024px) {
+        /* Simplified media query for compatibility */
+        @media (max-width: 768px) {
             .message-bubble,
             .control-button,
             .proChat-frame,
@@ -1061,6 +1068,7 @@
         }
 
         /* ─── JSON-LD STYLING ────────────────────────────────────────────── */
+        /* Styling for metadata display */
         .json-ld {
             background: var(--bg-panel);
             padding: clamp(0.8rem, 1.5vw, 1rem);
@@ -1091,6 +1099,7 @@
         }
 
         /* ─── FALLBACK STYLES ────────────────────────────────────────────── */
+        /* Fallback for browsers without backdrop-filter support */
         @supports not (backdrop-filter: blur(16px)) {
             .frost-container,
             .message-bubble,
@@ -1163,7 +1172,7 @@
                             id="pause-tts" 
                             type="button"
                             disabled
-                            aria-label="Pause text-to-speech"
+                            aria-label="Pause or resume text-to-speech"
                         >Pause TTS</button>
                     </div>
                 </article>
