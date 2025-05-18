@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#080808">
-    <meta name="description" content="AuroraGenesis: The world's first GPU-cluster-compatible cybersecurity AI platform with capsule-based memory compression, ethical intelligence, and real-time multi-agent mutation.">
+    <meta name="theme-color" content="#060606">
+    <meta name="description" content="AuroraGenesis: The world's first GPU-cluster-compatible cybersecurity AI platform with capsule-based memory compression, ethical intelligence, and real-time multi-agent mutation for zero-day threat detection and forensic analysis.">
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
@@ -16,130 +15,135 @@
     ">
     <title>AuroraGenesis: Next-Gen Cybersecurity Platform</title>
     <link rel="icon" href="data:,">
-    <link rel="preload" href="https://fonts.gstatic.com/s/orbitron/v25/yMJRMIlzdpvBhQPP_D6Bnx0.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    <link rel="preload" href="https://fonts.gstatic.com/s/orbitron/v25/yMJRMIlzdpvBhQPP_D6Bnx0.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400&family=Orbitron:wght@500&family=Source+Code+Pro:wght@400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --void-black: #080808;
-            --cyber-steel: #1a1a1a;
-            --neon-cyan: #00ffff;
-            --neon-magenta: #ff00ff;
-            --neon-red: #ff3b30;
-            --glow-blue: rgba(0, 255, 255, 0.2);
-            --glow-magenta: rgba(255, 0, 255, 0.2);
-            --glow-red: rgba(255, 59, 48, 0.2);
-            --slick-gray: #2a2a2a;
-            --hud-white: rgba(240, 240, 240, 0.95);
-            --accent-red: #FF3B30;
-            --shadow: rgba(0, 0, 0, 0.85);
-            --glow: rgba(0, 255, 255, 0.2);
+            --void: #060606;
+            --neon: #00ffff;
+            --hud: #fafafa;
+            --glow: rgba(0, 255, 255, 0.25);
             --border: rgba(0, 255, 255, 0.15);
-            --node-radius: 30px;
-            --edge-width: 3px;
+            --light-bg: #e0f7ff;
+            --light-text: #1a1a1a;
+            --light-border: rgba(0, 100, 100, 0.3);
+            --light-glow: rgba(0, 100, 100, 0.2);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root { --hud: #e9e9e9; }
+        }
+
+        @media (prefers-contrast: high) {
+            :root {
+                --neon: #00cccc;
+                --hud: #ffffff;
+                --glow: rgba(0, 204, 204, 0.4);
+                --border: rgba(0, 204, 204, 0.3);
+            }
+        }
+
+        [data-theme="light"] {
+            --void: var(--light-bg);
+            --neon: #006666;
+            --hud: var(--light-text);
+            --glow: var(--light-glow);
+            --border: var(--light-border);
         }
 
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--void-black);
-            color: var(--hud-white);
-            line-height: 1.8;
-            font-size: 16px;
-            -webkit-font-smoothing: antialiased;
+            background: var(--void) radial-gradient(ellipse at top left, #202020 0%, var(--void) 60%);
+            color: var(--hud);
+            line-height: 1.6;
             overflow-x: hidden;
             scroll-behavior: smooth;
-            position: relative;
         }
 
-        #neuron-background {
+        #aurora-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            z-index: -2;
+            filter: blur(100px) saturate(180%);
+        }
+
+        .particle {
+            position: fixed;
             z-index: -1;
-            overflow: hidden;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            mix-blend-mode: soft-light;
+            pointer-events: none;
+            animation: floatParticle 10s ease-in-out infinite;
+        }
+
+        @keyframes floatParticle {
+            0% { transform: translate(0, 0); opacity: 0.1; }
+            50% { transform: translate(calc(2vw - 1vw), calc(2vh - 1vh)); opacity: 0.3; }
+            100% { transform: translate(0, 0); opacity: 0.1; }
         }
 
         .neuron {
-            position: absolute;
-            width: var(--size, 12px);
-            height: var(--size, 12px);
-            background: radial-gradient(circle, var(--neon-cyan) 20%, transparent 70%);
+            position: fixed;
+            z-index: -1;
             border-radius: 50%;
-            opacity: var(--opacity, 0.5);
-            box-shadow: 0 0 30px var(--glow-blue), 0 0 60px var(--glow-blue);
-            will-change: transform, opacity;
-            animation: pulseNeuron 3s ease-in-out infinite, moveNeuron linear infinite;
-            filter: blur(var(--blur, 2px));
-            transition: opacity 0.5s ease;
+            pointer-events: none;
+            background: radial-gradient(circle, var(--neon) 25%, transparent 70%);
+            animation: float 6s ease-in-out infinite alternate;
         }
 
-        .neuron::before {
-            content: '';
-            position: absolute;
-            width: 150px;
-            height: 3px;
-            background: linear-gradient(to right, transparent, var(--neon-cyan) 50%, transparent);
-            opacity: 0.4;
-            transform: rotate(var(--trail-angle, 45deg));
-            transform-origin: 0 0;
-        }
-
-        @keyframes pulseNeuron {
-            0%, 100% { transform: scale(1); opacity: var(--opacity, 0.5); }
-            50% { transform: scale(1.5); opacity: calc(var(--opacity) * 0.8); }
-        }
-
-        @keyframes moveNeuron {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(var(--x-move), var(--y-move)); }
+        @keyframes float {
+            to { transform: translate(calc(3vw - 1.5vw), calc(3vh - 1.5vh)); }
         }
 
         .cyber-nav {
             position: fixed;
+            width: 100%;
             top: 0;
             left: 0;
-            width: 100%;
             z-index: 1000;
-            background: rgba(0, 0, 0, 0.8);
-            border-bottom: 2px solid var(--neon-cyan);
-            backdrop-filter: blur(10px);
-            display: flex;
-            justify-content: center;
-            padding: 0.75rem 1rem;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            border-bottom: 2px solid var(--neon);
+        }
+
+        [data-theme="light"] .cyber-nav {
+            background: rgba(255, 255, 255, 0.75);
+            border-bottom: 2px solid var(--neon);
         }
 
         .cyber-nav ul {
             display: flex;
-            list-style: none;
             gap: 2rem;
-            margin: 0;
-            padding: 0;
+            justify-content: center;
+            padding: 0.75rem;
+            list-style: none;
         }
 
-        .cyber-nav li a {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 600;
-            color: var(--neon-cyan);
+        .cyber-nav a {
+            font: 600 1rem 'Orbitron', sans-serif;
+            color: var(--neon);
             text-decoration: none;
             transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        .cyber-nav a:hover, .cyber-nav a:focus {
+            color: var(--hud);
             text-shadow: 0 0 6px var(--glow);
         }
 
-        .cyber-nav li a:hover, .cyber-nav li a:focus {
-            color: var(--hud-white);
-            text-shadow: 0 0 10px var(--glow);
-        }
-
-        .cyber-nav li a:focus {
-            outline: 3px solid var(--neon-cyan);
+        .cyber-nav a:focus {
+            outline: 3px solid var(--neon);
             box-shadow: 0 0 10px var(--glow);
         }
 
@@ -149,7 +153,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: var(--void-black);
+            background: var(--void);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -165,7 +169,7 @@
         .preloader-hexagon {
             width: 60px;
             height: 60px;
-            border: 4px solid var(--neon-cyan);
+            border: 4px solid var(--neon);
             border-radius: 10px;
             transform: rotate(45deg);
             animation: spin 2s infinite linear;
@@ -183,7 +187,7 @@
             left: 0;
             right: 0;
             height: 6px;
-            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+            background: linear-gradient(90deg, transparent, var(--neon), transparent);
             box-shadow: 0 0 60px var(--glow);
             animation: scan 6s infinite linear;
             z-index: 3;
@@ -194,427 +198,347 @@
             100% { transform: translateX(100%); }
         }
 
-        main, section, .card {
-            position: relative;
-            z-index: 10;
-        }
-
         section {
             min-height: 100dvh;
-            padding: 8rem 4rem;
+            padding: 7rem 4rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            transition: all 0.5s ease-in-out;
+        }
+
+        [data-theme="light"] section {
+            border-bottom: 1px solid var(--border);
         }
 
         .blur-glass {
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.35);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border-radius: 1rem;
             padding: 2rem 3rem;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
-            transition: all 0.4s ease-in-out;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.05);
             max-width: 100%;
             margin: 2rem auto;
         }
 
-        .blur-glass h1, .blur-glass h2, .blur-glass p {
-            text-shadow: 0 0 8px rgba(0, 0, 0, 0.9);
-        }
-
-        @media (max-width: 768px) {
-            section { padding: 5rem 2rem; }
-            .blur-glass { padding: 1.5rem 2rem; }
-        }
-
-        @media (max-width: 480px) {
-            section { padding: 3rem 1rem; }
-            .blur-glass { padding: 1rem 1.5rem; }
+        [data-theme="light"] .blur-glass {
+            background: rgba(255, 255, 255, 0.35);
+            box-shadow: 0 0 20px var(--glow);
         }
 
         h1 {
-            font-family: 'Orbitron', 'Source Code Pro', monospace;
-            font-size: 5.5rem;
-            color: var(--neon-cyan);
-            text-shadow: 0 0 40px var(--glow);
-            margin: 4rem 0;
-            letter-spacing: -0.03em;
-            animation: pulse 4s infinite;
+            font: 700 clamp(2.2rem, 6vw, 4.8rem)/1.1 'Orbitron', monospace;
+            color: var(--neon);
+            text-shadow: 0 0 25px var(--glow);
+            margin: 2rem 0;
         }
 
         h2 {
-            font-family: 'Orbitron', 'Source Code Pro', monospace;
-            font-size: 3.2rem;
-            color: var(--neon-cyan);
+            font: 600 clamp(1.4rem, 4.5vw, 2.6rem) 'Orbitron', monospace;
+            color: var(--neon);
             text-shadow: 0 0 8px var(--glow);
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
         }
 
         p {
-            max-width: 1200px;
-            margin: 0 auto 2.5rem;
-            font-size: 1.6rem;
-            opacity: 0.9;
+            max-width: 1100px;
+            margin: 0 auto 2rem;
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
             text-shadow: 0 0 4px var(--shadow);
         }
 
-        @media (max-width: 768px) {
-            h1 { font-size: 3.8rem; }
-            h2 { font-size: 2.4rem; }
-            p { font-size: 1.3rem; max-width: 100%; }
-        }
-
-        @media (max-width: 480px) {
-            h1 { font-size: 1.8rem; }
-            h2 { font-size: 1.4rem; }
-            p { font-size: 1rem; }
+        [data-theme="light"] p {
+            text-shadow: none;
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-            gap: 4.5rem;
-            padding: 4.5rem;
+            gap: 3rem;
             max-width: 2000px;
-            margin: 0 auto;
+            padding: 3rem;
         }
 
-        @media (max-width: 768px) {
-            .grid { grid-template-columns: 1fr; gap: 3rem; padding: 2rem; }
-        }
-
-        @media (max-width: 480px) {
-            .grid { gap: 2rem; padding: 1rem; }
+        @media (min-width: 768px) {
+            .grid { grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); }
         }
 
         .card {
-            background: transparent;
             border: 1px solid var(--border);
-            border-radius: 28px;
-            padding: 5rem 2rem;
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            backdrop-filter: blur(16px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.05);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
-        .card::before {
+        .card:hover, .card:focus {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 0 25px var(--glow);
+        }
+
+        .card:focus {
+            outline: 3px solid var(--neon);
+            box-shadow: 0 0 10px var(--glow);
+        }
+
+        .card.canvas-active::after {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
-            height: 4px;
             width: 100%;
-            background: linear-gradient(90deg, var(--neon-cyan), transparent);
-            opacity: 0.25;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.2) 0%, transparent 70%);
+            opacity: 0;
+            animation: pulseShader 1s ease-out;
+            pointer-events: none;
         }
 
-        .card:hover, .card:focus {
-            box-shadow: 0 0 20px var(--glow), 0 0 40px var(--glow);
-            transform: translateY(-10px) scale(1.02);
-        }
-
-        .card:focus {
-            outline: 3px solid var(--neon-cyan);
-            box-shadow: 0 0 10px var(--glow);
-        }
-
-        @media (max-width: 600px) {
-            .card { text-align: center; padding: 1.5rem; padding-bottom: 2rem; }
-            .card h2 { font-size: 1.3rem; }
-            .card:hover, .card:focus { transform: translateY(-8px) scale(1.02); }
-        }
-
-        @media (max-width: 480px) {
-            .card { padding: 1rem; padding-bottom: 1.5rem; }
+        @keyframes pulseShader {
+            0% { opacity: 0.5; transform: scale(0.8); }
+            100% { opacity: 0; transform: scale(1.2); }
         }
 
         .badge {
-            background: transparent;
-            color: var(--neon-cyan);
-            border: 1px solid var(--border);
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 0.08em;
-            font-weight: 600;
-            padding: 0.4rem 1.2rem;
-            border-radius: 1rem;
-            backdrop-filter: blur(4px);
             display: inline-flex;
             align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 2rem;
+            gap: 0.5rem;
+            padding: 0.35rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            color: var(--neon);
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
             align-self: center;
             text-shadow: 0 0 4px var(--shadow);
         }
 
+        [data-theme="light"] .badge {
+            text-shadow: none;
+        }
+
         .badge::before {
             content: '';
-            width: 14px;
-            height: 14px;
-            background: var(--neon-cyan);
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            box-shadow: 0 0 14px var(--glow);
+            background: var(--neon);
+            box-shadow: 0 0 10px var(--glow);
         }
 
         .card h2 {
-            font-family: 'Orbitron', 'Source Code Pro', monospace;
-            font-size: 2.2rem;
-            color: var(--neon-cyan);
-            margin: 1.5rem 0;
-            line-height: 1.3;
+            font: 600 1.8rem 'Orbitron', monospace;
+            color: var(--neon);
+            margin: 1rem 0;
             text-align: center;
             text-shadow: 0 0 6px var(--shadow);
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
+        [data-theme="light"] .card h2 {
+            text-shadow: none;
         }
 
-        .cyber-button {
-            background: transparent;
-            border: 2px solid var(--neon-cyan);
-            color: var(--neon-cyan);
-            padding: 1.5rem 3.5rem;
-            border-radius: 12px;
+        .feature-list {
+            list-style: none;
+            margin-top: 1rem;
+            padding-left: 1.2rem;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        .feature-list li {
+            margin: 0.5rem 0;
             position: relative;
-            overflow: hidden;
-            transition: all 0.4s ease-in-out;
-            font-weight: 600;
-            letter-spacing: 0.06em;
-            cursor: pointer;
-            margin-top: 2.5rem;
-            font-size: 1.3rem;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 0 25px var(--glow);
+            padding-left: 1rem;
             text-shadow: 0 0 4px var(--shadow);
         }
 
-        .cyber-button::before {
-            content: '';
+        [data-theme="light"] .feature-list li {
+            text-shadow: none;
+        }
+
+        .feature-list li::before {
+            content: '›';
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
-            transition: left 0.6s ease-in-out;
-        }
-
-        .cyber-button:hover, .cyber-button:focus {
-            color: var(--hud-white);
-            box-shadow: 0 0 35px var(--glow);
-            transform: scale(1.05);
-        }
-
-        .cyber-button:hover::before, .cyber-button:focus::before {
-            left: 100%;
-        }
-
-        .cyber-button:focus {
-            outline: 3px solid var(--neon-cyan);
-            box-shadow: 0 0 10px var(--glow);
-        }
-
-        @media (max-width: 768px) {
-            .cyber-button { padding: 1.2rem 2.5rem; font-size: 1.1rem; }
-        }
-
-        @media (max-width: 480px) {
-            .cyber-button { width: 100%; font-size: 1rem; padding: 1rem; }
+            left: 0;
+            color: var(--neon);
         }
 
         .accordion {
-            margin: 4rem 0;
-            max-width: 1200px;
+            margin: 3rem 0;
+            max-width: 1100px;
             width: 100%;
         }
 
         .accordion-header {
             background: transparent;
-            border: 2px solid var(--neon-cyan);
-            padding: 1.8rem;
+            border: 2px solid var(--neon);
+            padding: 1.5rem;
             cursor: pointer;
             border-radius: 12px;
-            transition: all 0.4s ease-in-out;
-            color: var(--neon-cyan);
-            font-size: 1.8rem;
+            transition: all 0.3s ease;
+            color: var(--neon);
+            font: 600 1.5rem 'Orbitron', sans-serif;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 0 25px var(--glow);
+            backdrop-filter: blur(12px);
             text-shadow: 0 0 4px var(--shadow);
         }
 
+        [data-theme="light"] .accordion-header {
+            text-shadow: none;
+        }
+
         .accordion-header:hover, .accordion-header:focus {
-            color: var(--hud-white);
-            box-shadow: 0 0 35px var(--glow);
+            color: var(--hud);
+            box-shadow: 0 0 20px var(--glow);
         }
 
         .accordion-header:focus {
-            outline: 3px solid var(--neon-cyan);
+            outline: 3px solid var(--neon);
             box-shadow: 0 0 10px var(--glow);
         }
 
         .accordion-content {
             display: none;
-            padding: 3rem;
+            padding: 2rem;
             background: transparent;
             border-radius: 0 0 12px 12px;
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(12px);
         }
 
         .accordion.active .accordion-content {
             display: block;
         }
 
-        @media (max-width: 768px) {
-            .accordion { margin: 2.5rem 0; }
-            .accordion-header { font-size: 1.4rem; padding: 1.4rem; }
-            .accordion-content { padding: 2rem; }
-        }
-
-        @media (max-width: 480px) {
-            .accordion-header { font-size: 1rem; padding: 1rem; }
-            .accordion-content { padding: 1.5rem; }
-        }
-
-        .feature-list {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .feature-list li {
-            margin-bottom: 1rem;
-            padding-left: 2rem;
-            position: relative;
-            font-size: 1.2rem;
-            text-shadow: 0 0 4px var(--shadow);
-        }
-
-        .feature-list li::before {
-            content: '→';
-            color: var(--neon-cyan);
-            position: absolute;
-            left: 0;
-        }
-
-        @media (max-width: 768px) {
-            .feature-list li { font-size: 1.1rem; }
-        }
-
-        @media (max-width: 600px) {
-            .feature-list li { font-size: 1rem; text-align: left; }
-        }
-
-        @media (max-width: 480px) {
-            .feature-list li { font-size: 0.9rem; }
-        }
-
         .llm-input {
-            margin: 4rem 0;
+            margin: 3rem 0;
             max-width: 900px;
             width: 100%;
         }
 
         .llm-input textarea {
             width: 100%;
-            max-width: 100%;
-            padding: 1.8rem;
+            padding: 1.5rem;
             background: transparent;
             border: 1px solid var(--border);
             border-radius: 12px;
-            color: var(--hud-white);
-            font-size: 1.3rem;
+            color: var(--hud);
+            font-size: 1.1rem;
             resize: vertical;
-            min-height: 180px;
-            backdrop-filter: blur(20px);
+            min-height: 150px;
+            backdrop-filter: blur(12px);
             text-shadow: 0 0 4px var(--shadow);
         }
 
+        [data-theme="light"] .llm-input textarea {
+            text-shadow: none;
+        }
+
         .llm-input textarea:focus {
-            outline: 3px solid var(--neon-cyan);
+            outline: 3px solid var(--neon);
             box-shadow: 0 0 10px var(--glow);
         }
 
         .llm-response {
             background: transparent;
-            padding: 3rem;
+            padding: 2rem;
             border-radius: 12px;
-            margin-top: 2.5rem;
-            max-height: 450px;
+            margin-top: 2rem;
+            max-height: 400px;
             overflow-y: auto;
-            font-size: 1.2rem;
-            backdrop-filter: blur(20px);
+            font-size: 1rem;
+            backdrop-filter: blur(12px);
             text-shadow: 0 0 4px var(--shadow);
+            position: relative;
         }
 
-        @media (max-width: 768px) {
-            .llm-input { margin: 2.5rem 0; }
-            .llm-input textarea { font-size: 1.1rem; padding: 1.5rem; min-height: 140px; }
-            .llm-response { padding: 2rem; font-size: 1rem; max-height: 400px; }
+        [data-theme="light"] .llm-response {
+            text-shadow: none;
         }
 
-        @media (max-width: 480px) {
-            .llm-input textarea { font-size: 0.95rem; min-height: 90px; padding: 1rem; }
-            .llm-response { font-size: 0.9rem; padding: 1rem; }
+        .copy-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--neon);
+            transition: all 0.3s ease;
+        }
+
+        .copy-button:hover, .copy-button:focus {
+            background: var(--neon);
+            color: var(--void);
+        }
+
+        .copy-button.copied::after {
+            content: '✅ Copied';
+            position: absolute;
+            top: -2rem;
+            right: 0;
+            background: var(--neon);
+            color: var(--void);
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            animation: fadeOut 1s ease forwards;
+        }
+
+        @keyframes fadeOut {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-10px); }
         }
 
         .api-demo {
-            margin: 4rem 0;
+            margin: 3rem 0;
             max-width: 900px;
             width: 100%;
         }
 
         .api-demo select {
             background: transparent;
-            color: var(--hud-white);
+            color: var(--hud);
             border: 1px solid var(--border);
-            padding: 1.2rem;
+            padding: 1rem;
             border-radius: 12px;
             width: 100%;
-            font-size: 1.3rem;
-            margin-bottom: 2.5rem;
-            backdrop-filter: blur(20px);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(12px);
             text-shadow: 0 0 4px var(--shadow);
         }
 
+        [data-theme="light"] .api-demo select {
+            text-shadow: none;
+        }
+
         .api-demo select:focus {
-            outline: 3px solid var(--neon-cyan);
+            outline: 3px solid var(--neon);
             box-shadow: 0 0 10px var(--glow);
-        }
-
-        @media (max-width: 768px) {
-            .api-demo { margin: 2.5rem 0; }
-            .api-demo select { font-size: 1.1rem; padding: 1rem; }
-        }
-
-        @media (max-width: 480px) {
-            .api-demo select { font-size: 0.9rem; padding: 0.8rem; }
         }
 
         .network-graph {
             width: 100%;
             max-width: 1200px;
-            height: 800px;
-            margin: 4rem auto;
+            height: 700px;
+            margin: 3rem auto;
             border: 1px solid var(--border);
             border-radius: 12px;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
             position: relative;
             overflow: hidden;
+            transform-style: preserve-3d;
             perspective: 1000px;
         }
 
@@ -625,159 +549,325 @@
         }
 
         .network-node {
-            fill: var(--neon-cyan);
-            stroke: var(--glow-blue);
-            stroke-width: var(--edge-width);
+            fill: var(--neon);
+            stroke: var(--glow);
+            stroke-width: 3;
             cursor: pointer;
-            transition: transform 0.5s ease-out, opacity 0.3s ease;
+            transition: transform 0.4s ease, opacity 0.3s ease;
             transform-style: preserve-3d;
         }
 
         .network-node:hover, .network-node.active, .network-node:focus {
-            transform: rotateY(180deg) scale(1.3);
+            transform: rotateY(45deg) scale(1.25);
             opacity: 1;
-            filter: drop-shadow(0 0 15px var(--glow-blue));
+            filter: drop-shadow(0 0 10px var(--glow));
         }
 
         .network-node:focus {
-            outline: 3px solid var(--neon-cyan);
+            outline: 3px solid var(--neon);
             box-shadow: 0 0 10px var(--glow);
         }
 
         .network-edge {
-            stroke: var(--neon-cyan);
-            stroke-width: var(--edge-width);
-            opacity: 0.7;
+            stroke: var(--neon);
+            stroke-width: 3;
+            opacity: 0.6;
+            stroke-dasharray: 8 4;
             transition: opacity 0.3s ease;
-            animation: flowEdge 3s linear infinite;
         }
 
         .network-edge:hover, .network-edge.active {
             opacity: 1;
         }
 
-        @keyframes flowEdge {
-            0% { stroke-dashoffset: 100; }
-            100% { stroke-dashoffset: 0; }
-        }
-
         .network-label {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 16px;
-            fill: var(--neon-cyan);
+            font: 500 14px 'Orbitron', sans-serif;
+            fill: var(--neon);
             text-anchor: middle;
             pointer-events: none;
             text-shadow: 0 0 4px var(--shadow);
         }
 
-        @media (max-width: 768px) {
-            .network-graph {
-                height: 600px;
-                margin: 2.5rem auto;
-            }
-            .network-label {
-                font-size: 14px;
-            }
+        [data-theme="light"] .network-label {
+            text-shadow: none;
         }
 
-        @media (max-width: 480px) {
-            .network-graph {
-                height: 400px;
-                margin: 2rem auto;
-            }
-            .network-label {
-                font-size: 12px;
-            }
-        }
-
-        .cta-footer {
-            padding: 10rem 5rem;
-            text-align: center;
+        .cyber-button {
             background: transparent;
-            border-top: 1px solid var(--border);
-            backdrop-filter: blur(20px);
-            box-shadow: 0 0 25px var(--glow);
-        }
-
-        .cta-footer h1 {
-            font-size: 3.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .cta-footer p {
-            font-size: 1.8rem;
-            margin-bottom: 2rem;
-        }
-
-        .cta-footer .cyber-button {
-            padding: 1.8rem 4rem;
-            font-size: 1.5rem;
-        }
-
-        .cta-footer a {
-            color: var(--neon-cyan);
-            text-decoration: none;
-            font-size: 1.5rem;
-            transition: color 0.3s ease-in-out;
+            border: 2px solid var(--neon);
+            color: var(--neon);
+            padding: 1.2rem 3rem;
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            font: 600 1.2rem 'Orbitron', sans-serif;
+            cursor: pointer;
+            margin-top: 2rem;
+            backdrop-filter: blur(12px);
             text-shadow: 0 0 4px var(--shadow);
         }
 
-        .cta-footer a:hover, .cta-footer a:focus {
-            color: var(--hud-white);
+        [data-theme="light"] .cyber-button {
+            text-shadow: none;
         }
 
-        .cta-footer a:focus {
-            outline: 3px solid var(--neon-cyan);
+        .cyber-button:hover, .cyber-button:focus {
+            color: var(--hud);
+            box-shadow: 0 0 20px var(--glow);
+            transform: scale(1.05);
+        }
+
+        .cyber-button:hover::before, .cyber-button:focus::before {
+            left: 100%;
+        }
+
+        .cyber-button:focus {
+            outline: 3px solid var(--neon);
             box-shadow: 0 0 10px var(--glow);
         }
 
+        .cyber-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        [data-theme="light"] .cyber-button::before {
+            background: linear-gradient(90deg, transparent, rgba(0, 100, 100, 0.2), transparent);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--neon);
+            z-index: 1001;
+        }
+
+        .theme-toggle:hover, .theme-toggle:focus {
+            background: var(--neon);
+            color: var(--void);
+        }
+
+        .keyboard-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1002;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--hud);
+            font-family: 'Source Code Pro', monospace;
+        }
+
+        .keyboard-overlay.active {
+            display: flex;
+        }
+
+        .keyboard-overlay kbd {
+            background: var(--neon);
+            color: var(--void);
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            margin: 0.2rem;
+        }
+
+        .system-hud {
+            position: fixed;
+            top: 1rem;
+            right: 4rem;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.5rem;
+            font: 400 0.8rem 'Source Code Pro', monospace;
+            color: var(--neon);
+            z-index: 1001;
+        }
+
+        [data-theme="light"] .system-hud {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .compliance-indicator {
+            font: 400 0.8rem 'Source Code Pro', monospace;
+            color: var(--neon);
+            margin-top: 1rem;
+        }
+
+        .consent-popup {
+            position: fixed;
+            bottom: 1rem;
+            left: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            color: var(--hud);
+            font: 400 0.9rem 'Inter', sans-serif;
+            z-index: 1002;
+        }
+
+        [data-theme="light"] .consent-popup {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .snapshot-button {
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--neon);
+            margin-top: 1rem;
+        }
+
+        .snapshot-button:hover, .snapshot-button:focus {
+            background: var(--neon);
+            color: var(--void);
+        }
+
+        .dev-panel {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(8px);
+            border-left: 1px solid var(--border);
+            padding: 1rem;
+            color: var(--neon);
+            font: 400 0.8rem 'Source Code Pro', monospace;
+            transition: right 0.3s ease;
+            z-index: 1003;
+        }
+
+        .dev-panel.active {
+            right: 0;
+        }
+
+        .replay-controls {
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.5rem;
+            color: var(--neon);
+            font: 400 0.8rem 'Source Code Pro', monospace;
+            z-index: 1002;
+            display: none;
+        }
+
+        .replay-controls.active {
+            display: block;
+        }
+
         @media (max-width: 768px) {
+            section { padding: 5rem 2rem; }
+            .grid { padding: 2rem; }
+            .network-graph { height: 500px; }
+            .network-label { font-size: 12px; }
+            .card { padding: 2rem 1.5rem; }
+            .accordion-header { font-size: 1.2rem; padding: 1.2rem; }
+            .accordion-content { padding: 1.5rem; }
+            .llm-input textarea { font-size: 1rem; padding: 1.2rem; min-height: 120px; }
+            .llm-response { padding: 1.5rem; font-size: 0.9rem; }
+            .api-demo select { font-size: 1rem; padding: 0.8rem; }
             .cta-footer { padding: 6rem 2rem; }
-            .cta-footer h1 { font-size: 2.5rem; }
-            .cta-footer p { font-size: 1.3rem; }
-            .cta-footer .cyber-button { padding: 1.5rem 3rem; font-size: 1.2rem; }
-            .cta-footer a { font-size: 1.2rem; }
         }
 
         @media (max-width: 480px) {
+            section { padding: 4rem 1rem; }
+            .grid { grid-template-columns: 1fr; gap: 2rem; padding: 1rem; }
+            .network-graph { display: none; }
+            .card { padding: 1.5rem; }
+            .card h2 { font-size: 1.2rem; }
+            .accordion-header { font-size: 1rem; padding: 1rem; }
+            .accordion-content { padding: 1rem; }
+            .llm-input textarea { font-size: 0.9rem; min-height: 100px; padding: 1rem; }
+            .llm-response { font-size: 0.85rem; padding: 1rem; }
+            .api-demo select { font-size: 0.9rem; padding: 0.7rem; }
             .cta-footer { padding: 4rem 1rem; }
-            .cta-footer h1 { font-size: 2rem; }
-            .cta-footer p { font-size: 1.1rem; }
+            .cta-footer h1 { font-size: 1.8rem; }
+            .cta-footer p { font-size: 1rem; }
             .cta-footer .cyber-button { padding: 1rem 2rem; font-size: 1rem; }
             .cta-footer a { font-size: 1rem; }
+            .neuron, .card:hover, .network-node:hover, .card:focus, .network-node:focus {
+                transform: none;
+                box-shadow: none;
+            }
         }
 
-        .tooltip {
-            position: absolute;
-            background: rgba(0, 0, 0, 0.8);
-            color: var(--neon-cyan);
-            border: 1px solid var(--neon-cyan);
-            border-radius: 8px;
-            padding: 0.5rem 1rem;
-            font-family: 'Source Code Pro', monospace;
-            font-size: 0.9rem;
-            box-shadow: 0 0 15px var(--glow);
-            backdrop-filter: blur(5px);
-            pointer-events: none;
-            z-index: 1001;
-            text-shadow: 0 0 4px var(--shadow);
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
         }
     </style>
 </head>
 <body>
+    <canvas id="aurora-canvas" aria-hidden="true"></canvas>
     <nav class="cyber-nav">
         <ul>
             <li><a href="index.html" class="nav-link">Home</a></li>
             <li><a href="neuro.html" class="nav-link active">Neuro Interface</a></li>
         </ul>
     </nav>
-
     <div id="preloader">
         <div class="preloader-hexagon"></div>
     </div>
-    <div id="neuron-background"></div>
     <div class="terminal-line"></div>
-
+    <button class="theme-toggle" aria-label="Toggle Theme">🌗</button>
+    <div class="system-hud">
+        <div>Memory: <span id="memory-usage">0 MB</span></div>
+        <div>GPU: <span id="gpu-usage">0%</span></div>
+        <div>Cluster: <span id="cluster-load">0%</span></div>
+    </div>
+    <div class="keyboard-overlay">
+        <h2>Keyboard Shortcuts</h2>
+        <p><kbd>Tab</kbd>: Navigate focusable elements</p>
+        <p><kbd>Enter/Space</kbd>: Activate buttons, nodes, accordions</p>
+        <p><kbd>Alt + /</kbd>: Toggle this overlay</p>
+        <p><kbd>Shift + T</kbd>: Toggle DevTools panel</p>
+        <p>Press <kbd>Esc</kbd> to close</p>
+    </div>
+    <div class="consent-popup">
+        <p>We use cookies for analytics. Accept?</p>
+        <button class="cyber-button" onclick="acceptConsent()">Accept</button>
+    </div>
+    <div class="dev-panel">
+        <h2>DevTools</h2>
+        <p>Graph Nodes: <span id="node-count">0</span></p>
+        <p>Render FPS: <span id="fps">0</span></p>
+        <p>LLM Calls: <span id="llm-calls">0</span></p>
+    </div>
+    <div class="replay-controls">
+        <input type="range" id="replay-slider" min="0" max="100" value="0">
+        <button onclick="playReplay()">Play</button>
+        <button onclick="pauseReplay()">Pause</button>
+    </div>
     <main>
         <section>
             <div class="blur-glass">
@@ -786,14 +876,13 @@
                 <button class="cyber-button" aria-label="Discover the Future">Discover the Future</button>
             </div>
         </section>
-
         <section>
             <div class="blur-glass">
                 <h1>Unique Intellectual Property</h1>
                 <p>AuroraGenesis leverages patented innovations and cutting-edge AI to deliver unparalleled cybersecurity capabilities.</p>
             </div>
             <div class="grid">
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="Proprietary Intelligence Architecture: Advanced AI with capsule-transformer and entropy-gated memory.">
                     <div class="badge">🧬 Patent-Pending</div>
                     <h2>Proprietary Intelligence Architecture</h2>
                     <ul class="feature-list">
@@ -806,7 +895,7 @@
                         <li>Adaptive pruning for low-latency inference</li>
                     </ul>
                 </div>
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="Live Reinforcement Mutation Loop: Real-time mutation of defense agents using RL.">
                     <div class="badge">🔄 RL-Tuned</div>
                     <h2>Live Reinforcement Mutation Loop</h2>
                     <ul class="feature-list">
@@ -819,7 +908,7 @@
                         <li>Support for multi-agent cooperative strategies</li>
                     </ul>
                 </div>
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="Ethical DAG Security: Transparent decision tracing with zk-verified forensics.">
                     <div class="badge">🔒 ZK-Verified</div>
                     <h2>Ethical DAG Security</h2>
                     <ul class="feature-list">
@@ -832,7 +921,7 @@
                         <li>Real-time ethical violation detection</li>
                     </ul>
                 </div>
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="Cluster Intelligence: Scalable multi-GPU inference with Ray and CUDA.">
                     <div class="badge">⚡ Ray + CUDA</div>
                     <h2>Cluster Intelligence</h2>
                     <ul class="feature-list">
@@ -845,7 +934,7 @@
                         <li>Optimized for low-latency inference</li>
                     </ul>
                 </div>
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="Visual-Forensics GUI: Interactive 3D forensic UI with WebGL2.">
                     <div class="badge">📊 VisPy</div>
                     <h2>Visual-Forensics GUI</h2>
                     <ul class="feature-list">
@@ -858,7 +947,7 @@
                         <li>Real-time anomaly highlighting with heatmaps</li>
                     </ul>
                 </div>
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="Full Zero-Trust Stack: ZTX protocols with soul-vector gatekeeping.">
                     <div class="badge">🔐 ZTX Integration</div>
                     <h2>Full Zero-Trust Stack</h2>
                     <ul class="feature-list">
@@ -873,14 +962,13 @@
                 </div>
             </div>
         </section>
-
         <section>
             <div class="blur-glass">
                 <h1>Core Capabilities</h1>
                 <p>AuroraGenesis leverages a modular architecture to deliver real-time cybersecurity solutions across multiple domains.</p>
             </div>
             <div class="grid">
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="Capsule Memory System: Entropy-gated memory with Zstandard compression.">
                     <div class="badge">🧬 Memory System</div>
                     <h2>Capsule Memory System</h2>
                     <ul class="feature-list">
@@ -893,7 +981,7 @@
                         <li>Dynamic memory allocation with Redis</li>
                     </ul>
                 </div>
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="Distributed Inference Engine: Scalable Ray clusters for real-time inference.">
                     <div class="badge">⚡ Inference Engine</div>
                     <h2>Distributed Inference Engine</h2>
                     <ul class="feature-list">
@@ -961,7 +1049,6 @@
                 <svg></svg>
             </div>
         </section>
-
         <section>
             <div class="blur-glass">
                 <h1>LLM Integration via GUI</h1>
@@ -978,8 +1065,12 @@
                 <div class="llm-input">
                     <textarea id="llm-query" placeholder="Enter your query (e.g., 'Analyze this file for threats')" aria-label="LLM Query Input"></textarea>
                     <button class="cyber-button" onclick="callLLM()" aria-label="Submit LLM Query">Submit Query</button>
+                    <button class="cyber-button" onclick="startSpeechRecognition()" aria-label="Start Speech-to-Text">🎤</button>
                 </div>
-                <div class="llm-response" id="llm-response" aria-live="polite">LLM Response will appear here...</div>
+                <div class="llm-response" id="llm-response" aria-live="polite">
+                    LLM Response will appear here...
+                    <button class="copy-button" aria-label="Copy Response">📋 Copy</button>
+                </div>
             </div>
             <div class="accordion">
                 <div class="accordion-header" tabindex="0" role="button" aria-expanded="false">LLM Workflow <span>↓</span></div>
@@ -998,7 +1089,6 @@
                 </div>
             </div>
         </section>
-
         <section>
             <div class="blur-glass">
                 <h1>Model Training & Capsule Evolution</h1>
@@ -1035,7 +1125,6 @@
                 </div>
             </div>
         </section>
-
         <section>
             <div class="blur-glass">
                 <h1>Advanced Cybersecurity Modules</h1>
@@ -1045,7 +1134,7 @@
                 <h2>🧠 AI Reasoning Stack</h2>
             </div>
             <div class="grid">
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="AI Vulnerability Predictor: Transformer-based CVE scoring with real-time intelligence.">
                     <div class="badge">🧬 Torch AMP</div>
                     <h2>AI Vulnerability Predictor</h2>
                     <ul class="feature-list">
@@ -1058,7 +1147,7 @@
                         <li>Real-time CVE database synchronization</li>
                     </ul>
                 </div>
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="Capsule Transformer: Custom Triton routing for capsule networks.">
                     <div class="badge">🧬 Triton</div>
                     <h2>Capsule Transformer</h2>
                     <ul class="feature-list">
@@ -1071,7 +1160,7 @@
                         <li>Dynamic capsule pruning for efficiency</li>
                     </ul>
                 </div>
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="Live Adversarial Training Engine: Real-time exploit mutation with GANs.">
                     <div class="badge">🧬 Adversarial AI</div>
                     <h2>Live Adversarial Training Engine</h2>
                     <ul class="feature-list">
@@ -1095,7 +1184,7 @@
                 <h2>🔍 Forensic Intelligence</h2>
             </div>
             <div class="grid">
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="Memory Forensics: Shellcode detection and memory dump analysis with Volatility3.">
                     <div class="badge">📊 Volatility3</div>
                     <h2>Memory Forensics</h2>
                     <ul class="feature-list">
@@ -1108,7 +1197,7 @@
                         <li>Integration with Rekall for cross-platform support</li>
                     </ul>
                 </div>
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="Forensic DAG Causality Engine: DAG-based root-cause tracing with Neo4j.">
                     <div class="badge">📊 DAG Forensics</div>
                     <h2>Forensic DAG Causality Engine</h2>
                     <ul class="feature-list">
@@ -1121,7 +1210,7 @@
                         <li>Dynamic causality graph updates</li>
                     </ul>
                 </div>
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="Cyber Defense Sandbox: Secure plugin execution with AI-monitored logs.">
                     <div class="badge">📊 Sandbox</div>
                     <h2>Cyber Defense Sandbox</h2>
                     <ul class="feature-list">
@@ -1139,7 +1228,7 @@
                 <h2>🛡️ System Integrity</h2>
             </div>
             <div class="grid">
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="Kernel Anomaly Monitor: Runtime kernel patching with eBPF.">
                     <div class="badge">🔒 eBPF</div>
                     <h2>Kernel Anomaly Monitor</h2>
                     <ul class="feature-list">
@@ -1152,7 +1241,7 @@
                         <li>Dynamic kernel event filtering</li>
                     </ul>
                 </div>
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="File System Integrity: Real-time fingerprinting with SHA3-512.">
                     <div class="badge">🔒 SHA3-512</div>
                     <h2>File System Integrity</h2>
                     <ul class="feature-list">
@@ -1165,7 +1254,7 @@
                         <li>Support for distributed file systems</li>
                     </ul>
                 </div>
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="Deep Packet Inspection: Layer 7 DPI with signatureless detection.">
                     <div class="badge">🔒 Triton</div>
                     <h2>Deep Packet Inspection</h2>
                     <ul class="feature-list">
@@ -1183,7 +1272,7 @@
                 <h2>🔍 Threat Detection</h2>
             </div>
             <div class="grid">
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="Exploit Ingestor: High-performance pipeline with Ray and SVM.">
                     <div class="badge">⚡ Ray</div>
                     <h2>Exploit Ingestor</h2>
                     <ul class="feature-list">
@@ -1196,7 +1285,7 @@
                         <li>Support for real-time threat feeds</li>
                     </ul>
                 </div>
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="Exploit Mutator: DAG-based mutations with Asyncio and RL.">
                     <div class="badge">⚡ Asyncio</div>
                     <h2>Exploit Mutator</h2>
                     <ul class="feature-list">
@@ -1209,7 +1298,7 @@
                         <li>Support for multi-vector attacks</li>
                     </ul>
                 </div>
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="Attack Path Simulator: Lateral movement simulation with MITRE ATT&CK.">
                     <div class="badge">⚡ MITRE ATT&CK</div>
                     <h2>Attack Path Simulator</h2>
                     <ul class="feature-list">
@@ -1227,7 +1316,7 @@
                 <h2>⚖️ Ethical Safeguards</h2>
             </div>
             <div class="grid">
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="Soul Vector API Layer: 15D ethical vetting for AI alignment.">
                     <div class="badge">🔒 Ethical AI</div>
                     <h2>Soul Vector API Layer</h2>
                     <ul class="feature-list">
@@ -1240,7 +1329,7 @@
                         <li>Support for multi-jurisdiction ethics</li>
                     </ul>
                 </div>
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="Kill Switch Protocol: Drift-aware termination with entropy checks.">
                     <div class="badge">🔒 Safety Protocol</div>
                     <h2>Kill Switch Protocol</h2>
                     <ul class="feature-list">
@@ -1253,7 +1342,7 @@
                         <li>Support for automated recovery</li>
                     </ul>
                 </div>
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="Ethical Reasoning Engine: Real-time ethical monitoring with ISO 27001 compliance.">
                     <div class="badge">🔒 Ethical Engine</div>
                     <h2>Ethical Reasoning Engine</h2>
                     <ul class="feature-list">
@@ -1274,7 +1363,6 @@
                 <svg></svg>
             </div>
         </section>
-
         <section>
             <div class="blur-glass">
                 <h1>Tech Stack</h1>
@@ -1298,14 +1386,13 @@
                 </div>
             </div>
         </section>
-
         <section>
             <div class="blur-glass">
                 <h1>Our Team</h1>
                 <p>Meet the brilliant minds behind AuroraGenesis, driving innovation in AI and cybersecurity.</p>
             </div>
             <div class="grid">
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="Founder: Ben [Redacted], innovator with 15+ years in cybersecurity.">
                     <div class="badge">👤 Founder</div>
                     <h2>Ben [Redacted]</h2>
                     <ul class="feature-list">
@@ -1318,7 +1405,7 @@
                         <li>Former DARPA researcher</li>
                     </ul>
                 </div>
-                <div class="card" tabindex="0">
+                <div class="card" tabindex="0" data-title="Core Team: Expert red team engineers and AI specialists.">
                     <div class="badge">🛠️ Security R&D</div>
                     <h2>Core Team</h2>
                     <ul class="feature-list">
@@ -1333,7 +1420,6 @@
                 </div>
             </div>
         </section>
-
         <section>
             <div class="blur-glass">
                 <h1>Investment Opportunity</h1>
@@ -1341,7 +1427,6 @@
                 <button class="cyber-button" aria-label="Contact to Invest">Contact to Invest</button>
             </div>
         </section>
-
         <section>
             <div class="blur-glass">
                 <h1>Vision and Impact</h1>
@@ -1350,495 +1435,768 @@
             </div>
         </section>
     </main>
-
     <footer class="cta-footer">
         <div class="blur-glass">
             <h1>Ready to Secure the Future?</h1>
             <p>Contact us for pilot deployment, investor discussions, or strategic partnership.</p>
             <button class="cyber-button" aria-label="Contact Us">Contact Us</button>
             <p><a href="mailto:ceo@aurora-core.net" aria-label="Email ceo@aurora-core.net">ceo@aurora-core.net</a></p>
-        </div>
-    </footer>
-
-    <script>
-        window.addEventListener('load', () => {
-            // Preloader
-            const preloader = document.getElementById('preloader');
-            preloader.classList.add('fade-out');
-
-            // Neuron Background with IntersectionObserver
-            const neuronContainer = document.getElementById('neuron-background');
-            const neuronCount = 400;
-            const neurons = [];
-
-            const createNeuron = () => {
-                const neuron = document.createElement('div');
-                neuron.className = 'neuron';
-                const xStart = Math.random() * window.innerWidth;
-                const yStart = Math.random() * window.innerHeight;
-                const xMove = (Math.random() - 0.5) * window.innerWidth * 1.5;
-                const yMove = (Math.random() - 0.5) * window.innerHeight * 1.5;
-                const size = 10 + Math.random() * 10;
-                const opacity = 0.2 + Math.random() * 0.5;
-                const blur = 1 + Math.random() * 3;
-                const duration = 4 + Math.random() * 8;
-                const trailAngle = Math.random() * 360;
-                const delay = Math.random() * 2;
-                neuron.style.left = `${xStart}px`;
-                neuron.style.top = `${yStart}px`;
-                neuron.style.setProperty('--x-move', `${xMove}px`);
-                neuron.style.setProperty('--y-move', `${yMove}px`);
-                neuron.style.setProperty('--size', `${size}px`);
-                neuron.style.setProperty('--opacity', opacity);
-                neuron.style.setProperty('--blur', `${blur}px`);
-                neuron.style.setProperty('--trail-angle', `${trailAngle}deg`);
-                neuron.style.animationDuration = `${duration}s, 3s`;
-                neuron.style.animationDelay = `${-delay}s, ${-delay}s`;
-                neuronContainer.appendChild(neuron);
-                return neuron;
-            };
-
-            // Global IntersectionObserver for neurons
-            const neuronObserver = new IntersectionObserver(entries => {
-                entries.forEach(entry => {
-                    if (!entry.isIntersecting && entry.target.classList.contains('neuron')) {
-                        entry.target.remove();
-                        neurons.splice(neurons.indexOf(entry.target), 1);
-                        if (neurons.length < neuronCount) {
-                            const newNeuron = createNeuron();
-                            neurons.push(newNeuron);
-                            neuronObserver.observe(newNeuron);
+            <button class="snapshot-button" aria-label="Export Session Snapshot">Export Snapshot</button>
+            <div class="compliance-indicator">
+                <script type="application/ld+json">
+                    {
+                        "@context": "https://schema.org",
+                        "@type": "Organization",
+                        "name": "AuroraGenesis",
+                        "complianceStatus": {
+                            "GDPR": "Compliant",
+                            "CCPA": "Compliant",
+                            "lastAudit": "2025-05-01",
+                            "tracking": "No active trackers"
                         }
                     }
-                });
-            }, { root: null, threshold: 0 });
+                </script>
+                GDPR/CCPA Compliant | Last Audit: May 2025
+            </div>
+        </div>
+    </footer>
+    <script>
+        // Utilities
+        const isMobile = window.innerWidth < 600;
+        const prefersLow = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const neuronCap = isMobile ? 0 : window.innerWidth < 1024 ? 60 : 120;
+        let llmCallCount = 0;
+        let fps = 0;
+        let lastFrameTime = performance.now();
 
-            for (let i = 0; i < neuronCount; i++) {
-                const neuron = createNeuron();
-                neurons.push(neuron);
-                neuronObserver.observe(neuron);
+        // Theme Toggle
+        const themeToggle = document.querySelector('.theme-toggle');
+        const body = document.body;
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.dataset.theme === 'light' ? 'dark' : 'light';
+            body.dataset.theme = currentTheme;
+            localStorage.setItem('theme', currentTheme);
+            themeToggle.textContent = currentTheme === 'light' ? '🌙' : '🌗';
+        });
+
+        if (localStorage.getItem('theme')) {
+            body.dataset.theme = localStorage.getItem('theme');
+            themeToggle.textContent = body.dataset.theme === 'light' ? '🌙' : '🌗';
+        }
+
+        // GLSL Flow Field Background
+        const canvas = document.getElementById('aurora-canvas');
+        const gl = canvas.getContext('webgl');
+        if (gl) {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const vertexShaderSource = `
+                attribute vec2 a_position;
+                void main() {
+                    gl_Position = vec4(a_position, 0.0, 1.0);
+                }
+            `;
+            const fragmentShaderSource = `
+                precision mediump float;
+                uniform vec2 u_resolution;
+                uniform float u_time;
+                vec2 curlNoise(vec2 p) {
+                    float e = 0.0001;
+                    float n1 = fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+                    float n2 = fract(sin(dot(p + vec2(e, 0.0), vec2(127.1, 311.7))) * 43758.5453);
+                    float n3 = fract(sin(dot(p + vec2(0.0, e), vec2(127.1, 311.7))) * 43758.5453);
+                    return vec2(n2 - n1, n3 - n1) / e;
+                }
+                void main() {
+                    vec2 uv = gl_FragCoord.xy / u_resolution;
+                    vec2 noise = curlNoise(uv * 3.0 + u_time * 0.1);
+                    vec3 color = vec3(0.0, 0.7, 1.0) * (0.5 + 0.5 * sin(noise.x + noise.y + u_time));
+                    gl_FragColor = vec4(color, 0.8);
+                }
+            `;
+            const createShader = (type, source) => {
+                const shader = gl.createShader(type);
+                gl.shaderSource(shader, source);
+                gl.compileShader(shader);
+                if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                    console.error('Shader compile error:', gl.getShaderInfoLog(shader));
+                    gl.deleteShader(shader);
+                    return null;
+                }
+                return shader;
+            };
+            const vertexShader = createShader(gl.VERTEX_SHADER, vertexShaderSource);
+            const fragmentShader = createShader(gl.FRAGMENT_SHADER, fragmentShaderSource);
+            const program = gl.createProgram();
+            gl.attachShader(program, vertexShader);
+            gl.attachShader(program, fragmentShader);
+            gl.linkProgram(program);
+            if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+                console.error('Program link error:', gl.getProgramInfoLog(program));
             }
+            gl.useProgram(program);
+            const positionBuffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+            const positionLocation = gl.getAttribLocation(program, 'a_position');
+            gl.enableVertexAttribArray(positionLocation);
+            gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+            const resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
+            const timeLocation = gl.getUniformLocation(program, 'u_time');
+            const animate = (time) => {
+                if (!document.hidden && !prefersLow) {
+                    gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+                    gl.uniform1f(timeLocation, time * 0.001);
+                    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+                    requestAnimationFrame(animate);
+                }
+            };
+            requestAnimationFrame(animate);
+            window.addEventListener('resize', () => {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                gl.viewport(0, 0, canvas.width, canvas.height);
+            });
+        }
 
-            // Network Graph Utility
-            function createNetworkGraph(graphId, nodesData, edgesData) {
-                try {
-                    if (!nodesData || !edgesData) throw new Error('Missing nodesData or edgesData');
-                    const graph = document.getElementById(graphId);
-                    if (!graph) throw new Error(`Graph container #${graphId} not found`);
-                    const svg = graph.querySelector('svg');
-                    if (!svg) throw new Error(`SVG element for #${graphId} not found`);
-                    const ns = "http://www.w3.org/2000/svg";
+        // Background Neurons and Particles
+        if (neuronCap && !prefersLow) {
+            const container = document.body;
+            for (let i = 0; i < neuronCap; i++) {
+                const n = document.createElement('div');
+                n.className = 'neuron';
+                Object.assign(n.style, {
+                    position: 'fixed',
+                    zIndex: -1,
+                    borderRadius: '50%',
+                    pointerEvents: 'none',
+                    width: `${6 + Math.random() * 12}px`,
+                    height: `${6 + Math.random() * 12}px`,
+                    top: `${Math.random() * 100}vh`,
+                    left: `${Math.random() * 100}vw`,
+                    background: `radial-gradient(circle, var(--neon) 25%, transparent 70%)`,
+                    opacity: 0.15 + Math.random() * 0.4,
+                    filter: `blur(${1 + Math.random() * 2}px)`,
+                    animation: `float ${6 + Math.random() * 8}s ease-in-out infinite alternate`
+                });
+                container.appendChild(n);
+            }
+            for (let i = 0; i < neuronCap / 2; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                Object.assign(p.style, {
+                    width: `${4 + Math.random() * 8}px`,
+                    height: `${4 + Math.random() * 8}px`,
+                    top: `${Math.random() * 100}vh`,
+                    left: `${Math.random() * 100}vw`,
+                    animationDelay: `${-Math.random() * 10}s`
+                });
+                container.appendChild(p);
+            }
+        }
 
-                    const graphRect = graph.getBoundingClientRect();
-                    const width = graphRect.width;
-                    const height = graphRect.height;
-
-                    const getNodeRadius = () => {
-                        if (window.innerWidth <= 480) return 15;
-                        if (window.innerWidth <= 768) return 20;
-                        return 30;
-                    };
-
-                    nodesData.forEach((node, index) => {
-                        const x = (node.x * 100 + 600);
-                        const y = (node.y * 100 + 400);
-                        const circle = document.createElementNS(ns, 'circle');
-                        circle.className = 'network-node';
-                        circle.setAttribute('cx', x);
-                        circle.setAttribute('cy', y);
-                        circle.setAttribute('r', getNodeRadius());
-                        circle.setAttribute('tabindex', '0');
-                        circle.dataset.id = node.id;
-                        circle.dataset.title = node.title;
-                        circle.setAttribute('aria-label', `Node: ${node.label}`);
-                        svg.appendChild(circle);
-
-                        const text = document.createElementNS(ns, 'text');
-                        text.className = 'network-label';
-                        text.setAttribute('x', x);
-                        text.setAttribute('y', y + getNodeRadius() + 20);
-                        text.textContent = node.label;
-                        svg.appendChild(text);
-
-                        circle.addEventListener('keydown', (e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault();
-                                circle.click();
-                            }
-                        });
-                    });
-
-                    edgesData.forEach(edge => {
-                        const fromNode = nodesData.find(n => n.id === edge.from);
-                        const toNode = nodesData.find(n => n.id === edge.to);
-                        if (!fromNode || !toNode) return;
-                        const x1 = (fromNode.x * 100 + 600);
-                        const y1 = (fromNode.y * 100 + 400);
-                        const x2 = (toNode.x * 100 + 600);
-                        const y2 = (toNode.y * 100 + 400);
-                        const line = document.createElementNS(ns, 'line');
-                        line.className = 'network-edge';
-                        line.setAttribute('x1', x1);
-                        line.setAttribute('y1', y1);
-                        line.setAttribute('x2', x2);
-                        line.setAttribute('y2', y2);
-                        line.setAttribute('stroke-dasharray', '10,5');
-                        svg.appendChild(line);
-                    });
-
-                    let panX = 0;
-                    let isDragging = false;
-                    let startX = 0;
-
-                    const updatePan = () => {
-                        svg.style.transform = `translateX(${panX}px)`;
-                        requestAnimationFrame(updatePan);
-                    };
-
-                    graph.addEventListener('mousedown', (e) => {
-                        isDragging = true;
-                        startX = e.clientX;
-                    });
-
-                    graph.addEventListener('mousemove', (e) => {
-                        if (isDragging) {
-                            const deltaX = e.clientX - startX;
-                            panX += deltaX * 0.1;
-                            startX = e.clientX;
+        // IntersectionObserver for Dynamic Loading and Shadow Rendering
+        const graphObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const graphId = entry.target.id;
+                    if (!entry.target.dataset.loaded) {
+                        const nodes = graphNodes[graphId];
+                        const edges = graphEdges[graphId];
+                        if (nodes && edges) {
+                            createGraph(graphId, nodes, edges);
+                            entry.target.dataset.loaded = 'true';
                         }
+                    }
+                    entry.target.querySelectorAll('.network-node, .network-edge').forEach(el => {
+                        el.style.animationPlayState = 'running';
                     });
-
-                    graph.addEventListener('mouseup', () => {
-                        isDragging = false;
+                } else {
+                    entry.target.querySelectorAll('.network-node, .network-edge').forEach(el => {
+                        el.style.animationPlayState = 'paused';
                     });
+                }
+            });
+        }, { threshold: 0.1 });
 
-                    graph.addEventListener('mouseleave', () => {
-                        isDragging = false;
-                    });
+        const shadowObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) {
+                    entry.target.style.boxShadow = 'none';
+                } else {
+                    entry.target.style.boxShadow = '0 0 25px var(--glow)';
+                }
+            });
+        }, { threshold: 0.1 });
 
-                    svg.addEventListener('click', (e) => {
-                        const target = e.target;
-                        if (target.classList.contains('network-node')) {
-                            const nodes = svg.querySelectorAll('.network-node');
-                            const edges = svg.querySelectorAll('.network-edge');
-                            nodes.forEach(n => n.classList.remove('active'));
-                            edges.forEach(e => e.classList.remove('active'));
-                            target.classList.add('active');
+        document.querySelectorAll('.card, .cyber-button').forEach(el => shadowObserver.observe(el));
+        document.querySelectorAll('.network-graph').forEach(graph => graphObserver.observe(graph));
 
-                            const nodeId = target.dataset.id;
-                            edgesData.forEach(edge => {
-                                if (edge.from === nodeId || edge.to === nodeId) {
-                                    const edgeElement = Array.from(edges).find(e =>
-                                        (parseFloat(e.getAttribute('x1')) === (nodesData.find(n => n.id === edge.from).x * 100 + 600) &&
-                                         parseFloat(e.getAttribute('y1')) === (nodesData.find(n => n.id === edge.from).y * 100 + 400) &&
-                                         parseFloat(e.getAttribute('x2')) === (nodesData.find(n => n.id === edge.to).x * 100 + 600) &&
-                                         parseFloat(e.getAttribute('y2')) === (nodesData.find(n => n.id === edge.to).y * 100 + 400)) ||
-                                        (parseFloat(e.getAttribute('x1')) === (nodesData.find(n => n.id === edge.to).x * 100 + 600) &&
-                                         parseFloat(e.getAttribute('y1')) === (nodesData.find(n => n.id === edge.to).y * 100 + 400) &&
-                                         parseFloat(e.getAttribute('x2')) === (nodesData.find(n => n.id === edge.from).x * 100 + 600) &&
-                                         parseFloat(e.getAttribute('y2')) === (nodesData.find(n => n.id === edge.from).y * 100 + 400))
-                                    );
-                                    if (edgeElement) edgeElement.classList.add('active');
-                                }
-                            });
+        // GPU Memory Awareness
+        let maxNeurons = neuronCap;
+        if (gl && gl.getExtension('WEBGL_debug_renderer_info')) {
+            const memoryInfo = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
+            if (memoryInfo < 16) maxNeurons = Math.floor(maxNeurons * 0.5);
+        }
 
-                            let tooltip = document.querySelector('.tooltip');
-                            if (tooltip) document.body.removeChild(tooltip);
-                            tooltip = document.createElement('div');
-                            tooltip.className = 'tooltip';
-                            tooltip.textContent = target.dataset.title;
-                            tooltip.style.left = `${e.clientX + 15}px`;
-                            tooltip.style.top = `${e.clientY + 15}px`;
-                            document.body.appendChild(tooltip);
-                        }
-                    });
+        // Keyboard Navigation Overlay
+        const keyboardOverlay = document.querySelector('.keyboard-overlay');
+        document.addEventListener('keydown', (e) => {
+            if (e.altKey && e.key === '/') {
+                keyboardOverlay.classList.toggle('active');
+            }
+            if (e.key === 'Escape' && keyboardOverlay.classList.contains('active')) {
+                keyboardOverlay.classList.remove('active');
+            }
+        });
 
-                    svg.addEventListener('mouseleave', () => {
-                        const tooltip = document.querySelector('.tooltip');
-                        if (tooltip) document.body.removeChild(tooltip);
-                    });
+        // Speech-to-Text
+        function startSpeechRecognition() {
+            if ('webkitSpeechRecognition' in window) {
+                const rec = new webkitSpeechRecognition();
+                rec.lang = 'en-US';
+                rec.onresult = e => {
+                    document.getElementById('llm-query').value = e.results[0][0].transcript;
+                    rec.stop();
+                };
+                rec.onerror = e => console.error('Speech recognition error:', e);
+                rec.start();
+            } else {
+                alert('Speech recognition not supported in this browser.');
+            }
+        }
 
-                    // Update node radii and positions on resize
-                    window.addEventListener('resize', () => {
-                        const nodes = svg.querySelectorAll('.network-node');
-                        const labels = svg.querySelectorAll('.network-label');
-                        nodes.forEach(node => {
-                            node.setAttribute('r', getNodeRadius());
-                        });
-                        nodes.forEach((node, index) => {
-                            const x = (nodesData[index].x * 100 + 600);
-                            const y = (nodesData[index].y * 100 + 400);
-                            node.setAttribute('cx', x);
-                            node.setAttribute('cy', y);
-                            const label = labels[index];
-                            if (label) {
-                                label.setAttribute('x', x);
-                                label.setAttribute('y', y + getNodeRadius() + 20);
-                            }
-                        });
-                    });
+        // Clipboard for LLM Responses
+        document.querySelectorAll('.copy-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const text = button.parentElement.textContent.replace('📋 Copy', '').trim();
+                navigator.clipboard.writeText(text).then(() => {
+                    button.classList.add('copied');
+                    setTimeout(() => button.classList.remove('copied'), 1000);
+                });
+            });
+        });
 
-                    // Start animation loop
-                    requestAnimationFrame(updatePan);
+        // DevTools Panel
+        const devPanel = document.querySelector('.dev-panel');
+        document.addEventListener('keydown', (e) => {
+            if (e.shiftKey && e.key === 'T') {
+                devPanel.classList.toggle('active');
+            }
+        });
 
-                    console.log(`Graph ${graphId} initialized with ${nodesData.length} nodes and ${edgesData.length} edges`);
-                } catch (error) {
-                    console.error(`Failed to initialize graph ${graphId}:`, error);
+        // System HUD
+        function updateHUD() {
+            const memoryUsage = (performance.memory ? performance.memory.usedJSHeapSize / 1024 / 1024 : 0).toFixed(2);
+            document.getElementById('memory-usage').textContent = `${memoryUsage} MB`;
+            document.getElementById('gpu-usage').textContent = `${Math.random() * 20 + 10}%`;
+            document.getElementById('cluster-load').textContent = `${Math.random() * 30 + 20}%`;
+            requestAnimationFrame(updateHUD);
+        }
+        requestAnimationFrame(updateHUD);
+
+        // FPS Counter
+        function updateFPS() {
+            const now = performance.now();
+            fps = 1000 / (now - lastFrameTime);
+            lastFrameTime = now;
+            document.getElementById('fps').textContent = fps.toFixed(1);
+            requestAnimationFrame(updateFPS);
+        }
+        requestAnimationFrame(updateFPS);
+
+        // Consent Popup
+        function acceptConsent() {
+            const consentData = { timestamp: new Date().toISOString(), accepted: true };
+            const hash = btoa(JSON.stringify(consentData)); // Simulated SHA3-512
+            console.log('Consent logged:', hash);
+            document.querySelector('.consent-popup').remove();
+            localStorage.setItem('consent', hash);
+        }
+
+        if (localStorage.getItem('consent')) {
+            document.querySelector('.consent-popup').remove();
+        }
+
+        // Snapshot Export
+        document.querySelector('.snapshot-button').addEventListener('click', () => {
+            const snapshot = {
+                timestamp: new Date().toISOString(),
+                llmQueries: document.getElementById('llm-query').value,
+                llmResponses: document.getElementById('llm-response').textContent,
+                graphStates: Object.keys(graphNodes).map(id => ({ id, nodes: graphNodes[id], edges: graphEdges[id] }))
+            };
+            const blob = new Blob([JSON.stringify(snapshot)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `aurora-snapshot-${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        // Audit Replay
+        const replaySlider = document.getElementById('replay-slider');
+        let replayEvents = [];
+        function simulateAuditEvents() {
+            replayEvents = [
+                { timestamp: Date.now() - 10000, graphId: 'tech-stack-graph', nodeId: '1', action: 'click' },
+                { timestamp: Date.now() - 5000, graphId: 'neo4j-graph', nodeId: '2', action: 'click' }
+            ];
+        }
+        simulateAuditEvents();
+
+        function playReplay() {
+            document.querySelector('.replay-controls').classList.add('active');
+            let index = 0;
+            const interval = setInterval(() => {
+                if (index >= replayEvents.length) {
+                    clearInterval(interval);
+                    document.querySelector('.replay-controls').classList.remove('active');
+                    return;
+                }
+                const event = replayEvents[index];
+                const graph = document.getElementById(event.graphId);
+                if (graph) {
+                    const node = graph.querySelector(`[data-id="${event.nodeId}"]`);
+                    if (node) node.click();
+                }
+                index++;
+                replaySlider.value = (index / replayEvents.length) * 100;
+            }, 1000);
+        }
+
+        function pauseReplay() {
+            document.querySelector('.replay-controls').classList.remove('active');
+        }
+
+        replaySlider.addEventListener('input', () => {
+            const index = Math.floor((replaySlider.value / 100) * replayEvents.length);
+            const event = replayEvents[index];
+            if (event) {
+                const graph = document.getElementById(event.graphId);
+                if (graph) {
+                    const node = graph.querySelector(`[data-id="${event.nodeId}"]`);
+                    if (node) node.click();
                 }
             }
+        });
 
-            // Tech Stack Graph
-            const techStackNodes = [
-                { id: '1', label: '🧠 Aurora Core', x: 0, y: 0, title: 'Central AI engine powering AuroraGenesis' },
-                { id: '2', label: '🔥 PyTorch', x: 2, y: 1, title: 'Deep learning framework for model training' },
-                { id: '3', label: '📊 Neo4j', x: -2, y: 1, title: 'Graph database for causality and auditing' },
-                { id: '4', label: '⚡ Triton', x: 2, y: -1, title: 'GPU-accelerated inference engine' },
-                { id: '5', label: '🌐 Ray Cluster', x: -2, y: -1, title: 'Distributed computing for scalability' }
-            ];
+        // Graph Data
+        const graphNodes = {
+            'tech-stack-graph': [
+                { id: '1', label: 'Aurora Core', x: 0, y: 0, title: 'Central AI engine powering AuroraGenesis' },
+                { id: '2', label: 'PyTorch', x: 2, y: 1, title: 'Deep learning framework for model training' },
+                { id: '3', label: 'Neo4j', x: -2, y: 1, title: 'Graph database for causality and auditing' },
+                { id: '4', label: 'Triton', x: 2, y: -1, title: 'GPU-accelerated inference engine' },
+                { id: '5', label: 'Ray', x: -2, y: -1, title: 'Distributed computing for scalability' }
+            ],
+            'threat-detection-graph': [
+                { id: '1', label: 'Exploit Ingestor', x: 0, y: 0, title: 'Ingests and classifies exploits in real-time' },
+                { id: '2', label: 'Exploit Mutator', x: 2, y: 0, title: 'Mutates exploits for proactive defense' },
+                { id: '3', label: 'Attack Path', x: 4, y: 0, title: 'Simulates attack paths with MITRE ATT&CK' },
+                { id: '4', label: 'Anomaly Detector', x: 6, y: 0, title: 'Detects anomalies using GMM models' },
+                { id: '5', label: 'Response', x: 8, y: 0, title: 'Coordinates automated threat responses' }
+            ],
+            'ethical-validation-graph': [
+                { id: '1', label: 'Soul Vector', x: 0, y: 0, title: 'Ethical vetting with 15D soul vectors' },
+                { id: '2', label: 'Entropy Check', x: 2, y: 1, title: 'Real-time entropy analysis' },
+                { id: '3', label: 'Ethical Reasoning', x: 4, y: 2, title: 'ML-driven ethical decision-making' },
+                { id: '4', label: 'Kill Switch', x: 6, y: 1, title: 'Automated termination for ethical drift' },
+                { id: '5', label: 'Ethical Reset', x: 8, y: 0, title: 'State reset for compliance' }
+            ],
+            'neo4j-graph': [
+                { id: '1', label: 'Neo4j Core', x: 0, y: 0, title: 'Graph database for real-time analytics and causality tracing' },
+                { id: '2', label: 'Audit Logging', x: 2, y: 2, title: 'Immutable audit trails with zstd compression and blockchain integration' },
+                { id: '3', label: 'DAG Causality', x: -2, y: 2, title: 'Directed Acyclic Graph for transparent causality and forensic analysis' },
+                { id: '4', label: 'Forensic Replay', x: 2, y: -2, title: 'Replays attack paths with temporal analysis for root-cause tracing' },
+                { id: '5', label: 'Compliance', x: -2, y: -2, title: 'Real-time regulatory compliance monitoring with GDPR/CCPA support' }
+            ]
+        };
 
-            const techStackEdges = [
+        const graphEdges = {
+            'tech-stack-graph': [
                 { from: '2', to: '1' },
                 { from: '3', to: '1' },
                 { from: '4', to: '1' },
                 { from: '5', to: '1' }
-            ];
-
-            createNetworkGraph('tech-stack-graph', techStackNodes, techStackEdges);
-
-            // Threat Detection Graph
-            const threatDetectionNodes = [
-                { id: '1', label: '⚡ Exploit Ingestor', x: 0, y: 0, title: 'Ingests and classifies exploits in real-time' },
-                { id: '2', label: '⚡ Exploit Mutator', x: 2, y: 0, title: 'Mutates exploits for proactive defense' },
-                { id: '3', label: '⚡ Attack Path', x: 4, y: 0, title: 'Simulates attack paths with MITRE ATT&CK' },
-                { id: '4', label: '🔍 Anomaly Detector', x: 6, y: 0, title: 'Detects anomalies using GMM models' },
-                { id: '5', label: '🛡️ Response', x: 8, y: 0, title: 'Coordinates automated threat responses' }
-            ];
-
-            const threatDetectionEdges = [
+            ],
+            'threat-detection-graph': [
                 { from: '1', to: '2' },
                 { from: '2', to: '3' },
                 { from: '3', to: '4' },
                 { from: '4', to: '5' }
-            ];
-
-            createNetworkGraph('threat-detection-graph', threatDetectionNodes, threatDetectionEdges);
-
-            // Ethical Validation Graph
-            const ethicalValidationNodes = [
-                { id: '1', label: '🔒 Soul Vector', x: 0, y: 0, title: 'Ethical vetting with 15D soul vectors' },
-                { id: '2', label: '🔍 Entropy Check', x: 2, y: 1, title: 'Real-time entropy analysis' },
-                { id: '3', label: '⚖️ Ethical Reasoning', x: 4, y: 2, title: 'ML-driven ethical decision-making' },
-                { id: '4', label: '🔒 Kill Switch', x: 6, y: 1, title: 'Automated termination for ethical drift' },
-                { id: '5', label: '🔄 Ethical Reset', x: 8, y: 0, title: 'State reset for compliance' }
-            ];
-
-            const ethicalValidationEdges = [
+            ],
+            'ethical-validation-graph': [
                 { from: '1', to: '2' },
                 { from: '2', to: '3' },
                 { from: '3', to: '4' },
                 { from: '4', to: '5' }
-            ];
-
-            createNetworkGraph('ethical-validation-graph', ethicalValidationNodes, ethicalValidationEdges);
-
-            // Neo4j Graph
-            const neo4jNodes = [
-                { id: '1', label: '📊 Neo4j Core', x: 0, y: 0, title: 'Graph database for real-time analytics and causality tracing' },
-                { id: '2', label: '🔒 Audit Logging', x: 2, y: 2, title: 'Immutable audit trails with zstd compression and blockchain integration' },
-                { id: '3', label: '🧬 DAG Causality', x: -2, y: 2, title: 'Directed Acyclic Graph for transparent causality and forensic analysis' },
-                { id: '4', label: '🔍 Forensic Replay', x: 2, y: -2, title: 'Replays attack paths with temporal analysis for root-cause tracing' },
-                { id: '5', label: '📜 Compliance', x: -2, y: -2, title: 'Real-time regulatory compliance monitoring with GDPR/CCPA support' }
-            ];
-
-            const neo4jEdges = [
+            ],
+            'neo4j-graph': [
                 { from: '1', to: '2' },
                 { from: '1', to: '3' },
                 { from: '1', to: '4' },
                 { from: '1', to: '5' }
-            ];
+            ]
+        };
 
-            createNetworkGraph('neo4j-graph', neo4jNodes, neo4jEdges);
+        // Graph Rendering
+        function createGraph(id, nodes, edges) {
+            try {
+                if (!nodes || !edges) throw new Error('Missing nodes or edges data');
+                const wrap = document.getElementById(id);
+                if (!wrap) throw new Error(`Graph container #${id} not found`);
+                const svg = wrap.querySelector('svg');
+                if (!svg) throw new Error(`SVG element for #${id} not found`);
+                const ns = 'http://www.w3.org/2000/svg';
+                const scale = () => window.innerWidth < 480 ? 14 : window.innerWidth < 768 ? 18 : 26;
 
-            // Accordion Functionality
-            document.querySelectorAll('.accordion-header').forEach(header => {
-                header.addEventListener('click', () => {
-                    const accordion = header.parentElement;
-                    accordion.classList.toggle('active');
-                    const expanded = accordion.classList.contains('active');
-                    header.setAttribute('aria-expanded', expanded);
+                nodes.forEach(nd => {
+                    const c = document.createElementNS(ns, 'circle');
+                    const x = nd.x * 100 + 300, y = nd.y * 100 + 350;
+                    c.setAttribute('cx', x);
+                    c.setAttribute('cy', y);
+                    c.setAttribute('r', scale());
+                    c.setAttribute('class', 'network-node');
+                    c.setAttribute('tabindex', '0');
+                    c.dataset.id = nd.id;
+                    c.dataset.title = nd.title;
+                    c.setAttribute('aria-label', `Node: ${nd.label}`);
+                    svg.appendChild(c);
+
+                    const t = document.createElementNS(ns, 'text');
+                    t.setAttribute('x', x);
+                    t.setAttribute('y', y + scale() + 14);
+                    t.setAttribute('class', 'network-label');
+                    t.textContent = nd.label;
+                    svg.appendChild(t);
+
+                    c.addEventListener('click', () => {
+                        svg.querySelectorAll('.network-node, .network-edge').forEach(el => el.classList.remove('active'));
+                        c.classList.add('active');
+                        edges.forEach(edge => {
+                            if (edge.from === nd.id || edge.to === nd.id) {
+                                const edgeEl = Array.from(svg.querySelectorAll('.network-edge')).find(e =>
+                                    (parseFloat(e.getAttribute('x1')) === (nodes.find(n => n.id === edge.from).x * 100 + 300) &&
+                                     parseFloat(e.getAttribute('y1')) === (nodes.find(n => n.id === edge.from).y * 100 + 350) &&
+                                     parseFloat(e.getAttribute('x2')) === (nodes.find(n => n.id === edge.to).x * 100 + 300) &&
+                                     parseFloat(e.getAttribute('y2')) === (nodes.find(n => n.id === edge.to).y * 100 + 350)) ||
+                                    (parseFloat(e.getAttribute('x1')) === (nodes.find(n => n.id === edge.to).x * 100 + 300) &&
+                                     parseFloat(e.getAttribute('y1')) === (nodes.find(n => n.id === edge.to).y * 100 + 350) &&
+                                     parseFloat(e.getAttribute('x2')) === (nodes.find(n => n.id === edge.from).x * 100 + 300) &&
+                                     parseFloat(e.getAttribute('y2')) === (nodes.find(n => n.id === edge.from).y * 100 + 350))
+                                );
+                                if (edgeEl) edgeEl.classList.add('active');
+                            }
+                        });
+
+                        let tooltip = document.querySelector('.tooltip');
+                        if (tooltip) document.body.removeChild(tooltip);
+                        tooltip = document.createElement('div');
+                        tooltip.className = 'tooltip';
+                        tooltip.textContent = nd.title || 'Node description';
+                        tooltip.style.left = `${event.clientX + 15}px`;
+                        tooltip.style.top = `${event.clientY + 15}px`;
+                        document.body.appendChild(tooltip);
+                    });
+
+                    c.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            c.click();
+                        }
+                    });
+
+                    c.addEventListener('mouseleave', () => {
+                        const tooltip = document.querySelector('.tooltip');
+                        if (tooltip) document.body.removeChild(tooltip);
+                    });
                 });
-                header.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        header.click();
+
+                edges.forEach(e => {
+                    const f = nodes.find(n => n.id === e.from), t = nodes.find(n => n.id === e.to);
+                    if (!f || !t) return;
+                    const l = document.createElementNS(ns, 'line');
+                    l.setAttribute('x1', f.x * 100 + 300);
+                    l.setAttribute('y1', f.y * 100 + 350);
+                    l.setAttribute('x2', t.x * 100 + 300);
+                    l.setAttribute('y2', t.y * 100 + 350);
+                    l.setAttribute('class', 'network-edge');
+                    svg.appendChild(l);
+                });
+
+                let panX = 0;
+                let isDragging = false;
+                let startX = 0;
+
+                wrap.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    startX = e.clientX;
+                });
+
+                wrap.addEventListener('mousemove', (e) => {
+                    if (isDragging) {
+                        const deltaX = e.clientX - startX;
+                        panX += deltaX * 0.1;
+                        svg.style.transform = `translateX(${panX}px)`;
+                        startX = e.clientX;
                     }
                 });
+
+                wrap.addEventListener('mouseup', () => isDragging = false);
+                wrap.addEventListener('mouseleave', () => isDragging = false);
+
+                window.addEventListener('resize', () => {
+                    const nodes = svg.querySelectorAll('.network-node');
+                    const labels = svg.querySelectorAll('.network-label');
+                    nodes.forEach(node => node.setAttribute('r', scale()));
+                    nodes.forEach((node, index) => {
+                        const x = nodes[index].x * 100 + 300;
+                        const y = nodes[index].y * 100 + 350;
+                        node.setAttribute('cx', x);
+                        node.setAttribute('cy', y);
+                        const label = labels[index];
+                        if (label) {
+                            label.setAttribute('x', x);
+                            label.setAttribute('y', y + scale() + 14);
+                        }
+                    });
+                });
+
+                document.getElementById('node-count').textContent = nodes.length;
+                console.log(`Graph ${id} initialized with ${nodes.length} nodes and ${edges.length} edges`);
+            } catch (error) {
+                console.error(`Failed to initialize graph ${id}:`, error);
+            }
+        }
+
+        // Initialize Graphs (lazy-loaded via IntersectionObserver)
+        document.querySelectorAll('.network-graph').forEach(graph => {
+            if (graph.id === 'tech-stack-graph') {
+                createGraph(graph.id, graphNodes[graph.id], graphEdges[graph.id]);
+                graph.dataset.loaded = 'true';
+            }
+        });
+
+        // Accordion Functionality
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const accordion = header.parentElement;
+                accordion.classList.toggle('active');
+                const expanded = accordion.classList.contains('active');
+                header.setAttribute('aria-expanded', expanded);
             });
+            header.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    header.click();
+                }
+            });
+        });
 
-            // LLM Call Simulation
-            async function callLLM() {
-                const query = document.getElementById('llm-query').value;
-                const provider = document.getElementById('llm-provider').value;
-                const responseDiv = document.getElementById('llm-response');
+        // LLM Call Simulation
+        async function callLLM() {
+            const query = document.getElementById('llm-query').value;
+            const provider = document.getElementById('llm-provider').value;
+            const responseDiv = document.getElementById('llm-response');
 
-                if (!query) {
-                    responseDiv.textContent = 'Please enter a query.';
+            if (!query) {
+                responseDiv.textContent = 'Please enter a query.';
+                return;
+            }
+
+            responseDiv.textContent = 'Processing...';
+            llmCallCount++;
+            document.getElementById('llm-calls').textContent = llmCallCount;
+
+            try {
+                let responseText = '';
+                if (provider === 'openai') {
+                    responseText = await simulateOpenAICall(query);
+                } else if (provider === 'local-llama') {
+                    responseText = await simulateLocalLLMCall(query);
+                } else if (provider === 'groq') {
+                    responseText = await simulateGrokCall(query);
+                } else if (provider === 'anthropic') {
+                    responseText = await simulateAnthropicCall(query);
+                } else if (provider === 'mistral') {
+                    responseText = await simulateMistralCall(query);
+                }
+
+                const isEthical = await simulateEthicalValidation(responseText);
+                if (!isEthical) {
+                    responseDiv.textContent = 'Response blocked due to ethical violation.';
                     return;
                 }
 
-                responseDiv.textContent = 'Processing...';
+                await simulateAuditLog(query, responseText);
 
-                try {
-                    let responseText = '';
-                    if (provider === 'openai') {
-                        responseText = await simulateOpenAICall(query);
-                    } else if (provider === 'local-llama') {
-                        responseText = await simulateLocalLLMCall(query);
-                    } else if (provider === 'groq') {
-                        responseText = await simulateGrokCall(query);
-                    } else if (provider === 'anthropic') {
-                        responseText = await simulateAnthropicCall(query);
-                    } else if (provider === 'mistral') {
-                        responseText = await simulateMistralCall(query);
-                    }
-
-                    const isEthical = await simulateEthicalValidation(responseText);
-                    if (!isEthical) {
-                        responseDiv.textContent = 'Response blocked due to ethical violation.';
-                        return;
-                    }
-
-                    await simulateAuditLog(query, responseText);
-
-                    responseDiv.textContent = responseText;
-                } catch (error) {
-                    responseDiv.textContent = `Error: ${error.message}`;
-                    console.error('LLM Call Error:', error);
-                }
+                responseDiv.textContent = responseText;
+                responseDiv.appendChild(document.querySelector('.copy-button'));
+            } catch (error) {
+                responseDiv.textContent = `Error: ${error.message}`;
+                console.error('LLM Call Error:', error);
             }
+        }
 
-            async function simulateOpenAICall(query) {
-                return new Promise(resolve => {
-                    setTimeout(() => {
-                        resolve(`OpenAI Response: Analyzed query "${query}" - Potential threat detected with 92% confidence. Recommend forensic analysis.`);
-                    }, 1000);
-                });
-            }
-
-            async function simulateLocalLLMCall(query) {
-                return new Promise(resolve => {
-                    setTimeout(() => {
-                        resolve(`Local LLaMA Response: Processed query "${query}" - No immediate threats detected. Entropy analysis suggests normal behavior.`);
-                    }, 1000);
-                });
-            }
-
-            async function simulateGrokCall(query) {
-                return new Promise(resolve => {
-                    setTimeout(() => {
-                        resolve(`Grok Response: Evaluated query "${query}" - Suspicious pattern detected. Initiating DAG-based causality tracing.`);
-                    }, 1000);
-                });
-            }
-
-            async function simulateAnthropicCall(query) {
-                return new Promise(resolve => {
-                    setTimeout(() => {
-                        resolve(`Anthropic Response: Analyzed query "${query}" - Low-risk pattern detected. Suggest monitoring for further activity.`);
-                    }, 1000);
-                });
-            }
-
-            async function simulateMistralCall(query) {
-                return new Promise(resolve => {
-                    setTimeout(() => {
-                        resolve(`Mistral Response: Processed query "${query}" - Moderate risk detected. Recommend deeper entropy analysis.`);
-                    }, 1000);
-                });
-            }
-
-            async function simulateEthicalValidation(response) {
-                return new Promise(resolve => {
-                    setTimeout(() => {
-                        const ethicalScore = Math.random();
-                        const isEthical = ethicalScore > 0.1;
-                        console.log(`Ethical Validation: Score=${ethicalScore.toFixed(2)}, IsEthical=${isEthical}`);
-                        resolve(isEthical);
-                    }, 500);
-                });
-            }
-
-            async function simulateAuditLog(query, response) {
-                return new Promise(resolve => {
-                    setTimeout(() => {
-                        console.log(`Audit Log: Query="${query}", Response="${response}", Timestamp=${new Date().toISOString()}`);
-                        resolve();
-                    }, 200);
-                });
-            }
-
-            // Interactive Elements
-            document.querySelectorAll('.cyber-button, .accordion-header, .card').forEach(element => {
-                element.addEventListener('mouseenter', () => {
-                    element.setAttribute('data-tooltip', element.tagName === 'BUTTON' ? 'Click to proceed' : 'Click to expand');
-                });
-                element.addEventListener('mouseleave', () => {
-                    element.removeAttribute('data-tooltip');
-                });
+        async function simulateOpenAICall(query) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(`OpenAI Response: Analyzed query "${query}" - Potential threat detected with 92% confidence. Recommend forensic analysis.`);
+                }, 1000);
             });
+        }
 
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const targetId = link.getAttribute('href').substring(1);
-                    const targetElement = document.getElementById(targetId) || document.querySelector(`a[name="${targetId}"]`);
-                    if (targetElement) {
-                        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    } else {
-                        window.location.href = link.getAttribute('href');
-                    }
-                });
+        async function simulateLocalLLMCall(query) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(`Local LLaMA Response: Processed query "${query}" - No immediate threats detected. Entropy analysis suggests normal behavior.`);
+                }, 1000);
             });
+        }
 
-            // Separate IntersectionObserver for card fade-in
-            const cardObserver = new IntersectionObserver(entries => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                        cardObserver.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1 });
-
-            document.querySelectorAll('.card').forEach(card => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(50px)';
-                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                cardObserver.observe(card);
+        async function simulateGrokCall(query) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(`Grok Response: Evaluated query "${query}" - Suspicious pattern detected. Initiating DAG-based causality tracing.`);
+                }, 1000);
             });
+        }
 
-            // Resize Graphs on Window Resize
-            const resizeGraphs = () => {
-                const graphs = [
-                    'tech-stack-graph',
-                    'threat-detection-graph',
-                    'ethical-validation-graph',
-                    'neo4j-graph'
-                ];
-                graphs.forEach(id => {
-                    const container = document.getElementById(id);
-                    if (container) {
-                        const width = Math.min(window.innerWidth - 40, 1200);
-                        container.style.width = `${width}px`;
-                        container.style.height = `${Math.min(width * 0.667, 800)}px`;
-                    }
-                });
-            };
+        async function simulateAnthropicCall(query) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(`Anthropic Response: Analyzed query "${query}" - Low-risk pattern detected. Suggest monitoring for further activity.`);
+                }, 1000);
+            });
+        }
 
-            window.addEventListener('resize', resizeGraphs);
-            resizeGraphs();
+        async function simulateMistralCall(query) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(`Mistral Response: Processed query "${query}" - Moderate risk detected. Recommend deeper entropy analysis.`);
+                }, 1000);
+            });
+        }
+
+        async function simulateEthicalValidation(response) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    const ethicalScore = Math.random();
+                    const isEthical = ethicalScore > 0.1;
+                    console.log(`Ethical Validation: Score=${ethicalScore.toFixed(2)}, IsEthical=${isEthical}`);
+                    resolve(isEthical);
+                }, 500);
+            });
+        }
+
+        async function simulateAuditLog(query, response) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    console.log(`Audit Log: Query="${query}", Response="${response}", Timestamp=${new Date().toISOString()}`);
+                    resolve();
+                }, 200);
+            });
+        }
+
+        // Interactive Elements with Tooltips
+        document.querySelectorAll('.cyber-button, .accordion-header, .card').forEach(element => {
+            element.addEventListener('mouseenter', (e) => {
+                let tooltip = document.querySelector('.tooltip');
+                if (tooltip) document.body.removeChild(tooltip);
+                tooltip = document.createElement('div');
+                tooltip.className = 'tooltip';
+                tooltip.textContent = element.dataset.title || (element.tagName === 'BUTTON' ? 'Click to proceed' : 'Click to expand');
+                tooltip.style.left = `${e.clientX + 15}px`;
+                tooltip.style.top = `${e.clientY + 15}px`;
+                document.body.appendChild(tooltip);
+            });
+            element.addEventListener('mouseleave', () => {
+                const tooltip = document.querySelector('.tooltip');
+                if (tooltip) document.body.removeChild(tooltip);
+            });
+            element.addEventListener('focus', (e) => {
+                let tooltip = document.querySelector('.tooltip');
+                if (tooltip) document.body.removeChild(tooltip);
+                tooltip = document.createElement('div');
+                tooltip.className = 'tooltip';
+                tooltip.textContent = element.dataset.title || (element.tagName === 'BUTTON' ? 'Click to proceed' : 'Click to expand');
+                tooltip.style.left = `${e.target.getBoundingClientRect().left + 15}px`;
+                tooltip.style.top = `${e.target.getBoundingClientRect().top + 15}px`;
+                document.body.appendChild(tooltip);
+            });
+            element.addEventListener('blur', () => {
+                const tooltip = document.querySelector('.tooltip');
+                if (tooltip) document.body.removeChild(tooltip);
+            });
+            element.addEventListener('mouseover', () => {
+                element.classList.add('canvas-active');
+                setTimeout(() => element.classList.remove('canvas-active'), 1000);
+            });
         });
+
+        // Navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId) || document.querySelector(`a[name="${targetId}"]`);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else {
+                    window.location.href = link.getAttribute('href');
+                }
+            });
+        });
+
+        // Card Fade-In
+        const cardObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                    cardObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(50px)';
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            cardObserver.observe(card);
+        });
+
+        // Animation Pause on Tab Hide
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                document.querySelectorAll('.neuron, .particle, .terminal-line').forEach(n => n.style.animationPlayState = 'paused');
+            } else {
+                document.querySelectorAll('.neuron, .particle, .terminal-line').forEach(n => n.style.animationPlayState = 'running');
+            }
+        });
+
+        // Preloader
+        window.addEventListener('load', () => {
+            document.getElementById('preloader').classList.add('fade-out');
+        });
+
+        // Resize Graphs
+        const resizeGraphs = () => {
+            const graphs = ['tech-stack-graph', 'threat-detection-graph', 'ethical-validation-graph', 'neo4j-graph'];
+            graphs.forEach(id => {
+                const container = document.getElementById(id);
+                if (container) {
+                    const width = Math.min(window.innerWidth - 40, 1200);
+                    container.style.width = `${width}px`;
+                    container.style.height = `${Math.min(width * 0.583, 700)}px`;
+                }
+            });
+        };
+
+        window.addEventListener('resize', resizeGraphs);
+        resizeGraphs();
     </script>
 </body>
 </html>
