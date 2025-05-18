@@ -61,17 +61,19 @@
 
         .particle {
             position: absolute;
-            width: 3px;
-            height: 3px;
+            width: var(--size, 6px);
+            height: var(--size, 6px);
             background: var(--neon-cyan);
             border-radius: 50%;
-            opacity: 0.6;
-            box-shadow: 0 0 10px var(--glow-blue);
+            opacity: var(--opacity, 0.5);
+            box-shadow: 0 0 15px var(--glow-blue);
+            will-change: transform, opacity;
             animation: moveParticle linear infinite;
+            filter: blur(var(--blur, 2px));
         }
 
         @keyframes moveParticle {
-            0% { transform: translate(0, 0); opacity: 0.6; }
+            0% { transform: translate(0, 0); opacity: var(--opacity, 0.5); }
             100% { transform: translate(var(--x-move), var(--y-move)); opacity: 0; }
         }
 
@@ -1316,7 +1318,7 @@
             <h1>Ready to Secure the Future?</h1>
             <p>Contact us for pilot deployment, investor discussions, or strategic partnership.</p>
             <button class="cyber-button">Contact Us</button>
-            <p><a href="mailto:invest@auroragenesis.com">invest@auroragenesis.com</a></p>
+            <p><a href="mailto:ceo@aurora-core.net">ceo@aurora-core.net</a></p>
         </div>
     </footer>
 
@@ -1328,7 +1330,7 @@
 
             // Particle Background
             const particleContainer = document.getElementById('particle-background');
-            const particleCount = 100;
+            const particleCount = 200; // Scaled up from 100
 
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
@@ -1337,11 +1339,17 @@
                 const yStart = Math.random() * window.innerHeight;
                 const xMove = (Math.random() - 0.5) * window.innerWidth * 2;
                 const yMove = (Math.random() - 0.5) * window.innerHeight * 2;
-                const duration = 10 + Math.random() * 20;
+                const size = 5 + Math.random() * 5; // Scaled up from 3px to 5-10px
+                const opacity = 0.3 + Math.random() * 0.5; // Transparency: 0.3-0.8
+                const blur = 1 + Math.random() * 2; // Motion blur: 1-3px
+                const duration = 5 + Math.random() * 10; // Faster: 5-15s
                 particle.style.left = `${xStart}px`;
                 particle.style.top = `${yStart}px`;
                 particle.style.setProperty('--x-move', `${xMove}px`);
                 particle.style.setProperty('--y-move', `${yMove}px`);
+                particle.style.setProperty('--size', `${size}px`);
+                particle.style.setProperty('--opacity', opacity);
+                particle.style.setProperty('--blur', `${blur}px`);
                 particle.style.animationDuration = `${duration}s`;
                 particle.style.animationDelay = `${-Math.random() * duration}s`;
                 particleContainer.appendChild(particle);
@@ -1535,7 +1543,7 @@
                 });
             });
 
-            // LLM Call Simulation
+// LLM Call Simulation
             async function callLLM() {
                 const query = document.getElementById('llm-query').value;
                 const provider = document.getElementById('llm-provider').value;
@@ -1576,7 +1584,7 @@
                 }
             }
 
-async function simulateOpenAICall(query) {
+            async function simulateOpenAICall(query) {
                 return new Promise(resolve => {
                     setTimeout(() => {
                         resolve(`OpenAI Response: Analyzed query "${query}" - Potential threat detected with 92% confidence. Recommend forensic analysis.`);
