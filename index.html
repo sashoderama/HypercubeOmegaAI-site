@@ -49,7 +49,7 @@
             position: relative;
         }
 
-        #particle-background {
+        #neuron-background {
             position: fixed;
             top: 0;
             left: 0;
@@ -59,22 +59,38 @@
             overflow: hidden;
         }
 
-        .particle {
+        .neuron {
             position: absolute;
-            width: var(--size, 6px);
-            height: var(--size, 6px);
-            background: var(--neon-cyan);
+            width: var(--size, 10px);
+            height: var(--size, 10px);
+            background: radial-gradient(circle, var(--neon-cyan) 20%, transparent 70%);
             border-radius: 50%;
             opacity: var(--opacity, 0.5);
-            box-shadow: 0 0 15px var(--glow-blue);
+            box-shadow: 0 0 20px var(--glow-blue), 0 0 40px var(--glow-blue);
             will-change: transform, opacity;
-            animation: moveParticle linear infinite;
+            animation: pulseNeuron 3s ease-in-out infinite, moveNeuron linear infinite;
             filter: blur(var(--blur, 2px));
         }
 
-        @keyframes moveParticle {
-            0% { transform: translate(0, 0); opacity: var(--opacity, 0.5); }
-            100% { transform: translate(var(--x-move), var(--y-move)); opacity: 0; }
+        .neuron::before {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--neon-cyan), transparent);
+            opacity: 0.3;
+            transform: rotate(var(--trail-angle, 45deg));
+            transform-origin: 0 0;
+        }
+
+        @keyframes pulseNeuron {
+            0%, 100% { transform: scale(1); opacity: var(--opacity, 0.5); }
+            50% { transform: scale(1.3); opacity: calc(var(--opacity) * 0.7); }
+        }
+
+        @keyframes moveNeuron {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(var(--x-move), var(--y-move)); }
         }
 
         .cyber-nav {
@@ -144,26 +160,6 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
-        }
-
-        .hex-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><path d="M15 5 L45 5 L55 25 L45 45 L15 45 L5 25 Z" stroke="rgba(0, 247, 255, 0.1)" fill="none" stroke-width="1"/></svg>');
-            background-size: 60px 60px;
-            background-repeat: repeat;
-            opacity: 0.3;
-            z-index: 2;
-            pointer-events: none;
-            animation: hexFade 15s ease-in-out infinite;
-        }
-
-        @keyframes hexFade {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.1; }
         }
 
         .terminal-line {
@@ -562,7 +558,7 @@
             .api-demo select { font-size: 0.9rem; padding: 0.8rem; }
         }
 
-        .diagram {
+        .network-graph {
             width: 100%;
             max-width: 1100px;
             height: 650px;
@@ -571,90 +567,77 @@
             border-radius: 12px;
             background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(10px);
-            perspective: 1000px;
             position: relative;
             overflow: hidden;
         }
 
-        .diagram-scene {
+        .network-graph svg {
             width: 100%;
             height: 100%;
-            transform-style: preserve-3d;
-            transition: transform 0.5s ease;
         }
 
-        .diagram-node {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            background: var(--neon-cyan);
-            border-radius: 8px;
-            box-shadow: 0 0 15px var(--glow-blue);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.9rem;
-            color: var(--hud-white);
-            text-align: center;
-            transform: translate3d(0, 0, 0);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        .network-node {
+            fill: var(--neon-cyan);
+            stroke: var(--glow-blue);
+            stroke-width: 2;
+            cursor: pointer;
+            transition: transform 0.3s ease, opacity 0.3s ease;
         }
 
-        .diagram-node:hover {
-            box-shadow: 0 0 25px var(--glow-blue);
-            transform: translate3d(0, 0, 10px) scale(1.1);
+        .network-node:hover, .network-node.active {
+            transform: scale(1.3);
+            opacity: 1;
+            filter: drop-shadow(0 0 10px var(--glow-blue));
         }
 
-        .diagram-edge {
-            position: absolute;
-            background: linear-gradient(to right, transparent, var(--neon-cyan), transparent);
-            height: 2px;
-            transform-origin: 0 0;
-            opacity: 0.7;
+        .network-edge {
+            stroke: var(--neon-cyan);
+            stroke-width: 2;
+            opacity: 0.6;
             transition: opacity 0.3s ease;
+            animation: flowEdge 3s linear infinite;
         }
 
-        .diagram-edge:hover {
+        .network-edge:hover, .network-edge.active {
             opacity: 1;
         }
 
-        .diagram-label {
-            position: absolute;
+        @keyframes flowEdge {
+            0% { stroke-dashoffset: 100; }
+            100% { stroke-dashoffset: 0; }
+        }
+
+        .network-label {
             font-family: 'Orbitron', sans-serif;
-            font-size: 0.8rem;
-            color: var(--neon-cyan);
-            text-shadow: 0 0 5px var(--glow);
+            font-size: 12px;
+            fill: var(--neon-cyan);
+            text-anchor: middle;
             pointer-events: none;
         }
 
         @media (max-width: 768px) {
-            .diagram {
+            .network-graph {
                 height: 550px;
                 margin: 2.5rem auto;
             }
-            .diagram-node {
-                width: 50px;
-                height: 50px;
-                font-size: 0.8rem;
+            .network-node {
+                r: 15;
             }
-            .diagram-label {
-                font-size: 0.7rem;
+            .network-label {
+                font-size: 10px;
             }
         }
 
         @media (max-width: 480px) {
-            .diagram {
+            .network-graph {
                 height: 350px;
                 margin: 2rem auto;
             }
-            .diagram-node {
-                width: 40px;
-                height: 40px;
-                font-size: 0.7rem;
+            .network-node {
+                r: 12;
             }
-            .diagram-label {
-                font-size: 0.6rem;
+            .network-label {
+                font-size: 8px;
             }
         }
 
@@ -736,8 +719,7 @@
     <div id="preloader">
         <div class="preloader-hexagon"></div>
     </div>
-    <div id="particle-background"></div>
-    <div class="hex-overlay"></div>
+    <div id="neuron-background"></div>
     <div class="terminal-line"></div>
 
     <main>
@@ -919,8 +901,8 @@
             <div class="blur-glass">
                 <h2>📊 Neo4j Integration</h2>
             </div>
-            <div id="neo4j-diagram" class="diagram">
-                <div class="diagram-scene"></div>
+            <div id="neo4j-graph" class="network-graph">
+                <svg></svg>
             </div>
         </section>
 
@@ -1050,8 +1032,8 @@
             <div class="blur-glass">
                 <h2>🔄 Threat Detection Pipeline</h2>
             </div>
-            <div id="threat-detection-diagram" class="diagram">
-                <div class="diagram-scene"></div>
+            <div id="threat-detection-graph" class="network-graph">
+                <svg></svg>
             </div>
             <div class="blur-glass">
                 <h2>🔍 Forensic Intelligence</h2>
@@ -1161,7 +1143,7 @@
                 <div class="card">
                     <div class="badge">⚡ Asyncio</div>
                     <h2>Exploit Mutator</h2>
-                    <ul class="feature-list">
+                    <ul class="force-list">
                         <li>DAG-based mutations with Asyncio</li>
                         <li>RL-tuned strategies for stealth</li>
                         <li>IDS-agnostic exploit generation</li>
@@ -1232,8 +1214,8 @@
             <div class="blur-glass">
                 <h2>🔄 Ethical Validation Flow</h2>
             </div>
-            <div id="ethical-validation-diagram" class="diagram">
-                <div class="diagram-scene"></div>
+            <div id="ethical-validation-graph" class="network-graph">
+                <svg></svg>
             </div>
         </section>
 
@@ -1242,8 +1224,8 @@
                 <h1>Tech Stack</h1>
                 <p>AuroraGenesis is powered by a robust and modern tech stack, ensuring performance, scalability, and security.</p>
             </div>
-            <div id="tech-stack-diagram" class="diagram">
-                <div class="diagram-scene"></div>
+            <div id="tech-stack-graph" class="network-graph">
+                <svg></svg>
             </div>
             <div class="accordion">
                 <div class="accordion-header" tabindex="0" role="button" aria-expanded="false">Technologies Used <span>↓</span></div>
@@ -1328,140 +1310,148 @@
             const preloader = document.getElementById('preloader');
             preloader.classList.add('fade-out');
 
-            // Particle Background
-            const particleContainer = document.getElementById('particle-background');
-            const particleCount = 200; // Scaled up from 100
+            // Neuron Background
+            const neuronContainer = document.getElementById('neuron-background');
+            const neuronCount = 300;
 
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
+            for (let i = 0; i < neuronCount; i++) {
+                const neuron = document.createElement('div');
+                neuron.className = 'neuron';
                 const xStart = Math.random() * window.innerWidth;
                 const yStart = Math.random() * window.innerHeight;
-                const xMove = (Math.random() - 0.5) * window.innerWidth * 2;
-                const yMove = (Math.random() - 0.5) * window.innerHeight * 2;
-                const size = 5 + Math.random() * 5; // Scaled up from 3px to 5-10px
-                const opacity = 0.3 + Math.random() * 0.5; // Transparency: 0.3-0.8
-                const blur = 1 + Math.random() * 2; // Motion blur: 1-3px
-                const duration = 5 + Math.random() * 10; // Faster: 5-15s
-                particle.style.left = `${xStart}px`;
-                particle.style.top = `${yStart}px`;
-                particle.style.setProperty('--x-move', `${xMove}px`);
-                particle.style.setProperty('--y-move', `${yMove}px`);
-                particle.style.setProperty('--size', `${size}px`);
-                particle.style.setProperty('--opacity', opacity);
-                particle.style.setProperty('--blur', `${blur}px`);
-                particle.style.animationDuration = `${duration}s`;
-                particle.style.animationDelay = `${-Math.random() * duration}s`;
-                particleContainer.appendChild(particle);
+                const xMove = (Math.random() - 0.5) * window.innerWidth * 1.5;
+                const yMove = (Math.random() - 0.5) * window.innerHeight * 1.5;
+                const size = 8 + Math.random() * 7;
+                const opacity = 0.2 + Math.random() * 0.5;
+                const blur = 1 + Math.random() * 3;
+                const duration = 4 + Math.random() * 8;
+                const trailAngle = Math.random() * 360;
+                neuron.style.left = `${xStart}px`;
+                neuron.style.top = `${yStart}px`;
+                neuron.style.setProperty('--x-move', `${xMove}px`);
+                neuron.style.setProperty('--y-move', `${yMove}px`);
+                neuron.style.setProperty('--size', `${size}px`);
+                neuron.style.setProperty('--opacity', opacity);
+                neuron.style.setProperty('--blur', `${blur}px`);
+                neuron.style.setProperty('--trail-angle', `${trailAngle}deg`);
+                neuron.style.animationDuration = `${duration}s, 3s`;
+                neuron.style.animationDelay = `${-Math.random() * duration}s, 0s`;
+                neuronContainer.appendChild(neuron);
             }
 
-            // 3D Diagram Utility
-            function createDiagram(diagramId, nodesData, edgesData) {
-                const diagram = document.getElementById(diagramId);
-                const scene = diagram.querySelector('.diagram-scene');
-                
-                nodesData.forEach(node => {
-                    const nodeElement = document.createElement('div');
-                    nodeElement.className = 'diagram-node';
-                    nodeElement.style.left = `${node.x * 10 + 50}%`;
-                    nodeElement.style.top = `${node.y * 10 + 50}%`;
-                    nodeElement.style.transform = `translate3d(-50%, -50%, ${node.z * 10}px)`;
-                    nodeElement.textContent = node.label;
-                    nodeElement.dataset.title = node.title;
-                    scene.appendChild(nodeElement);
+            // Network Graph Utility
+            function createNetworkGraph(graphId, nodesData, edgesData) {
+                const graph = document.getElementById(graphId);
+                const svg = graph.querySelector('svg');
+                const ns = "http://www.w3.org/2000/svg";
 
-                    const label = document.createElement('div');
-                    label.className = 'diagram-label';
-                    label.textContent = node.label;
-                    label.style.left = `${node.x * 10 + 50}%`;
-                    label.style.top = `${node.y * 10 + 55}%`;
-                    label.style.transform = `translate3d(-50%, -50%, ${node.z * 10 + 5}px)`;
-                    scene.appendChild(label);
+                nodesData.forEach(node => {
+                    const circle = document.createElementNS(ns, 'circle');
+                    circle.className = 'network-node';
+                    circle.setAttribute('cx', `${node.x * 50 + 50}%`);
+                    circle.setAttribute('cy', `${node.y * 50 + 50}%`);
+                    circle.setAttribute('r', '20');
+                    circle.dataset.id = node.id;
+                    circle.dataset.title = node.title;
+                    svg.appendChild(circle);
+
+                    const text = document.createElementNS(ns, 'text');
+                    text.className = 'network-label';
+                    text.setAttribute('x', `${node.x * 50 + 50}%`);
+                    text.setAttribute('y', `${node.y * 50 + 55}%`);
+                    text.textContent = node.label;
+                    svg.appendChild(text);
                 });
 
                 edgesData.forEach(edge => {
                     const fromNode = nodesData.find(n => n.id === edge.from);
                     const toNode = nodesData.find(n => n.id === edge.to);
-                    const edgeElement = document.createElement('div');
-                    edgeElement.className = 'diagram-edge';
-                    const x1 = fromNode.x * 10 + 50;
-                    const y1 = fromNode.y * 10 + 50;
-                    const x2 = toNode.x * 10 + 50;
-                    const y2 = toNode.y * 10 + 50;
-                    const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
-                    const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
-                    edgeElement.style.left = `${x1}%`;
-                    edgeElement.style.top = `${y1}%`;
-                    edgeElement.style.width = `${length}%`;
-                    edgeElement.style.transform = `rotate(${angle}deg)`;
-                    scene.appendChild(edgeElement);
+                    const line = document.createElementNS(ns, 'line');
+                    line.className = 'network-edge';
+                    line.setAttribute('x1', `${fromNode.x * 50 + 50}%`);
+                    line.setAttribute('y1', `${fromNode.y * 50 + 50}%`);
+                    line.setAttribute('x2', `${toNode.x * 50 + 50}%`);
+                    line.setAttribute('y2', `${toNode.y * 50 + 50}%`);
+                    line.setAttribute('stroke-dasharray', '10,5');
+                    svg.appendChild(line);
                 });
 
-                let rotationY = 0;
+                let panX = 0;
                 let isDragging = false;
-                let previousX = 0;
+                let startX = 0;
 
-                diagram.addEventListener('mousedown', (e) => {
+                graph.addEventListener('mousedown', (e) => {
                     isDragging = true;
-                    previousX = e.clientX;
+                    startX = e.clientX;
                 });
 
-                diagram.addEventListener('mousemove', (e) => {
+                graph.addEventListener('mousemove', (e) => {
                     if (isDragging) {
-                        const deltaX = e.clientX - previousX;
-                        rotationY += deltaX * 0.5;
-                        scene.style.transform = `rotateY(${rotationY}deg)`;
-                        previousX = e.clientX;
+                        const deltaX = e.clientX - startX;
+                        panX += deltaX * 0.1;
+                        svg.style.transform = `translateX(${panX}px)`;
+                        startX = e.clientX;
                     }
                 });
 
-                diagram.addEventListener('mouseup', () => {
+                graph.addEventListener('mouseup', () => {
                     isDragging = false;
                 });
 
-                diagram.addEventListener('mouseleave', () => {
+                graph.addEventListener('mouseleave', () => {
                     isDragging = false;
                 });
 
-                diagram.addEventListener('mousemove', (e) => {
-                    const rect = diagram.getBoundingClientRect();
-                    const nodes = scene.querySelectorAll('.diagram-node');
-                    let tooltip = document.querySelector('.tooltip');
-                    
-                    if (tooltip) {
-                        document.body.removeChild(tooltip);
-                        tooltip = null;
+                svg.addEventListener('click', (e) => {
+                    const target = e.target;
+                    if (target.classList.contains('network-node')) {
+                        const nodes = svg.querySelectorAll('.network-node');
+                        const edges = svg.querySelectorAll('.network-edge');
+                        nodes.forEach(n => n.classList.remove('active'));
+                        edges.forEach(e => e.classList.remove('active'));
+                        target.classList.add('active');
+
+                        const nodeId = target.dataset.id;
+                        edgesData.forEach(edge => {
+                            if (edge.from === nodeId || edge.to === nodeId) {
+                                const edgeElement = Array.from(edges).find(e =>
+                                    (e.getAttribute('x1') === `${nodesData.find(n => n.id === edge.from).x * 50 + 50}%` &&
+                                     e.getAttribute('y1') === `${nodesData.find(n => n.id === edge.from).y * 50 + 50}%` &&
+                                     e.getAttribute('x2') === `${nodesData.find(n => n.id === edge.to).x * 50 + 50}%` &&
+                                     e.getAttribute('y2') === `${nodesData.find(n => n.id === edge.to).y * 50 + 50}%`) ||
+                                    (e.getAttribute('x1') === `${nodesData.find(n => n.id === edge.to).x * 50 + 50}%` &&
+                                     e.getAttribute('y1') === `${nodesData.find(n => n.id === edge.to).y * 50 + 50}%` &&
+                                     e.getAttribute('x2') === `${nodesData.find(n => n.id === edge.from).x * 50 + 50}%` &&
+                                     e.getAttribute('y2') === `${nodesData.find(n => n.id === edge.from).y * 50 + 50}%`)
+                                );
+                                if (edgeElement) edgeElement.classList.add('active');
+                            }
+                        });
+
+                        let tooltip = document.querySelector('.tooltip');
+                        if (tooltip) document.body.removeChild(tooltip);
+                        tooltip = document.createElement('div');
+                        tooltip.className = 'tooltip';
+                        tooltip.textContent = target.dataset.title;
+                        tooltip.style.left = `${e.clientX + 10}px`;
+                        tooltip.style.top = `${e.clientY + 10}px`;
+                        document.body.appendChild(tooltip);
                     }
-
-                    nodes.forEach(node => {
-                        const nodeRect = node.getBoundingClientRect();
-                        if (e.clientX >= nodeRect.left && e.clientX <= nodeRect.right &&
-                            e.clientY >= nodeRect.top && e.clientY <= nodeRect.bottom) {
-                            tooltip = document.createElement('div');
-                            tooltip.className = 'tooltip';
-                            tooltip.textContent = node.dataset.title;
-                            tooltip.style.left = `${e.clientX + 10}px`;
-                            tooltip.style.top = `${e.clientY + 10}px`;
-                            document.body.appendChild(tooltip);
-                        }
-                    });
                 });
 
-                diagram.addEventListener('mouseleave', () => {
+                graph.addEventListener('mouseleave', () => {
                     const tooltip = document.querySelector('.tooltip');
-                    if (tooltip) {
-                        document.body.removeChild(tooltip);
-                    }
+                    if (tooltip) document.body.removeChild(tooltip);
                 });
             }
 
-            // Tech Stack Diagram
+            // Tech Stack Graph
             const techStackNodes = [
-                { id: 1, label: '🧠 Aurora Core', x: 0, y: 0, z: 0, title: 'Central AI engine powering AuroraGenesis' },
-                { id: 2, label: '🔥 PyTorch', x: 2, y: 1, z: 2, title: 'Deep learning framework for model training' },
-                { id: 3, label: '📊 Neo4j', x: -2, y: 1, z: 2, title: 'Graph database for causality and auditing' },
-                { id: 4, label: '⚡ Triton', x: 2, y: -1, z: 2, title: 'GPU-accelerated inference engine' },
-                { id: 5, label: '🌐 Ray Cluster', x: -2, y: -1, z: 2, title: 'Distributed computing for scalability' }
+                { id: 1, label: '🧠 Aurora Core', x: 0, y: 0, title: 'Central AI engine powering AuroraGenesis' },
+                { id: 2, label: '🔥 PyTorch', x: 2, y: 1, title: 'Deep learning framework for model training' },
+                { id: 3, label: '📊 Neo4j', x: -2, y: 1, title: 'Graph database for causality and auditing' },
+                { id: 4, label: '⚡ Triton', x: 2, y: -1, title: 'GPU-accelerated inference engine' },
+                { id: 5, label: '🌐 Ray Cluster', x: -2, y: -1, title: 'Distributed computing for scalability' }
             ];
 
             const techStackEdges = [
@@ -1471,15 +1461,15 @@
                 { from: 5, to: 1 }
             ];
 
-            createDiagram('tech-stack-diagram', techStackNodes, techStackEdges);
+            createNetworkGraph('tech-stack-graph', techStackNodes, techStackEdges);
 
-            // Threat Detection Diagram
+            // Threat Detection Graph
             const threatDetectionNodes = [
-                { id: 1, label: '⚡ Exploit Ingestor', x: 0, y: 0, z: 0, title: 'Ingests and classifies exploits in real-time' },
-                { id: 2, label: '⚡ Exploit Mutator', x: 2, y: 0, z: 0, title: 'Mutates exploits for proactive defense' },
-                { id: 3, label: '⚡ Attack Path', x: 4, y: 0, z: 0, title: 'Simulates attack paths with MITRE ATT&CK' },
-                { id: 4, label: '🔍 Anomaly Detector', x: 6, y: 0, z: 0, title: 'Detects anomalies using GMM models' },
-                { id: 5, label: '🛡️ Response', x: 8, y: 0, z: 0, title: 'Coordinates automated threat responses' }
+                { id: 1, label: '⚡ Exploit Ingestor', x: 0, y: 0, title: 'Ingests and classifies exploits in real-time' },
+                { id: 2, label: '⚡ Exploit Mutator', x: 2, y: 0, title: 'Mutates exploits for proactive defense' },
+                { id: 3, label: '⚡ Attack Path', x: 4, y: 0, title: 'Simulates attack paths with MITRE ATT&CK' },
+                { id: 4, label: '🔍 Anomaly Detector', x: 6, y: 0, title: 'Detects anomalies using GMM models' },
+                { id: 5, label: '🛡️ Response', x: 8, y: 0, title: 'Coordinates automated threat responses' }
             ];
 
             const threatDetectionEdges = [
@@ -1489,15 +1479,15 @@
                 { from: 4, to: 5 }
             ];
 
-            createDiagram('threat-detection-diagram', threatDetectionNodes, threatDetectionEdges);
+            createNetworkGraph('threat-detection-graph', threatDetectionNodes, threatDetectionEdges);
 
-            // Ethical Validation Diagram
+            // Ethical Validation Graph
             const ethicalValidationNodes = [
-                { id: 1, label: '🔒 Soul Vector', x: 0, y: 0, z: 0, title: 'Ethical vetting with 15D soul vectors' },
-                { id: 2, label: '🔍 Entropy Check', x: 2, y: 1, z: 0, title: 'Real-time entropy analysis' },
-                { id: 3, label: '⚖️ Ethical Reasoning', x: 4, y: 2, z: 0, title: 'ML-driven ethical decision-making' },
-                { id: 4, label: '🔒 Kill Switch', x: 6, y: 1, z: 0, title: 'Automated termination for ethical drift' },
-                { id: 5, label: '🔄 Ethical Reset', x: 8, y: 0, z: 0, title: 'State reset for compliance' }
+                { id: 1, label: '🔒 Soul Vector', x: 0, y: 0, title: 'Ethical vetting with 15D soul vectors' },
+                { id: 2, label: '🔍 Entropy Check', x: 2, y: 1, title: 'Real-time entropy analysis' },
+                { id: 3, label: '⚖️ Ethical Reasoning', x: 4, y: 2, title: 'ML-driven ethical decision-making' },
+                { id: 4, label: '🔒 Kill Switch', x: 6, y: 1, title: 'Automated termination for ethical drift' },
+                { id: 5, label: '🔄 Ethical Reset', x: 8, y: 0, title: 'State reset for compliance' }
             ];
 
             const ethicalValidationEdges = [
@@ -1507,15 +1497,15 @@
                 { from: 4, to: 5 }
             ];
 
-            createDiagram('ethical-validation-diagram', ethicalValidationNodes, ethicalValidationEdges);
+            createNetworkGraph('ethical-validation-graph', ethicalValidationNodes, ethicalValidationEdges);
 
-            // Neo4j Diagram
+            // Neo4j Graph
             const neo4jNodes = [
-                { id: 1, label: '📊 Neo4j Core', x: 0, y: 0, z: 0, title: 'Graph database for real-time analytics and causality tracing' },
-                { id: 2, label: '🔒 Audit Logging', x: 2, y: 2, z: 0, title: 'Immutable audit trails with zstd compression and blockchain integration' },
-                { id: 3, label: '🧬 DAG Causality', x: -2, y: 2, z: 0, title: 'Directed Acyclic Graph for transparent causality and forensic analysis' },
-                { id: 4, label: '🔍 Forensic Replay', x: 2, y: -2, z: 0, title: 'Replays attack paths with temporal analysis for root-cause tracing' },
-                { id: 5, label: '📜 Compliance', x: -2, y: -2, z: 0, title: 'Real-time regulatory compliance monitoring with GDPR/CCPA support' }
+                { id: 1, label: '📊 Neo4j Core', x: 0, y: 0, title: 'Graph database for real-time analytics and causality tracing' },
+                { id: 2, label: '🔒 Audit Logging', x: 2, y: 2, title: 'Immutable audit trails with zstd compression and blockchain integration' },
+                { id: 3, label: '🧬 DAG Causality', x: -2, y: 2, title: 'Directed Acyclic Graph for transparent causality and forensic analysis' },
+                { id: 4, label: '🔍 Forensic Replay', x: 2, y: -2, title: 'Replays attack paths with temporal analysis for root-cause tracing' },
+                { id: 5, label: '📜 Compliance', x: -2, y: -2, title: 'Real-time regulatory compliance monitoring with GDPR/CCPA support' }
             ];
 
             const neo4jEdges = [
@@ -1525,7 +1515,7 @@
                 { from: 1, to: 5 }
             ];
 
-            createDiagram('neo4j-diagram', neo4jNodes, neo4jEdges);
+            createNetworkGraph('neo4j-graph', neo4jNodes, neo4jEdges);
 
             // Accordion Functionality
             document.querySelectorAll('.accordion-header').forEach(header => {
@@ -1694,15 +1684,15 @@
                 });
             });
 
-            // Resize Diagrams on Window Resize
-            const resizeDiagrams = () => {
-                const diagrams = [
-                    'tech-stack-diagram',
-                    'threat-detection-diagram',
-                    'ethical-validation-diagram',
-                    'neo4j-diagram'
+            // Resize Graphs on Window Resize
+            const resizeGraphs = () => {
+                const graphs = [
+                    'tech-stack-graph',
+                    'threat-detection-graph',
+                    'ethical-validation-graph',
+                    'neo4j-graph'
                 ];
-                diagrams.forEach(id => {
+                graphs.forEach(id => {
                     const container = document.getElementById(id);
                     if (container) {
                         const width = Math.min(window.innerWidth - 40, 1100);
@@ -1712,8 +1702,8 @@
                 });
             };
 
-            window.addEventListener('resize', resizeDiagrams);
-            resizeDiagrams();
+            window.addEventListener('resize', resizeGraphs);
+            resizeGraphs();
         });
     </script>
 </body>
