@@ -25,18 +25,41 @@
             this.state = {
                 session: [],
                 config: { HUGGINGFACE_TOKEN: '' },
-                ui: { isProChatOpen: false, isSpeaking: false },
-                rateLimit: { bucket: 30, lastRefill: Date.now() }
+                ui: { 
+                    isProChatOpen: false, 
+                    isSpeaking: false, 
+                    isPaused: false, 
+                    currentChunkIndex: 0, 
+                    lastActivity: Date.now(),
+                    theme: 'aurora-dark'
+                },
+                rateLimit: { bucket: 30, lastRefill: Date.now() },
+                network: { isOnline: navigator.onLine }
             };
             this.listeners = new Set();
         }
         setState(updater) {
             this.state = typeof updater === 'function' ? updater(this.state) : { ...this.state, ...updater };
             this.listeners.forEach(listener => listener(this.state));
+            try {
+                localStorage.setItem('aurora-ui-state', compressSession(this.state.ui));
+            } catch (e) {
+                console.warn('Failed to persist UI state:', e);
+            }
         }
         subscribe(listener) {
             this.listeners.add(listener);
             return () => this.listeners.delete(listener);
+        }
+        loadState() {
+            try {
+                const uiState = localStorage.getItem('aurora-ui-state');
+                if (uiState) {
+                    this.state.ui = { ...this.state.ui, ...decompressSession(uiState) };
+                }
+            } catch (e) {
+                console.warn('Failed to load UI state:', e);
+            }
         }
     }
 
@@ -50,7 +73,6 @@
     const HF_MODEL = 'NousResearch/Hermes-2-Pro-Mistral-7B';
     const SESSION_VERSION = '2.0.0';
     const FALLBACK_CONFIG = { HUGGINGFACE_TOKEN: '' };
-    const FALLBACK_FAVICON = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACFSURBVDhP3ZCxDYAgEEW3ZyE2cAE7sAArsABTsAQz8AbOwH9kJtm2N+x9RMR5ni8AALlFURQBAABYxWazWWO3l7ZpmqZpmpIkCSGEEEVRVFW1XnutuR6u67rdbheEEN/3vV5V1fX9fn+apmmapt/vdzgcLpfLvu/7+/3+/gO8O+mL4TyOAAAAAElFTkSuQmCC';
 
     // ─── ERROR HANDLING ───────────────────────────────────────────────
     window.onerror = (msg, url, line, col, error) => {
@@ -78,6 +100,16 @@
             stack: event.reason?.stack,
             ts: Date.now()
         });
+    });
+
+    window.addEventListener('online', () => {
+        store.setState(state => ({ ...state, network: { ...state.network, isOnline: true } }));
+        showToast('Network connection restored.');
+    });
+
+    window.addEventListener('offline', () => {
+        store.setState(state => ({ ...state, network: { ...state.network, isOnline: false } }));
+        showToast('Network connection lost. Some features may be unavailable.');
     });
 
     // ─── RUNTIME TEST ─────────────────────────────────────────────────
@@ -134,26 +166,6 @@
         }
     }
 
-    async function loadFavicon() {
-        try {
-            const response = await fetchWithRetry('/favicon.png', { retries: 2, backoff: 500 });
-            if (!response.ok) throw new Error('Favicon not found');
-            const favicon = document.querySelector('link[rel="icon"]');
-            favicon.href = response.url;
-        } catch (e) {
-            console.warn('Failed to load favicon, using fallback:', e);
-            const favicon = document.querySelector('link[rel="icon"]');
-            favicon.href = FALLBACK_FAVICON;
-            emitter.emit(AUDIT_EVENT, {
-                id: crypto.randomUUID(),
-                type: 'favicon_load',
-                status: 'failed',
-                error: e.message,
-                ts: Date.now()
-            });
-        }
-    }
-
     // ─── TOKEN BUCKET RATE LIMITING ───────────────────────────────────
     function takeToken() {
         const now = Date.now();
@@ -201,8 +213,8 @@
             }
             const data = decompressSession(compressed);
             if (data.version !== SESSION_VERSION) {
-                console.warn('Session version mismatch, resetting session.');
-                store.setState(state => ({ ...state, session: [] }));
+                console.warn('Session version mismatch, migrating session.');
+                store.setState(state => ({ ...state, session: migrateSession(data.entries) }));
                 return;
             }
             store.setState(state => ({ ...state, session: data.entries }));
@@ -251,13 +263,21 @@
         }
     }
 
+    function migrateSession(entries) {
+        return entries.map(entry => ({
+            id: entry.id || crypto.randomUUID(),
+            userMsg: entry.userMsg || '',
+            botMsg: entry.botMsg || '',
+            signature: entry.signature || '',
+            ts: entry.ts || Date.now()
+        }));
+    }
+
     function compressSession(data) {
-        // Simulated Zstd compression (base64 for simplicity)
         return btoa(JSON.stringify(data));
     }
 
     function decompressSession(compressed) {
-        // Simulated Zstd decompression
         return JSON.parse(atob(compressed));
     }
 
@@ -405,7 +425,7 @@
         }
 
         function toggleChat(open) {
-            const { root } = getElements();
+            const { root, inputEl } = getElements();
             if (!root) {
                 console.warn('ProChat root element not found');
                 return;
@@ -413,7 +433,6 @@
             store.setState(state => ({ ...state, ui: { ...state.ui, isProChatOpen: open } }));
             root.classList.toggle('hidden', !open);
             if (open) {
-                const { inputEl } = getElements();
                 inputEl?.focus();
                 root.setAttribute('aria-hidden', 'false');
                 announce('Aurora Assistant chat opened.');
@@ -462,7 +481,7 @@
         function init() {
             const { launcher, closeBtn, form, inputEl } = getElements();
             if (!launcher || !closeBtn || !form || !inputEl) {
-                console.warn('ProChat elements not found, deferring initialization');
+                console.warn('ProChat elements not found, retrying initialization');
                 setTimeout(init, 100);
                 return;
             }
@@ -665,7 +684,7 @@
         function init() {
             const { input, sendButton } = getElements();
             if (!input || !sendButton) {
-                console.warn('MainChat elements not found, deferring initialization');
+                console.warn('MainChat elements not found, retrying initialization');
                 setTimeout(init, 100);
                 return;
             }
@@ -796,7 +815,7 @@
         function init() {
             const { startBtn, pauseBtn } = getTTSElements();
             if (!startBtn || !pauseBtn) {
-                console.warn('TTS elements not found, deferring initialization');
+                console.warn('TTS elements not found, retrying initialization');
                 setTimeout(init, 100);
                 return;
             }
@@ -924,11 +943,11 @@
     function sanitizeInput(str) {
         if (!str) return '';
         return str.replace(/[<>&"']/g, match => ({
-            '<': '&lt;',
-            '>': '&gt;',
-            '&': '&amp;',
-            '"': '&quot;',
-            "'": '&#39;'
+            '<': '<',
+            '>': '>',
+            '&': '&',
+            '"': '"',
+            "'": '''
         })[match]).replace(/[^\x20-\x7E\n\r\t]/g, '');
     }
 
@@ -1123,8 +1142,8 @@
     // ─── INITIALIZATION ───────────────────────────────────────────────
     document.addEventListener('DOMContentLoaded', async () => {
         try {
+            store.loadState();
             await loadConfig();
-            await loadFavicon();
             loadSession();
             await initWebGPUParticles();
             proChat.init();
