@@ -25,11 +25,16 @@ let llmCallCount = 0;
  | 1) Neural Background – WebGL with bloom, 2D fallback                       *
  *─────────────────────────────────────────────────────────────────────────────*/
 function initNeuralBackground() {
-  const host = $('#neural-bg'); if (!host) return;
+  console.log('Initializing neural background...');
+  const host = $('#neural-bg'); if (!host) {
+    console.error('Neural background container not found');
+    return;
+  }
   const area = innerWidth * innerHeight;
 
   /*───────────── fallback 2D canvas ─────────────*/
   const fallback2D = () => {
+    console.log('Using 2D canvas fallback');
     const N = Math.max(20, Math.min(150, Math.floor(area / 120_000)));
     const canvas = Object.assign(document.createElement('canvas'), { id: 'neural-bg-fallback' });
     host.appendChild(canvas);
@@ -97,13 +102,18 @@ function initNeuralBackground() {
   };
 
   /*───────────── WebGL variant ─────────────*/
-  if (!webglSupported || prefersRM) return fallback2D();
+  if (!webglSupported || prefersRM) {
+    console.log('WebGL not supported or reduced motion preferred, falling back to 2D');
+    return fallback2D();
+  }
+  console.log('Loading WebGL dependencies...');
   Promise.all([
     import('https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.min.js'),
     import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/EffectComposer.js'),
     import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/RenderPass.js'),
     import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/UnrealBloomPass.js')
   ]).then(([{ default: THREE }, { EffectComposer }, { RenderPass }, { UnrealBloomPass }]) => {
+    console.log('WebGL dependencies loaded successfully');
     const DPR = Math.min(devicePixelRatio, 2);
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setPixelRatio(DPR);
@@ -344,6 +354,7 @@ function initNeuralBackground() {
  | 2) Scroll-spy                                                             *
  *─────────────────────────────────────────────────────────────────────────────*/
 function initScrollSpy() {
+  console.log('Initializing scroll-spy...');
   document.addEventListener('scroll', throttle(() => {
     const sections = $$('main section');
     let active = '';
@@ -361,7 +372,11 @@ function initScrollSpy() {
  | 3) Graphs (canvas)                                                        *
  *─────────────────────────────────────────────────────────────────────────────*/
 function createGraph(selector, nodes, edges) {
-  const wrap = $(selector); if (!wrap) return;
+  console.log(`Creating graph for ${selector}...`);
+  const wrap = $(selector); if (!wrap) {
+    console.error(`Graph container ${selector} not found`);
+    return;
+  }
   wrap.innerHTML = '';
   const canvas = document.createElement('canvas');
   wrap.appendChild(canvas);
@@ -414,6 +429,7 @@ function createGraph(selector, nodes, edges) {
  | 4) Consent popup, Dev panel, keyboard overlay                             *
  *─────────────────────────────────────────────────────────────────────────────*/
 function initConsent() {
+  console.log('Initializing consent popup...');
   const pop = $('#consent-popup'), btn = $('.consent-accept');
   if (!localStorage.getItem('consent')) pop?.classList.remove('hidden');
   btn?.addEventListener('click', () => {
@@ -423,6 +439,7 @@ function initConsent() {
 }
 
 function initDevPanel() {
+  console.log('Initializing dev panel...');
   const panel = $('#dev-panel'), toggle = $('.toggle-dev-panel'), overlay = $('#keyboard-overlay');
   toggle?.addEventListener('click', () => panel?.classList.toggle('active'));
   document.addEventListener('keydown', e => {
@@ -452,11 +469,11 @@ function throttle(fn, ms) {
  | 6) Static data (nodes/edges)                                              *
  *─────────────────────────────────────────────────────────────────────────────*/
 const threatNodes = [
-  { id: '1', x: 100, y: 100, r: 20, label: 'Ingest' },
-  { id: '2', x: 300, y: 200, r: 20, label: 'Analyze' },
-  { id: '3', x: 500, y: 150, r: 20, label: 'Mutate' },
-  { id: '4', x: 200, y: 350, r: 20, label: 'Neutralize' },
-  { id: '5', x: 400, y: 400, r: 20, label: 'Audit' }
+  { BODY: '1', x: 100, y: 100, r: 20, label: 'Ingest' },
+  { BODY: '2', x: 300, y: 200, r: 20, label: 'Analyze' },
+  { BODY: '3', x: 500, y: 150, r: 20, label: 'Mutate' },
+  { BODY: '4', x: 200, y: 350, r: 20, label: 'Neutralize' },
+  { BODY: '5', x: 400, y: 400, r: 20, label: 'Audit' }
 ];
 const threatEdges = [
   { source: '1', target: '2' },
@@ -466,9 +483,9 @@ const threatEdges = [
 ];
 
 const stackNodes = [
-  { id: '1', x: 150, y: 100, r: 20, label: 'PyTorch' },
-  { id: '2', x: 350, y: 150, r: 20, label: 'Ray' },
-  { id: '3', x: 250, y: 300, r: 20, label: 'Redis' }
+  { BODY: '1', x: 150, y: 100, r: 20, label: 'PyTorch' },
+  { BODY: '2', x: 350, y: 150, r: 20, label: 'Ray' },
+  { BODY: '3', x: 250, y: 300, r: 20, label: 'Redis' }
 ];
 const stackEdges = [
   { source: '1', target: '2' },
@@ -479,14 +496,18 @@ const stackEdges = [
  | 7) Boot everything once DOM ready                                         *
  *─────────────────────────────────────────────────────────────────────────────*/
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('DOM loaded, initializing...');
   try {
     // Hide loading overlay after a short delay to ensure rendering
     const loading = $('#loading');
     if (loading) {
+      console.log('Hiding loading overlay...');
       setTimeout(() => {
         loading.classList.add('hidden');
         loading.style.display = 'none'; // Ensure it’s fully hidden
       }, 500);
+    } else {
+      console.warn('Loading overlay not found');
     }
 
     initNeuralBackground();
@@ -503,6 +524,7 @@ document.addEventListener('DOMContentLoaded', () => {
     createGraph('#stack-graph', stackNodes, stackEdges);
 
     $('.snapshot-button')?.addEventListener('click', () => {
+      console.log('Snapshot button clicked');
       const snap = {
         stamp: new Date().toISOString(),
         llmCalls: llmCallCount,
@@ -522,8 +544,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // Ensure loading overlay is hidden even on error
     const loading = $('#loading');
     if (loading) {
+      console.log('Hiding loading overlay due to error');
       loading.classList.add('hidden');
       loading.style.display = 'none';
     }
+    // Display error message to user
+    const errorDiv = document.createElement('div');
+    errorDiv.style.color = 'red';
+    errorDiv.style.textAlign = 'center';
+    errorDiv.style.padding = '20px';
+    errorDiv.textContent = 'Failed to load the application. Please try refreshing the page or contact support.';
+    document.body.appendChild(errorDiv);
   }
 });
+
+console.log('nexus.js loaded');
