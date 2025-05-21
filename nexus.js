@@ -92,13 +92,12 @@ function initNeuralBackground() {
 
   /*───────────── WebGL variant ─────────────*/
   if (!webglSupported || prefersRM) return fallback2D();
-  // Use global THREE from three.min.js
-  const THREE = window.THREE;
   Promise.all([
+    import('https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.min.js'),
     import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/EffectComposer.js'),
     import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/RenderPass.js'),
     import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/UnrealBloomPass.js')
-  ]).then(([{ EffectComposer }, { RenderPass }, { UnrealBloomPass }]) => {
+  ]).then(([{ default: THREE }, { EffectComposer }, { RenderPass }, { UnrealBloomPass }]) => {
     const DPR = Math.min(devicePixelRatio, 2);
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setPixelRatio(DPR);
@@ -468,9 +467,11 @@ const stackEdges = [
  *─────────────────────────────────────────────────────────────────────────────*/
 document.addEventListener('DOMContentLoaded', () => {
   try {
-    // Hide loading overlay
+    // Hide loading overlay after a short delay to ensure rendering
     const loading = $('#loading');
-    if (loading) loading.classList.add('hidden');
+    if (loading) {
+      setTimeout(() => loading.classList.add('hidden'), 500);
+    }
 
     initNeuralBackground();
     initThemeToggle();
