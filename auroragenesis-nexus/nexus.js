@@ -3,12 +3,6 @@
  | Theme, neural background (WebGL + 2D fallback), graphs, charts, LLM, HUD…   |
  *─────────────────────────────────────────────────────────────────────────────*/
 
-import { initThemeToggle } from '/auroragenesis-nexus/theme-toggle.js';
-import { initLLM } from '/auroragenesis-nexus/llm.js';
-import { initCharts } from '/auroragenesis-nexus/charts.js';
-import { initAccordion } from '/auroragenesis-nexus/accordion.js';
-import { initTelemetry } from '/auroragenesis-nexus/telemetry.js';
-
 /* ── tiny helpers ─────────────────────────────────────────────────────────── */
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
@@ -20,6 +14,70 @@ const webglSupported = (() => {
 
 /* ── globals ──────────────────────────────────────────────────────────────── */
 let llmCallCount = 0;
+
+/* ── initialization function ──────────────────────────────────────────────── */
+function initEverything() {
+  console.log('DOM loaded, initializing...');
+  try {
+    // Hide loading overlay after a short delay to ensure rendering
+    const loading = $('#loading');
+    if (loading) {
+      console.log('Hiding loading overlay...');
+      setTimeout(() => {
+        loading.classList.add('hidden');
+        loading.style.display = 'none'; // Ensure it’s fully hidden
+      }, 500);
+    } else {
+      console.warn('Loading overlay not found');
+    }
+
+    initNeuralBackground();
+    initThemeToggle();
+    initScrollSpy();
+    initCharts();
+    initLLM();
+    initTelemetry();
+    initAccordion();
+    initConsent();
+    initDevPanel();
+
+    createGraph('#threat-detection-graph', threatNodes, threatEdges);
+    createGraph('#stack-graph', stackNodes, stackEdges);
+
+    $('.snapshot-button')?.addEventListener('click', () => {
+      console.log('Snapshot button clicked');
+      const snap = {
+        stamp: new Date().toISOString(),
+        llmCalls: llmCallCount,
+        entropy: $('#entropy')?.textContent,
+        gpu: $('#gpu-util')?.textContent
+      };
+      const blob = new Blob([JSON.stringify(snap, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'nexus-snapshot.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  } catch (err) {
+    console.error('Initialization failed:', err);
+    // Ensure loading overlay is hidden even on error
+    const loading = $('#loading');
+    if (loading) {
+      console.log('Hiding loading overlay due to error');
+      loading.classList.add('hidden');
+      loading.style.display = 'none';
+    }
+    // Display error message to user
+    const errorDiv = document.createElement('div');
+    errorDiv.style.color = 'red';
+    errorDiv.style.textAlign = 'center';
+    errorDiv.style.padding = '20px';
+    errorDiv.textContent = 'Failed to load the application. Please try refreshing the page or contact support.';
+    document.body.appendChild(errorDiv);
+  }
+}
 
 /*─────────────────────────────────────────────────────────────────────────────*
  | 1) Neural Background – WebGL with bloom, 2D fallback                       *
@@ -493,69 +551,18 @@ const stackEdges = [
 ];
 
 /*─────────────────────────────────────────────────────────────────────────────*
- | 7) Boot everything once DOM ready                                         *
+ | 7) Boot everything with crash guard                                       *
  *─────────────────────────────────────────────────────────────────────────────*/
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('DOM loaded, initializing...');
-  try {
-    // Hide loading overlay after a short delay to ensure rendering
-    const loading = $('#loading');
-    if (loading) {
-      console.log('Hiding loading overlay...');
-      setTimeout(() => {
-        loading.classList.add('hidden');
-        loading.style.display = 'none'; // Ensure it’s fully hidden
-      }, 500);
-    } else {
-      console.warn('Loading overlay not found');
-    }
-
-    initNeuralBackground();
-    initThemeToggle();
-    initScrollSpy();
-    initCharts();
-    initLLM();
-    initTelemetry();
-    initAccordion();
-    initConsent();
-    initDevPanel();
-
-    createGraph('#threat-detection-graph', threatNodes, threatEdges);
-    createGraph('#stack-graph', stackNodes, stackEdges);
-
-    $('.snapshot-button')?.addEventListener('click', () => {
-      console.log('Snapshot button clicked');
-      const snap = {
-        stamp: new Date().toISOString(),
-        llmCalls: llmCallCount,
-        entropy: $('#entropy')?.textContent,
-        gpu: $('#gpu-util')?.textContent
-      };
-      const blob = new Blob([JSON.stringify(snap, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'nexus-snapshot.json';
-      a.click();
-      URL.revokeObjectURL(url);
-    });
-  } catch (err) {
-    console.error('Initialization failed:', err);
-    // Ensure loading overlay is hidden even on error
-    const loading = $('#loading');
-    if (loading) {
-      console.log('Hiding loading overlay due to error');
-      loading.classList.add('hidden');
-      loading.style.display = 'none';
-    }
-    // Display error message to user
-    const errorDiv = document.createElement('div');
-    errorDiv.style.color = 'red';
-    errorDiv.style.textAlign = 'center';
-    errorDiv.style.padding = '20px';
-    errorDiv.textContent = 'Failed to load the application. Please try refreshing the page or contact support.';
-    document.body.appendChild(errorDiv);
+try {
+  document.addEventListener('DOMContentLoaded', initEverything);
+} catch (err) {
+  console.error('🔥 FATAL INIT ERROR:', err);
+  const loading = $('#loading');
+  if (loading) {
+    console.log('Hiding loading overlay due to fatal error');
+    loading.classList.add('hidden');
+    loading.style.display = 'none';
   }
-});
+}
 
 console.log('nexus.js loaded');
