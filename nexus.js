@@ -3,11 +3,11 @@
  | Theme, neural background (WebGL + 2D fallback), graphs, charts, LLM, HUD…   |
  *─────────────────────────────────────────────────────────────────────────────*/
 
-import { initThemeToggle } from './theme-toggle.js';
-import { initLLM } from './llm.js';
-import { initCharts } from './charts.js';
-import { initAccordion } from './accordion.js';
-import { initTelemetry } from './telemetry.js';
+import { initThemeToggle } from '/auroragenesis-nexus/theme-toggle.js';
+import { initLLM } from '/auroragenesis-nexus/llm.js';
+import { initCharts } from '/auroragenesis-nexus/charts.js';
+import { initAccordion } from '/auroragenesis-nexus/accordion.js';
+import { initTelemetry } from '/auroragenesis-nexus/telemetry.js';
 
 /* ── tiny helpers ─────────────────────────────────────────────────────────── */
 const $ = s => document.querySelector(s);
@@ -469,11 +469,11 @@ function throttle(fn, ms) {
  | 6) Static data (nodes/edges)                                              *
  *─────────────────────────────────────────────────────────────────────────────*/
 const threatNodes = [
-  { BODY: '1', x: 100, y: 100, r: 20, label: 'Ingest' },
-  { BODY: '2', x: 300, y: 200, r: 20, label: 'Analyze' },
-  { BODY: '3', x: 500, y: 150, r: 20, label: 'Mutate' },
-  { BODY: '4', x: 200, y: 350, r: 20, label: 'Neutralize' },
-  { BODY: '5', x: 400, y: 400, r: 20, label: 'Audit' }
+  { id: '1', x: 100, y: 100, r: 20, label: 'Ingest' },
+  { id: '2', x: 300, y: 200, r: 20, label: 'Analyze' },
+  { id: '3', x: 500, y: 150, r: 20, label: 'Mutate' },
+  { id: '4', x: 200, y: 350, r: 20, label: 'Neutralize' },
+  { id: '5', x: 400, y: 400, r: 20, label: 'Audit' }
 ];
 const threatEdges = [
   { source: '1', target: '2' },
@@ -483,9 +483,9 @@ const threatEdges = [
 ];
 
 const stackNodes = [
-  { BODY: '1', x: 150, y: 100, r: 20, label: 'PyTorch' },
-  { BODY: '2', x: 350, y: 150, r: 20, label: 'Ray' },
-  { BODY: '3', x: 250, y: 300, r: 20, label: 'Redis' }
+  { id: '1', x: 150, y: 100, r: 20, label: 'PyTorch' },
+  { id: '2', x: 350, y: 150, r: 20, label: 'Ray' },
+  { id: '3', x: 250, y: 300, r: 20, label: 'Redis' }
 ];
 const stackEdges = [
   { source: '1', target: '2' },
