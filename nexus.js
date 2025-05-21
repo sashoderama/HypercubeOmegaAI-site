@@ -3,6 +3,16 @@
  | Theme, neural background (WebGL + 2D fallback), graphs, charts, LLM, HUD…   |
  *─────────────────────────────────────────────────────────────────────────────*/
 
+try {
+  import('/theme-toggle.js').then(module => { window.initThemeToggle = module.initThemeToggle; });
+  import('/llm.js').then(module => { window.initLLM = module.initLLM; });
+  import('/charts.js').then(module => { window.initCharts = module.initCharts; });
+  import('/accordion.js').then(module => { window.initAccordion = module.initAccordion; });
+  import('/telemetry.js').then(module => { window.initTelemetry = module.initTelemetry; });
+} catch (err) {
+  console.error('🔥 MODULE IMPORT ERROR:', err);
+}
+
 /* ── tiny helpers ─────────────────────────────────────────────────────────── */
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
@@ -19,13 +29,13 @@ let llmCallCount = 0;
 function initEverything() {
   console.log('DOM loaded, initializing...');
   try {
-    // Hide loading overlay after a short delay to ensure rendering
+    // Hide loading overlay after a short delay
     const loading = $('#loading');
     if (loading) {
       console.log('Hiding loading overlay...');
       setTimeout(() => {
         loading.classList.add('hidden');
-        loading.style.display = 'none'; // Ensure it’s fully hidden
+        loading.style.display = 'none';
       }, 500);
     } else {
       console.warn('Loading overlay not found');
@@ -62,14 +72,12 @@ function initEverything() {
     });
   } catch (err) {
     console.error('Initialization failed:', err);
-    // Ensure loading overlay is hidden even on error
     const loading = $('#loading');
     if (loading) {
       console.log('Hiding loading overlay due to error');
       loading.classList.add('hidden');
       loading.style.display = 'none';
     }
-    // Display error message to user
     const errorDiv = document.createElement('div');
     errorDiv.style.color = 'red';
     errorDiv.style.textAlign = 'center';
@@ -117,7 +125,6 @@ function initNeuralBackground() {
       canvas.style.width = innerWidth + 'px';
       canvas.style.height = innerHeight + 'px';
 
-      // Cyberpunk gradient background
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
       gradient.addColorStop(0, 'rgba(10, 15, 30, 0.9)');
       gradient.addColorStop(1, 'rgba(40, 60, 120, 0.9)');
@@ -130,7 +137,7 @@ function initNeuralBackground() {
         if (d < 250) {
           pulse += 0.04;
           ctx.strokeStyle = `rgba(143,169,255,${(0.3 + 0.2 * Math.sin(pulse)) * (1 - d / 250)})`;
-          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+          ctx.beginPath(); ctx shortages.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
         }
         edges[s].pulse = pulse;
       });
@@ -182,7 +189,6 @@ function initNeuralBackground() {
     const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 1000);
     camera.position.z = 30;
 
-    // Add lighting
     const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
     scene.add(ambientLight);
     const pointLight = new THREE.PointLight(0x8fa9ff, 1.2, 25);
@@ -193,7 +199,6 @@ function initNeuralBackground() {
     composer.addPass(new RenderPass(scene, camera));
     composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.5, 0.2, 0.85));
 
-    // Dynamic node count
     const NODE_COUNT = Math.max(40, Math.min(250, Math.floor(area / 200_000)));
     const clusters = 4;
     const nodes = Array.from({ length: NODE_COUNT }, () => ({
@@ -209,7 +214,6 @@ function initNeuralBackground() {
       return { s, t, pulse: Math.random() * Math.PI * 2 };
     });
 
-    // Node geometry with rotation
     const posArr = new Float32Array(NODE_COUNT * 3);
     const pulseArr = new Float32Array(NODE_COUNT);
     const rotArr = new Float32Array(NODE_COUNT);
@@ -246,7 +250,6 @@ function initNeuralBackground() {
     });
     scene.add(new THREE.Points(nodeGeo, nodeMat));
 
-    // Edge geometry with pulsing
     const edgeArr = new Float32Array(edges.length * 6);
     const edgePulseArr = new Float32Array(edges.length);
     const edgeGeo = new THREE.BufferGeometry();
@@ -276,7 +279,6 @@ function initNeuralBackground() {
     });
     scene.add(new THREE.LineSegments(edgeGeo, edgeMat));
 
-    // Gradient background with subtle noise
     const gradientGeo = new THREE.PlaneGeometry(40, 40);
     const gradientMat = new THREE.ShaderMaterial({
       vertexShader: `
@@ -304,7 +306,6 @@ function initNeuralBackground() {
     gradientMesh.position.z = -10;
     scene.add(gradientMesh);
 
-    // Particle system for floating data sparks
     const particleCount = 50;
     const particleGeo = new THREE.BufferGeometry();
     const particlePos = new Float32Array(particleCount * 3);
@@ -357,7 +358,6 @@ function initNeuralBackground() {
       particleGeo.attributes.position.needsUpdate = true;
     }
 
-    /* main loop */
     let last = 0;
     let animationFrameId = null;
     const animate = t => {
