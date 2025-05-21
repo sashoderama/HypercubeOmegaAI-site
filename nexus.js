@@ -137,7 +137,10 @@ function initNeuralBackground() {
         if (d < 250) {
           pulse += 0.04;
           ctx.strokeStyle = `rgba(143,169,255,${(0.3 + 0.2 * Math.sin(pulse)) * (1 - d / 250)})`;
-          ctx.beginPath(); ctx shortages.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
         }
         edges[s].pulse = pulse;
       });
