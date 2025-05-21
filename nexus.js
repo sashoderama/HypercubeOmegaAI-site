@@ -47,6 +47,7 @@ function initNeuralBackground() {
       return { s, t, pulse: Math.random() * Math.PI * 2 };
     });
 
+    let animationFrameId = null;
     const draw = ts => {
       canvas.width = innerWidth * devicePixelRatio;
       canvas.height = innerHeight * devicePixelRatio;
@@ -84,9 +85,14 @@ function initNeuralBackground() {
         ctx.shadowBlur = 0;
       });
 
-      !prefersRM && requestAnimationFrame(draw);
+      if (!prefersRM) {
+        animationFrameId = requestAnimationFrame(draw);
+      }
     };
-    window.addEventListener('resize', () => requestAnimationFrame(draw));
+    window.addEventListener('resize', () => {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      requestAnimationFrame(draw);
+    });
     requestAnimationFrame(draw);
   };
 
@@ -285,6 +291,7 @@ function initNeuralBackground() {
 
     /* main loop */
     let last = 0;
+    let animationFrameId = null;
     const animate = t => {
       if (t - last > 20) {
         nodes.forEach(n => {
@@ -309,7 +316,9 @@ function initNeuralBackground() {
         composer.render();
         last = t;
       }
-      !prefersRM && requestAnimationFrame(animate);
+      if (!prefersRM) {
+        animationFrameId = requestAnimationFrame(animate);
+      }
     };
 
     function onResize() {
@@ -318,9 +327,13 @@ function initNeuralBackground() {
       camera.aspect = innerWidth / innerHeight;
       camera.updateProjectionMatrix();
     }
-    window.addEventListener('resize', onResize);
+    window.addEventListener('resize', () => {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      onResize();
+      requestAnimationFrame(animate);
+    });
     onResize();
-    requestAnimationFrame(animate);
+    animationFrameId = requestAnimationFrame(animate);
   }).catch(err => {
     console.error('WebGL failed, using fallback', err);
     fallback2D();
@@ -470,7 +483,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hide loading overlay after a short delay to ensure rendering
     const loading = $('#loading');
     if (loading) {
-      setTimeout(() => loading.classList.add('hidden'), 500);
+      setTimeout(() => {
+        loading.classList.add('hidden');
+        loading.style.display = 'none'; // Ensure it’s fully hidden
+      }, 500);
     }
 
     initNeuralBackground();
@@ -505,6 +521,9 @@ document.addEventListener('DOMContentLoaded', () => {
     console.error('Initialization failed:', err);
     // Ensure loading overlay is hidden even on error
     const loading = $('#loading');
-    if (loading) loading.classList.add('hidden');
+    if (loading) {
+      loading.classList.add('hidden');
+      loading.style.display = 'none';
+    }
   }
 });
