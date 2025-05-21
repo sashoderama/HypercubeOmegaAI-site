@@ -475,3 +475,13 @@ footer p {
   .cyber-button { padding: 0.8rem 1.5rem; font-size: 0.9rem; }
   .telemetry-hud { width: 100%; border-radius: 0; box-shadow: none; }
 }
+
+@media screen and (min-resolution: 192dpi) {
+  /* Retina styles */
+  body {
+    font-size: 17px;
+  }
+  .card {
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+  }
+}
