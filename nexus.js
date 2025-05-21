@@ -92,12 +92,13 @@ function initNeuralBackground() {
 
   /*───────────── WebGL variant ─────────────*/
   if (!webglSupported || prefersRM) return fallback2D();
+  // Use global THREE from three.min.js
+  const THREE = window.THREE;
   Promise.all([
-    import('https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js'),
     import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/EffectComposer.js'),
     import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/RenderPass.js'),
     import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/UnrealBloomPass.js')
-  ]).then(([{ default: THREE }, { EffectComposer }, { RenderPass }, { UnrealBloomPass }]) => {
+  ]).then(([{ EffectComposer }, { RenderPass }, { UnrealBloomPass }]) => {
     const DPR = Math.min(devicePixelRatio, 2);
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setPixelRatio(DPR);
@@ -466,35 +467,43 @@ const stackEdges = [
  | 7) Boot everything once DOM ready                                         *
  *─────────────────────────────────────────────────────────────────────────────*/
 document.addEventListener('DOMContentLoaded', () => {
-  // Hide loading overlay
-  $('#loading').classList.add('hidden');
+  try {
+    // Hide loading overlay
+    const loading = $('#loading');
+    if (loading) loading.classList.add('hidden');
 
-  initNeuralBackground();
-  initThemeToggle();
-  initScrollSpy();
-  initCharts();
-  initLLM();
-  initTelemetry();
-  initAccordion();
-  initConsent();
-  initDevPanel();
+    initNeuralBackground();
+    initThemeToggle();
+    initScrollSpy();
+    initCharts();
+    initLLM();
+    initTelemetry();
+    initAccordion();
+    initConsent();
+    initDevPanel();
 
-  createGraph('#threat-detection-graph', threatNodes, threatEdges);
-  createGraph('#stack-graph', stackNodes, stackEdges);
+    createGraph('#threat-detection-graph', threatNodes, threatEdges);
+    createGraph('#stack-graph', stackNodes, stackEdges);
 
-  $('.snapshot-button')?.addEventListener('click', () => {
-    const snap = {
-      stamp: new Date().toISOString(),
-      llmCalls: llmCallCount,
-      entropy: $('#entropy')?.textContent,
-      gpu: $('#gpu-util')?.textContent
-    };
-    const blob = new Blob([JSON.stringify(snap, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'nexus-snapshot.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  });
+    $('.snapshot-button')?.addEventListener('click', () => {
+      const snap = {
+        stamp: new Date().toISOString(),
+        llmCalls: llmCallCount,
+        entropy: $('#entropy')?.textContent,
+        gpu: $('#gpu-util')?.textContent
+      };
+      const blob = new Blob([JSON.stringify(snap, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'nexus-snapshot.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  } catch (err) {
+    console.error('Initialization failed:', err);
+    // Ensure loading overlay is hidden even on error
+    const loading = $('#loading');
+    if (loading) loading.classList.add('hidden');
+  }
 });
