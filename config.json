@@ -1,5 +1,0 @@
-{
-  "HF_TOKEN": "",
-  "model": "mistral-7b-instruct",
-  "api_base": "http://localhost:7000"
-}
