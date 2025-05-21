@@ -1,682 +1,500 @@
-import * as THREE from 'https://unpkg.com/three@0.134.0/build/three.module.js';
-import { EffectComposer } from 'https://unpkg.com/three@0.134.0/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'https://unpkg.com/three@0.134.0/examples/jsm/postprocessing/RenderPass.js';
-import { UnrealBloomPass } from 'https://unpkg.com/three@0.134.0/examples/jsm/postprocessing/UnrealBloomPass.js';
+/*─────────────────────────────────────────────────────────────────────────────*
+ | nexus.js – unified entry-point                                              |
+ | Theme, neural background (WebGL + 2D fallback), graphs, charts, LLM, HUD…   |
+ *─────────────────────────────────────────────────────────────────────────────*/
 
-// Utility Functions
-const $ = (selector) => document.querySelector(selector);
-const $$ = (selector) => document.querySelectorAll(selector);
+import { initThemeToggle } from './theme-toggle.js';
+import { initLLM } from './llm.js';
+import { initCharts } from './charts.js';
+import { initAccordion } from './accordion.js';
+import { initTelemetry } from './telemetry.js';
 
-// Spring Animation Utility
-function springAnimation(target, current, velocity, stiffness = 0.15, damping = 0.8) {
-    const dx = target - current;
-    velocity += dx * stiffness;
-    velocity *= damping;
-    return { value: current + velocity, velocity };
-}
+/* ── tiny helpers ─────────────────────────────────────────────────────────── */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const prefersRM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const webglSupported = (() => {
+  try { return !!document.createElement('canvas').getContext('webgl2'); }
+  catch { return false; }
+})();
 
-// Theme Toggle
-function initThemeToggle() {
-    const toggleButton = $('.theme-toggle');
-    toggleButton.addEventListener('click', () => {
-        document.body.classList.toggle('light-mode');
-        localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
+/* ── globals ──────────────────────────────────────────────────────────────── */
+let llmCallCount = 0;
+
+/*─────────────────────────────────────────────────────────────────────────────*
+ | 1) Neural Background – WebGL with bloom, 2D fallback                       *
+ *─────────────────────────────────────────────────────────────────────────────*/
+function initNeuralBackground() {
+  const host = $('#neural-bg'); if (!host) return;
+  const area = innerWidth * innerHeight;
+
+  /*───────────── fallback 2D canvas ─────────────*/
+  const fallback2D = () => {
+    const N = Math.max(20, Math.min(150, Math.floor(area / 120_000)));
+    const canvas = Object.assign(document.createElement('canvas'), { id: 'neural-bg-fallback' });
+    host.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+    const nodes = Array.from({ length: N }, () => ({
+      x: Math.random() * innerWidth,
+      y: Math.random() * innerHeight,
+      vx: (Math.random() - 0.5) * 0.6,
+      vy: (Math.random() - 0.5) * 0.6,
+      pulse: Math.random() * Math.PI * 2
+    }));
+    const edges = Array.from({ length: N * 1.2 }, () => {
+      let s = Math.floor(Math.random() * N), t;
+      do { t = Math.floor(Math.random() * N); } while (t === s);
+      return { s, t, pulse: Math.random() * Math.PI * 2 };
     });
 
-    // Initialize theme based on localStorage or prefers-color-scheme
-    if (localStorage.getItem('theme') === 'light' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: light)').matches)) {
-        document.body.classList.add('light-mode');
-    }
-}
+    const draw = ts => {
+      canvas.width = innerWidth * devicePixelRatio;
+      canvas.height = innerHeight * devicePixelRatio;
+      canvas.style.width = innerWidth + 'px';
+      canvas.style.height = innerHeight + 'px';
 
-// Particle System (Neural Network with Bloom and Noise)
-function initParticleSystem() {
-    const canvas = $('#particles');
+      // Cyberpunk gradient background
+      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      gradient.addColorStop(0, 'rgba(10, 15, 30, 0.9)');
+      gradient.addColorStop(1, 'rgba(40, 60, 120, 0.9)');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.lineWidth = 1.5;
+      edges.forEach(({ s, t, pulse }) => {
+        const a = nodes[s], b = nodes[t], d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (d < 250) {
+          pulse += 0.04;
+          ctx.strokeStyle = `rgba(143,169,255,${(0.3 + 0.2 * Math.sin(pulse)) * (1 - d / 250)})`;
+          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+        }
+        edges[s].pulse = pulse;
+      });
+
+      nodes.forEach(n => {
+        n.x += n.vx; n.y += n.vy; n.pulse += 0.06;
+        if (n.x < 0 || n.x > innerWidth) n.vx *= -1;
+        if (n.y < 0 || n.y > innerHeight) n.vy *= -1;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, 5 * (1 + 0.3 * Math.sin(n.pulse)), 0, 2 * Math.PI);
+        ctx.fillStyle = 'rgba(79,141,253,0.9)';
+        ctx.shadowColor = '#4f8dfd';
+        ctx.shadowBlur = 12;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      });
+
+      !prefersRM && requestAnimationFrame(draw);
+    };
+    window.addEventListener('resize', () => requestAnimationFrame(draw));
+    requestAnimationFrame(draw);
+  };
+
+  /*───────────── WebGL variant ─────────────*/
+  if (!webglSupported || prefersRM) return fallback2D();
+  Promise.all([
+    import('https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js'),
+    import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/EffectComposer.js'),
+    import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/RenderPass.js'),
+    import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/UnrealBloomPass.js')
+  ]).then(([{ default: THREE }, { EffectComposer }, { RenderPass }, { UnrealBloomPass }]) => {
+    const DPR = Math.min(devicePixelRatio, 2);
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setPixelRatio(DPR);
+    renderer.setSize(innerWidth, innerHeight);
+    host.appendChild(renderer.domElement);
+
     const scene = new THREE.Scene();
-    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100);
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    camera.position.z = 10;
+    const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 1000);
+    camera.position.z = 30;
+
+    // Add lighting
+    const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+    scene.add(ambientLight);
+    const pointLight = new THREE.PointLight(0x8fa9ff, 1.2, 25);
+    pointLight.position.set(8, 8, 8);
+    scene.add(pointLight);
 
     const composer = new EffectComposer(renderer);
-    const renderPass = new RenderPass(scene, camera);
-    composer.addPass(renderPass);
-    const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.4, 0.85);
-    composer.addPass(bloomPass);
+    composer.addPass(new RenderPass(scene, camera));
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.5, 0.2, 0.85));
 
-    const particleCount = 2000;
-    const positions = new Float32Array(particleCount * 3);
-    const velocities = new Float32Array(particleCount * 3);
+    // Dynamic node count
+    const NODE_COUNT = Math.max(40, Math.min(250, Math.floor(area / 200_000)));
+    const clusters = 4;
+    const nodes = Array.from({ length: NODE_COUNT }, () => ({
+      pos: new THREE.Vector3((Math.random() - 0.5) * 25, (Math.random() - 0.5) * 25, (Math.random() - 0.5) * 12),
+      vel: new THREE.Vector3((Math.random() - 0.5) * 0.05, (Math.random() - 0.5) * 0.05, (Math.random() - 0.5) * 0.02),
+      cluster: Math.floor(Math.random() * clusters),
+      pulse: Math.random() * Math.PI * 2,
+      rotation: Math.random() * Math.PI * 2
+    }));
+    const edges = Array.from({ length: Math.floor(NODE_COUNT * 1.1) }, () => {
+      let s = Math.floor(Math.random() * NODE_COUNT), t;
+      do { t = Math.floor(Math.random() * NODE_COUNT); } while (t === s);
+      return { s, t, pulse: Math.random() * Math.PI * 2 };
+    });
+
+    // Node geometry with rotation
+    const posArr = new Float32Array(NODE_COUNT * 3);
+    const pulseArr = new Float32Array(NODE_COUNT);
+    const rotArr = new Float32Array(NODE_COUNT);
+    const nodeGeo = new THREE.BufferGeometry();
+    nodeGeo.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
+    nodeGeo.setAttribute('pulse', new THREE.BufferAttribute(pulseArr, 1));
+    nodeGeo.setAttribute('rotation', new THREE.BufferAttribute(rotArr, 1));
+    const nodeMat = new THREE.ShaderMaterial({
+      vertexShader: `
+        attribute float pulse;
+        attribute float rotation;
+        varying float vP;
+        varying vec3 vPos;
+        void main() {
+          vP = pulse;
+          vPos = position;
+          gl_PointSize = 8.0 * (1.0 + 0.5 * sin(pulse));
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying float vP;
+        varying vec3 vPos;
+        void main() {
+          vec2 c = gl_PointCoord - 0.5;
+          float d = length(c);
+          if (d > 0.5) discard;
+          float a = smoothstep(0.5, 0.2, d) * (0.7 + 0.4 * sin(vP));
+          float fade = 1.0 - abs(vPos.z / 12.0);
+          gl_FragColor = vec4(0.25, 0.55, 1.0, a * fade * 0.9);
+        }
+      `,
+      transparent: true
+    });
+    scene.add(new THREE.Points(nodeGeo, nodeMat));
+
+    // Edge geometry with pulsing
+    const edgeArr = new Float32Array(edges.length * 6);
+    const edgePulseArr = new Float32Array(edges.length);
+    const edgeGeo = new THREE.BufferGeometry();
+    edgeGeo.setAttribute('position', new THREE.BufferAttribute(edgeArr, 3));
+    edgeGeo.setAttribute('pulse', new THREE.BufferAttribute(edgePulseArr, 1));
+    const edgeMat = new THREE.ShaderMaterial({
+      vertexShader: `
+        attribute float pulse;
+        varying float vP;
+        varying vec3 vPos;
+        void main() {
+          vP = pulse;
+          vPos = position;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying float vP;
+        varying vec3 vPos;
+        void main() {
+          float f = 1.0 - abs(vPos.z / 12.0);
+          float pulseAlpha = 0.3 + 0.2 * sin(vP);
+          gl_FragColor = vec4(0.45, 0.7, 1.0, pulseAlpha * f * 0.7);
+        }
+      `,
+      transparent: true
+    });
+    scene.add(new THREE.LineSegments(edgeGeo, edgeMat));
+
+    // Gradient background with subtle noise
+    const gradientGeo = new THREE.PlaneGeometry(40, 40);
+    const gradientMat = new THREE.ShaderMaterial({
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        varying vec2 vUv;
+        uniform float time;
+        void main() {
+          vec2 uv = vUv;
+          vec3 color = mix(vec3(0.05, 0.05, 0.15), vec3(0.2, 0.3, 0.6), uv.y);
+          float noise = fract(sin(dot(uv * time * 0.001, vec2(12.9898, 78.233))) * 43758.5453);
+          color += noise * 0.015;
+          gl_FragColor = vec4(color, 0.4);
+        }
+      `,
+      uniforms: { time: { value: 0 } },
+      transparent: true
+    });
+    const gradientMesh = new THREE.Mesh(gradientGeo, gradientMat);
+    gradientMesh.position.z = -10;
+    scene.add(gradientMesh);
+
+    // Particle system for floating data sparks
+    const particleCount = 50;
+    const particleGeo = new THREE.BufferGeometry();
+    const particlePos = new Float32Array(particleCount * 3);
+    const particleVel = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount; i++) {
-        positions[i * 3] = (Math.random() - 0.5) * 2;
-        positions[i * 3 + 1] = (Math.random() - 0.5) * 2;
-        positions[i * 3 + 2] = 0;
-        velocities[i * 3] = (Math.random() - 0.5) * 0.002;
-        velocities[i * 3 + 1] = (Math.random() - 0.5) * 0.002;
+      particlePos[i * 3] = (Math.random() - 0.5) * 30;
+      particlePos[i * 3 + 1] = (Math.random() - 0.5) * 30;
+      particlePos[i * 3 + 2] = (Math.random() - 0.5) * 15;
+      particleVel[i * 3] = (Math.random() - 0.5) * 0.02;
+      particleVel[i * 3 + 1] = (Math.random() - 0.5) * 0.02;
+      particleVel[i * 3 + 2] = (Math.random() - 0.5) * 0.01;
     }
-
-    const particleGeometry = new THREE.BufferGeometry();
-    particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const particleMaterial = new THREE.PointsMaterial({ color: 0x4dd0e1, size: 0.015, transparent: true, opacity: 0.5 });
-    const particles = new THREE.Points(particleGeometry, particleMaterial);
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
+    const particleMat = new THREE.PointsMaterial({
+      color: 0x8fa9ff,
+      size: 2,
+      transparent: true,
+      opacity: 0.6,
+      blending: THREE.AdditiveBlending
+    });
+    const particles = new THREE.Points(particleGeo, particleMat);
     scene.add(particles);
 
-    const lineGeometry = new THREE.BufferGeometry();
-    const linePositions = new Float32Array(particleCount * particleCount * 6);
-    lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
-    const lineMaterial = new THREE.LineBasicMaterial({ color: 0x4dd0e1, opacity: 0.15, transparent: true });
-    const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
-    scene.add(lines);
+    function refreshBuffers() {
+      nodes.forEach((n, i) => {
+        posArr.set([n.pos.x, n.pos.y, n.pos.z], i * 3);
+        pulseArr[i] = n.pulse;
+        rotArr[i] = n.rotation;
+      });
+      nodeGeo.attributes.position.needsUpdate = true;
+      nodeGeo.attributes.pulse.needsUpdate = true;
+      nodeGeo.attributes.rotation.needsUpdate = true;
 
-    function resizeParticleCanvas() {
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        composer.setSize(window.innerWidth, window.innerHeight);
-        camera.left = -window.innerWidth / window.innerHeight;
-        camera.right = window.innerWidth / window.innerHeight;
-        camera.top = 1;
-        camera.bottom = -1;
-        camera.updateProjectionMatrix();
+      edges.forEach(({ s, t, pulse }, i) => {
+        const a = nodes[s].pos, b = nodes[t].pos;
+        edgeArr.set([a.x, a.y, a.z, b.x, b.y, b.z], i * 6);
+        edgePulseArr[i] = pulse;
+      });
+      edgeGeo.attributes.position.needsUpdate = true;
+      edgeGeo.attributes.pulse.needsUpdate = true;
+
+      for (let i = 0; i < particleCount; i++) {
+        particlePos[i * 3] += particleVel[i * 3];
+        particlePos[i * 3 + 1] += particleVel[i * 3 + 1];
+        particlePos[i * 3 + 2] += particleVel[i * 3 + 2];
+        if (Math.abs(particlePos[i * 3]) > 30) particleVel[i * 3] *= -1;
+        if (Math.abs(particlePos[i * 3 + 1]) > 30) particleVel[i * 3 + 1] *= -1;
+        if (Math.abs(particlePos[i * 3 + 2]) > 15) particleVel[i * 3 + 2] *= -1;
+      }
+      particleGeo.attributes.position.needsUpdate = true;
     }
-    window.addEventListener('resize', resizeParticleCanvas);
-    resizeParticleCanvas();
 
-    let particleAnimationFrameId;
-    function animateParticles() {
-        for (let i = 0; i < particleCount; i++) {
-            positions[i * 3] += velocities[i * 3];
-            positions[i * 3 + 1] += velocities[i * 3 + 1];
-            if (Math.abs(positions[i * 3]) > 1) velocities[i * 3] *= -1;
-            if (Math.abs(positions[i * 3 + 1]) > 1) velocities[i * 3 + 1] *= -1;
-        }
-        particleGeometry.attributes.position.needsUpdate = true;
-
-        let lineIndex = 0;
-        for (let i = 0; i < particleCount; i++) {
-            for (let j = i + 1; j < particleCount; j++) {
-                const dx = positions[i * 3] - positions[j * 3];
-                const dy = positions[i * 3 + 1] - positions[j * 3 + 1];
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 0.1) {
-                    linePositions[lineIndex * 6] = positions[i * 3];
-                    linePositions[lineIndex * 6 + 1] = positions[i * 3 + 1];
-                    linePositions[lineIndex * 6 + 2] = 0;
-                    linePositions[lineIndex * 6 + 3] = positions[j * 3];
-                    linePositions[lineIndex * 6 + 4] = positions[j * 3 + 1];
-                    linePositions[lineIndex * 6 + 5] = 0;
-                    lineIndex++;
-                }
-            }
-        }
-        lineGeometry.setDrawRange(0, lineIndex * 2);
-        lineGeometry.attributes.position.needsUpdate = true;
-
+    /* main loop */
+    let last = 0;
+    const animate = t => {
+      if (t - last > 20) {
+        nodes.forEach(n => {
+          n.pos.add(n.vel);
+          n.pulse += 0.07;
+          n.rotation += 0.015;
+          ['x', 'y', 'z'].forEach(ax => {
+            const lim = ax === 'z' ? 12 : 25;
+            if (Math.abs(n.pos[ax]) > lim) n.vel[ax] *= -1;
+          });
+          const center = new THREE.Vector3();
+          let cnt = 0;
+          nodes.forEach(o => { if (o.cluster === n.cluster) { center.add(o.pos); cnt++; } });
+          if (cnt) { center.divideScalar(cnt); n.vel.add(center.sub(n.pos).multiplyScalar(0.001)); }
+        });
+        edges.forEach(e => { e.pulse += 0.05; });
+        gradientMat.uniforms.time.value = t * 0.001;
+        camera.position.x = Math.sin(t * 0.00015) * 4;
+        camera.position.y = Math.cos(t * 0.0001) * 3;
+        camera.lookAt(0, 0, 0);
+        refreshBuffers();
         composer.render();
-        particleAnimationFrameId = requestAnimationFrame(animateParticles);
-    }
-    animateParticles();
-
-    window.addEventListener('beforeunload', () => {
-        if (particleAnimationFrameId) cancelAnimationFrame(particleAnimationFrameId);
-    });
-
-        return { renderer, composer };
-}
-
-// Consent Popup
-function initConsentPopup() {
-    const consentPopup = $('.consent-popup');
-    const consentAccept = $('.consent-accept');
-    if (!localStorage.getItem('consent')) {
-        consentPopup.classList.add('active');
-    }
-    consentAccept.addEventListener('click', () => {
-        localStorage.setItem('consent', 'true');
-        consentPopup.classList.remove('active');
-    });
-}
-
-// Dev Panel
-function initDevPanel(particles) {
-    const devPanel = $('.dev-panel');
-    document.addEventListener('keydown', (e) => {
-        if (e.shiftKey && e.key.toLowerCase() === 't') {
-            devPanel.classList.toggle('active');
-        }
-    });
-
-    $('#low-power-mode').addEventListener('change', (e) => {
-        if (e.target.checked) {
-            particles.material.opacity = 0.2;
-            $$('.section, .consent-popup, .dev-panel').forEach(el => {
-                el.style.background = document.body.classList.contains('light-mode') ? 'rgba(255,255,255,0.9)' : 'rgba(10,10,10,0.9)';
-            });
-        } else {
-            particles.material.opacity = 0.5;
-            $$('.section, .consent-popup, .dev-panel').forEach(el => {
-                el.style.background = document.body.classList.contains('light-mode') ? 'rgba(255,255,255,0.95)' : 'rgba(10,10,10,0.95)';
-            });
-        }
-    });
-}
-
-// 3D Network Graphs
-function initNetworkGraphs() {
-    function render3DNetworkGraph(containerId, nodesData, edgesData) {
-        const container = $(`#${containerId}`);
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true });
-        container.appendChild(renderer.domElement);
-        renderer.setSize(container.clientWidth, container.clientHeight);
-
-        const composer = new EffectComposer(renderer);
-        const renderPass = new RenderPass(scene, camera);
-        composer.addPass(renderPass);
-        const bloomPass = new UnrealBloomPass(new THREE.Vector2(container.clientWidth, container.clientHeight), 0.3, 0.4, 0.85);
-        composer.addPass(bloomPass);
-
-        const nodes = nodesData.map(node => {
-            const geometry = new THREE.SphereGeometry(0.2, 16, 16);
-            const material = new THREE.MeshBasicMaterial({ color: document.body.classList.contains('light-mode') ? 0x999999 : 0x333333 });
-            const mesh = new THREE.Mesh(geometry, material);
-            mesh.position.set(node.x * 5, node.y * 5, Math.random() * 2 - 1);
-            scene.add(mesh);
-            return { mesh, id: node.id, label: node.label };
-        });
-
-        const edges = edgesData.map(edge => {
-            const fromNode = nodes.find(n => n.id === edge.from);
-            const toNode = nodes.find(n => n.id === edge.to);
-            const geometry = new THREE.BufferGeometry().setFromPoints([
-                fromNode.mesh.position,
-                toNode.mesh.position
-            ]);
-            const material = new THREE.LineBasicMaterial({ color: 0x4dd0e1 });
-            const line = new THREE.Line(geometry, material);
-            scene.add(line);
-            return line;
-        });
-
-        const light = new THREE.PointLight(0xffffff, 1);
-        light.position.set(5, 5, 5);
-        scene.add(light);
-        scene.add(new THREE.AmbientLight(0xaaaaaa, 0.3));
-        camera.position.z = 10;
-
-        function resizeGraphCanvas() {
-            camera.aspect = container.clientWidth / container.clientHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(container.clientWidth, container.clientHeight);
-            composer.setSize(container.clientWidth, container.clientHeight);
-        }
-        window.addEventListener('resize', resizeGraphCanvas);
-        resizeGraphCanvas();
-
-        let graphAnimationFrameId;
-        function animateGraph() {
-            nodes.forEach(node => {
-                node.mesh.position.z += Math.sin(Date.now() * 0.001 + node.id) * 0.01;
-            });
-            composer.render();
-            graphAnimationFrameId = requestAnimationFrame(animateGraph);
-        }
-        animateGraph();
-
-        window.addEventListener('beforeunload', () => {
-            if (graphAnimationFrameId) cancelAnimationFrame(graphAnimationFrameId);
-        });
-
-            // Simulate API updates
-            setInterval(() => {
-                nodes.forEach(node => {
-                    node.mesh.position.set(
-                        node.mesh.position.x + (Math.random() - 0.5) * 0.1,
-                                           node.mesh.position.y + (Math.random() - 0.5) * 0.1,
-                                           node.mesh.position.z
-                    );
-                });
-                edges.forEach((edge, i) => {
-                    edge.geometry.setFromPoints([
-                        nodes.find(n => n.id === edgesData[i].from).mesh.position,
-                                                nodes.find(n => n.id === edgesData[i].to).mesh.position
-                    ]);
-                    edge.geometry.attributes.position.needsUpdate = true;
-                });
-            }, 5000);
-
-            return { renderer, composer, nodes };
-    }
-
-    const neo4jNodes = [
-        { id: 0, x: 0.2, y: 0.3, label: 'Audit Log' },
-        { id: 1, x: 0.5, y: 0.2, label: 'Query' },
-        { id: 2, x: 0.8, y: 0.3, label: 'Response' },
-        { id: 3, x: 0.5, y: 0.5, label: 'Ethical Score' }
-    ];
-    const neo4jEdges = [
-        { from: 0, to: 1 },
-        { from: 1, to: 2 },
-        { from: 2, to: 3 }
-    ];
-    const threatNodes = [
-        { id: 0, x: 0.3, y: 0.4, label: 'Threat Detection' },
-        { id: 1, x: 0.6, y: 0.3, label: 'Anomaly' },
-        { id: 2, x: 0.6, y: 0.5, label: 'Exploit' },
-        { id: 3, x: 0.3, y: 0.6, label: 'Mitigation' }
-    ];
-    const threatEdges = [
-        { from: 0, to: 1 },
-        { from: 1, to: 2 },
-        { from: 2, to: 3 }
-    ];
-
-    const neo4jGraph = render3DNetworkGraph('neo4j-graph', neo4jNodes, neo4jEdges);
-    const threatGraph = render3DNetworkGraph('threat-detection-graph', threatNodes, threatEdges);
-
-    return { neo4jNodes: neo4jGraph.nodes, threatNodes: threatGraph.nodes, neo4jRenderer: neo4jGraph.renderer, threatRenderer: threatGraph.renderer };
-}
-
-// LLM Integration
-function initLLM() {
-    let llmCallCount = 0;
-    const history = [];
-
-    async function callLLM() {
-        const query = $('#llm-query').value;
-        const provider = $('#llm-provider').value;
-        const verbose = $('#llm-verbose').checked;
-        const responseDiv = $('#llm-response');
-        if (!query) {
-            responseDiv.textContent = 'Please enter a query.';
-            responseDiv.classList.remove('loading');
-            return;
-        }
-        responseDiv.textContent = '';
-        responseDiv.classList.add('loading');
-        llmCallCount++;
-        $('#llm-calls').textContent = llmCallCount;
-
-        try {
-            const response = await new Promise(resolve => {
-                setTimeout(() => {
-                    const baseResponse = provider === 'openai' ? `OpenAI Response: Analyzed query "${query}" - No threats detected.` :
-                    provider === 'local-llama' ? `LLaMA Response: Processed query "${query}" - Local model analysis complete.` :
-                    provider === 'groq' ? `Grok Response: Evaluated query "${query}" - Suspicious pattern detected.` :
-                    provider === 'anthropic' ? `Claude Response: Query "${query}" analyzed - Ethical alignment confirmed.` :
-                    `Mistral Response: Query "${query}" processed - No anomalies found.`;
-                    resolve(verbose ? `${baseResponse} (Verbose: Confidence 0.95, Latency 120ms, Tokens 128)` : baseResponse);
-                }, 1000);
-            });
-            responseDiv.classList.remove('loading');
-            responseDiv.textContent = response;
-            responseDiv.appendChild($('.copy-button'));
-            history.push({ query, response, provider, timestamp: new Date().toISOString() });
-            updateHistory();
-        } catch (error) {
-            responseDiv.classList.remove('loading');
-            responseDiv.textContent = `Error: ${error.message}`;
-            console.error('LLM Call Error:', error);
-        }
-    }
-
-    function updateHistory() {
-        const historyList = $('#llm-history-list');
-        historyList.innerHTML = history.map((entry, i) => `<li>${entry.timestamp}: ${entry.query} → ${entry.response}</li>`).join('');
-    }
-
-    $('.llm-submit').addEventListener('click', callLLM);
-    $('#llm-query').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            callLLM();
-        }
-    });
-
-    $('.llm-options').addEventListener('click', () => {
-        $('.llm-options-panel').classList.toggle('active');
-    });
-
-    $('.export-history').addEventListener('click', () => {
-        const blob = new Blob([JSON.stringify(history, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'llm-history.json';
-        a.click();
-        URL.revokeObjectURL(url);
-    });
-
-    $('.copy-button').addEventListener('click', () => {
-        const text = $('#llm-response').textContent.replace('📋', '').trim();
-        navigator.clipboard.writeText(text).then(() => {
-            $('.copy-button').classList.add('copied');
-            setTimeout(() => $('.copy-button').classList.remove('copied'), 1000);
-        });
-    });
-
-    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        const recognition = new SpeechRecognition();
-        recognition.lang = 'en-US';
-        recognition.interimResults = false;
-        recognition.maxAlternatives = 1;
-
-        $('.speech-to-text').addEventListener('click', () => {
-            recognition.start();
-            $('.speech-to-text').textContent = '🎙️ Recording...';
-        });
-
-        recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript;
-            $('#llm-query').value = transcript;
-            $('.speech-to-text').textContent = '🎤';
-            callLLM();
-        };
-
-        recognition.onend = () => {
-            $('.speech-to-text').textContent = '🎤';
-        };
-
-        recognition.onerror = (event) => {
-            console.error('Speech recognition error:', event.error);
-            $('.speech-to-text').textContent = '🎤';
-            $('#llm-response').textContent = `Speech recognition error: ${event.error}`;
-        };
-    } else {
-        $('.speech-to-text').disabled = true;
-        $('.speech-to-text').title = 'Speech recognition not supported';
-    }
-
-    return { llmCallCount };
-}
-
-// Neural Capsule Cluster with Bloom and Noise
-function initNeuralCapsule() {
-    const container = $('#three-panel');
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ alpha: true });
-    container.appendChild(renderer.domElement);
-    renderer.setSize(container.clientWidth, container.clientHeight);
-
-    const composer = new EffectComposer(renderer);
-    const renderPass = new RenderPass(scene, camera);
-    composer.addPass(renderPass);
-    const bloomPass = new UnrealBloomPass(new THREE.Vector2(container.clientWidth, container.clientHeight), 0.5, 0.4, 0.85);
-    composer.addPass(bloomPass);
-
-    const vertexShader = `
-    varying vec2 vUv;
-    uniform float u_time;
-    void main() {
-        vUv = uv;
-        vec3 pos = position;
-        pos += 0.05 * sin(u_time + pos.x * 10.0);
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
-    }
-    `;
-    const fragmentShader = `
-    varying vec2 vUv;
-    uniform float u_time;
-    float noise(vec2 p) {
-        return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
-    }
-    void main() {
-        vec3 color = vec3(0.7, 0.7, 0.7);
-        float iridescence = sin(vUv.x * 10.0 + u_time) * 0.1 + 0.9;
-        float n = noise(vUv + u_time * 0.1);
-        color += n * 0.1;
-        gl_FragColor = vec4(color * iridescence, 1.0);
-    }
-    `;
-
-    const mainCapsule = new THREE.Mesh(
-        new THREE.CapsuleGeometry(1.2, 2.5, 10, 20),
-                                       new THREE.ShaderMaterial({
-                                           vertexShader,
-                                           fragmentShader,
-                                           uniforms: { u_time: { value: 0 } }
-                                       })
-    );
-    scene.add(mainCapsule);
-
-    const subCapsules = [];
-    for (let i = 0; i < 5; i++) {
-        const subCapsule = new THREE.Mesh(
-            new THREE.CapsuleGeometry(0.3, 0.8, 6, 12),
-                                          new THREE.MeshPhysicalMaterial({
-                                              color: document.body.classList.contains('light-mode') ? 0xcccccc : 0xaaaaaa,
-                                                                         roughness: 0.6,
-                                                                         metalness: 1.0,
-                                                                         clearcoat: 0.3,
-                                                                         reflectivity: 0.4
-                                          })
-        );
-        subCapsule.position.set(Math.sin(i * 1.256) * 3, Math.cos(i * 1.256) * 3, 0);
-        scene.add(subCapsule);
-        subCapsules.push(subCapsule);
-    }
-
-    const light = new THREE.PointLight(0xffffff, 1.5);
-    light.position.set(5, 5, 5);
-    scene.add(light);
-    const ambientLight = new THREE.AmbientLight(0xaaaaaa, 0.3);
-    scene.add(ambientLight);
-    camera.position.z = 8;
-
-    function resizeThreeCanvas() {
-        camera.aspect = container.clientWidth / container.clientHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(container.clientWidth, container.clientHeight);
-        composer.setSize(container.clientWidth, container.clientHeight);
-    }
-    window.addEventListener('resize', resizeThreeCanvas);
-    resizeThreeCanvas();
-
-    let capsuleAnimationFrameId;
-    let time = 0;
-    function animateCapsule() {
-        time += 0.01;
-        mainCapsule.rotation.x += 0.005;
-        mainCapsule.rotation.y += 0.01;
-        mainCapsule.material.uniforms.u_time.value = time;
-        subCapsules.forEach((capsule, i) => {
-            capsule.position.x = Math.sin(i * 1.256 + time) * 3;
-            capsule.position.y = Math.cos(i * 1.256 + time) * 3;
-            capsule.rotation.z += 0.02;
-        });
-        composer.render();
-        capsuleAnimationFrameId = requestAnimationFrame(animateCapsule);
-    }
-    animateCapsule();
-
-    window.addEventListener('beforeunload', () => {
-        if (capsuleAnimationFrameId) cancelAnimationFrame(capsuleAnimationFrameId);
-    });
-
-        return { renderer, composer };
-}
-
-// Threat Insights Charts
-function initThreatCharts() {
-    const trendData = Array.from({ length: 12 }, () => Math.random() * 100);
-    const trendChart = {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            datasets: [{
-                label: 'Threat Detections',
-                data: trendData,
-                borderColor: '#4dd0e1',
-                backgroundColor: 'rgba(77, 208, 225, 0.2)',
-                fill: true,
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: { beginAtZero: true, grid: { color: document.body.classList.contains('light-mode') ? '#ccc' : '#333' }, ticks: { color: document.body.classList.contains('light-mode') ? '#121212' : '#e6e6e6' } },
-                x: { grid: { color: document.body.classList.contains('light-mode') ? '#ccc' : '#333' }, ticks: { color: document.body.classList.contains('light-mode') ? '#121212' : '#e6e6e6' } }
-            },
-            plugins: {
-                legend: { labels: { color: document.body.classList.contains('light-mode') ? '#121212' : '#e6e6e6' } }
-            }
-        }
+        last = t;
+      }
+      !prefersRM && requestAnimationFrame(animate);
     };
-    const trendChartInstance = new Chart($('#threat-trend-chart'), trendChart);
 
-    const severityData = [30, 50, 20];
-    const severityChart = {
-        type: 'bar',
-        data: {
-            labels: ['Low', 'Medium', 'High'],
-            datasets: [{
-                label: 'Threat Severity',
-                data: severityData,
-                backgroundColor: ['#4dd0e1', '#ffca28', '#ef5350'],
-                borderColor: ['#4dd0e1', '#ffca28', '#ef5350'],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: { beginAtZero: true, grid: { color: document.body.classList.contains('light-mode') ? '#ccc' : '#333' }, ticks: { color: document.body.classList.contains('light-mode') ? '#121212' : '#e6e6e6' } },
-                x: { grid: { color: document.body.classList.contains('light-mode') ? '#ccc' : '#333' }, ticks: { color: document.body.classList.contains('light-mode') ? '#121212' : '#e6e6e6' } }
-            },
-            plugins: {
-                legend: { labels: { color: document.body.classList.contains('light-mode') ? '#121212' : '#e6e6e6' } }
-            }
-        }
+    function onResize() {
+      renderer.setSize(innerWidth, innerHeight);
+      composer.setSize(innerWidth, innerHeight);
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', onResize);
+    onResize();
+    requestAnimationFrame(animate);
+  }).catch(err => {
+    console.error('WebGL failed, using fallback', err);
+    fallback2D();
+  });
+}
+
+/*─────────────────────────────────────────────────────────────────────────────*
+ | 2) Scroll-spy                                                             *
+ *─────────────────────────────────────────────────────────────────────────────*/
+function initScrollSpy() {
+  document.addEventListener('scroll', throttle(() => {
+    const sections = $$('main section');
+    let active = '';
+    sections.forEach(sec => {
+      const top = sec.offsetTop - 100;
+      if (window.scrollY >= top) active = sec.id;
+    });
+    $$('.nav-links a').forEach(link => {
+      link.classList.toggle('active', link.getAttribute('href') === `#${active}`);
+    });
+  }, 100));
+}
+
+/*─────────────────────────────────────────────────────────────────────────────*
+ | 3) Graphs (canvas)                                                        *
+ *─────────────────────────────────────────────────────────────────────────────*/
+function createGraph(selector, nodes, edges) {
+  const wrap = $(selector); if (!wrap) return;
+  wrap.innerHTML = '';
+  const canvas = document.createElement('canvas');
+  wrap.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+
+  const draw = () => {
+    const w = wrap.clientWidth * devicePixelRatio,
+          h = wrap.clientHeight * devicePixelRatio;
+    canvas.width = w;
+    canvas.height = h;
+    canvas.style.width = wrap.clientWidth + 'px';
+    canvas.style.height = wrap.clientHeight + 'px';
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = 'rgba(12,13,16,0.8)';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#8fa9ff';
+    edges.forEach(e => {
+      const a = nodes.find(n => n.id === e.source),
+            b = nodes.find(n => n.id === e.target);
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.bezierCurveTo(a.x * .3 + b.x * .7, a.y, a.x * .7 + b.x * .3, b.y, b.x, b.y);
+      ctx.stroke();
+    });
+
+    nodes.forEach(n => {
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.r, 0, 2 * Math.PI);
+      ctx.fillStyle = '#4f8dfd';
+      ctx.fill();
+      ctx.strokeStyle = '#adb9cc';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.font = '14px Sora';
+      ctx.fillStyle = '#e0e3f4';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(n.label, n.x, n.y + n.r + 14);
+    });
+
+    if (selector.includes('threat')) $('#node-count').textContent = nodes.length;
+  };
+  draw();
+  window.addEventListener('resize', throttle(draw, 200));
+}
+
+/*─────────────────────────────────────────────────────────────────────────────*
+ | 4) Consent popup, Dev panel, keyboard overlay                             *
+ *─────────────────────────────────────────────────────────────────────────────*/
+function initConsent() {
+  const pop = $('#consent-popup'), btn = $('.consent-accept');
+  if (!localStorage.getItem('consent')) pop?.classList.remove('hidden');
+  btn?.addEventListener('click', () => {
+    localStorage.setItem('consent', 'y');
+    pop?.classList.add('hidden');
+  });
+}
+
+function initDevPanel() {
+  const panel = $('#dev-panel'), toggle = $('.toggle-dev-panel'), overlay = $('#keyboard-overlay');
+  toggle?.addEventListener('click', () => panel?.classList.toggle('active'));
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey && e.key === 'd') {
+      panel?.classList.toggle('active');
+      overlay?.classList.remove('active');
+    }
+    if (e.ctrlKey) overlay?.classList.add('active');
+  });
+  document.addEventListener('keyup', () => overlay?.classList.remove('active'));
+}
+
+/*─────────────────────────────────────────────────────────────────────────────*
+ | 5) Utilities                                                              *
+ *─────────────────────────────────────────────────────────────────────────────*/
+function throttle(fn, ms) {
+  let timer;
+  return (...a) => {
+    if (!timer) {
+      fn(...a);
+      timer = setTimeout(() => timer = null, ms);
+    }
+  };
+}
+
+/*─────────────────────────────────────────────────────────────────────────────*
+ | 6) Static data (nodes/edges)                                              *
+ *─────────────────────────────────────────────────────────────────────────────*/
+const threatNodes = [
+  { id: '1', x: 100, y: 100, r: 20, label: 'Ingest' },
+  { id: '2', x: 300, y: 200, r: 20, label: 'Analyze' },
+  { id: '3', x: 500, y: 150, r: 20, label: 'Mutate' },
+  { id: '4', x: 200, y: 350, r: 20, label: 'Neutralize' },
+  { id: '5', x: 400, y: 400, r: 20, label: 'Audit' }
+];
+const threatEdges = [
+  { source: '1', target: '2' },
+  { source: '2', target: '3' },
+  { source: '3', target: '4' },
+  { source: '4', target: '5' }
+];
+
+const stackNodes = [
+  { id: '1', x: 150, y: 100, r: 20, label: 'PyTorch' },
+  { id: '2', x: 350, y: 150, r: 20, label: 'Ray' },
+  { id: '3', x: 250, y: 300, r: 20, label: 'Redis' }
+];
+const stackEdges = [
+  { source: '1', target: '2' },
+  { source: '2', target: '3' }
+];
+
+/*─────────────────────────────────────────────────────────────────────────────*
+ | 7) Boot everything once DOM ready                                         *
+ *─────────────────────────────────────────────────────────────────────────────*/
+document.addEventListener('DOMContentLoaded', () => {
+  // Hide loading overlay
+  $('#loading').classList.add('hidden');
+
+  initNeuralBackground();
+  initThemeToggle();
+  initScrollSpy();
+  initCharts();
+  initLLM();
+  initTelemetry();
+  initAccordion();
+  initConsent();
+  initDevPanel();
+
+  createGraph('#threat-detection-graph', threatNodes, threatEdges);
+  createGraph('#stack-graph', stackNodes, stackEdges);
+
+  $('.snapshot-button')?.addEventListener('click', () => {
+    const snap = {
+      stamp: new Date().toISOString(),
+      llmCalls: llmCallCount,
+      entropy: $('#entropy')?.textContent,
+      gpu: $('#gpu-util')?.textContent
     };
-    const severityChartInstance = new Chart($('#threat-severity-chart'), severityChart);
-
-    setInterval(() => {
-        trendData.shift();
-        trendData.push(Math.random() * 100);
-        trendChart.data.datasets[0].data = trendData;
-        trendChartInstance.update();
-
-        severityData.forEach((_, i) => {
-            severityData[i] = Math.random() * 50;
-        });
-        severityChart.data.datasets[0].data = severityData;
-        severityChartInstance.update();
-    }, 10000);
-}
-
-// Snapshot Export
-function initSnapshotExport(neo4jNodes, threatNodes, llmCallCount) {
-    $('.snapshot-button')?.addEventListener('click', () => {
-        const data = {
-            nodes: neo4jNodes.concat(threatNodes).map(node => ({
-                id: node.id,
-                label: node.label,
-                x: node.mesh.position.x / 5,
-                y: node.mesh.position.y / 5
-            })),
-            llmCalls: llmCallCount
-        };
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'aurora-nexus-snapshot.json';
-        a.click();
-        URL.revokeObjectURL(url);
-    });
-}
-
-// Accordions
-function initAccordions() {
-    $$('.accordion-header').forEach(header => {
-        header.addEventListener('click', () => {
-            const accordion = header.parentElement;
-            accordion.classList.toggle('active');
-            header.setAttribute('aria-expanded', accordion.classList.contains('active'));
-        });
-        header.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                header.click();
-            }
-        });
-    });
-}
-
-// Card Interactions
-function initCardInteractions() {
-    document.body.addEventListener('click', e => {
-        if (e.target.closest('.card')) {
-            e.target.closest('.card').classList.toggle('active');
-            e.target.closest('.card').focus();
-        }
-    });
-    document.body.addEventListener('keypress', e => {
-        if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('.card')) {
-            e.preventDefault();
-            e.target.closest('.card').classList.toggle('active');
-        }
-    });
-}
-
-// Intersection Observer
-function initIntersectionObserver() {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.1 });
-    $$('.section').forEach(section => observer.observe(section));
-}
-
-// Performance Metrics
-function initPerformanceMetrics(particleRenderer, capsuleRenderer, neo4jRenderer, threatRenderer) {
-    let lastFrame = performance.now();
-    let webglCalls = 0;
-
-    setInterval(() => {
-        const now = performance.now();
-        const fps = Math.round(1000 / (now - lastFrame));
-        $('#fps').textContent = fps;
-        $('#webgl-calls').textContent = webglCalls;
-        if (window.performance.memory) {
-            $('#memory-usage').textContent = `${Math.round(window.performance.memory.usedJSHeapSize / 1024 / 1024)} MB`;
-        }
-        lastFrame = now;
-        webglCalls = particleRenderer.info.render.calls + capsuleRenderer.info.render.calls +
-        neo4jRenderer.info.render.calls + threatRenderer.info.render.calls;
-    }, 1000);
-}
-
-// Main Initialization
-function init() {
-    initThemeToggle();
-    const { renderer: particleRenderer, composer: particleComposer } = initParticleSystem();
-    initConsentPopup();
-    const { neo4jNodes, threatNodes, neo4jRenderer, threatRenderer } = initNetworkGraphs();
-    const { llmCallCount } = initLLM();
-    const { renderer: capsuleRenderer, composer: capsuleComposer } = initNeuralCapsule();
-    initThreatCharts();
-    initSnapshotExport(neo4jNodes, threatNodes, llmCallCount);
-    initAccordions();
-    initCardInteractions();
-    initIntersectionObserver();
-    initPerformanceMetrics(particleRenderer, capsuleRenderer, neo4jRenderer, threatRenderer);
-    initDevPanel(particleComposer.scene.children[0]); // Pass particles object
-
-    requestIdleCallback(() => {
-        if (navigator.hardwareConcurrency < 6 || window.deviceMemory < 4) {
-            $('#low-power-mode').checked = true;
-            $('#low-power-mode').dispatchEvent(new Event('change'));
-        }
-    });
-}
-
-init();
+    const blob = new Blob([JSON.stringify(snap, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'nexus-snapshot.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+});
