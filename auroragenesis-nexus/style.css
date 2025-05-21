@@ -485,3 +485,32 @@ footer p {
     box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
   }
 }
+
+/*─────────────────────────────────────────────────────────────────────────────*
+ | Crash guard for main entrypoint                                            *
+ *─────────────────────────────────────────────────────────────────────────────*/
+try {
+  import('/auroragenesis-nexus/theme-toggle.js').then(module => {
+    window.initThemeToggle = module.initThemeToggle;
+  });
+  import('/auroragenesis-nexus/llm.js').then(module => {
+    window.initLLM = module.initLLM;
+  });
+  import('/auroragenesis-nexus/charts.js').then(module => {
+    window.initCharts = module.initCharts;
+  });
+  import('/auroragenesis-nexus/accordion.js').then(module => {
+    window.initAccordion = module.initAccordion;
+  });
+  import('/auroragenesis-nexus/telemetry.js').then(module => {
+    window.initTelemetry = module.initTelemetry;
+  });
+  document.addEventListener('DOMContentLoaded', initEverything);
+} catch (err) {
+  console.error('🔥 FATAL INIT ERROR:', err);
+  const loading = document.getElementById('loading');
+  if (loading) {
+    loading.classList.add('hidden');
+    loading.style.display = 'none';
+  }
+}
