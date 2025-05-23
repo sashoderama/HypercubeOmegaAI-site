@@ -39,7 +39,6 @@ export function initLLM() {
   };
 
   const mockLLM = async (query, verbose) => {
-    // Placeholder for xAI API integration (https://x.ai/api)
     await new Promise(resolve => setTimeout(resolve, 500));
     return verbose ? `Detailed analysis of "${query}": This is a mock response.` : `Mock response for "${query}".`;
   };
