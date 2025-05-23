@@ -1,27 +1,27 @@
+/* accordion.js */
 export function initAccordion() {
-  const headers = document.querySelectorAll('.accordion-header');
-  headers.forEach(header => {
+  const items = $$('.accordion-item');
+  if (!items.length) {
+    console.warn('Accordion items missing');
+    return;
+  }
+
+  items.forEach(item => {
+    const header = item.querySelector('.accordion-header');
+    const content = item.querySelector('.accordion-content');
+    if (!header || !content) return;
+
     header.addEventListener('click', () => {
-      const accordion = header.parentElement;
-      const content = header.nextElementSibling;
-      const isOpen = accordion.classList.contains('active');
-      headers.forEach(h => {
-        h.parentElement.classList.remove('active');
-        h.nextElementSibling.classList.remove('active');
-      });
-      if (!isOpen) {
-        accordion.classList.add('active');
-        content.classList.add('active');
-        header.setAttribute('aria-expanded', 'true');
-      } else {
-        header.setAttribute('aria-expanded', 'false');
-      }
+      const isExpanded = header.getAttribute('aria-expanded') === 'true';
+      header.setAttribute('aria-expanded', !isExpanded);
+      content.classList.toggle('active', !isExpanded);
     });
-    header.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        header.click();
-      }
+  });
+
+  state.cleanup.add(() => {
+    items.forEach(item => {
+      const header = item.querySelector('.accordion-header');
+      if (header) header.removeEventListener('click', header);
     });
   });
 }
