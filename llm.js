@@ -1,67 +1,123 @@
-import { saveHistoryItem, loadHistory } from './indexeddb-llm.js';
-
+/* llm.js */
 export function initLLM() {
-  const submit = document.querySelector('.llm-submit'),
-        query = document.querySelector('#llm-query'),
-        resp = document.querySelector('#llm-response'),
-        hist = document.querySelector('#llm-history-list'),
-        prov = document.querySelector('#llm-provider');
+  const queryInput = $('#llm-query'),
+        submitBtn = $('.llm-submit'),
+        responseOutput = $('#llm-response'),
+        historyList = $('#llm-history-list'),
+        toggleHistoryBtn = $('.toggle-history'),
+        exportHistoryBtn = $('.export-history'),
+        copyBtn = $('.copy-button'),
+        speechBtn = $('.speech-to-text'),
+        providerSelect = $('#llm-provider'),
+        verboseCheckbox = $('#llm-verbose'),
+        optionsBtn = $('.llm-options'),
+        optionsPanel = $('.llm-options-panel');
 
-  async function fakeCall(text, provider) {
-    await new Promise(r => setTimeout(r, 800));
-    return `Analysis for "${text}" via ${provider}: threat < 1%.`;
+  if (!queryInput || !submitBtn || !responseOutput || !historyList || !toggleHistoryBtn || !exportHistoryBtn || !copyBtn || !speechBtn || !providerSelect || !verboseCheckbox || !optionsBtn || !optionsPanel) {
+    console.warn('LLM elements missing');
+    return;
   }
 
-  submit?.addEventListener('click', async () => {
-    const q = query.value.trim(); if (!q) return;
-    submit.disabled = true;
-    resp.textContent = 'Processing…';
-    window.llmCallCount = (window.llmCallCount || 0) + 1;
+  let history = JSON.parse(localStorage.getItem('llmHistory')) || [];
 
-    const res = await fakeCall(q, prov.value);
-    if (Math.random() < 0.1) {
-      resp.textContent = '⚠️ Blocked by ethics filter.';
-      submit.disabled = false;
-      return;
-    }
-
-    resp.textContent = res;
-    const item = { q, ts: new Date().toLocaleTimeString() };
-    const li = document.createElement('li');
-    li.innerHTML = `<span>${q}</span><span>${item.ts}</span>`;
-    hist.prepend(li);
-    saveHistoryItem(item);
-    submit.disabled = false;
-  });
-
-  document.querySelector('.copy-button')?.addEventListener('click', () => {
-    navigator.clipboard.writeText(resp.textContent);
-    const b = document.querySelector('.copy-button');
-    b.textContent = '✅';
-    setTimeout(() => b.textContent = '📋', 1500);
-  });
-
-  document.querySelector('.export-history')?.addEventListener('click', () => {
-    const data = [...hist.children].map(li => ({ q: li.children[0].textContent, ts: li.children[1].textContent }));
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'llm-history.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  });
-
-  document.querySelector('.toggle-history')?.addEventListener('click', () => {
-    hist.toggleAttribute('hidden');
-  });
-
-  // Load history from IndexedDB
-  loadHistory().then(items => {
-    items.forEach(item => {
+  const updateHistory = () => {
+    historyList.innerHTML = '';
+    history.forEach((item, index) => {
       const li = document.createElement('li');
-      li.innerHTML = `<span>${item.q}</span><span>${item.ts}</span>`;
-      hist.appendChild(li);
+      li.textContent = `${item.query}: ${item.response.slice(0, 50)}...`;
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = 'Delete';
+      deleteBtn.className = 'cyber-button';
+      deleteBtn.onclick = () => {
+        history.splice(index, 1);
+        localStorage.setItem('llmHistory', JSON.stringify(history));
+        updateHistory();
+      };
+      li.appendChild(deleteBtn);
+      historyList.appendChild(li);
+    });
+  };
+
+  const mockLLM = async (query, verbose) => {
+    // Placeholder for xAI API integration (https://x.ai/api)
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return verbose ? `Detailed analysis of "${query}": This is a mock response.` : `Mock response for "${query}".`;
+  };
+
+  submitBtn.addEventListener('click', async () => {
+    const query = queryInput.value.trim();
+    if (!query) return;
+    submitBtn.disabled = true;
+    try {
+      const response = await mockLLM(query, verboseCheckbox.checked);
+      responseOutput.textContent = response;
+      history.push({ query, response, timestamp: new Date().toISOString() });
+      localStorage.setItem('llmHistory', JSON.stringify(history));
+      updateHistory();
+    } catch (err) {
+      console.error('LLM request failed:', err);
+      responseOutput.textContent = 'Error processing query. Please try again.';
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+
+  toggleHistoryBtn.addEventListener('click', () => {
+    historyList.hidden = !historyList.hidden;
+    updateHistory();
+  });
+
+  exportHistoryBtn.addEventListener('click', () => {
+    try {
+      const blob = new Blob([JSON.stringify(history, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'llm-history.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('History export failed:', err);
+      alert('Failed to export history. Please try again.');
+    }
+  });
+
+  copyBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(responseOutput.textContent).catch(err => {
+      console.error('Copy failed:', err);
+      alert('Failed to copy response.');
     });
   });
+
+  speechBtn.addEventListener('click', () => {
+    if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
+      alert('Speech recognition not supported in this browser.');
+      return;
+    }
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'en-US';
+    recognition.start();
+    recognition.onresult = event => {
+      queryInput.value = event.results[0][0].transcript;
+    };
+    recognition.onerror = err => {
+      console.error('Speech recognition error:', err);
+      alert('Speech recognition failed.');
+    };
+  });
+
+  optionsBtn.addEventListener('click', () => {
+    optionsPanel.classList.toggle('active');
+  });
+
+  state.cleanup.add(() => {
+    submitBtn.removeEventListener('click', submitBtn);
+    toggleHistoryBtn.removeEventListener('click', toggleHistoryBtn);
+    exportHistoryBtn.removeEventListener('click', exportHistoryBtn);
+    copyBtn.removeEventListener('click', copyBtn);
+    speechBtn.removeEventListener('click', speechBtn);
+    optionsBtn.removeEventListener('click', optionsBtn);
+  });
+
+  updateHistory();
 }
