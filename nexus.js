@@ -1,10 +1,4 @@
-/*─────────────────────────────────────────────────────────────────────────────*
- | nexus.js – Unified Entry Point for AuroraGenesis ∞ NEXUS                   |
- | Handles theme, neural background (WebGL + 2D fallback), graphs, charts,    |
- | LLM, HUD, and UI interactions with frost theme integration.                |
- *─────────────────────────────────────────────────────────────────────────────*/
-
-// Strict mode for safety
+/* nexus.js – Unified Entry Point for AuroraGenesis ∞ NEXUS */
 'use strict';
 
 // Module imports with retry logic
@@ -20,7 +14,6 @@ const loadModule = async (url, retries = 3) => {
   }
 };
 
-// Load modules asynchronously
 const modules = await Promise.allSettled([
   loadModule('/theme-toggle.js').then(m => ({ initThemeToggle: m.initThemeToggle })),
   loadModule('/llm.js').then(m => ({ initLLM: m.initLLM })),
@@ -30,11 +23,8 @@ const modules = await Promise.allSettled([
 ]).then(results => {
   const loaded = {};
   results.forEach((result, i) => {
-    if (result.status === 'fulfilled') {
-      Object.assign(loaded, result.value);
-    } else {
-      console.warn(`Module ${['theme-toggle', 'llm', 'charts', 'accordion', 'telemetry'][i]} failed: ${result.reason}`);
-    }
+    if (result.status === 'fulfilled') Object.assign(loaded, result.value);
+    else console.warn(`Module ${['theme-toggle', 'llm', 'charts', 'accordion', 'telemetry'][i]} failed: ${result.reason}`);
   });
   return loaded;
 }).catch(err => {
@@ -42,7 +32,7 @@ const modules = await Promise.allSettled([
   return {};
 });
 
-// Tiny helpers
+// Helpers
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 const prefersRM = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -55,17 +45,15 @@ const webglSupported = (() => {
   }
 })();
 
-// Encapsulated state
+// State
 const state = {
   llmCallCount: 0,
   animationFrameId: null,
-  observers: new Set(),
   cleanup: new Set(),
 };
 
-// Neural Background (WebGL with 2D fallback)
+// Neural Background
 async function initNeuralBackground() {
-  console.log('Initializing neural background...');
   const host = $('#neural-bg');
   if (!host) {
     console.error('Neural background container not found');
@@ -73,12 +61,10 @@ async function initNeuralBackground() {
   }
 
   const area = innerWidth * innerHeight;
-  let renderer, composer, animationFrameId;
+  let renderer, composer;
 
-  // 2D Canvas Fallback
   const fallback2D = () => {
-    console.log('Using 2D canvas fallback');
-    const N = Math.max(20, Math.min(100, Math.floor(area / 150_000))); // Reduced max nodes
+    const N = Math.max(20, Math.min(100, Math.floor(area / 150_000)));
     const canvas = Object.assign(document.createElement('canvas'), {
       id: 'neural-bg-fallback',
       'aria-label': 'Decorative neural network visualization',
@@ -88,7 +74,7 @@ async function initNeuralBackground() {
     const nodes = Array.from({ length: N }, () => ({
       x: Math.random() * innerWidth,
       y: Math.random() * innerHeight,
-      vx: (Math.random() - 0.5) * 0.4, // Reduced velocity
+      vx: (Math.random() - 0.5) * 0.4,
       vy: (Math.random() - 0.5) * 0.4,
       pulse: Math.random() * Math.PI * 2,
     }));
@@ -104,7 +90,6 @@ async function initNeuralBackground() {
       canvas.style.width = `${innerWidth}px`;
       canvas.style.height = `${innerHeight}px`;
 
-      // Frost-themed gradient
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
       gradient.addColorStop(0, 'rgba(240, 248, 255, 0.1)');
       gradient.addColorStop(1, 'rgba(168, 198, 229, 0.1)');
@@ -114,7 +99,7 @@ async function initNeuralBackground() {
       ctx.lineWidth = 1;
       edges.forEach(({ s, t, pulse }) => {
         const a = nodes[s], b = nodes[t], d = Math.hypot(a.x - b.x, a.y - b.y);
-        if (d < 200) { // Reduced distance threshold
+        if (d < 200) {
           pulse += 0.03;
           ctx.strokeStyle = `rgba(124, 212, 252, ${(0.2 + 0.15 * Math.sin(pulse)) * (1 - d / 200)})`;
           ctx.beginPath();
@@ -138,9 +123,7 @@ async function initNeuralBackground() {
         ctx.shadowBlur = 0;
       });
 
-      if (!prefersRM) {
-        state.animationFrameId = requestAnimationFrame(draw);
-      }
+      if (!prefersRM) state.animationFrameId = requestAnimationFrame(draw);
     };
 
     const resize = () => {
@@ -152,7 +135,6 @@ async function initNeuralBackground() {
     requestAnimationFrame(draw);
   };
 
-  // WebGL Variant
   if (!webglSupported || prefersRM) {
     console.log('WebGL not supported or reduced motion preferred, falling back to 2D');
     return fallback2D();
@@ -166,7 +148,7 @@ async function initNeuralBackground() {
       import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/UnrealBloomPass.js'),
     ]);
 
-    const DPR = Math.min(devicePixelRatio, 1.5); // Cap DPR for performance
+    const DPR = Math.min(devicePixelRatio, 1.5);
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setPixelRatio(DPR);
     renderer.setSize(innerWidth, innerHeight);
@@ -174,19 +156,19 @@ async function initNeuralBackground() {
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 1000);
-    camera.position.z = 25; // Adjusted for better view
+    camera.position.z = 25;
 
     const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
     scene.add(ambientLight);
-    const pointLight = new THREE.PointLight(0x7cd4fc, 1, 20); // Frost-themed light
+    const pointLight = new THREE.PointLight(0x7cd4fc, 1, 20);
     pointLight.position.set(5, 5, 5);
     scene.add(pointLight);
 
     composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.4, 0.15, 0.9)); // Reduced bloom
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.4, 0.15, 0.9));
 
-    const NODE_COUNT = Math.max(30, Math.min(150, Math.floor(area / 250_000))); // Capped nodes
+    const NODE_COUNT = Math.max(30, Math.min(150, Math.floor(area / 250_000)));
     const clusters = 3;
     const nodes = Array.from({ length: NODE_COUNT }, () => ({
       pos: new THREE.Vector3((Math.random() - 0.5) * 20, (Math.random() - 0.5) * 20, (Math.random() - 0.5) * 10),
@@ -217,7 +199,7 @@ async function initNeuralBackground() {
         void main() {
           vP = pulse;
           vPos = position;
-          gl_PointSize = 6.0 * (1.0 + 0.3 * sin(pulse)); // Reduced size
+          gl_PointSize = 6.0 * (1.0 + 0.3 * sin(pulse));
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
       `,
@@ -230,7 +212,7 @@ async function initNeuralBackground() {
           if (d > 0.5) discard;
           float a = smoothstep(0.5, 0.2, d) * (0.6 + 0.3 * sin(vP));
           float fade = 1.0 - abs(vPos.z / 10.0);
-          gl_FragColor = vec4(0.49, 0.83, 0.99, a * fade * 0.8); // Frost-themed color
+          gl_FragColor = vec4(0.49, 0.83, 0.99, a * fade * 0.8);
         }
       `,
       transparent: true,
@@ -259,7 +241,7 @@ async function initNeuralBackground() {
         void main() {
           float f = 1.0 - abs(vPos.z / 10.0);
           float pulseAlpha = 0.2 + 0.15 * sin(vP);
-          gl_FragColor = vec4(0.49, 0.83, 0.99, pulseAlpha * f * 0.6); // Frost-themed
+          gl_FragColor = vec4(0.49, 0.83, 0.99, pulseAlpha * f * 0.6);
         }
       `,
       transparent: true,
@@ -280,7 +262,7 @@ async function initNeuralBackground() {
         uniform float time;
         void main() {
           vec2 uv = vUv;
-          vec3 color = mix(vec3(0.94, 0.97, 1.0), vec3(0.66, 0.78, 0.9), uv.y); // Frost colors
+          vec3 color = mix(vec3(0.94, 0.97, 1.0), vec3(0.66, 0.78, 0.9), uv.y);
           float noise = fract(sin(dot(uv * time * 0.001, vec2(12.9898, 78.233))) * 43758.5453);
           color += noise * 0.01;
           gl_FragColor = vec4(color, 0.3);
@@ -293,7 +275,7 @@ async function initNeuralBackground() {
     gradientMesh.position.z = -8;
     scene.add(gradientMesh);
 
-    const particleCount = 30; // Reduced particles
+    const particleCount = 30;
     const particleGeo = new THREE.BufferGeometry();
     const particlePos = new Float32Array(particleCount * 3);
     const particleVel = new Float32Array(particleCount * 3);
@@ -307,7 +289,7 @@ async function initNeuralBackground() {
     }
     particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
     const particleMat = new THREE.PointsMaterial({
-      color: 0x7cd4fc, // Frost accent
+      color: 0x7cd4fc,
       size: 1.5,
       transparent: true,
       opacity: 0.5,
@@ -347,7 +329,7 @@ async function initNeuralBackground() {
 
     let last = 0;
     const animate = t => {
-      if (t - last > 25) { // Cap at ~40 FPS
+      if (t - last > 25) {
         nodes.forEach(n => {
           n.pos.add(n.vel);
           n.pulse += 0.05;
@@ -380,9 +362,7 @@ async function initNeuralBackground() {
         composer.render();
         last = t;
       }
-      if (!prefersRM) {
-        state.animationFrameId = requestAnimationFrame(animate);
-      }
+      if (!prefersRM) state.animationFrameId = requestAnimationFrame(animate);
     };
 
     const onResize = () => {
@@ -396,7 +376,6 @@ async function initNeuralBackground() {
     onResize();
     state.animationFrameId = requestAnimationFrame(animate);
 
-    // Cleanup on unload
     state.cleanup.add(() => {
       if (state.animationFrameId) cancelAnimationFrame(state.animationFrameId);
       renderer.dispose();
@@ -411,26 +390,24 @@ async function initNeuralBackground() {
 
 // Scroll-Spy
 function initScrollSpy() {
-  console.log('Initializing scroll-spy...');
   const handler = throttle(() => {
     const sections = $$('main section');
     let active = '';
     sections.forEach(sec => {
-      const top = sec.offsetTop - 80; // Adjusted offset
+      const top = sec.offsetTop - 80;
       if (window.scrollY >= top) active = sec.id;
     });
     $$('.nav-links a').forEach(link => {
       link.classList.toggle('active', link.getAttribute('href') === `#${active}`);
     });
-  }, 50); // Reduced throttle for smoother response
+  }, 50);
 
   document.addEventListener('scroll', handler);
   state.cleanup.add(() => document.removeEventListener('scroll', handler));
 }
 
-// Graphs (Canvas)
+// Graphs
 function createGraph(selector, nodes = [], edges = []) {
-  console.log(`Creating graph for ${selector}...`);
   const wrap = $(selector);
   if (!wrap) {
     console.error(`Graph container ${selector} not found`);
@@ -455,11 +432,11 @@ function createGraph(selector, nodes = [], edges = []) {
     canvas.height = h;
     canvas.style.width = `${wrap.clientWidth}px`;
     canvas.style.height = `${wrap.clientHeight}px`;
-    ctx.fillStyle = 'rgba(240, 248, 255, 0.1)'; // Frost-themed background
+    ctx.fillStyle = 'rgba(240, 248, 255, 0.1)';
     ctx.fillRect(0, 0, w, h);
 
     ctx.lineWidth = 1.5;
-    ctx.strokeStyle = '#7cd4fc'; // Frost accent
+    ctx.strokeStyle = '#7cd4fc';
     edges.forEach(e => {
       const a = nodes.find(n => n.id === e.source),
             b = nodes.find(n => n.id === e.target);
@@ -480,20 +457,18 @@ function createGraph(selector, nodes = [], edges = []) {
       ctx.arc(n.x * devicePixelRatio, n.y * devicePixelRatio, n.r, 0, 2 * Math.PI);
       ctx.fillStyle = '#7cd4fc';
       ctx.fill();
-      ctx.strokeStyle = '#a8c6e5'; // Frost secondary
+      ctx.strokeStyle = '#a8c6e5';
       ctx.lineWidth = 1;
       ctx.stroke();
       ctx.font = '12px Sora';
-      ctx.fillStyle = '#0c0d10'; // Frost text
+      ctx.fillStyle = '#0c0d10';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(n.label, n.x * devicePixelRatio, (n.y + n.r + 12) * devicePixelRatio);
     });
 
-    if (selector.includes('threat')) {
-      const nodeCount = $('#node-count');
-      if (nodeCount) nodeCount.textContent = nodes.length;
-    }
+    const nodeCount = $(selector.includes('threat') ? '#node-count' : '#stack-node-count');
+    if (nodeCount) nodeCount.textContent = nodes.length;
   };
 
   const resize = throttle(draw, 100);
@@ -504,7 +479,6 @@ function createGraph(selector, nodes = [], edges = []) {
 
 // Consent Popup
 function initConsent() {
-  console.log('Initializing consent popup...');
   const pop = $('#consent-popup'),
         accept = $('.consent-accept'),
         decline = $('.consent-decline');
@@ -521,7 +495,6 @@ function initConsent() {
   decline.addEventListener('click', () => {
     localStorage.setItem('consent', 'declined');
     pop.classList.add('hidden');
-    // Disable non-essential cookies/tracking
   });
 
   state.cleanup.add(() => {
@@ -532,9 +505,7 @@ function initConsent() {
 
 // Dev Panel
 function initDevPanel() {
-  console.log('Initializing dev panel...');
   const panel = $('#dev-panel'),
-        toggle = $('.toggle-dev-panel'),
         overlay = $('#keyboard-overlay');
   if (!panel || !overlay) {
     console.warn('Dev panel or overlay missing');
@@ -547,7 +518,6 @@ function initDevPanel() {
   };
   const hideOverlay = () => overlay.classList.remove('active');
 
-  if (toggle) toggle.addEventListener('click', togglePanel);
   document.addEventListener('keydown', e => {
     if (e.ctrlKey && e.key === 'd') {
       togglePanel();
@@ -559,7 +529,6 @@ function initDevPanel() {
   document.addEventListener('keyup', hideOverlay);
 
   state.cleanup.add(() => {
-    if (toggle) toggle.removeEventListener('click', togglePanel);
     document.removeEventListener('keydown', showOverlay);
     document.removeEventListener('keyup', hideOverlay);
   });
@@ -567,7 +536,6 @@ function initDevPanel() {
 
 // Snapshot Export
 function exportSnapshot() {
-  console.log('Snapshot button clicked');
   const snap = {
     stamp: new Date().toISOString(),
     llmCalls: state.llmCallCount,
@@ -625,24 +593,20 @@ const stackEdges = [
 
 // Initialization
 async function initEverything() {
-  console.log('DOM loaded, initializing...');
   const loading = $('#loading');
   try {
-    // Hide loading overlay
     if (loading) {
-      await new Promise(resolve => setTimeout(resolve, 300)); // Reduced delay
+      await new Promise(resolve => setTimeout(resolve, 300));
       loading.classList.add('hidden');
       loading.style.display = 'none';
     }
 
-    // Initialize components
     await initNeuralBackground();
     if (modules.initThemeToggle) modules.initThemeToggle();
     initScrollSpy();
     if (modules.initCharts) modules.initCharts();
     if (modules.initLLM) {
       modules.initLLM();
-      // Proxy LLM calls to track count
       const originalLLM = modules.initLLM;
       modules.initLLM = async (...args) => {
         state.llmCallCount++;
@@ -654,16 +618,25 @@ async function initEverything() {
     initConsent();
     initDevPanel();
 
-    // Initialize graphs
     createGraph('#threat-detection-graph', threatNodes, threatEdges);
     createGraph('#stack-graph', stackNodes, stackEdges);
 
-    // Snapshot button
     const snapshotBtn = $('.snapshot-button');
     if (snapshotBtn) {
       snapshotBtn.addEventListener('click', exportSnapshot);
       state.cleanup.add(() => snapshotBtn.removeEventListener('click', exportSnapshot));
     }
+
+    // Intersection Observer for section visibility
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+    $$('section').forEach(section => observer.observe(section));
+    state.cleanup.add(() => observer.disconnect());
   } catch (err) {
     console.error('Initialization failed:', err);
     if (loading) {
@@ -679,10 +652,9 @@ async function initEverything() {
   }
 }
 
-// Boot with crash guard
+// Boot
 try {
   document.addEventListener('DOMContentLoaded', initEverything);
-  // Cleanup on unload
   window.addEventListener('unload', () => {
     if (state.animationFrameId) cancelAnimationFrame(state.animationFrameId);
     state.cleanup.forEach(fn => fn());
@@ -691,7 +663,7 @@ try {
   console.error('🔥 Fatal init error:', err);
   if ($('#loading')) {
     $('#loading').classList.add('hidden');
-    $('#loading').style.display = 'none';
+    $('#loading').style.display = 'none');
   }
   const errorDiv = document.createElement('div');
   errorDiv.style.color = 'red';
