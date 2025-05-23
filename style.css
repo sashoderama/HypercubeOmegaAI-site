@@ -21,19 +21,19 @@
 
 /* Frost Theme (Default) */
 :root[data-theme="frost"] {
-  --bg: rgba(240, 248, 255, 0.98); /* Frosty white */
-  --fg: #0c0d10; /* High-contrast text */
-  --accent: #7cd4fc; /* Icy blue */
-  --secondary: #a8c6e5; /* Frosty secondary */
-  --glow: rgba(124, 212, 252, 0.2); /* Subtle glow */
-  --blur: rgba(255, 255, 255, 0.4); /* Blur effect */
+  --bg: rgba(240, 248, 255, 0.98);
+  --fg: #0c0d10;
+  --accent: #7cd4fc;
+  --secondary: #a8c6e5;
+  --glow: rgba(124, 212, 252, 0.2);
+  --blur: rgba(255, 255, 255, 0.4);
   --glass-bg: linear-gradient(145deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
   --glass-border: rgba(255, 255, 255, 0.3);
   --radius: 12px;
   --shadow-elevate: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-/* Light Theme (Fallback) */
+/* Light Theme */
 @media (prefers-color-scheme: light), (prefers-color-scheme: no-preference) {
   :root[data-theme="light"] {
     --bg: #e0e3f4;
@@ -85,8 +85,8 @@ header {
   top: 0;
   width: 100%;
   background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--glass-border);
   z-index: 1000;
   padding: 0.75rem 0;
@@ -233,14 +233,12 @@ p {
   text-align: center;
 }
 
-/* Canvas */
-.canvas-container {
-  position: relative;
-  height: 400px;
-  margin: 1.5rem 0;
+/* Analytics Section */
+#analytics .card {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
 }
-
-/* Tabs */
 .tab-nav {
   display: flex;
   gap: 1rem;
@@ -267,6 +265,20 @@ p {
 }
 .tab-content.active {
   display: block;
+}
+.canvas-container {
+  position: relative;
+  height: 400px;
+  margin: 1.5rem 0;
+  background: var(--glass-bg);
+  border-radius: var(--radius);
+  border: 1px solid var(--glass-border);
+  padding: 1rem;
+}
+.canvas-fallback {
+  text-align: center;
+  color: var(--fg);
+  padding: 1rem;
 }
 
 /* LLM Section */
@@ -486,6 +498,7 @@ footer p {
   .nav-links a { font-size: 0.9rem; }
   .cyber-button { padding: 0.8rem 1.5rem; font-size: 0.9rem; }
   .telemetry-hud { width: 100%; border-radius: 0; box-shadow: none; }
+  .canvas-container { height: 300px; }
 }
 @media screen and (min-resolution: 192dpi) {
   body { font-size: 17px; }
