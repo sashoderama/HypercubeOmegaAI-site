@@ -26,11 +26,11 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="/style.css" nonce="nexus2025">
 </head>
-<body>
+<body data-theme="frost">
   <div class="loading-overlay" id="loading">
-    <div class="loader"></div>
+    <div class="loader" aria-label="Loading"></div>
   </div>
-  <div id="neural-bg"></div>
+  <div id="neural-bg" class="neuro-universe"></div>
   <header role="banner">
     <div class="container">
       <h1>AuroraGenesis ∞ NEXUS</h1>
@@ -41,30 +41,40 @@
         <a href="#llm">LLM</a>
         <a href="#faq">FAQ</a>
       </nav>
-      <button class="theme-toggle" aria-label="Toggle theme">🌗</button>
+      <button class="theme-toggle" aria-label="Toggle theme">
+        <span class="sr-only">Toggle Theme</span>
+        <svg width="24" height="24" fill="none" stroke="currentColor" aria-hidden="true">
+          <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+      </button>
     </div>
   </header>
   <main role="main">
     <section id="hero">
       <div class="container">
         <h2>Neural Cyber Evolution</h2>
-        <p>Harness the power of adaptive neural networks for real-time threat detection and mitigation.</p>
+        <p>Harness adaptive neural networks for real-time threat detection and mitigation.</p>
         <button class="cyber-button">Engage NEXUS</button>
       </div>
     </section>
     <section id="graph">
       <div class="container">
         <h2>Threat Detection Graph</h2>
-        <div class="card" aria-hidden="true">
+        <div class="card">
           <div id="threat-detection-graph" class="canvas-container"></div>
           <p>Node Count: <span id="node-count">0</span></p>
+        </div>
+        <h2>Technology Stack Graph</h2>
+        <div class="card">
+          <div id="stack-graph" class="canvas-container"></div>
+          <p>Node Count: <span id="stack-node-count">0</span></p>
         </div>
       </div>
     </section>
     <section id="analytics">
       <div class="container">
         <h2>Analytics Dashboard</h2>
-        <div class="card" aria-hidden="true">
+        <div class="card">
           <nav class="tab-nav">
             <button class="tab-button active" data-tab="entropy-tab">Entropy</button>
             <button class="tab-button" data-tab="activity-tab">Activity</button>
@@ -73,16 +83,19 @@
           <div class="tab-content active" id="entropy-tab">
             <div class="canvas-container">
               <canvas id="entropy-chart" aria-label="Bar chart showing entropy levels for various threat types"></canvas>
+              <div class="canvas-fallback" hidden>Entropy chart unavailable. Contact support.</div>
             </div>
           </div>
           <div class="tab-content" id="activity-tab">
             <div class="canvas-container">
               <canvas id="activity-chart" aria-label="Line chart showing neural activity over time"></canvas>
+              <div class="canvas-fallback" hidden>Activity chart unavailable. Contact support.</div>
             </div>
           </div>
           <div class="tab-content" id="ethics-tab">
             <div class="canvas-container">
               <canvas id="ethics-chart" aria-label="Pie chart showing ethics score distribution"></canvas>
+              <div class="canvas-fallback" hidden>Ethics chart unavailable. Contact support.</div>
             </div>
           </div>
         </div>
@@ -91,7 +104,7 @@
     <section id="llm">
       <div class="container">
         <h2>LLM Analysis</h2>
-        <div class="card llm-container" aria-hidden="true">
+        <div class="card llm-container">
           <div class="llm-form">
             <textarea id="llm-query" placeholder="Enter query..." aria-label="Query input"></textarea>
             <div class="llm-controls">
@@ -120,15 +133,15 @@
     <section id="faq">
       <div class="container">
         <h2>FAQ</h2>
-        <div class="card" aria-hidden="true">
+        <div class="card">
           <div class="accordion">
             <div class="accordion-item">
-              <button class="accordion-header" aria-expanded="false">What is NEXUS?</button>
-              <div class="accordion-content">NEXUS is an AI-driven cybersecurity platform with adaptive neural networks.</div>
+              <button class="accordion-header" aria-expanded="false" aria-controls="faq1">What is NEXUS?</button>
+              <div class="accordion-content" id="faq1">NEXUS is an AI-driven cybersecurity platform with adaptive neural networks.</div>
             </div>
             <div class="accordion-item">
-              <button class="accordion-header" aria-expanded="false">How does it detect threats?</button>
-              <div class="accordion-content">It uses real-time graph analysis and LLM-powered insights.</div>
+              <button class="accordion-header" aria-expanded="false" aria-controls="faq2">How does it detect threats?</button>
+              <div class="accordion-content" id="faq2">It uses real-time graph analysis and LLM-powered insights.</div>
             </div>
           </div>
         </div>
@@ -154,13 +167,23 @@
   <div id="consent-popup" class="hidden">
     <p>We use cookies to enhance your experience. Accept?</p>
     <button class="cyber-button consent-accept">Accept</button>
+    <button class="cyber-button consent-decline">Decline</button>
   </div>
-  <div id="dev-panel"></div>
-  <div id="keyboard-overlay" class="hidden"></div>
+  <div id="dev-panel" class="hidden">
+    <h3>Dev Panel</h3>
+    <p>Debug info here.</p>
+  </div>
+  <div id="keyboard-overlay" class="hidden">Ctrl+D: Toggle Dev Panel</div>
   <noscript>
     <p>This site requires JavaScript and WebGL for full functionality.</p>
   </noscript>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" nonce="nexus2025"></script>
-  <script type="module" src="/nexus.js" nonce="nexus2025" defer></script>
+  <script type="module" src="/nexus.js" nonce="nexus2025" defer onerror="handleScriptError()"></script>
+  <script nonce="nexus2025">
+    function handleScriptError() {
+      console.error('Failed to load /nexus.js');
+      document.body.insertAdjacentHTML('beforeend', '<p style="color: red; text-align: center;">Error loading application. Please try again later.</p>');
+    }
+  </script>
 </body>
 </html>
