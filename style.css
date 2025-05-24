@@ -47,6 +47,18 @@
   }
 }
 
+/* High Contrast Theme */
+:root[data-theme="high-contrast"] {
+  --bg: #000;
+  --fg: #fff;
+  --accent: #00f;
+  --secondary: #ccc;
+  --glow: #00f;
+  --blur: rgba(255, 255, 255, 0.5);
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-border: #fff;
+}
+
 /* HTML and Body */
 html {
   scroll-behavior: smooth;
@@ -163,6 +175,10 @@ h2 {
   text-align: center;
   grid-column: 1 / -1;
   text-shadow: 0 0 10px var(--glow);
+}
+h3 {
+  font: 600 1.2rem 'Sora', sans-serif;
+  margin-bottom: 0.5rem;
 }
 p {
   font-size: 1.1rem;
