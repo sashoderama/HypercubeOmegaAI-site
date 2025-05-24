@@ -30,7 +30,7 @@ export function initCharts() {
       labels: ['XSS', 'SQL Injection', 'DDoS', 'Zero-Day', 'Phishing'],
       datasets: [{
         label: 'Latency (ms)',
-        data: [5, 6, 5.5, 7, 6.5],
+        data: [0.8, 0.9, 0.85, 1.0, 0.95],
         backgroundColor: '#7cd4fc',
         borderColor: '#a8c6e5',
         borderWidth: 1
@@ -41,7 +41,7 @@ export function initCharts() {
       scales: {
         y: {
           beginAtZero: true,
-          max: 10,
+          max: 1.5,
           title: { display: true, text: 'Latency (ms)', color: '#0c0d10', font: { family: 'Sora', size: 14 } },
           grid: { color: '#a8c6e5' },
           ticks: { color: '#0c0d10' }
@@ -64,10 +64,10 @@ export function initCharts() {
   const activityChart = new Chart(aC, {
     type: 'line',
     data: {
-      labels: ['2025', '2026', '2027'],
+      labels: ['2025', '2027', '2029'],
       datasets: [{
         label: 'Revenue ($M)',
-        data: [0.12, 1.2, 5],
+        data: [5, 30, 100],
         borderColor: '#7cd4fc',
         backgroundColor: 'rgba(124, 212, 252, 0.3)',
         fill: true,
@@ -79,7 +79,7 @@ export function initCharts() {
       scales: {
         y: {
           beginAtZero: true,
-          max: 6,
+          max: 120,
           title: { display: true, text: 'Revenue ($M)', color: '#0c0d10', font: { family: 'Sora', size: 14 } },
           grid: { color: '#a8c6e5' },
           ticks: { color: '#0c0d10' }
@@ -126,9 +126,9 @@ export function initCharts() {
   });
 
   const interval = setInterval(() => {
-    entropyChart.data.datasets[0].data = entropyChart.data.datasets[0].data.map(v => Math.max(5, Math.min(7, v + (Math.random() - 0.5) * 0.5)));
+    entropyChart.data.datasets[0].data = entropyChart.data.datasets[0].data.map(v => Math.max(0.8, Math.min(1.0, v + (Math.random() - 0.5) * 0.1)));
     entropyChart.update();
-    ethicsChart.data.datasets[0].data = [25, 25, 25, 25]; // Static for compliance
+    ethicsChart.data.datasets[0].data = [25, 25, 25, 25];
     ethicsChart.update();
   }, 5000);
 
