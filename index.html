@@ -1,542 +1,271 @@
-/* Base Reset */
-*, *::before, *::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* Root Variables (Dark Theme Fallback) */
-:root {
-  --bg: #0c0d10;
-  --fg: #e0e3f4;
-  --accent: #4f8dfd;
-  --secondary: #adb9cc;
-  --glow: #8fa9ff;
-  --blur: rgba(255, 255, 255, 0.04);
-  --glass-bg: rgba(255, 255, 255, 0.02);
-  --glass-border: rgba(255, 255, 255, 0.06);
-  --radius: 12px;
-  --shadow-elevate: 0 10px 30px rgba(0, 0, 0, 0.4);
-}
-
-/* Frost Theme (Default) */
-:root[data-theme="frost"] {
-  --bg: rgba(240, 248, 255, 0.98);
-  --fg: #0c0d10;
-  --accent: #7cd4fc;
-  --secondary: #a8c6e5;
-  --glow: rgba(124, 212, 252, 0.2);
-  --blur: rgba(255, 255, 255, 0.4);
-  --glass-bg: linear-gradient(145deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
-  --glass-border: rgba(255, 255, 255, 0.3);
-  --radius: 12px;
-  --shadow-elevate: 0 10px 30px rgba(0, 0, 0, 0.2);
-}
-
-/* Light Theme */
-@media (prefers-color-scheme: light), (prefers-color-scheme: no-preference) {
-  :root[data-theme="light"] {
-    --bg: #e0e3f4;
-    --fg: #0c0d10;
-    --accent: #4f8dfd;
-    --secondary: #4a5a77;
-    --glow: #4f8dfd;
-    --blur: rgba(12, 13, 16, 0.08);
-    --glass-bg: rgba(0, 0, 0, 0.02);
-    --glass-border: rgba(0, 0, 0, 0.08);
-  }
-}
-
-/* HTML and Body */
-html {
-  scroll-behavior: smooth;
-  font-size: 16px;
-}
-
-body {
-  font-family: 'Sora', 'Inter', system-ui, sans-serif;
-  background: var(--bg);
-  color: var(--fg);
-  line-height: 1.6;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
-/* Neural Background */
-#neural-bg {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-}
-.neuro-universe::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
-  pointer-events: none;
-  contain: strict;
-}
-
-/* Header */
-header {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--glass-border);
-  z-index: 1000;
-  padding: 0.75rem 0;
-}
-header .container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 2rem;
-}
-h1 {
-  font: 700 1.8rem 'Sora', sans-serif;
-}
-.nav-links {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-.nav-links a {
-  color: var(--fg);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 1rem;
-  transition: color 0.3s;
-}
-.nav-links a:hover, .nav-links a.active {
-  color: var(--accent);
-}
-
-/* Theme Toggle */
-.theme-toggle {
-  background: none;
-  border: none;
-  color: var(--fg);
-  font-size: 1.3rem;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-.theme-toggle:hover {
-  transform: scale(1.1);
-}
-.theme-toggle:focus {
-  outline: 2px solid var(--accent);
-}
-
-/* Main */
-main {
-  padding-top: 5rem;
-}
-.container {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 2rem;
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  gap: 2rem;
-}
-section {
-  padding: 4rem 0;
-  grid-column: 1 / -1;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-section.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-h2 {
-  font: 700 2.5rem 'Sora', sans-serif;
-  margin-bottom: 1.5rem;
-  text-align: center;
-  grid-column: 1 / -1;
-  text-shadow: 0 0 10px var(--glow);
-}
-p {
-  font-size: 1.1rem;
-  max-width: 800px;
-  margin: 0 auto 1.5rem;
-  text-align: center;
-  grid-column: 1 / -1;
-}
-
-/* Card */
-.card {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius);
-  padding: 2rem;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: var(--shadow-elevate);
-  grid-column: 1 / -1;
-  transition: opacity 0.3s;
-}
-.card.hidden {
-  opacity: 0;
-}
-.card.visible {
-  opacity: 1;
-}
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-}
-.card-grid .card {
-  grid-column: auto;
-}
-
-/* Badge */
-.badge {
-  display: inline-block;
-  background: var(--accent);
-  color: #fff;
-  padding: 0.3rem 0.6rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  margin-top: 0.5rem;
-}
-
-/* Cyber Button */
-.cyber-button {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  color: var(--fg);
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  font: 600 1rem 'Sora', sans-serif;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  backdrop-filter: blur(8px);
-}
-.cyber-button:hover, .cyber-button:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 20px var(--glow);
-  transform: scale(1.05);
-}
-.cyber-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, var(--glow), transparent);
-  transition: left 0.5s ease;
-}
-.cyber-button:hover::before, .cyber-button:focus::before {
-  left: 100%;
-}
-
-/* Hero Section */
-#hero {
-  min-height: 85vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  text-align: center;
-}
-
-/* Analytics Section */
-#analytics .card {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-}
-.tab-nav {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-}
-.tab-button {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  color: var(--fg);
-  padding: 0.8rem 1.5rem;
-  border-radius: 8px;
-  font: 600 1rem 'Sora', sans-serif;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-.tab-button:hover, .tab-button.active, .tab-button:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 15px var(--glow);
-}
-.tab-content {
-  display: none;
-}
-.tab-content.active {
-  display: block;
-}
-.canvas-container {
-  position: relative;
-  height: 400px;
-  margin: 1.5rem 0;
-  background: var(--glass-bg);
-  border-radius: var(--radius);
-  border: 1px solid var(--glass-border);
-  padding: 1rem;
-}
-.canvas-fallback {
-  text-align: center;
-  color: var(--fg);
-  padding: 1rem;
-}
-
-/* LLM Section */
-.llm-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-}
-.llm-form, .llm-output {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-#llm-query, #llm-response {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  color: var(--fg);
-  padding: 1rem;
-  border-radius: var(--radius);
-  font-size: 1rem;
-  resize: vertical;
-  min-height: 120px;
-  backdrop-filter: blur(8px);
-}
-.llm-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.8rem;
-}
-.llm-options-panel {
-  display: none;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  padding: 1rem;
-  border-radius: var(--radius);
-  backdrop-filter: blur(8px);
-}
-.llm-options-panel.active {
-  display: block;
-}
-.llm-options-panel label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-}
-#llm-provider, #llm-verbose {
-  background: var(--bg);
-  color: var(--fg);
-  border: 1px solid var(--secondary);
-  padding: 0.5rem;
-  border-radius: 4px;
-}
-#llm-history-list {
-  list-style: none;
-  max-height: 200px;
-  overflow-y: auto;
-  padding-left: 0;
-}
-#llm-history-list li {
-  padding: 0.5rem;
-  border-bottom: 1px solid var(--secondary);
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.9rem;
-}
-
-/* Telemetry HUD */
-.telemetry-hud {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  width: 280px;
-  background: var(--glass-bg);
-  padding: 1rem;
-  border-radius: 12px 0 0 0;
-  border-top: 1px solid var(--glass-border);
-  border-left: 1px solid var(--glass-border);
-  backdrop-filter: blur(12px);
-  box-shadow: -4px -4px 20px rgba(0, 0, 0, 0.3);
-}
-.telemetry-hud h3 {
-  font: 600 1.1rem 'Sora', sans-serif;
-  margin-bottom: 1rem;
-}
-.telemetry-hud p {
-  margin: 0.5rem 0;
-  font-size: 0.9rem;
-}
-
-/* Footer */
-footer {
-  background: var(--glass-bg);
-  padding: 1.5rem 0;
-  text-align: center;
-  border-top: 1px solid var(--glass-border);
-}
-footer p {
-  font-size: 0.9rem;
-  color: var(--secondary);
-}
-footer a {
-  color: var(--accent);
-  text-decoration: none;
-}
-
-/* Accordion */
-.accordion-header {
-  background: var(--glass-bg);
-  border: none;
-  padding: 1rem;
-  width: 100%;
-  text-align: left;
-  cursor: pointer;
-  color: var(--fg);
-  font: 600 1rem 'Sora', sans-serif;
-}
-.accordion-content {
-  display: none;
-  padding: 1rem;
-}
-.accordion-item[aria-expanded="true"] .accordion-content {
-  display: block;
-}
-
-/* Loading Overlay */
-.loading-overlay {
-  position: fixed;
-  inset: 0;
-  background: var(--bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10000;
-  opacity: 1;
-  transition: opacity 0.5s ease;
-}
-.loading-overlay.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-.loader {
-  width: 40px;
-  height: 40px;
-  border: 4px solid var(--accent);
-  border-top-color: transparent;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* Consent Popup */
-#consent-popup {
-  position: fixed;
-  bottom: 1rem;
-  left: 1rem;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  padding: 1rem;
-  border-radius: var(--radius);
-  backdrop-filter: blur(12px);
-  z-index: 1000;
-}
-#consent-popup.hidden {
-  display: none;
-}
-
-/* Dev Panel */
-#dev-panel {
-  position: fixed;
-  top: 0;
-  right: -300px;
-  width: 300px;
-  height: 100%;
-  background: var(--glass-bg);
-  border-left: 1px solid var(--glass-border);
-  padding: 1rem;
-  transition: right 0.3s ease;
-}
-#dev-panel.active {
-  right: 0;
-}
-
-/* Keyboard Overlay */
-#keyboard-overlay {
-  position: fixed;
-  bottom: 1rem;
-  right: 1rem;
-  background: var(--glass-bg);
-  padding: 0.5rem;
-  border-radius: var(--radius);
-  display: none;
-}
-#keyboard-overlay.active {
-  display: block;
-}
-
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--accent);
-  border-radius: 4px;
-}
-
-/* Responsive */
-@media (max-width: 1024px) {
-  .llm-container {
-    grid-template-columns: 1fr;
-  }
-}
-@media (max-width: 768px) {
-  .container {
-    grid-template-columns: 1fr;
-  }
-  h1 { font-size: 1.5rem; }
-  h2 { font-size: 2rem; }
-  .nav-links { gap: 0.5rem; }
-  .nav-links a { font-size: 0.9rem; }
-  .cyber-button { padding: 0.8rem 1.5rem; font-size: 0.9rem; }
-  .telemetry-hud { width: 100%; border-radius: 0; box-shadow: none; }
-  .canvas-container { height: 300px; }
-}
-@media screen and (min-resolution: 192dpi) {
-  body { font-size: 17px; }
-  .card { box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5); }
-}
-@media (prefers-reduced-motion: reduce), (max-device-width: 768px) {
-  .glass-panel, .card, .cyber-button {
-    backdrop-filter: none;
-    background: var(--glass-bg);
-  }
-  .neuro-universe::after {
-    display: none;
-  }
-  section, .card {
-    transition: none;
-  }
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0c0d10">
+  <meta name="color-scheme" content="dark light">
+  <meta name="description" content="AuroraGenesis ∞ NEXUS: Enterprise-Grade Cybersecurity AI Platform">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'nonce-nexus2025' https://cdn.jsdelivr.net;
+    style-src 'self' 'nonce-nexus2025' https://fonts.googleapis.com;
+    font-src 'self' https://fonts.gstatic.com;
+    img-src 'self' data: https:;
+    connect-src 'self';
+    object-src 'none';
+    base-uri 'none';
+  ">
+  <title>AuroraGenesis ∞ NEXUS</title>
+  <link rel="icon" href="data:," type="image/x-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="/style.css" nonce="nexus2025">
+</head>
+<body data-theme="frost">
+  <div class="loading-overlay" id="loading">
+    <div class="loader" aria-label="Loading"></div>
+  </div>
+  <div id="neural-bg" class="neuro-universe"></div>
+  <header role="banner">
+    <div class="container">
+      <h1>AuroraGenesis ∞ NEXUS</h1>
+      <nav role="navigation" aria-label="Main navigation" class="nav-links">
+        <a href="#hero" class="active">Home</a>
+        <a href="#executive-summary">Summary</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#features">Features</a>
+        <a href="#market">Market</a>
+        <a href="#advantages">Advantages</a>
+        <a href="#business-model">Business Model</a>
+        <a href="#financials">Financials</a>
+        <a href="#go-to-market">Strategy</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#investment-ask">Investment</a>
+      </nav>
+      <button class="theme-toggle" aria-label="Toggle theme">
+        <span class="sr-only">Toggle Theme</span>
+        <svg width="24" height="24" fill="none" stroke="currentColor" aria-hidden="true">
+          <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+      </button>
+    </div>
+  </header>
+  <main role="main">
+    <section id="hero">
+      <div class="container">
+        <h2>Next-Gen Cybersecurity AI</h2>
+        <p>Enterprise-grade, GPU-accelerated platform for real-time threat detection, autonomous response, and compliance automation.</p>
+        <button class="cyber-button">Engage NEXUS</button>
+      </div>
+    </section>
+    <section id="executive-summary">
+      <div class="container">
+        <h2>Executive Summary</h2>
+        <div class="card">
+          <p>Our platform processes over 1M events/sec with industry-leading latency, offering 50% faster threat detection, GDPR/SOC2/HIPAA compliance, and innovative monetization via APIs and MSSP partnerships.</p>
+          <ul>
+            <li>50% faster threat detection than competitors</li>
+            <li>600GB+ proprietary threat intelligence dataset</li>
+            <li>Modular architecture for API and IOC monetization</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <section id="architecture">
+      <div class="container">
+        <h2>System Architecture</h2>
+        <div class="card-grid">
+          <div class="card">
+            <h3>AI Stack</h3>
+            <p>33+ modules using GNNs, ensemble ML, and transformer-based NLP for detection and response.</p>
+          </div>
+          <div class="card">
+            <h3>GPU Acceleration</h3>
+            <p>Dual-GPU CUDA with Triton Inference Server for low-latency scoring.</p>
+          </div>
+          <div class="card">
+            <h3>Data Pipeline</h3>
+            <p>Kafka streaming, Prometheus/OpenTelemetry for observability.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="features">
+      <div class="container">
+        <h2>Key Features & Benefits</h2>
+        <div class="accordion">
+          <div class="accordion-item">
+            <button class="accordion-header" aria-expanded="false" aria-controls="feat1">Threat Detection</button>
+            <div class="accordion-content" id="feat1">Real-time network/OT/IoT analysis with <0.1% false positives, 50% faster TLS 1.3 inspection.</div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-header" aria-expanded="false" aria-controls="feat2">Incident Response</button>
+            <div class="accordion-content" id="feat2">Asset isolation in 10s, 98% ransomware blocking efficacy.</div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-header" aria-expanded="false" aria-controls="feat3">Compliance Automation</button>
+            <div class="accordion-content" id="feat3">60% cost reduction for GDPR, HIPAA, SOC2 via zero-knowledge proofs.</div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-header" aria-expanded="false" aria-controls="feat4">Monetization</button>
+            <div class="accordion-content" id="feat4">$10/1,000 scans for API, $0.10/indicator for IOC syndication, 30% MSSP commission.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="market">
+      <div class="container">
+        <h2>Market Opportunity</h2>
+        <div class="card">
+          <p>$45B+ cybersecurity AI market, $25B+ compliance automation, $15B+ threat intelligence, $100B+ cyber insurance/DeFi pools.</p>
+          <ul>
+            <li>15% CAGR in cybersecurity AI</li>
+            <li>Unique intersection of four high-growth segments</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <section id="advantages">
+      <div class="container">
+        <h2>Competitive Advantages</h2>
+        <div class="card-grid">
+          <div class="card">
+            <h3>Performance</h3>
+            <p>5–7ms latency, surpassing industry averages.</p>
+          </div>
+          <div class="card">
+            <h3>Accuracy</h3>
+            <p>~0.1% false positives, saving analyst time.</p>
+          </div>
+          <div class="card">
+            <h3>Cost Efficiency</h3>
+            <p>Runs on $1,500 hardware vs. $10,000 cloud.</p>
+          </div>
+          <div class="card">
+            <h3>Innovation</h3>
+            <p>GNN CEO fraud detection, zk-compliance proofs.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="business-model">
+      <div class="container">
+        <h2>Business Model</h2>
+        <div class="card">
+          <table>
+            <thead>
+              <tr><th>Stream</th><th>Pricing</th><th>2027 Revenue</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>SaaS Endpoint</td><td>$25/endpoint/mo</td><td>$3M+</td></tr>
+              <tr><td>Threat Intel</td><td>$5k-$50k/mo</td><td>$1.5M</td></tr>
+              <tr><td>Security Bonds</td><td>Yield-sharing</td><td>$500k+</td></tr>
+              <tr><td>MSSP</td><td>30% share</td><td>$2M+</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    <section id="financials">
+      <div class="container">
+        <h2>Financial Projections</h2>
+        <div class="card">
+          <table>
+            <thead>
+              <tr><th>Year</th><th>Revenue</th><th>Notes</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>2025</td><td>$120k</td><td>API & IOC ramp-up</td></tr>
+              <tr><td>2026</td><td>$1.2M</td><td>MSSP & cloud</td></tr>
+              <tr><td>2027</td><td>$5M+</td><td>Enterprise adoption</td></tr>
+            </tbody>
+          </table>
+          <p>Break-even in 12 months, 400% ROI by Year 3.</p>
+        </div>
+      </div>
+    </section>
+    <section id="go-to-market">
+      <div class="container">
+        <h2>Go-To-Market Strategy</h2>
+        <div class="card">
+          <ul>
+            <li><strong>Segments:</strong> SMBs, Healthcare, Finance, Infrastructure</li>
+            <li><strong>Channels:</strong> Direct sales, MSSPs, AWS/Azure marketplaces</li>
+            <li><strong>Community:</strong> Open-source R&D engagement</li>
+            <li><strong>Partnerships:</strong> ISACs, threat intel consortia</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <section id="roadmap">
+      <div class="container">
+        <h2>Roadmap to Leadership</h2>
+        <div class="card">
+          <table>
+            <thead>
+              <tr><th>Phase</th><th>Milestones</th><th>Timeline</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Phase 1</td><td>Pilot refinement</td><td>0–6 Months</td></tr>
+              <tr><td>Phase 2</td><td>Cloud & MSSP</td><td>6–18 Months</td></tr>
+              <tr><td>Phase 3</td><td>Scale to 50,000+</td><td>18–36 Months</td></tr>
+              <tr><td>Phase 4</td><td>IPO preparation</td><td>36+ Months</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+    <section id="investment-ask">
+      <div class="container">
+        <h2>Investment Opportunity</h2>
+        <div class="card">
+          <p><strong>Funding:</strong> $3M for GPU expansion, product development, sales, and compliance.</p>
+          <p><strong>Outcomes:</strong> Market leadership in 3 years, >90% margins, IPO/acquisition potential.</p>
+          <button class="cyber-button"><a href="mailto:ceo@aurora-core.net" style="color: inherit; text-decoration: none;">Contact to Invest</a></button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <aside class="telemetry-hud" aria-live="polite">
+    <h3>Telemetry</h3>
+    <p>Latency: <span id="latency">5ms</span></p>
+    <p>Events/Sec: <span id="events">1M+</span></p>
+    <p>False Positives: <span id="false-positives">0.1%</span></p>
+    <p>Compliance: <span id="compliance">100%</span></p>
+    <button class="cyber-button snapshot-button">Snapshot</button>
+  </aside>
+  <footer role="contentinfo">
+    <div class="container">
+      <p>© 2025 AuroraGenesis ∞ NEXUS</p>
+      <img src="https://data.jsdelivr.com/v1/package/npm/three/badge" alt="jsDelivr hits">
+      <p><a href="mailto:ceo@aurora-core.net">Contact Us</a> | GDPR, SOC2, HIPAA, FIPS Compliant</p>
+    </div>
+  </footer>
+  <div id="consent-popup" class="hidden">
+    <p>We use cookies to enhance your experience. Accept?</p>
+    <button class="cyber-button consent-accept">Accept</button>
+    <button class="cyber-button consent-decline">Decline</button>
+  </div>
+  <div id="dev-panel" class="hidden">
+    <h3>Dev Panel</h3>
+    <p>Debug info: Latency, events/sec, compliance metrics.</p>
+  </div>
+  <div id="keyboard-overlay" class="hidden">Ctrl+D: Toggle Dev Panel | Alt+/: High Contrast</div>
+  <noscript>
+    <p>This site requires JavaScript and WebGL for full functionality.</p>
+  </noscript>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" nonce="nexus2025"></script>
+  <script type="module" src="/nexus.js" nonce="nexus2025" defer onerror="handleScriptError()"></script>
+  <script nonce="nexus2025">
+    function handleScriptError() {
+      console.error('Failed to load /nexus.js');
+      document.body.insertAdjacentHTML('beforeend', '<p style="color: red; text-align: center;">Error loading application. Please try again later.</p>');
+    }
+  </script>
+</body>
+</html>
