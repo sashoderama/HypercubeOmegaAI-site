@@ -1,155 +1,7 @@
-/* Base Reset */
-*, *::before, *::after {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* Root Variables (Dark Theme Fallback) */
-:root {
-  --bg: #0c0d10;
-  --fg: #e0e3f4;
-  --accent: #4f8dfd;
-  --secondary: #adb9cc;
-  --glow: #8fa9ff;
-  --blur: rgba(255, 255, 255, 0.04);
-  --glass-bg: rgba(255, 255, 255, 0.02);
-  --glass-border: rgba(255, 255, 255, 0.06);
-  --radius: 12px;
-  --shadow-elevate: 0 10px 30px rgba(0, 0, 0, 0.4);
-}
-
-/* Frost Theme (Default) */
-:root[data-theme="frost"] {
-  --bg: rgba(240, 248, 255, 0.98);
-  --fg: #0c0d10;
-  --accent: #7cd4fc;
-  --secondary: #a8c6e5;
-  --glow: rgba(124, 212, 252, 0.2);
-  --blur: rgba(255, 255, 255, 0.4);
-  --glass-bg: linear-gradient(145deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
-  --glass-border: rgba(255, 255, 255, 0.3);
-  --radius: 12px;
-  --shadow-elevate: 0 10px 30px rgba(0, 0, 0, 0.2);
-}
-
-/* Light Theme */
-@media (prefers-color-scheme: light), (prefers-color-scheme: no-preference) {
-  :root[data-theme="light"] {
-    --bg: #e0e3f4;
-    --fg: #0c0d10;
-    --accent: #4f8dfd;
-    --secondary: #4a5a77;
-    --glow: #4f8dfd;
-    --blur: rgba(12, 13, 16, 0.08);
-    --glass-bg: rgba(0, 0, 0, 0.02);
-    --glass-border: rgba(0, 0, 0, 0.08);
-  }
-}
-
-/* High Contrast Theme */
-:root[data-theme="high-contrast"] {
-  --bg: #000;
-  --fg: #fff;
-  --accent: #00f;
-  --secondary: #ccc;
-  --glow: #00f;
-  --blur: rgba(255, 255, 255, 0.5);
-  --glass-bg: rgba(255, 255, 255, 0.1);
-  --glass-border: #fff;
-}
-
-/* HTML and Body */
-html {
-  scroll-behavior: smooth;
-  font-size: 16px;
-}
-
-body {
-  font-family: 'Sora', 'Inter', system-ui, sans-serif;
-  background: var(--bg);
-  color: var(--fg);
-  line-height: 1.6;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-}
-
-/* Neural Background */
-#neural-bg {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-}
-.neuro-universe::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
-  pointer-events: none;
-  contain: strict;
-}
-
-/* Header */
-header {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--glass-border);
-  z-index: 1000;
-  padding: 0.75rem 0;
-}
-header .container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-h1 {
-  font: 700 1.8rem 'Sora', sans-serif;
-}
-.nav-links {
-  display: flex;
-  gap: 0.8rem;
-  flex-wrap: wrap;
-}
-.nav-links a {
-  color: var(--fg);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.95rem;
-  transition: color 0.3s;
-  padding: 0.5rem;
-}
-.nav-links a:hover, .nav-links a.active {
-  color: var(--accent);
-}
-
-/* Theme Toggle */
-.theme-toggle {
-  background: none;
-  border: none;
-  color: var(--fg);
-  font-size: 1.3rem;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-.theme-toggle:hover {
-  transform: scale(1.1);
-}
-.theme-toggle:focus {
-  outline: 2px solid var(--accent);
-}
-
 /* Main */
 main {
   padding-top: 5rem;
+  min-height: 100vh; /* Ensure main is visible even if content is sparse */
 }
 .container {
   max-width: 1440px;
@@ -270,8 +122,11 @@ td {
 }
 .cyber-button:hover, .cyber-button:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 15px var(--glow);
+  box-shadow: 0 0 20px var(--glow);
   transform: scale(1.05);
+}
+.cyber-button:focus {
+  outline: 2px solid var(--accent);
 }
 .cyber-button::before {
   content: '';
@@ -504,6 +359,7 @@ footer a:hover {
 .loading-overlay.hidden {
   opacity: 0;
   pointer-events: none;
+  display: none; /* Ensure it’s fully hidden */
 }
 .loader {
   width: 48px;
