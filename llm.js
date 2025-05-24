@@ -40,7 +40,7 @@ export function initLLM() {
 
   const mockLLM = async (query, verbose) => {
     await new Promise(resolve => setTimeout(resolve, 500));
-    return verbose ? `Detailed analysis of "${query}": This is a mock response.` : `Mock response for "${query}".`;
+    return verbose ? `Detailed analysis of "${query}": Mock threat analysis completed.` : `Mock response for "${query}".`;
   };
 
   submitBtn.addEventListener('click', async () => {
