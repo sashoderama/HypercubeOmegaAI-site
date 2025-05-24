@@ -1,21 +1,23 @@
+/* telemetry.js */
 export function initTelemetry() {
-  const upd = () => {
-    document.querySelector('#entropy')?.textContent = `${Math.round(Math.random() * 100)}%`;
-    document.querySelector('#gpu-util')?.textContent = `${Math.round(Math.random() * 100)}%`;
-    document.querySelector('#ethics')?.textContent = `${Math.round(Math.random() * 100)}%`;
-    document.querySelector('#node-density')?.textContent = `${Math.round(Math.random() * 800)}`;
-    document.querySelector('#threat-rate')?.textContent = `${Math.round(Math.random() * 10)}/s`;
-    document.querySelector('#audit-latency')?.textContent = `${Math.round(Math.random() * 120)}ms`;
-    requestAnimationFrame(upd);
-  };
-  upd();
+  const latency = $('#latency'),
+        events = $('#events'),
+        falsePositives = $('#false-positives'),
+        compliance = $('#compliance');
 
-  const hud = () => {
-    const mem = (performance.memory ? performance.memory.usedJSHeapSize / 1048576 : 0).toFixed(1);
-    document.querySelector('#memory-usage')?.textContent = `${mem} MB`;
-    document.querySelector('#gpu-usage')?.textContent = `${(Math.random() * 25 + 10).toFixed(0)}%`;
-    document.querySelector('#cluster-load')?.textContent = `${(Math.random() * 45 + 15).toFixed(0)}%`;
-    requestAnimationFrame(hud);
+  if (!latency || !events || !falsePositives || !compliance) {
+    console.warn('Telemetry elements missing');
+    return;
+  }
+
+  const updateTelemetry = () => {
+    latency.textContent = `${(5 + Math.random() * 2).toFixed(1)}ms`;
+    events.textContent = `${(1000000 + Math.random() * 100000).toFixed(0)}`;
+    falsePositives.textContent = `${(0.1 + Math.random() * 0.05).toFixed(2)}%`;
+    compliance.textContent = '100%';
   };
-  hud();
+
+  updateTelemetry();
+  const interval = setInterval(updateTelemetry, 5000);
+  state.cleanup.add(() => clearInterval(interval));
 }
