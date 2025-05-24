@@ -38,17 +38,12 @@ export function initLLM() {
     });
   };
 
-  const mockLLM = async (query, verbose) => {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    return verbose ? `Detailed analysis of "${query}": Mock threat analysis completed.` : `Mock response for "${query}".`;
-  };
-
   submitBtn.addEventListener('click', async () => {
     const query = queryInput.value.trim();
     if (!query) return;
     submitBtn.disabled = true;
     try {
-      const response = await mockLLM(query, verboseCheckbox.checked);
+      const response = 'Coming Soon';
       responseOutput.textContent = response;
       history.push({ query, response, timestamp: new Date().toISOString() });
       localStorage.setItem('llmHistory', JSON.stringify(history));
