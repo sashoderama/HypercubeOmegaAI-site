@@ -1,9 +1,9 @@
 /* telemetry.js */
 export function initTelemetry() {
-  const latency = $('#latency'),
-        events = $('#events'),
-        falsePositives = $('#false-positives'),
-        compliance = $('#compliance');
+  const latency = document.querySelector('#latency'),
+        events = document.querySelector('#events'),
+        falsePositives = document.querySelector('#false-positives'),
+        compliance = document.querySelector('#compliance');
 
   if (!latency || !events || !falsePositives || !compliance) {
     console.warn('Telemetry elements missing');
@@ -11,8 +11,8 @@ export function initTelemetry() {
   }
 
   const updateTelemetry = () => {
-    latency.textContent = `${(5 + Math.random() * 2).toFixed(1)}ms`;
-    events.textContent = `${(1000000 + Math.random() * 100000).toFixed(0)}`;
+    latency.textContent = `${(0.8 + Math.random() * 0.2).toFixed(2)}ms`;
+    events.textContent = `${(5000000 + Math.random() * 100000).toFixed(0)}`;
     falsePositives.textContent = `${(0.1 + Math.random() * 0.05).toFixed(2)}%`;
     compliance.textContent = '100%';
   };
