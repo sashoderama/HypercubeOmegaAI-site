@@ -104,7 +104,8 @@ h1 {
 }
 .nav-links {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 .nav-links a {
   color: var(--fg);
@@ -188,6 +189,25 @@ p {
 }
 .card.visible {
   opacity: 1;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+.card-grid .card {
+  grid-column: auto;
+}
+
+/* Badge */
+.badge {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
 }
 
 /* Cyber Button */
@@ -379,6 +399,10 @@ footer p {
   font-size: 0.9rem;
   color: var(--secondary);
 }
+footer a {
+  color: var(--accent);
+  text-decoration: none;
+}
 
 /* Accordion */
 .accordion-header {
@@ -494,7 +518,7 @@ footer p {
   }
   h1 { font-size: 1.5rem; }
   h2 { font-size: 2rem; }
-  .nav-links { gap: 1rem; }
+  .nav-links { gap: 0.5rem; }
   .nav-links a { font-size: 0.9rem; }
   .cyber-button { padding: 0.8rem 1.5rem; font-size: 0.9rem; }
   .telemetry-hud { width: 100%; border-radius: 0; box-shadow: none; }
