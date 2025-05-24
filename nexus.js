@@ -1,4 +1,4 @@
-/* nexus.js – Unified Entry Point for Elvira ∞ NEXUS */
+/* nexus.js – Unified Entry Point for Elvira Genesis-Elvira */
 'use strict';
 
 // Module imports with retry logic
@@ -16,13 +16,15 @@ const loadModule = async (url, retries = 3) => {
 
 const modules = await Promise.allSettled([
   loadModule('/theme-toggle.js').then(m => ({ initThemeToggle: m.initThemeToggle })),
+  loadModule('/llm.js').then(m => ({ initLLM: m.initLLM })),
+  loadModule('/charts.js').then(m => ({ initCharts: m.initCharts })),
   loadModule('/telemetry.js').then(m => ({ initTelemetry: m.initTelemetry })),
   loadModule('/accordion.js').then(m => ({ initAccordion: m.initAccordion })),
 ]).then(results => {
   const loaded = {};
   results.forEach((result, i) => {
     if (result.status === 'fulfilled') Object.assign(loaded, result.value);
-    else console.warn(`Module ${['theme-toggle', 'telemetry', 'accordion'][i]} failed: ${result.reason}`);
+    else console.warn(`Module ${['theme-toggle', 'llm', 'charts', 'telemetry', 'accordion'][i]} failed: ${result.reason}`);
   });
   return loaded;
 }).catch(err => {
@@ -46,11 +48,13 @@ const webglSupported = (() => {
 
 // State
 const state = {
+  llmCallCount: 0,
   animationFrameId: null,
+  hexFrameId: null,
   cleanup: new Set(),
 };
 
-// Neural Background
+// Neural Background (Upscaled)
 async function initNeuralBackground() {
   const host = $('#neural-bg');
   if (!host) {
@@ -62,7 +66,7 @@ async function initNeuralBackground() {
   let renderer, composer;
 
   const fallback2D = () => {
-    const N = Math.max(20, Math.min(100, Math.floor(area / 150_000)));
+    const N = Math.max(30, Math.min(150, Math.floor(area / 100_000)));
     const canvas = Object.assign(document.createElement('canvas'), {
       id: 'neural-bg-fallback',
       'aria-label': 'Decorative neural network visualization',
@@ -72,11 +76,11 @@ async function initNeuralBackground() {
     const nodes = Array.from({ length: N }, () => ({
       x: Math.random() * innerWidth,
       y: Math.random() * innerHeight,
-      vx: (Math.random() - 0.5) * 0.4,
-      vy: (Math.random() - 0.5) * 0.4,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
       pulse: Math.random() * Math.PI * 2,
     }));
-    const edges = Array.from({ length: N }, () => {
+    const edges = Array.from({ length: N * 1.2 }, () => {
       let s = Math.floor(Math.random() * N), t;
       do { t = Math.floor(Math.random() * N); } while (t === s);
       return { s, t, pulse: Math.random() * Math.PI * 2 };
@@ -89,17 +93,17 @@ async function initNeuralBackground() {
       canvas.style.height = `${innerHeight}px`;
 
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      gradient.addColorStop(0, 'rgba(240, 248, 255, 0.1)');
-      gradient.addColorStop(1, 'rgba(168, 198, 229, 0.1)');
+      gradient.addColorStop(0, 'rgba(240, 248, 255, 0.15)');
+      gradient.addColorStop(1, 'rgba(168, 198, 229, 0.15)');
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 1.2;
       edges.forEach(({ s, t, pulse }) => {
         const a = nodes[s], b = nodes[t], d = Math.hypot(a.x - b.x, a.y - b.y);
-        if (d < 200) {
-          pulse += 0.03;
-          ctx.strokeStyle = `rgba(124, 212, 252, ${(0.2 + 0.15 * Math.sin(pulse)) * (1 - d / 200)})`;
+        if (d < 250) {
+          pulse += 0.02;
+          ctx.strokeStyle = `rgba(124, 212, 252, ${(0.25 + 0.2 * Math.sin(pulse)) * (1 - d / 250)})`;
           ctx.beginPath();
           ctx.moveTo(a.x * devicePixelRatio, a.y * devicePixelRatio);
           ctx.lineTo(b.x * devicePixelRatio, b.y * devicePixelRatio);
@@ -109,14 +113,14 @@ async function initNeuralBackground() {
       });
 
       nodes.forEach(n => {
-        n.x += n.vx; n.y += n.vy; n.pulse += 0.04;
+        n.x += n.vx; n.y += n.vy; n.pulse += 0.03;
         if (n.x < 0 || n.x > innerWidth) n.vx *= -1;
         if (n.y < 0 || n.y > innerHeight) n.vy *= -1;
         ctx.beginPath();
-        ctx.arc(n.x * devicePixelRatio, n.y * devicePixelRatio, 4 * (1 + 0.2 * Math.sin(n.pulse)), 0, 2 * Math.PI);
-        ctx.fillStyle = 'rgba(124, 212, 252, 0.8)';
+        ctx.arc(n.x * devicePixelRatio, n.y * devicePixelRatio, 5 * (1 + 0.3 * Math.sin(n.pulse)), 0, 2 * Math.PI);
+        ctx.fillStyle = 'rgba(124, 212, 252, 0.85)';
         ctx.shadowColor = '#7cd4fc';
-        ctx.shadowBlur = 8;
+        ctx.shadowBlur = 10;
         ctx.fill();
         ctx.shadowBlur = 0;
       });
@@ -154,28 +158,31 @@ async function initNeuralBackground() {
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 1000);
-    camera.position.z = 25;
+    camera.position.z = 30;
 
-    const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+    const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
     scene.add(ambientLight);
-    const pointLight = new THREE.PointLight(0x7cd4fc, 1, 20);
-    pointLight.position.set(5, 5, 5);
+    const pointLight = new THREE.PointLight(0x7cd4fc, 1.5, 25);
+    pointLight.position.set(8, 8, 8);
     scene.add(pointLight);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.3);
+    directionalLight.position.set(0, 10, 10);
+    scene.add(directionalLight);
 
     composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.4, 0.15, 0.9));
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.5, 0.2, 0.85));
 
-    const NODE_COUNT = Math.max(50, Math.min(200, Math.floor(area / 200_000)));
-    const clusters = 3;
+    const NODE_COUNT = Math.max(75, Math.min(300, Math.floor(area / 150_000)));
+    const clusters = 4;
     const nodes = Array.from({ length: NODE_COUNT }, () => ({
-      pos: new THREE.Vector3((Math.random() - 0.5) * 20, (Math.random() - 0.5) * 20, (Math.random() - 0.5) * 10),
-      vel: new THREE.Vector3((Math.random() - 0.5) * 0.03, (Math.random() - 0.5) * 0.03, (Math.random() - 0.5) * 0.015),
+      pos: new THREE.Vector3((Math.random() - 0.5) * 25, (Math.random() - 0.5) * 25, (Math.random() - 0.5) * 12),
+      vel: new THREE.Vector3((Math.random() - 0.5) * 0.04, (Math.random() - 0.5) * 0.04, (Math.random() - 0.5) * 0.02),
       cluster: Math.floor(Math.random() * clusters),
       pulse: Math.random() * Math.PI * 2,
       rotation: Math.random() * Math.PI * 2,
     }));
-    const edges = Array.from({ length: Math.floor(NODE_COUNT * 0.8) }, () => {
+    const edges = Array.from({ length: Math.floor(NODE_COUNT * 1.2) }, () => {
       let s = Math.floor(Math.random() * NODE_COUNT), t;
       do { t = Math.floor(Math.random() * NODE_COUNT); } while (t === s);
       return { s, t, pulse: Math.random() * Math.PI * 2 };
@@ -197,7 +204,7 @@ async function initNeuralBackground() {
         void main() {
           vP = pulse;
           vPos = position;
-          gl_PointSize = 5.0 * (1.0 + 0.3 * sin(pulse));
+          gl_PointSize = 6.0 * (1.0 + 0.4 * sin(pulse));
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
       `,
@@ -208,9 +215,9 @@ async function initNeuralBackground() {
           vec2 c = gl_PointCoord - 0.5;
           float d = length(c);
           if (d > 0.5) discard;
-          float a = smoothstep(0.5, 0.2, d) * (0.6 + 0.3 * sin(vP));
-          float fade = 1.0 - abs(vPos.z / 10.0);
-          gl_FragColor = vec4(0.49, 0.83, 0.99, a * fade * 0.7);
+          float a = smoothstep(0.5, 0.2, d) * (0.7 + 0.3 * sin(vP));
+          float fade = 1.0 - abs(vPos.z / 12.0);
+          gl_FragColor = vec4(0.49, 0.83, 0.99, a * fade * 0.8);
         }
       `,
       transparent: true,
@@ -237,16 +244,16 @@ async function initNeuralBackground() {
         varying float vP;
         varying vec3 vPos;
         void main() {
-          float f = 1.0 - abs(vPos.z / 10.0);
-          float pulseAlpha = 0.2 + 0.15 * sin(vP);
-          gl_FragColor = vec4(0.49, 0.83, 0.99, pulseAlpha * f * 0.6);
+          float f = 1.0 - abs(vPos.z / 12.0);
+          float pulseAlpha = 0.25 + 0.2 * sin(vP);
+          gl_FragColor = vec4(0.49, 0.83, 0.99, pulseAlpha * f * 0.7);
         }
       `,
       transparent: true,
     });
     scene.add(new THREE.LineSegments(edgeGeo, edgeMat));
 
-    const gradientGeo = new THREE.PlaneGeometry(30, 30);
+    const gradientGeo = new THREE.PlaneGeometry(35, 35);
     const gradientMat = new THREE.ShaderMaterial({
       vertexShader: `
         varying vec2 vUv;
@@ -261,36 +268,36 @@ async function initNeuralBackground() {
         void main() {
           vec2 uv = vUv;
           vec3 color = mix(vec3(0.94, 0.97, 1.0), vec3(0.66, 0.78, 0.9), uv.y);
-          float noise = fract(sin(dot(uv * time * 0.001, vec2(12.9898, 78.233))) * 43758.5453);
-          color += noise * 0.01;
-          gl_FragColor = vec4(color, 0.3);
+          float noise = fract(sin(dot(uv * time * 0.0008, vec2(12.9898, 78.233))) * 43758.5453);
+          color += noise * 0.015;
+          gl_FragColor = vec4(color, 0.35);
         }
       `,
       uniforms: { time: { value: 0 } },
       transparent: true,
     });
     const gradientMesh = new THREE.Mesh(gradientGeo, gradientMat);
-    gradientMesh.position.z = -8;
+    gradientMesh.position.z = -10;
     scene.add(gradientMesh);
 
-    const particleCount = isMobile ? 50 : 100; // Increased particles
+    const particleCount = isMobile ? 75 : 150; // Upscaled particles
     const particleGeo = new THREE.BufferGeometry();
     const particlePos = new Float32Array(particleCount * 3);
     const particleVel = new Float32Array(particleCount * 3);
     for (let i = 0; i < particleCount; i++) {
-      particlePos[i * 3] = (Math.random() - 0.5) * 25;
-      particlePos[i * 3 + 1] = (Math.random() - 0.5) * 25;
-      particlePos[i * 3 + 2] = (Math.random() - 0.5) * 12;
-      particleVel[i * 3] = (Math.random() - 0.5) * 0.015;
-      particleVel[i * 3 + 1] = (Math.random() - 0.5) * 0.015;
-      particleVel[i * 3 + 2] = (Math.random() - 0.5) * 0.01;
+      particlePos[i * 3] = (Math.random() - 0.5) * 30;
+      particlePos[i * 3 + 1] = (Math.random() - 0.5) * 30;
+      particlePos[i * 3 + 2] = (Math.random() - 0.5) * 15;
+      particleVel[i * 3] = (Math.random() - 0.5) * 0.02;
+      particleVel[i * 3 + 1] = (Math.random() - 0.5) * 0.02;
+      particleVel[i * 3 + 2] = (Math.random() - 0.5) * 0.015;
     }
     particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
     const particleMat = new THREE.PointsMaterial({
       color: 0x7cd4fc,
-      size: isMobile ? 1.2 : 1.5,
+      size: isMobile ? 1.0 : 1.3,
       transparent: true,
-      opacity: 0.5,
+      opacity: 0.6,
       blending: THREE.AdditiveBlending,
     });
     const particles = new THREE.Points(particleGeo, particleMat);
@@ -318,22 +325,22 @@ async function initNeuralBackground() {
         particlePos[i * 3] += particleVel[i * 3];
         particlePos[i * 3 + 1] += particleVel[i * 3 + 1];
         particlePos[i * 3 + 2] += particleVel[i * 3 + 2];
-        if (Math.abs(particlePos[i * 3]) > 25) particleVel[i * 3] *= -1;
-        if (Math.abs(particlePos[i * 3 + 1]) > 25) particleVel[i * 3 + 1] *= -1;
-        if (Math.abs(particlePos[i * 3 + 2]) > 12) particleVel[i * 3 + 2] *= -1;
+        if (Math.abs(particlePos[i * 3]) > 30) particleVel[i * 3] *= -1;
+        if (Math.abs(particlePos[i * 3 + 1]) > 30) particleVel[i * 3 + 1] *= -1;
+        if (Math.abs(particlePos[i * 3 + 2]) > 15) particleVel[i * 3 + 2] *= -1;
       }
       particleGeo.attributes.position.needsUpdate = true;
     };
 
     let last = 0;
     const animate = t => {
-      if (t - last > 25) {
+      if (t - last > 20) {
         nodes.forEach(n => {
           n.pos.add(n.vel);
-          n.pulse += 0.05;
-          n.rotation += 0.01;
+          n.pulse += 0.04;
+          n.rotation += 0.015;
           ['x', 'y', 'z'].forEach(ax => {
-            const lim = ax === 'z' ? 10 : 20;
+            const lim = ax === 'z' ? 12 : 25;
             if (Math.abs(n.pos[ax]) > lim) n.vel[ax] *= -1;
           });
           const center = new THREE.Vector3();
@@ -346,15 +353,15 @@ async function initNeuralBackground() {
           });
           if (cnt) {
             center.divideScalar(cnt);
-            n.vel.add(center.sub(n.pos).multiplyScalar(0.0008));
+            n.vel.add(center.sub(n.pos).multiplyScalar(0.0009));
           }
         });
         edges.forEach(e => {
-          e.pulse += 0.04;
+          e.pulse += 0.03;
         });
-        gradientMat.uniforms.time.value = t * 0.001;
-        camera.position.x = Math.sin(t * 0.0001) * 3;
-        camera.position.y = Math.cos(t * 0.00008) * 2;
+        gradientMat.uniforms.time.value = t * 0.0008;
+        camera.position.x = Math.sin(t * 0.00012) * 4;
+        camera.position.y = Math.cos(t * 0.00009) * 3;
         camera.lookAt(0, 0, 0);
         refreshBuffers();
         composer.render();
@@ -384,6 +391,183 @@ async function initNeuralBackground() {
     console.error('WebGL failed, using fallback:', err);
     fallback2D();
   }
+}
+
+// Entropy 3D Hex Visualizer
+async function initHexVisualizer() {
+  const container = $('#hex-visualizer');
+  if (!container) {
+    console.warn('Hex visualizer container not found');
+    return;
+  }
+
+  if (!webglSupported) {
+    container.innerHTML = '<p aria-live="polite">WebGL not supported. Please use a compatible browser.</p>';
+    return;
+  }
+
+  try {
+    const [{ default: THREE }, { OrbitControls }] = await Promise.all([
+      import('https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.min.js'),
+      import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/controls/OrbitControls.js'),
+    ]);
+
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    renderer.setPixelRatio(isMobile ? 1.2 : 1.5);
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
+    camera.position.set(0, 5, 12);
+    camera.lookAt(0, 0, 0);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    const hexGeometry = new THREE.CylinderGeometry(0.5, 0.5, 0.2, 6);
+    const hexMaterial = new THREE.MeshPhongMaterial({
+      color: 0x7cd4fc,
+      transparent: true,
+      opacity: 0.8,
+      side: THREE.DoubleSide,
+    });
+
+    const hexGrid = new THREE.Group();
+    const gridSize = 6;
+    for (let x = -gridSize; x <= gridSize; x++) {
+      for (let y = -gridSize; y <= gridSize; y++) {
+        const hex = new THREE.Mesh(hexGeometry, hexMaterial);
+        const offset = y % 2 ? 0.5 : 0;
+        hex.position.set(x + offset, 0, y * 0.866);
+        hexGrid.add(hex);
+      }
+    }
+    scene.add(hexGrid);
+
+    const light = new THREE.PointLight(0xffffff, 1.2, 100);
+    light.position.set(5, 5, 5);
+    scene.add(light);
+    scene.add(new THREE.AmbientLight(0x404040, 0.6));
+
+    const animateHex = t => {
+      hexGrid.children.forEach(hex => {
+        const entropy = Math.sin(t * 0.0008 + hex.position.x + hex.position.z) * 0.5 + 0.5;
+        hex.scale.y = 0.2 + entropy * 1.0;
+        hex.material.opacity = 0.6 + entropy * 0.4;
+      });
+      controls.update();
+      renderer.render(scene, camera);
+      state.hexFrameId = requestAnimationFrame(animateHex);
+    };
+
+    const onResize = () => {
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+    };
+    window.addEventListener('resize', onResize);
+    state.cleanup.add(() => {
+      window.removeEventListener('resize', onResize);
+      if (state.hexFrameId) cancelAnimationFrame(state.hexFrameId);
+      renderer.dispose();
+      container.removeChild(renderer.domElement);
+    });
+
+    state.hexFrameId = requestAnimationFrame(animateHex);
+  } catch (err) {
+    console.error('Hex visualizer failed:', err);
+    container.innerHTML = '<p aria-live="polite">Failed to load visualizer. Please try again.</p>';
+  }
+}
+
+// Timeline Viewer
+function initTimelineViewer() {
+  const container = $('#timeline-viewer');
+  if (!container) {
+    console.warn('Timeline viewer container not found');
+    return;
+  }
+
+  const canvas = document.createElement('canvas');
+  canvas.setAttribute('aria-label', 'Timeline viewer for attack sequences');
+  container.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
+
+  const events = [
+    { time: '2025-05-01', label: 'Initial Breach' },
+    { time: '2025-05-02', label: 'Lateral Movement' },
+    { time: '2025-05-03', label: 'Data Exfiltration' },
+    { time: '2025-05-04', label: 'Containment' },
+  ];
+
+  let selectedEvent = null;
+
+  const draw = () => {
+    const w = container.clientWidth * devicePixelRatio,
+          h = container.clientHeight * devicePixelRatio;
+    canvas.width = w;
+    canvas.height = h;
+    canvas.style.width = `${container.clientWidth}px`;
+    canvas.style.height = `${container.clientHeight}px`;
+
+    ctx.fillStyle = 'rgba(240, 248, 255, 0.15)';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.strokeStyle = '#7cd4fc';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(w * 0.1, h / 2);
+    ctx.lineTo(w * 0.9, h / 2);
+    ctx.stroke();
+
+    events.forEach((event, i) => {
+      const x = w * (0.1 + (i / (events.length - 1)) * 0.8);
+      ctx.beginPath();
+      ctx.arc(x, h / 2, selectedEvent === i ? 8 : 6, 0, 2 * Math.PI);
+      ctx.fillStyle = selectedEvent === i ? '#a8c6e5' : '#7cd4fc';
+      ctx.fill();
+
+      ctx.font = `14px Sora`;
+      ctx.fillStyle = '#0c0d10';
+      ctx.textAlign = 'center';
+      ctx.fillText(event.label, x, h / 2 - 20);
+      ctx.fillText(event.time, x, h / 2 + 25);
+    });
+
+    if (selectedEvent !== null) {
+      const event = events[selectedEvent];
+      const x = w * (0.1 + (selectedEvent / (events.length - 1)) * 0.8);
+      ctx.fillStyle = 'rgba(124, 212, 252, 0.9)';
+      ctx.fillRect(x - 60, h / 2 - 60, 120, 50);
+      ctx.fillStyle = '#0c0d10';
+      ctx.font = '12px Sora';
+      ctx.fillText(`${event.label}: ${event.time}`, x, h / 2 - 40);
+    }
+  };
+
+  const handleClick = e => {
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.clientX - rect.left) * devicePixelRatio;
+    const w = canvas.width;
+    selectedEvent = null;
+    events.forEach((event, i) => {
+      const ex = w * (0.1 + (i / (events.length - 1)) * 0.8);
+      if (Math.abs(x - ex) < 12) {
+        selectedEvent = i;
+      }
+    });
+    draw();
+  };
+
+  canvas.addEventListener('click', handleClick);
+  state.cleanup.add(() => canvas.removeEventListener('click', handleClick));
+
+  const resize = throttle(draw, 100);
+  window.addEventListener('resize', resize);
+  state.cleanup.add(() => window.removeEventListener('resize', resize));
+  draw();
 }
 
 // Scroll-Spy
@@ -469,6 +653,7 @@ function initDevPanel() {
 function exportSnapshot() {
   const snap = {
     stamp: new Date().toISOString(),
+    llmCalls: state.llmCallCount,
     latency: $('#latency')?.textContent || 'N/A',
     events: $('#events')?.textContent || 'N/A',
     falsePositives: $('#false-positives')?.textContent || 'N/A',
@@ -516,12 +701,23 @@ async function initEverything() {
     if (modules.initThemeToggle) modules.initThemeToggle();
     console.log('Initializing scroll-spy...');
     initScrollSpy();
+    if (modules.initCharts) modules.initCharts();
+    if (modules.initLLM) {
+      modules.initLLM();
+      const originalLLM = modules.initLLM;
+      modules.initLLM = async (...args) => {
+        state.llmCallCount++;
+        return originalLLM(...args);
+      };
+    }
     if (modules.initTelemetry) modules.initTelemetry();
     if (modules.initAccordion) {
       modules.initAccordion(['#features']);
     }
     initConsent();
     initDevPanel();
+    initHexVisualizer();
+    initTimelineViewer();
 
     const snapshotBtn = $('.snapshot-button');
     if (snapshotBtn) {
@@ -545,7 +741,7 @@ async function initEverything() {
     if (nexusScript) {
       nexusScript.addEventListener('error', () => {
         console.error('Failed to load /nexus.js');
-        document.body.insertAdjacentHTML('beforeend', '<p style="color: red; text-align: center;">Error loading application. Please try again later.</p>');
+        document.body.insertAdjacentHTML('beforeend', '<p class="error-message">Error loading application. Please try again later.</p>');
       });
     }
   } catch (err) {
@@ -556,9 +752,7 @@ async function initEverything() {
       loading.style.display = 'none';
     }
     const errorDiv = document.createElement('div');
-    errorDiv.style.color = 'red';
-    errorDiv.style.textAlign = 'center';
-    errorDiv.style.padding = '20px';
+    errorDiv.className = 'error-message';
     errorDiv.textContent = 'Failed to load the application. Please try refreshing or contact support.';
     document.body.appendChild(errorDiv);
   }
@@ -569,6 +763,7 @@ try {
   document.addEventListener('DOMContentLoaded', initEverything);
   window.addEventListener('unload', () => {
     if (state.animationFrameId) cancelAnimationFrame(state.animationFrameId);
+    if (state.hexFrameId) cancelAnimationFrame(state.hexFrameId);
     state.cleanup.forEach(fn => fn());
   });
 } catch (err) {
@@ -578,9 +773,7 @@ try {
     $('#loading').style.display = 'none';
   }
   const errorDiv = document.createElement('div');
-  errorDiv.style.color = 'red';
-  errorDiv.style.textAlign = 'center';
-  errorDiv.style.padding = '20px';
+  errorDiv.className = 'error-message';
   errorDiv.textContent = 'Fatal initialization error. Please refresh or contact support.';
   document.body.appendChild(errorDiv);
 }
