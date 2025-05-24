@@ -353,7 +353,7 @@ async function initNeuralBackground() {
         if (Math.abs(particlePos[i * 3]) > 30) particleVel[i * 3] *= -1;
         if (Math.abs(particlePos[i * 3 + 1]) > 30) particleVel[i * 3 + 1] *= -1;
         if (Math.abs(particlePos[i * 3 + 2]) > 15) particleVel[i * 3 + 2] *= -1;
-      }
+      });
       particleGeo.attributes.position.needsUpdate = true;
     };
 
@@ -519,7 +519,7 @@ function initTimelineViewer() {
   console.debug('Initializing timeline viewer...');
   const canvas = document.createElement('canvas');
   canvas.setAttribute('aria-label', 'Timeline viewer for attack sequences');
-  canvas.tabIndex = 0; // Make canvas focusable
+  canvas.tabIndex = 0; // Make canvas focusable for keyboard navigation
   container.appendChild(canvas);
   const ctx = canvas.getContext('2d');
 
