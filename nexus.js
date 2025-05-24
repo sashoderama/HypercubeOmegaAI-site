@@ -503,7 +503,7 @@ function initConsent() {
   });
 }
 
-// Dev Panel
+// Dev Panel and Accessibility
 function initDevPanel() {
   const panel = $('#dev-panel'),
         overlay = $('#keyboard-overlay');
@@ -513,24 +513,28 @@ function initDevPanel() {
   }
 
   const togglePanel = () => panel.classList.toggle('active');
-  const showOverlay = e => {
-    if (e.ctrlKey) overlay.classList.add('active');
+  const toggleOverlay = () => overlay.classList.toggle('active');
+  const toggleHighContrast = () => {
+    const currentTheme = document.body.dataset.theme || 'frost';
+    document.body.dataset.theme = currentTheme === 'frost' ? 'high-contrast' : 'frost';
   };
-  const hideOverlay = () => overlay.classList.remove('active');
 
   document.addEventListener('keydown', e => {
     if (e.ctrlKey && e.key === 'd') {
       togglePanel();
-      hideOverlay();
-    } else {
-      showOverlay(e);
+      toggleOverlay();
+    }
+    if (e.altKey && e.key === '/') {
+      toggleHighContrast();
     }
   });
-  document.addEventListener('keyup', hideOverlay);
+  document.addEventListener('keyup', e => {
+    if (e.ctrlKey) toggleOverlay();
+  });
 
   state.cleanup.add(() => {
-    document.removeEventListener('keydown', showOverlay);
-    document.removeEventListener('keyup', hideOverlay);
+    document.removeEventListener('keydown', togglePanel);
+    document.removeEventListener('keyup', toggleOverlay);
   });
 }
 
@@ -614,7 +618,9 @@ async function initEverything() {
       };
     }
     if (modules.initTelemetry) modules.initTelemetry();
-    if (modules.initAccordion) modules.initAccordion();
+    if (modules.initAccordion) {
+      modules.initAccordion(['#capabilities', '#training', '#tech-stack', '#faq']);
+    }
     initConsent();
     initDevPanel();
 
@@ -641,7 +647,7 @@ async function initEverything() {
     console.error('Initialization failed:', err);
     if (loading) {
       loading.classList.add('hidden');
-      loading.style.display = 'none';
+      loading.style.display = 'none');
     }
     const errorDiv = document.createElement('div');
     errorDiv.style.color = 'red';
