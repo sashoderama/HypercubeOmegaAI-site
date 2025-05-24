@@ -1,7 +1,7 @@
 /* accordion.js */
 export function initAccordion(sectionIds = ['#features']) {
   sectionIds.forEach(sectionId => {
-    const items = $$(`${sectionId} .accordion-item`);
+    const items = document.querySelectorAll(`${sectionId} .accordion-item`);
     if (!items.length) {
       console.warn(`Accordion items missing in ${sectionId}`);
       return;
