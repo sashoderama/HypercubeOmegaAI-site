@@ -737,6 +737,19 @@ async function initEverything() {
       throw new Error('Main element missing');
     }
 
+    console.debug('Checking CSS load...');
+    const cssLink = document.querySelector('link[href="/style.css"]');
+    if (!cssLink) {
+      console.warn('style.css not found, applying fallback styles');
+      const style = document.createElement('style');
+      style.textContent = `
+        body { font-family: sans-serif; background: #f0f8ff; color: #0c0d10; }
+        main { padding: 20px; text-align: center; }
+        .error-message { color: #ff4d4d; padding: 20px; text-align: center; }
+      `;
+      document.head.appendChild(style);
+    }
+
     console.debug('Initializing neural background...');
     await initNeuralBackground();
     if (modules.initThemeToggle) {
@@ -818,8 +831,14 @@ async function initEverything() {
 
 // Boot
 try {
-  console.debug('Binding DOMContentLoaded event...');
-  document.addEventListener('DOMContentLoaded', initEverything);
+  console.debug('Checking document readiness...');
+  if (document.readyState === 'loading') {
+    console.debug('Document still loading, binding DOMContentLoaded...');
+    document.addEventListener('DOMContentLoaded', initEverything);
+  } else {
+    console.debug('Document already loaded, running initEverything...');
+    initEverything();
+  }
   window.addEventListener('unload', () => {
     console.debug('Cleaning up on unload...');
     if (state.animationFrameId) cancelAnimationFrame(state.animationFrameId);
