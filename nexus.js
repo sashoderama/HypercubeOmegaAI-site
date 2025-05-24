@@ -5,10 +5,16 @@
 const loadModule = async (url, retries = 3) => {
   for (let i = 0; i < retries; i++) {
     try {
+      console.debug(`Attempting to load module: ${url}, attempt ${i + 1}`);
       const module = await import(url);
+      console.debug(`Successfully loaded module: ${url}`);
       return module;
     } catch (err) {
-      if (i === retries - 1) throw new Error(`Failed to load ${url}: ${err.message}`);
+      console.warn(`Failed to load ${url} on attempt ${i + 1}: ${err.message}`);
+      if (i === retries - 1) {
+        console.error(`Exhausted retries for ${url}: ${err.message}`);
+        throw new Error(`Failed to load ${url}: ${err.message}`);
+      }
       await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
     }
   }
@@ -23,25 +29,41 @@ const modules = await Promise.allSettled([
 ]).then(results => {
   const loaded = {};
   results.forEach((result, i) => {
-    if (result.status === 'fulfilled') Object.assign(loaded, result.value);
-    else console.warn(`Module ${['theme-toggle', 'llm', 'charts', 'telemetry', 'accordion'][i]} failed: ${result.reason}`);
+    const moduleName = ['theme-toggle', 'llm', 'charts', 'telemetry', 'accordion'][i];
+    if (result.status === 'fulfilled') {
+      console.debug(`Module ${moduleName} loaded successfully`);
+      Object.assign(loaded, result.value);
+    } else {
+      console.warn(`Module ${moduleName} failed: ${result.reason}`);
+    }
   });
   return loaded;
 }).catch(err => {
-  console.error('🔥 Module import error:', err);
+  console.error('🔥 Critical module import error:', err);
   return {};
 });
 
 // Helpers
-const $ = s => document.querySelector(s);
-const $$ = s => Array.from(document.querySelectorAll(s));
+const $ = s => {
+  const el = document.querySelector(s);
+  if (!el) console.warn(`Element not found: ${s}`);
+  return el;
+};
+const $$ = s => {
+  const els = Array.from(document.querySelectorAll(s));
+  if (!els.length) console.warn(`No elements found: ${s}`);
+  return els;
+};
 const prefersRM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isMobile = window.innerWidth <= 768;
 const webglSupported = (() => {
   try {
     const canvas = document.createElement('canvas');
-    return !!(canvas.getContext('webgl2') || canvas.getContext('webgl'));
+    const supported = !!(canvas.getContext('webgl2') || canvas.getContext('webgl'));
+    console.debug(`WebGL supported: ${supported}`);
+    return supported;
   } catch {
+    console.warn('WebGL check failed');
     return false;
   }
 })();
@@ -62,10 +84,12 @@ async function initNeuralBackground() {
     return;
   }
 
+  console.debug('Initializing neural background...');
   const area = innerWidth * innerHeight;
   let renderer, composer;
 
   const fallback2D = () => {
+    console.debug('Falling back to 2D canvas for neural background');
     const N = Math.max(30, Math.min(150, Math.floor(area / 100_000)));
     const canvas = Object.assign(document.createElement('canvas'), {
       id: 'neural-bg-fallback',
@@ -143,6 +167,7 @@ async function initNeuralBackground() {
   }
 
   try {
+    console.debug('Loading Three.js dependencies...');
     const [{ default: THREE }, { EffectComposer }, { RenderPass }, { UnrealBloomPass }] = await Promise.all([
       import('https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.min.js'),
       import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/EffectComposer.js'),
@@ -280,7 +305,7 @@ async function initNeuralBackground() {
     gradientMesh.position.z = -10;
     scene.add(gradientMesh);
 
-    const particleCount = isMobile ? 75 : 150; // Upscaled particles
+    const particleCount = isMobile ? 75 : 150;
     const particleGeo = new THREE.BufferGeometry();
     const particlePos = new Float32Array(particleCount * 3);
     const particleVel = new Float32Array(particleCount * 3);
@@ -407,6 +432,7 @@ async function initHexVisualizer() {
   }
 
   try {
+    console.debug('Loading Three.js for hex visualizer...');
     const [{ default: THREE }, { OrbitControls }] = await Promise.all([
       import('https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.min.js'),
       import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/controls/OrbitControls.js'),
@@ -490,6 +516,7 @@ function initTimelineViewer() {
     return;
   }
 
+  console.debug('Initializing timeline viewer...');
   const canvas = document.createElement('canvas');
   canvas.setAttribute('aria-label', 'Timeline viewer for attack sequences');
   container.appendChild(canvas);
@@ -572,6 +599,7 @@ function initTimelineViewer() {
 
 // Scroll-Spy
 function initScrollSpy() {
+  console.debug('Initializing scroll-spy...');
   const handler = throttle(() => {
     const sections = $$('main section');
     let active = '';
@@ -598,6 +626,7 @@ function initConsent() {
     return;
   }
 
+  console.debug('Initializing consent popup...');
   if (!localStorage.getItem('consent')) pop.classList.remove('hidden');
   accept.addEventListener('click', () => {
     localStorage.setItem('consent', 'accepted');
@@ -623,6 +652,7 @@ function initDevPanel() {
     return;
   }
 
+  console.debug('Initializing dev panel...');
   const togglePanel = () => panel.classList.toggle('active');
   const toggleOverlay = () => overlay.classList.toggle('active');
   const toggleHighContrast = () => {
@@ -651,6 +681,7 @@ function initDevPanel() {
 
 // Snapshot Export
 function exportSnapshot() {
+  console.debug('Exporting snapshot...');
   const snap = {
     stamp: new Date().toISOString(),
     llmCalls: state.llmCallCount,
@@ -667,6 +698,7 @@ function exportSnapshot() {
     a.download = 'elvira-snapshot.json';
     a.click();
     URL.revokeObjectURL(url);
+    console.debug('Snapshot exported successfully');
   } catch (err) {
     console.error('Snapshot export failed:', err);
     alert('Failed to export snapshot. Please try again.');
@@ -688,21 +720,37 @@ function throttle(fn, ms) {
 async function initEverything() {
   const loading = $('#loading');
   try {
-    console.log('DOM loaded, initializing...');
+    console.debug('DOM loaded, initializing...');
     if (loading) {
-      console.log('Hiding loading overlay...');
+      console.debug('Hiding loading overlay...');
       await new Promise(resolve => setTimeout(resolve, 300));
       loading.classList.add('hidden');
       loading.style.display = 'none';
+    } else {
+      console.warn('Loading overlay not found');
     }
 
-    console.log('Initializing neural background...');
+    console.debug('Checking main content...');
+    const main = $('main');
+    if (!main) {
+      console.error('Main element not found');
+      throw new Error('Main element missing');
+    }
+
+    console.debug('Initializing neural background...');
     await initNeuralBackground();
-    if (modules.initThemeToggle) modules.initThemeToggle();
-    console.log('Initializing scroll-spy...');
+    if (modules.initThemeToggle) {
+      console.debug('Initializing theme toggle...');
+      modules.initThemeToggle();
+    }
+    console.debug('Initializing scroll-spy...');
     initScrollSpy();
-    if (modules.initCharts) modules.initCharts();
+    if (modules.initCharts) {
+      console.debug('Initializing charts...');
+      modules.initCharts();
+    }
     if (modules.initLLM) {
+      console.debug('Initializing LLM...');
       modules.initLLM();
       const originalLLM = modules.initLLM;
       modules.initLLM = async (...args) => {
@@ -710,8 +758,12 @@ async function initEverything() {
         return originalLLM(...args);
       };
     }
-    if (modules.initTelemetry) modules.initTelemetry();
+    if (modules.initTelemetry) {
+      console.debug('Initializing telemetry...');
+      modules.initTelemetry();
+    }
     if (modules.initAccordion) {
+      console.debug('Initializing accordion...');
       modules.initAccordion(['#features']);
     }
     initConsent();
@@ -721,11 +773,15 @@ async function initEverything() {
 
     const snapshotBtn = $('.snapshot-button');
     if (snapshotBtn) {
+      console.debug('Binding snapshot button...');
       snapshotBtn.addEventListener('click', exportSnapshot);
       state.cleanup.add(() => snapshotBtn.removeEventListener('click', exportSnapshot));
+    } else {
+      console.warn('Snapshot button not found');
     }
 
     // Intersection Observer for section visibility
+    console.debug('Setting up intersection observer...');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -744,6 +800,8 @@ async function initEverything() {
         document.body.insertAdjacentHTML('beforeend', '<p class="error-message">Error loading application. Please try again later.</p>');
       });
     }
+
+    console.debug('Initialization completed successfully');
   } catch (err) {
     console.error('Initialization failed:', err);
     if (loading) {
@@ -753,28 +811,32 @@ async function initEverything() {
     }
     const errorDiv = document.createElement('div');
     errorDiv.className = 'error-message';
-    errorDiv.textContent = 'Failed to load the application. Please try refreshing or contact support.';
+    errorDiv.textContent = 'Failed to load the application. Please try refreshing or contact support at ceo@aurora-core.net.';
     document.body.appendChild(errorDiv);
   }
 }
 
 // Boot
 try {
+  console.debug('Binding DOMContentLoaded event...');
   document.addEventListener('DOMContentLoaded', initEverything);
   window.addEventListener('unload', () => {
+    console.debug('Cleaning up on unload...');
     if (state.animationFrameId) cancelAnimationFrame(state.animationFrameId);
     if (state.hexFrameId) cancelAnimationFrame(state.hexFrameId);
     state.cleanup.forEach(fn => fn());
   });
 } catch (err) {
   console.error('🔥 Fatal init error:', err);
-  if ($('#loading')) {
-    $('#loading').classList.add('hidden');
-    $('#loading').style.display = 'none';
+  const loading = $('#loading');
+  if (loading) {
+    console.log('Hiding loading overlay due to fatal error');
+    loading.classList.add('hidden');
+    loading.style.display = 'none';
   }
   const errorDiv = document.createElement('div');
   errorDiv.className = 'error-message';
-  errorDiv.textContent = 'Fatal initialization error. Please refresh or contact support.';
+  errorDiv.textContent = 'Fatal initialization error. Please refresh or contact support at ceo@aurora-core.net.';
   document.body.appendChild(errorDiv);
 }
 
