@@ -1,5 +1,6 @@
 /* llm.js */
 export function initLLM() {
+  console.debug('Initializing LLM module...');
   const queryInput = $('#llm-query'),
         submitBtn = $('.llm-submit'),
         responseOutput = $('#llm-response'),
@@ -21,6 +22,7 @@ export function initLLM() {
   let history = JSON.parse(localStorage.getItem('llmHistory')) || [];
 
   const updateHistory = () => {
+    console.debug('Updating LLM history...');
     historyList.innerHTML = '';
     history.forEach((item, index) => {
       const li = document.createElement('li');
@@ -39,8 +41,12 @@ export function initLLM() {
   };
 
   submitBtn.addEventListener('click', async () => {
+    console.debug('LLM submit button clicked');
     const query = queryInput.value.trim();
-    if (!query) return;
+    if (!query) {
+      console.debug('Empty query, ignoring');
+      return;
+    }
     submitBtn.disabled = true;
     try {
       const response = 'Coming Soon';
@@ -57,11 +63,13 @@ export function initLLM() {
   });
 
   toggleHistoryBtn.addEventListener('click', () => {
+    console.debug('Toggling LLM history');
     historyList.hidden = !historyList.hidden;
     updateHistory();
   });
 
   exportHistoryBtn.addEventListener('click', () => {
+    console.debug('Exporting LLM history...');
     try {
       const blob = new Blob([JSON.stringify(history, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
@@ -77,6 +85,7 @@ export function initLLM() {
   });
 
   copyBtn.addEventListener('click', () => {
+    console.debug('Copying LLM response...');
     navigator.clipboard.writeText(responseOutput.textContent).catch(err => {
       console.error('Copy failed:', err);
       alert('Failed to copy response.');
@@ -84,7 +93,9 @@ export function initLLM() {
   });
 
   speechBtn.addEventListener('click', () => {
+    console.debug('Starting speech recognition...');
     if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
+      console.warn('Speech recognition not supported');
       alert('Speech recognition not supported in this browser.');
       return;
     }
@@ -93,6 +104,7 @@ export function initLLM() {
     recognition.start();
     recognition.onresult = event => {
       queryInput.value = event.results[0][0].transcript;
+      console.debug('Speech recognition result:', queryInput.value);
     };
     recognition.onerror = err => {
       console.error('Speech recognition error:', err);
@@ -101,10 +113,12 @@ export function initLLM() {
   });
 
   optionsBtn.addEventListener('click', () => {
+    console.debug('Toggling LLM options panel');
     optionsPanel.classList.toggle('active');
   });
 
   state.cleanup.add(() => {
+    console.debug('Cleaning up LLM event listeners');
     submitBtn.removeEventListener('click', submitBtn);
     toggleHistoryBtn.removeEventListener('click', toggleHistoryBtn);
     exportHistoryBtn.removeEventListener('click', exportHistoryBtn);
