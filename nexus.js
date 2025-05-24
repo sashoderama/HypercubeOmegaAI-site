@@ -543,8 +543,10 @@ function exportSnapshot() {
   const snap = {
     stamp: new Date().toISOString(),
     llmCalls: state.llmCallCount,
-    entropy: $('#entropy')?.textContent || 'N/A',
-    gpu: $('#gpu-util')?.textContent || 'N/A',
+    latency: $('#latency')?.textContent || 'N/A',
+    events: $('#events')?.textContent || 'N/A',
+    falsePositives: $('#false-positives')?.textContent || 'N/A',
+    compliance: $('#compliance')?.textContent || 'N/A',
   };
   try {
     const blob = new Blob([JSON.stringify(snap, null, 2)], { type: 'application/json' });
@@ -586,9 +588,9 @@ const threatEdges = [
   { source: '4', target: '5' },
 ];
 const stackNodes = [
-  { id: '1', x: 150, y: 100, r: 15, label: 'PyTorch' },
-  { id: '2', x: 350, y: 150, r: 15, label: 'Ray' },
-  { id: '3', x: 250, y: 300, r: 15, label: 'Redis' },
+  { id: '1', x: 150, y: 100, r: 15, label: 'Kafka' },
+  { id: '2', x: 350, y: 150, r: 15, label: 'Prometheus' },
+  { id: '3', x: 250, y: 300, r: 15, label: 'Triton' },
 ];
 const stackEdges = [
   { source: '1', target: '2' },
@@ -619,7 +621,7 @@ async function initEverything() {
     }
     if (modules.initTelemetry) modules.initTelemetry();
     if (modules.initAccordion) {
-      modules.initAccordion(['#capabilities', '#training', '#tech-stack', '#faq']);
+      modules.initAccordion(['#features']);
     }
     initConsent();
     initDevPanel();
@@ -647,7 +649,7 @@ async function initEverything() {
     console.error('Initialization failed:', err);
     if (loading) {
       loading.classList.add('hidden');
-      loading.style.display = 'none');
+      loading.style.display = 'none';
     }
     const errorDiv = document.createElement('div');
     errorDiv.style.color = 'red';
@@ -669,7 +671,7 @@ try {
   console.error('🔥 Fatal init error:', err);
   if ($('#loading')) {
     $('#loading').classList.add('hidden');
-    $('#loading').style.display = 'none');
+    $('#loading').style.display = 'none';
   }
   const errorDiv = document.createElement('div');
   errorDiv.style.color = 'red';
