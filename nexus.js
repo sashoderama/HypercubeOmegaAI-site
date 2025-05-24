@@ -519,6 +519,7 @@ function initTimelineViewer() {
   console.debug('Initializing timeline viewer...');
   const canvas = document.createElement('canvas');
   canvas.setAttribute('aria-label', 'Timeline viewer for attack sequences');
+  canvas.tabIndex = 0; // Make canvas focusable
   container.appendChild(canvas);
   const ctx = canvas.getContext('2d');
 
@@ -574,9 +575,10 @@ function initTimelineViewer() {
     }
   };
 
-  const handleClick = e => {
+  const handleInteraction = e => {
+    console.debug('Timeline interaction triggered');
     const rect = canvas.getBoundingClientRect();
-    const x = (e.clientX - rect.left) * devicePixelRatio;
+    const x = (e.clientX ? e.clientX - rect.left : e.offsetX) * devicePixelRatio;
     const w = canvas.width;
     selectedEvent = null;
     events.forEach((event, i) => {
@@ -588,8 +590,25 @@ function initTimelineViewer() {
     draw();
   };
 
-  canvas.addEventListener('click', handleClick);
-  state.cleanup.add(() => canvas.removeEventListener('click', handleClick));
+  canvas.addEventListener('click', handleInteraction);
+  canvas.addEventListener('touchstart', e => {
+    e.preventDefault();
+    handleInteraction(e.touches[0]);
+  });
+  canvas.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      console.debug('Timeline keyboard interaction');
+      selectedEvent = selectedEvent === null ? 0 : (selectedEvent + 1) % events.length;
+      draw();
+    }
+  });
+
+  state.cleanup.add(() => {
+    console.debug('Cleaning up timeline viewer...');
+    canvas.removeEventListener('click', handleInteraction);
+    canvas.removeEventListener('touchstart', handleInteraction);
+    canvas.removeEventListener('keydown', handleInteraction);
+  });
 
   const resize = throttle(draw, 100);
   window.addEventListener('resize', resize);
@@ -631,13 +650,16 @@ function initConsent() {
   accept.addEventListener('click', () => {
     localStorage.setItem('consent', 'accepted');
     pop.classList.add('hidden');
+    console.debug('Consent accepted');
   });
   decline.addEventListener('click', () => {
     localStorage.setItem('consent', 'declined');
     pop.classList.add('hidden');
+    console.debug('Consent declined');
   });
 
   state.cleanup.add(() => {
+    console.debug('Cleaning up consent popup...');
     accept.removeEventListener('click', accept);
     decline.removeEventListener('click', decline);
   });
@@ -658,12 +680,14 @@ function initDevPanel() {
   const toggleHighContrast = () => {
     const currentTheme = document.body.dataset.theme || 'frost';
     document.body.dataset.theme = currentTheme === 'frost' ? 'high-contrast' : 'frost';
+    console.debug(`High contrast toggled to: ${document.body.dataset.theme}`);
   };
 
   document.addEventListener('keydown', e => {
     if (e.ctrlKey && e.key === 'd') {
       togglePanel();
       toggleOverlay();
+      console.debug('Dev panel toggled');
     }
     if (e.altKey && e.key === '/') {
       toggleHighContrast();
@@ -674,6 +698,7 @@ function initDevPanel() {
   });
 
   state.cleanup.add(() => {
+    console.debug('Cleaning up dev panel...');
     document.removeEventListener('keydown', togglePanel);
     document.removeEventListener('keyup', toggleOverlay);
   });
@@ -745,7 +770,7 @@ async function initEverything() {
       style.textContent = `
         body { font-family: sans-serif; background: #f0f8ff; color: #0c0d10; }
         main { padding: 20px; text-align: center; }
-        .error-message { color: #ff4d4d; padding: 20px; text-align: center; }
+        .error-message { color: red; padding: 20px; text-align: center; }
       `;
       document.head.appendChild(style);
     }
@@ -799,6 +824,7 @@ async function initEverything() {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
+          console.debug(`Section visible: ${entry.target.id}`);
         }
       });
     }, { threshold: 0.1 });
