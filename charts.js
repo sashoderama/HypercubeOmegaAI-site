@@ -1,6 +1,10 @@
 /* charts.js */
 export function initCharts() {
-  if (window.__charts__) return;
+  console.debug('Initializing charts module...');
+  if (window.__charts__) {
+    console.debug('Charts already initialized, skipping');
+    return;
+  }
   window.__charts__ = true;
 
   const eC = document.querySelector('#entropy-chart'),
@@ -16,6 +20,7 @@ export function initCharts() {
 
   tabButtons.forEach(button => {
     button.addEventListener('click', () => {
+      console.debug(`Tab button clicked: ${button.dataset.tab}`);
       tabButtons.forEach(btn => btn.classList.remove('active'));
       tabContents.forEach(content => content.classList.remove('active'));
       button.classList.add('active');
@@ -126,6 +131,7 @@ export function initCharts() {
   });
 
   const interval = setInterval(() => {
+    console.debug('Updating chart data...');
     entropyChart.data.datasets[0].data = entropyChart.data.datasets[0].data.map(v => Math.max(0.8, Math.min(1.0, v + (Math.random() - 0.5) * 0.1)));
     entropyChart.update();
     ethicsChart.data.datasets[0].data = [25, 25, 25, 25];
@@ -133,6 +139,7 @@ export function initCharts() {
   }, 5000);
 
   state.cleanup.add(() => {
+    console.debug('Cleaning up charts...');
     clearInterval(interval);
     entropyChart.destroy();
     activityChart.destroy();
