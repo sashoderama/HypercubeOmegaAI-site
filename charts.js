@@ -29,8 +29,8 @@ export function initCharts() {
     data: {
       labels: ['XSS', 'SQL Injection', 'DDoS', 'Zero-Day', 'Phishing'],
       datasets: [{
-        label: 'Entropy Level',
-        data: [0.7, 0.9, 0.5, 0.8, 0.6],
+        label: 'Latency (ms)',
+        data: [5, 6, 5.5, 7, 6.5],
         backgroundColor: '#7cd4fc',
         borderColor: '#a8c6e5',
         borderWidth: 1
@@ -41,8 +41,8 @@ export function initCharts() {
       scales: {
         y: {
           beginAtZero: true,
-          max: 1,
-          title: { display: true, text: 'Entropy', color: '#0c0d10', font: { family: 'Sora', size: 14 } },
+          max: 10,
+          title: { display: true, text: 'Latency (ms)', color: '#0c0d10', font: { family: 'Sora', size: 14 } },
           grid: { color: '#a8c6e5' },
           ticks: { color: '#0c0d10' }
         },
@@ -54,7 +54,7 @@ export function initCharts() {
       },
       plugins: {
         legend: { labels: { color: '#0c0d10', font: { family: 'Sora', size: 12 } } },
-        title: { display: false }
+        title: { display: true, text: 'Threat Detection Latency', color: '#0c0d10' }
       },
       responsive: true,
       maintainAspectRatio: false
@@ -64,10 +64,10 @@ export function initCharts() {
   const activityChart = new Chart(aC, {
     type: 'line',
     data: {
-      labels: ['0s', '5s', '10s', '15s', '20s', '25s'],
+      labels: ['2025', '2026', '2027'],
       datasets: [{
-        label: 'Neural Activity',
-        data: [0.3, 0.5, 0.7, 0.4, 0.6, 0.8],
+        label: 'Revenue ($M)',
+        data: [0.12, 1.2, 5],
         borderColor: '#7cd4fc',
         backgroundColor: 'rgba(124, 212, 252, 0.3)',
         fill: true,
@@ -79,20 +79,20 @@ export function initCharts() {
       scales: {
         y: {
           beginAtZero: true,
-          max: 1,
-          title: { display: true, text: 'Activity', color: '#0c0d10', font: { family: 'Sora', size: 14 } },
+          max: 6,
+          title: { display: true, text: 'Revenue ($M)', color: '#0c0d10', font: { family: 'Sora', size: 14 } },
           grid: { color: '#a8c6e5' },
           ticks: { color: '#0c0d10' }
         },
         x: {
-          title: { display: true, text: 'Time', color: '#0c0d10', font: { family: 'Sora', size: 14 } },
+          title: { display: true, text: 'Year', color: '#0c0d10', font: { family: 'Sora', size: 14 } },
           grid: { color: '#a8c6e5' },
           ticks: { color: '#0c0d10' }
         }
       },
       plugins: {
         legend: { labels: { color: '#0c0d10', font: { family: 'Sora', size: 12 } } },
-        title: { display: false }
+        title: { display: true, text: 'Revenue Projections', color: '#0c0d10' }
       },
       responsive: true,
       maintainAspectRatio: false
@@ -102,11 +102,11 @@ export function initCharts() {
   const ethicsChart = new Chart(pC, {
     type: 'pie',
     data: {
-      labels: ['Compliance', 'Neutral', 'Risk'],
+      labels: ['GDPR', 'SOC2', 'HIPAA', 'FIPS 140-3'],
       datasets: [{
-        label: 'Ethics Score',
-        data: [70, 20, 10],
-        backgroundColor: ['#7cd4fc', '#a8c6e5', '#ff6b6b'],
+        label: 'Compliance Efficacy',
+        data: [25, 25, 25, 25],
+        backgroundColor: ['#7cd4fc', '#a8c6e5', '#4f8dfd', '#8fa9ff'],
         borderColor: '#0c0d10',
         borderWidth: 1
       }]
@@ -118,7 +118,7 @@ export function initCharts() {
           position: 'bottom',
           labels: { color: '#0c0d10', font: { family: 'Sora', size: 12 } }
         },
-        title: { display: false }
+        title: { display: true, text: 'Compliance Coverage', color: '#0c0d10' }
       },
       responsive: true,
       maintainAspectRatio: false
@@ -126,11 +126,9 @@ export function initCharts() {
   });
 
   const interval = setInterval(() => {
-    entropyChart.data.datasets[0].data = entropyChart.data.datasets[0].data.map(() => Math.random() * 0.8 + 0.2);
+    entropyChart.data.datasets[0].data = entropyChart.data.datasets[0].data.map(v => Math.max(5, Math.min(7, v + (Math.random() - 0.5) * 0.5)));
     entropyChart.update();
-    activityChart.data.datasets[0].data = activityChart.data.datasets[0].data.map(() => Math.random() * 0.8 + 0.2);
-    activityChart.update();
-    ethicsChart.data.datasets[0].data = [Math.random() * 60 + 30, Math.random() * 30, Math.random() * 20];
+    ethicsChart.data.datasets[0].data = [25, 25, 25, 25]; // Static for compliance
     ethicsChart.update();
   }, 5000);
 
