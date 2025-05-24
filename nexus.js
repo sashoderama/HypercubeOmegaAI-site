@@ -1,4 +1,4 @@
-/* nexus.js – Unified Entry Point for AuroraGenesis ∞ NEXUS */
+/* nexus.js – Unified Entry Point for Elvira ∞ NEXUS */
 'use strict';
 
 // Module imports with retry logic
@@ -16,15 +16,13 @@ const loadModule = async (url, retries = 3) => {
 
 const modules = await Promise.allSettled([
   loadModule('/theme-toggle.js').then(m => ({ initThemeToggle: m.initThemeToggle })),
-  loadModule('/llm.js').then(m => ({ initLLM: m.initLLM })),
-  loadModule('/charts.js').then(m => ({ initCharts: m.initCharts })),
-  loadModule('/accordion.js').then(m => ({ initAccordion: m.initAccordion })),
   loadModule('/telemetry.js').then(m => ({ initTelemetry: m.initTelemetry })),
+  loadModule('/accordion.js').then(m => ({ initAccordion: m.initAccordion })),
 ]).then(results => {
   const loaded = {};
   results.forEach((result, i) => {
     if (result.status === 'fulfilled') Object.assign(loaded, result.value);
-    else console.warn(`Module ${['theme-toggle', 'llm', 'charts', 'accordion', 'telemetry'][i]} failed: ${result.reason}`);
+    else console.warn(`Module ${['theme-toggle', 'telemetry', 'accordion'][i]} failed: ${result.reason}`);
   });
   return loaded;
 }).catch(err => {
@@ -36,6 +34,7 @@ const modules = await Promise.allSettled([
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
 const prefersRM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isMobile = window.innerWidth <= 768;
 const webglSupported = (() => {
   try {
     const canvas = document.createElement('canvas');
@@ -47,7 +46,6 @@ const webglSupported = (() => {
 
 // State
 const state = {
-  llmCallCount: 0,
   animationFrameId: null,
   cleanup: new Set(),
 };
@@ -148,7 +146,7 @@ async function initNeuralBackground() {
       import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/UnrealBloomPass.js'),
     ]);
 
-    const DPR = Math.min(devicePixelRatio, 1.5);
+    const DPR = isMobile ? Math.min(devicePixelRatio, 1.2) : Math.min(devicePixelRatio, 1.5);
     renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setPixelRatio(DPR);
     renderer.setSize(innerWidth, innerHeight);
@@ -168,7 +166,7 @@ async function initNeuralBackground() {
     composer.addPass(new RenderPass(scene, camera));
     composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.4, 0.15, 0.9));
 
-    const NODE_COUNT = Math.max(30, Math.min(150, Math.floor(area / 250_000)));
+    const NODE_COUNT = Math.max(50, Math.min(200, Math.floor(area / 200_000)));
     const clusters = 3;
     const nodes = Array.from({ length: NODE_COUNT }, () => ({
       pos: new THREE.Vector3((Math.random() - 0.5) * 20, (Math.random() - 0.5) * 20, (Math.random() - 0.5) * 10),
@@ -199,7 +197,7 @@ async function initNeuralBackground() {
         void main() {
           vP = pulse;
           vPos = position;
-          gl_PointSize = 6.0 * (1.0 + 0.3 * sin(pulse));
+          gl_PointSize = 5.0 * (1.0 + 0.3 * sin(pulse));
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
         }
       `,
@@ -212,7 +210,7 @@ async function initNeuralBackground() {
           if (d > 0.5) discard;
           float a = smoothstep(0.5, 0.2, d) * (0.6 + 0.3 * sin(vP));
           float fade = 1.0 - abs(vPos.z / 10.0);
-          gl_FragColor = vec4(0.49, 0.83, 0.99, a * fade * 0.8);
+          gl_FragColor = vec4(0.49, 0.83, 0.99, a * fade * 0.7);
         }
       `,
       transparent: true,
@@ -275,7 +273,7 @@ async function initNeuralBackground() {
     gradientMesh.position.z = -8;
     scene.add(gradientMesh);
 
-    const particleCount = 30;
+    const particleCount = isMobile ? 50 : 100; // Increased particles
     const particleGeo = new THREE.BufferGeometry();
     const particlePos = new Float32Array(particleCount * 3);
     const particleVel = new Float32Array(particleCount * 3);
@@ -290,7 +288,7 @@ async function initNeuralBackground() {
     particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
     const particleMat = new THREE.PointsMaterial({
       color: 0x7cd4fc,
-      size: 1.5,
+      size: isMobile ? 1.2 : 1.5,
       transparent: true,
       opacity: 0.5,
       blending: THREE.AdditiveBlending,
@@ -406,77 +404,6 @@ function initScrollSpy() {
   state.cleanup.add(() => document.removeEventListener('scroll', handler));
 }
 
-// Graphs
-function createGraph(selector, nodes = [], edges = []) {
-  const wrap = $(selector);
-  if (!wrap) {
-    console.error(`Graph container ${selector} not found`);
-    return;
-  }
-  if (!nodes.length || !edges.length) {
-    console.warn(`No valid nodes or edges for ${selector}`);
-    wrap.innerHTML = '<p aria-live="polite">Graph data unavailable.</p>';
-    return;
-  }
-
-  wrap.innerHTML = '';
-  const canvas = document.createElement('canvas');
-  canvas.setAttribute('aria-label', `Graph visualization for ${selector.includes('threat') ? 'threat detection' : 'stack'}`);
-  wrap.appendChild(canvas);
-  const ctx = canvas.getContext('2d');
-
-  const draw = () => {
-    const w = wrap.clientWidth * devicePixelRatio,
-          h = wrap.clientHeight * devicePixelRatio;
-    canvas.width = w;
-    canvas.height = h;
-    canvas.style.width = `${wrap.clientWidth}px`;
-    canvas.style.height = `${wrap.clientHeight}px`;
-    ctx.fillStyle = 'rgba(240, 248, 255, 0.1)';
-    ctx.fillRect(0, 0, w, h);
-
-    ctx.lineWidth = 1.5;
-    ctx.strokeStyle = '#7cd4fc';
-    edges.forEach(e => {
-      const a = nodes.find(n => n.id === e.source),
-            b = nodes.find(n => n.id === e.target);
-      if (a && b) {
-        ctx.beginPath();
-        ctx.moveTo(a.x * devicePixelRatio, a.y * devicePixelRatio);
-        ctx.bezierCurveTo(
-          a.x * 0.3 + b.x * 0.7, a.y,
-          a.x * 0.7 + b.x * 0.3, b.y,
-          b.x * devicePixelRatio, b.y * devicePixelRatio
-        );
-        ctx.stroke();
-      }
-    });
-
-    nodes.forEach(n => {
-      ctx.beginPath();
-      ctx.arc(n.x * devicePixelRatio, n.y * devicePixelRatio, n.r, 0, 2 * Math.PI);
-      ctx.fillStyle = '#7cd4fc';
-      ctx.fill();
-      ctx.strokeStyle = '#a8c6e5';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-      ctx.font = '12px Sora';
-      ctx.fillStyle = '#0c0d10';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(n.label, n.x * devicePixelRatio, (n.y + n.r + 12) * devicePixelRatio);
-    });
-
-    const nodeCount = $(selector.includes('threat') ? '#node-count' : '#stack-node-count');
-    if (nodeCount) nodeCount.textContent = nodes.length;
-  };
-
-  const resize = throttle(draw, 100);
-  window.addEventListener('resize', resize);
-  state.cleanup.add(() => window.removeEventListener('resize', resize));
-  draw();
-}
-
 // Consent Popup
 function initConsent() {
   const pop = $('#consent-popup'),
@@ -542,7 +469,6 @@ function initDevPanel() {
 function exportSnapshot() {
   const snap = {
     stamp: new Date().toISOString(),
-    llmCalls: state.llmCallCount,
     latency: $('#latency')?.textContent || 'N/A',
     events: $('#events')?.textContent || 'N/A',
     falsePositives: $('#false-positives')?.textContent || 'N/A',
@@ -553,7 +479,7 @@ function exportSnapshot() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'nexus-snapshot.json';
+    a.download = 'elvira-snapshot.json';
     a.click();
     URL.revokeObjectURL(url);
   } catch (err) {
@@ -573,61 +499,29 @@ function throttle(fn, ms) {
   };
 }
 
-// Static Data
-const threatNodes = [
-  { id: '1', x: 100, y: 100, r: 15, label: 'Ingest' },
-  { id: '2', x: 300, y: 200, r: 15, label: 'Analyze' },
-  { id: '3', x: 500, y: 150, r: 15, label: 'Mutate' },
-  { id: '4', x: 200, y: 350, r: 15, label: 'Neutralize' },
-  { id: '5', x: 400, y: 400, r: 15, label: 'Audit' },
-];
-const threatEdges = [
-  { source: '1', target: '2' },
-  { source: '2', target: '3' },
-  { source: '3', target: '4' },
-  { source: '4', target: '5' },
-];
-const stackNodes = [
-  { id: '1', x: 150, y: 100, r: 15, label: 'Kafka' },
-  { id: '2', x: 350, y: 150, r: 15, label: 'Prometheus' },
-  { id: '3', x: 250, y: 300, r: 15, label: 'Triton' },
-];
-const stackEdges = [
-  { source: '1', target: '2' },
-  { source: '2', target: '3' },
-];
-
 // Initialization
 async function initEverything() {
   const loading = $('#loading');
   try {
+    console.log('DOM loaded, initializing...');
     if (loading) {
+      console.log('Hiding loading overlay...');
       await new Promise(resolve => setTimeout(resolve, 300));
       loading.classList.add('hidden');
       loading.style.display = 'none';
     }
 
+    console.log('Initializing neural background...');
     await initNeuralBackground();
     if (modules.initThemeToggle) modules.initThemeToggle();
+    console.log('Initializing scroll-spy...');
     initScrollSpy();
-    if (modules.initCharts) modules.initCharts();
-    if (modules.initLLM) {
-      modules.initLLM();
-      const originalLLM = modules.initLLM;
-      modules.initLLM = async (...args) => {
-        state.llmCallCount++;
-        return originalLLM(...args);
-      };
-    }
     if (modules.initTelemetry) modules.initTelemetry();
     if (modules.initAccordion) {
       modules.initAccordion(['#features']);
     }
     initConsent();
     initDevPanel();
-
-    createGraph('#threat-detection-graph', threatNodes, threatEdges);
-    createGraph('#stack-graph', stackNodes, stackEdges);
 
     const snapshotBtn = $('.snapshot-button');
     if (snapshotBtn) {
@@ -645,9 +539,19 @@ async function initEverything() {
     }, { threshold: 0.1 });
     $$('section').forEach(section => observer.observe(section));
     state.cleanup.add(() => observer.disconnect());
+
+    // Handle script errors
+    const nexusScript = document.querySelector('script[src="/nexus.js"]');
+    if (nexusScript) {
+      nexusScript.addEventListener('error', () => {
+        console.error('Failed to load /nexus.js');
+        document.body.insertAdjacentHTML('beforeend', '<p style="color: red; text-align: center;">Error loading application. Please try again later.</p>');
+      });
+    }
   } catch (err) {
     console.error('Initialization failed:', err);
     if (loading) {
+      console.log('Hiding loading overlay due to error');
       loading.classList.add('hidden');
       loading.style.display = 'none';
     }
