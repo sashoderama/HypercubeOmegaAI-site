@@ -13,7 +13,7 @@
   --fg: #e0e3f4;
   --accent: #7cd4fc;
   --secondary: #a8c6e5;
-  --glow: rgba(124, 212, 252, 0.2);
+  --glow: rgba(124, 212, 252, 0.3);
   --blur: rgba(255, 255, 255, 0.4);
   --glass-bg: linear-gradient(145deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
   --glass-border: rgba(255, 255, 255, 0.3);
@@ -59,6 +59,8 @@ body {
   color: var(--fg);
   line-height: 1.6;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 /* Neural Background */
@@ -72,7 +74,7 @@ body {
   content: '';
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+  background: radial-gradient(circle at 50% 50%, rgba(124, 212, 252, 0.2) 0%, transparent 70%);
   pointer-events: none;
   contain: strict;
 }
@@ -110,7 +112,8 @@ h1 {
   font-weight: 600;
   font-size: 0.95rem;
   padding: 0.5rem;
-  transition: color 0.3s;
+  transition: color 0.2s ease-out;
+  will-change: color;
 }
 .nav-links a:hover, .nav-links a.active {
   color: var(--accent);
@@ -123,7 +126,8 @@ h1 {
   color: var(--fg);
   font-size: 1.3rem;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.2s ease-out;
+  will-change: transform;
 }
 .theme-toggle:hover {
   transform: scale(1.1);
@@ -161,7 +165,7 @@ h2 {
   margin-bottom: 1.5rem;
   text-align: center;
   grid-column: 1 / -1;
-  text-shadow: 0 0 10px var(--glow);
+  text-shadow: 0 0 12px var(--glow);
 }
 h3 {
   font: 600 1.2rem 'Sora';
@@ -241,14 +245,14 @@ td {
   border-radius: 8px;
   font: 600 0.95rem 'Sora';
   cursor: pointer;
-  transition: all 0.3s;
+  transition: transform 0.2s ease-out, border-color 0.2s ease-out, box-shadow 0.2s ease-out;
   position: relative;
   overflow: hidden;
-  backdrop-filter: blur(8px);
+  will-change: transform, border-color, box-shadow;
 }
 .cyber-button:hover, .cyber-button:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 20px var(--glow);
+  box-shadow: 0 0 12px var(--glow);
   transform: scale(1.05);
 }
 .cyber-button:focus {
@@ -262,7 +266,7 @@ td {
   width: 100%;
   height: 100%;
   background: linear-gradient(90deg, transparent, var(--glow), transparent);
-  transition: left 0.5s;
+  transition: left 0.4s ease-out;
 }
 .cyber-button:hover::before, .cyber-button:focus::before {
   left: 100%;
@@ -303,11 +307,12 @@ td {
   border-radius: 10px;
   font: 600 1rem 'Sora';
   cursor: pointer;
-  transition: all 0.3s;
+  transition: transform 0.2s ease-out, border-color 0.2s ease-out, box-shadow 0.2s ease-out;
+  will-change: transform, border-color, box-shadow;
 }
 .tab-button:hover, .tab-button.active, .tab-button:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 20px var(--glow);
+  box-shadow: 0 0 12px var(--glow);
   transform: scale(1.05);
 }
 .tab-button:focus {
@@ -438,7 +443,7 @@ footer p {
 footer a {
   color: var(--accent);
   text-decoration: none;
-  transition: color 0.3s;
+  transition: color 0.2s ease-out;
 }
 footer a:hover {
   color: #4f8dfd;
@@ -454,7 +459,7 @@ footer a:hover {
   cursor: pointer;
   color: var(--fg);
   font: 600 1rem 'Sora';
-  transition: background 0.3s;
+  transition: background 0.2s ease-out;
 }
 .accordion-header:hover, .accordion-header:focus {
   background: rgba(124, 212, 252, 0.1);
@@ -480,7 +485,7 @@ footer a:hover {
   justify-content: center;
   z-index: 10000;
   opacity: 1;
-  transition: opacity 0.5s;
+  transition: opacity 0.5s ease;
 }
 .loading-overlay.hidden {
   opacity: 0;
@@ -525,7 +530,7 @@ footer a:hover {
   background: var(--glass-bg);
   border-left: 1px solid var(--glass-border);
   padding: 1.2rem;
-  transition: right 0.3s;
+  transition: right 0.3s ease;
 }
 #dev-panel.active {
   right: 0;
@@ -624,15 +629,13 @@ footer a:hover {
 @media screen and (min-resolution: 192dpi) {
   body { font-size: 17px; }
   .card { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25); }
+  h2 { text-shadow: 0 0 15px var(--glow); }
 }
 @media (prefers-reduced-motion: reduce), (max-device-width: 768px) {
-  .card, .cyber-button {
-    backdrop-filter: none;
+  .card, .cyber-button, .tab-button, .accordion-header {
+    transition: none;
   }
   .neuro-universe::after {
     display: none;
-  }
-  section, .card, .tab-button, .accordion-header {
-    transition: none;
   }
 }
