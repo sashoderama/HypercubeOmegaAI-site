@@ -9,33 +9,35 @@ class ModuleLoader {
   static RETRY_DELAY = 1000;
   static TIMEOUT = 5000;
 
-  static async load(url, moduleName) {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), this.TIMEOUT);
+static async load(url, moduleName) {
+  const controller = new AbortController();
+  const TIMEOUT = this.TIMEOUT ?? 5000;
+  const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
 
-    for (let i = 0; i < this.RETRY_LIMIT; i++) {
-      try {
-        console.debug(`Attempting to load module: ${url}, attempt ${i + 1}`);
-        const module = await Promise.race([
-          import(url, { signal: controller.signal }),
-          new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('Module load timeout')), this.TIMEOUT))
-        ]);
-        console.debug(`Successfully loaded module: ${url}`);
-        return module;
-      } catch (err) {
-        console.warn(`Failed to load ${url} on attempt ${i + 1}: ${err.message}`);
-        if (i === this.RETRY_LIMIT - 1) {
-          console.error(`Exhausted retries for ${moduleName}`);
-          return null;
-        }
-        await new Promise(r => setTimeout(r, this.RETRY_DELAY * (i + 1)));
-      } finally {
-        clearTimeout(timeoutId);
+  for (let i = 0; i < this.RETRY_LIMIT; i++) {
+    try {
+      console.debug(`Attempting to load module: ${url}, attempt ${i + 1}`);
+      const module = await Promise.race([
+        import(url, { signal: controller.signal }),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Module load timeout')), TIMEOUT)
+        )
+      ]);
+      console.debug(`Successfully loaded module: ${url}`);
+      return module;
+    } catch (err) {
+      console.warn(`Module "${moduleName}" load failed (${url}), attempt ${i + 1}: ${err}`);
+      if (i === this.RETRY_LIMIT - 1) {
+        console.error(`❌ Exhausted retries for "${moduleName}"`);
+        return null;
       }
+      await new Promise(r => setTimeout(r, this.RETRY_DELAY * (i + 1)));
+    } finally {
+      clearTimeout(timeoutId);
     }
   }
 }
+
 
 
 // State Management
