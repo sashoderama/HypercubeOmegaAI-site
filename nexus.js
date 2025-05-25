@@ -1,5 +1,4 @@
 /* nexus.js - Enhanced Core v3.1 */
-// Enforces strict mode for ESM compliance and error prevention
 'use strict';
 
 // Centralized Module Logger for real-time tracing
@@ -63,8 +62,7 @@ class ModuleLogger {
   }
 }
 
-// Optional WebSocket logging (enable with 'ws://localhost:3030')
-const moduleLogger = new ModuleLogger();
+const moduleLogger = new ModuleLogger(); // Optional: 'ws://localhost:3030'
 
 // Module Loader with Circuit Breaker
 class ModuleLoader {
