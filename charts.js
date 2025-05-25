@@ -1,5 +1,5 @@
-/* charts.js */
-export function initCharts(state) {
+/* charts.js – Enhanced GPU-friendly analytics for Elvira Genesis-Elvira (v1.4) */
+export function initCharts() {
   console.debug('Initializing charts module...');
   if (window.__charts__) {
     console.debug('Charts already initialized, skipping');
@@ -18,16 +18,30 @@ export function initCharts(state) {
   const tabButtons = document.querySelectorAll('.tab-button');
   const tabContents = document.querySelectorAll('.tab-content');
 
-  tabButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      console.debug(`Tab button clicked: ${button.dataset.tab}`);
-      tabButtons.forEach(btn => btn.classList.remove('active'));
-      tabContents.forEach(content => content.classList.remove('active'));
-      button.classList.add('active');
-      const tabId = button.dataset.tab;
-      document.querySelector(`#${tabId}`).classList.add('active');
-    });
-  });
+  const handleTabClick = function() {
+    console.debug(`Tab button clicked: ${this.dataset.tab}`);
+    tabButtons.forEach(btn => btn.classList.remove('active'));
+    tabContents.forEach(content => content.classList.remove('active'));
+    this.classList.add('active');
+    const tabId = this.dataset.tab;
+    document.querySelector(`#${tabId}`).classList.add('active');
+  };
+
+  tabButtons.forEach(button => button.addEventListener('click', handleTabClick));
+
+  const COLORS = {
+    frost: { bg: '#6be2eb', border: '#b39ddb', accent: '#4f8dfd' },
+    high: { bg: '#fdb813', border: '#ffde7a', accent: '#ff9b00' }
+  };
+  const getTheme = () => document.body.dataset.theme === 'high-contrast' ? 'high' : 'frost';
+  const pick = key => COLORS[getTheme()][key];
+
+  const makeGradient = (ctx, from, to) => {
+    const g = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
+    g.addColorStop(0, from);
+    g.addColorStop(1, to);
+    return g;
+  };
 
   const entropyChart = new Chart(eC, {
     type: 'bar',
@@ -36,9 +50,12 @@ export function initCharts(state) {
       datasets: [{
         label: 'Latency (ms)',
         data: [0.8, 0.9, 0.85, 1.0, 0.95],
-        backgroundColor: '#6be2eb',
-        borderColor: '#b39ddb',
-        borderWidth: 1
+        backgroundColor: ctx => makeGradient(ctx.chart.ctx, pick('bg'), 'rgba(0,0,0,0)'),
+        borderColor: () => pick('border'),
+        borderWidth: 1,
+        borderRadius: 6,
+        barPercentage: 0.6,
+        categoryPercentage: 0.5
       }]
     },
     options: {
@@ -73,10 +90,12 @@ export function initCharts(state) {
       datasets: [{
         label: 'Revenue ($M)',
         data: [5, 30, 100],
-        borderColor: '#6be2eb',
-        backgroundColor: 'rgba(107, 226, 235, 0.3)',
+        borderColor: () => pick('accent'),
+        backgroundColor: ctx => makeGradient(ctx.chart.ctx, pick('bg'), 'rgba(0,0,0,0)'),
         fill: true,
-        tension: 0.4
+        tension: 0.4,
+        pointRadius: 4,
+        pointHoverRadius: 7
       }]
     },
     options: {
@@ -132,20 +151,23 @@ export function initCharts(state) {
 
   const interval = setInterval(() => {
     console.debug('Updating chart data...');
-    entropyChart.data.datasets[0].data = entropyChart.data.datasets[0].data.map(v => Math.max(0.8, Math.min(1.0, v + (Math.random() - 0.5) * 0.1)));
+    entropyChart.data.datasets[0].data = entropyChart.data.datasets[0].data.map(v =>
+      Math.max(0.8, Math.min(1.0, v + (Math.random() - 0.5) * 0.1)));
     entropyChart.update();
     ethicsChart.data.datasets[0].data = [25, 25, 25, 25];
     ethicsChart.update();
   }, 5000);
 
-  state.cleanup.add(() => {
+  const cleanup = () => {
     console.debug('Cleaning up charts...');
     clearInterval(interval);
     entropyChart.destroy();
     activityChart.destroy();
     ethicsChart.destroy();
-    tabButtons.forEach(button => {
-      button.removeEventListener('click', button.onclick);
-    });
-  });
+    tabButtons.forEach(button => button.removeEventListener('click', handleTabClick));
+    window.__charts__ = false;
+  };
+
+  window.addEventListener('beforeunload', cleanup);
+  window.addEventListener('pagehide', cleanup);
 }
