@@ -39,7 +39,7 @@ const modules = await Promise.allSettled([
   });
   return loaded;
 }).catch(err => {
-  console.error('🔥 Critical module import error:', err);
+  console.error('Critical module import error:', err);
   return {};
 });
 
@@ -353,7 +353,7 @@ async function initNeuralBackground() {
         if (Math.abs(particlePos[i * 3]) > 30) particleVel[i * 3] *= -1;
         if (Math.abs(particlePos[i * 3 + 1]) > 30) particleVel[i * 3 + 1] *= -1;
         if (Math.abs(particlePos[i * 3 + 2]) > 15) particleVel[i * 3 + 2] *= -1;
-      });
+      }
       particleGeo.attributes.position.needsUpdate = true;
     };
 
@@ -519,7 +519,7 @@ function initTimelineViewer() {
   console.debug('Initializing timeline viewer...');
   const canvas = document.createElement('canvas');
   canvas.setAttribute('aria-label', 'Timeline viewer for attack sequences');
-  canvas.tabIndex = 0; // Make canvas focusable for keyboard navigation
+  canvas.tabIndex = 0;
   container.appendChild(canvas);
   const ctx = canvas.getContext('2d');
 
@@ -736,7 +736,7 @@ function throttle(fn, ms) {
   return (...args) => {
     if (!timer) {
       fn(...args);
-      timer = setTimeout(() => (timer = null), ms);
+      timer = setTimeout(() => timer = null, ms);
     }
   };
 }
@@ -872,7 +872,7 @@ try {
     state.cleanup.forEach(fn => fn());
   });
 } catch (err) {
-  console.error('🔥 Fatal init error:', err);
+  console.error('Fatal init error:', err);
   const loading = $('#loading');
   if (loading) {
     console.log('Hiding loading overlay due to fatal error');
