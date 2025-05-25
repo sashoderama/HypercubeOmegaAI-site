@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" itemscope itemtype="https://schema.org/SoftwareApplication">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0c0d10">
   <meta name="color-scheme" content="dark light">
-  <meta name="description" content="Elvira Genesis-Elvira: AI-Powered Cybersecurity Platform">
-  <meta name="keywords" content="cybersecurity, AI, GPU, threat detection, Elvira Architect, zero-trust"> <!-- Added for SEO -->
+  <meta name="description" content="Elvira Genesis-Elvira: AI-Powered Cybersecurity Platform with GPU-accelerated threat detection">
+  <meta name="keywords" content="cybersecurity, AI, GPU, threat detection, Elvira Architect, zero-trust">
   <meta name="robots" content="index,follow">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -22,12 +22,19 @@
     object-src 'none';
     base-uri 'none';
   ">
+  <meta itemprop="name" content="Elvira Genesis-Elvira">
+  <meta itemprop="description" content="AI-Powered Cybersecurity Platform with GPU-accelerated threat detection">
+  <meta itemprop="applicationCategory" content="Security">
+  <meta itemprop="operatingSystem" content="Windows, Linux, macOS">
+  <meta property="og:title" content="Elvira Genesis-Elvira - AI Cybersecurity Platform">
+  <meta property="og:description" content="GPU-accelerated AI cybersecurity solution with sub-1ms response times">
+  <meta property="og:image" content="https://elvira-core.net/images/og-image.jpg">
+  <meta property="og:url" content="https://elvira-core.net">
+  <meta name="twitter:card" content="summary_large_image">
   <title>Elvira Genesis-Elvira</title>
   <link rel="icon" href="data:," type="image/x-icon">
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap">
-  <link rel="stylesheet" href="/style.css" nonce="nexus2025">
+  <!-- Import map first to avoid loading error -->
   <script type="importmap" nonce="nexus2025">
     {
       "imports": {
@@ -36,6 +43,11 @@
       }
     }
   </script>
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" as="style" crossorigin>
+  <link rel="preload" href="/style.css" as="style" nonce="nexus2025">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="/style.css" nonce="nexus2025">
   <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" nonce="nexus2025"></script>
 </head>
 <body data-theme="frost">
@@ -80,9 +92,9 @@
   <div id="neural-bg" class="neuro-universe"></div>
   <header role="banner">
     <div class="container">
-      <h1>Elvira Genesis-Elvira</h1>
+      <h1 itemprop="name">Elvira Genesis-Elvira</h1>
       <nav role="navigation" aria-label="Main navigation" class="nav-links">
-        <a href="#hero" class="active">Home</a>
+        <a href="#hero" class="active" aria-current="page">Home</a>
         <a href="#overview">Overview</a>
         <a href="#market">Market</a>
         <a href="#features">Features</a>
@@ -109,10 +121,10 @@
     </div>
   </header>
   <main role="main" id="main">
-    <section id="hero" data-scroll>
+    <section id="hero" data-scroll itemscope itemtype="https://schema.org/Product">
       <div class="container">
-        <h2>Revolutionary Cybersecurity AI</h2>
-        <p>Elvira Genesis-Elvira delivers GPU-accelerated, AI-powered cybersecurity, securing network, cloud, endpoint, and identity layers with sub-1ms response times.</p>
+        <h2 itemprop="name">Revolutionary Cybersecurity AI</h2>
+        <p itemprop="description">Elvira Genesis-Elvira delivers GPU-accelerated, AI-powered cybersecurity, securing network, cloud, endpoint, and identity layers with sub-1ms response times.</p>
         <button class="cyber-button">Engage Elvira</button>
       </div>
     </section>
@@ -246,6 +258,7 @@
           <div class="content">
             <p><strong>Overview:</strong> Elvira Architect is a high-performance AI platform optimized for dual-GPU systems, delivering deep learning, NLP, and multi-modal AI tasks locally for privacy and control.</p>
             <p><strong>Key Features:</strong> Dual-GPU optimization (RTX 3060/4070, FP8, CUDA 12.8), Sparse MoE with 256 experts, Elvira model integration, multi-modal AI, RAG, PyQt5 GUI, real-time GPU monitoring, and seamless ML pipeline integration.</p>
+            <img src="/assets/diagram.jpg" alt="System architecture diagram showing multi-layer security" loading="lazy" onerror="this.alt='Diagram unavailable'; this.src='/assets/fallback.jpg';">
           </div>
         </div>
         <div class="card-grid">
@@ -388,19 +401,25 @@
             </nav>
             <div class="tab-content active" id="entropy-tab">
               <div class="canvas-container">
-                <canvas id="entropy-chart" aria-label="Bar chart showing threat detection latency"></canvas>
+                <canvas id="entropy-chart" role="img" aria-label="Bar chart showing threat detection latency">
+                  <p>Threat detection latency statistics: 95% of requests processed under 1ms</p>
+                </canvas>
                 <div class="canvas-fallback" hidden>Entropy chart unavailable. Contact support.</div>
               </div>
             </div>
             <div class="tab-content" id="activity-tab">
               <div class="canvas-container">
-                <canvas id="activity-chart" aria-label="Line chart showing revenue projections"></canvas>
+                <canvas id="activity-chart" role="img" aria-label="Line chart showing revenue projections">
+                  <p>Revenue projections: $5M in 2025, $30M in 2027, $100M in 2029</p>
+                </canvas>
                 <div class="canvas-fallback" hidden>Revenue chart unavailable. Contact support.</div>
               </div>
             </div>
             <div class="tab-content" id="ethics-tab">
               <div class="canvas-container">
-                <canvas id="ethics-chart" aria-label="Pie chart showing compliance coverage"></canvas>
+                <canvas id="ethics-chart" role="img" aria-label="Pie chart showing compliance coverage">
+                  <p>Compliance coverage: 100% for GDPR, SOC2, HIPAA</p>
+                </canvas>
                 <div class="canvas-fallback" hidden>Compliance chart unavailable. Contact support.</div>
               </div>
             </div>
@@ -704,7 +723,7 @@
           <div class="cryo-border"></div>
           <div class="content">
             <p>Join Elvira Genesis-Elvira to transform cybersecurity. Contact us for investment and partnership opportunities.</p>
-            <p><strong>Email:</strong> <a href="mailto:ceo@aurora-core.net">ceo@aurora-core.net</a></p>
+            <p><strong>Email:</strong> <a href="mailto:ceo@aurora-core.net" itemprop="email">ceo@aurora-core.net</a></p>
             <p><strong>Website:</strong> <a href="https://elvira-core.net">elvira-core.net</a></p>
           </div>
         </div>
@@ -719,11 +738,11 @@
     <p>Compliance: <span id="compliance">100%</span></p>
     <button class="cyber-button snapshot-button">Snapshot</button>
   </aside>
-  <footer role="contentinfo">
+  <footer role="contentinfo" itemscope itemtype="https://schema.org/Organization">
     <div class="container">
-      <p>© 2025 Elvira Genesis-Elvira</p>
-      <img src="https://data.jsdelivr.com/v1/package/npm/three/badge" alt="jsDelivr hits" crossorigin="anonymous">
-      <p><a href="mailto:ceo@aurora-core.net">Contact Us</a> | GDPR, SOC2, HIPAA Compliant</p>
+      <p itemprop="name">© 2025 Elvira Genesis-Elvira</p>
+      <img src="https://data.jsdelivr.com/v1/package/npm/three/badge" alt="jsDelivr hits" crossorigin="anonymous" loading="lazy">
+      <p><a href="mailto:ceo@aurora-core.net" itemprop="email">Contact Us</a> | GDPR, SOC2, HIPAA Compliant</p>
     </div>
   </footer>
   <div id="consent-popup" class="hidden">
@@ -739,7 +758,15 @@
   <noscript>
     <p>This site requires JavaScript and WebGL for optimal functionality. Please enable JavaScript in your browser settings.</p>
   </noscript>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" nonce="nexus2025"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" nonce="nexus2025" defer></script>
   <script type="module" src="/nexus.js" nonce="nexus2025"></script>
+  <script nonce="nexus2025">
+    // Keyboard navigation support
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'A' && e.key === 'Enter') {
+        e.target.click();
+      }
+    });
+  </script>
 </body>
 </html>
