@@ -22,7 +22,7 @@ const loadModule = async (url, retries = 3) => {
   }
 };
 
-// Загрузи външни модули
+// Load external modules
 const modules = await Promise.allSettled([
   loadModule('/theme-toggle.js').then(m => ({ initThemeToggle: m.initThemeToggle })),
   loadModule('/llm.js').then(m => ({ initLLM: m.initLLM })),
@@ -46,18 +46,10 @@ const modules = await Promise.allSettled([
 });
 
 // ——————————————————————————————————————————————————————————————
-// DOM helpers, media queries и състояние
+// DOM helpers, media queries, and state
 // ——————————————————————————————————————————————————————————————
-const $ = s => {
-  const el = document.querySelector(s);
-  if (!el) console.warn(`Element not found: ${s}`);
-  return el;
-};
-const $$ = s => {
-  const els = Array.from(document.querySelectorAll(s));
-  if (!els.length) console.warn(`No elements found: ${s}`);
-  return els;
-};
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
 const prefersRM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isMobile = window.innerWidth <= 768;
 let DPR = Math.min(devicePixelRatio, isMobile ? 1.5 : 2);
@@ -68,8 +60,21 @@ const state = {
   cleanup: new Set(),
 };
 
+// WebGL Support Check
+const webglSupported = (() => {
+  try {
+    const canvas = document.createElement('canvas');
+    const supported = !!(canvas.getContext('webgl2') || canvas.getContext('webgl'));
+    console.debug(`WebGL supported: ${supported}`);
+    return supported;
+  } catch {
+    console.warn('WebGL check failed');
+    return false;
+  }
+})();
+
 // ——————————————————————————————————————————————————————————————
-// Adaptive Resolution Scaling функция
+// Adaptive Resolution Scaling function
 // ——————————————————————————————————————————————————————————————
 function adaptResolution(renderer, composer, camera) {
   let lastFPS = 60, frames = 0, lastTime = performance.now();
@@ -92,22 +97,7 @@ function adaptResolution(renderer, composer, camera) {
 }
 
 // ——————————————————————————————————————————————————————————————
-// WebGL Support Check
-// ——————————————————————————————————————————————————————————————
-const webglSupported = (() => {
-  try {
-    const canvas = document.createElement('canvas');
-    const supported = !!(canvas.getContext('webgl2') || canvas.getContext('webgl'));
-    console.debug(`WebGL supported: ${supported}`);
-    return supported;
-  } catch {
-    console.warn('WebGL check failed');
-    return false;
-  }
-})();
-
-// ——————————————————————————————————————————————————————————————
-// initNeuralBackground – пълна версия
+// initNeuralBackground – Full version
 // ——————————————————————————————————————————————————————————————
 async function initNeuralBackground() {
   const host = $('#neural-bg');
@@ -122,17 +112,17 @@ async function initNeuralBackground() {
     const N = Math.max(100, Math.min(600, Math.floor(area / 50_000)));
     const canvas = Object.assign(document.createElement('canvas'), {
       id: 'neural-bg-fallback',
-      'aria-label': 'Fallback neural network',
+      'aria-label': 'Fallback neural network'
     });
     host.appendChild(canvas);
-    const ctx = canvas.getContext('2d', { alpha: true });
+    const ctx = canvas.getContext('2d');
     const nodes = Array.from({ length: N }, () => ({
       x: Math.random() * innerWidth,
       y: Math.random() * innerHeight,
       vx: (Math.random() - 0.5) * 1.0,
       vy: (Math.random() - 0.5) * 1.0,
       pulse: Math.random() * 2 * Math.PI,
-      size: 4 + Math.random() * 4,
+      size: 4 + Math.random() * 4
     }));
     const edges = Array.from({ length: N * 2 }, () => {
       let s = Math.floor(Math.random() * N), t;
@@ -140,7 +130,7 @@ async function initNeuralBackground() {
       return { s, t, pulse: Math.random() * 2 * Math.PI };
     });
 
-    function draw(t) {
+    function draw() {
       canvas.width = innerWidth * devicePixelRatio;
       canvas.height = innerHeight * devicePixelRatio;
       canvas.style.width = `${innerWidth}px`;
@@ -151,11 +141,9 @@ async function initNeuralBackground() {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.globalAlpha = 1;
 
-      // Градиент фон
       const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
       grad.addColorStop(0, 'rgba(124,212,252,0.2)');
-      grad.addColorStop(0.5, 'rgba(107,226,235,0.2)');
-      grad.addColorStop(1, 'rgba(179,157,219,0.2)'); // Pastel purple accent
+      grad.addColorStop(1, 'rgba(107,226,235,0.2)');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -192,11 +180,11 @@ async function initNeuralBackground() {
 
     const onRes = () => {
       if (state.animationFrameId) cancelAnimationFrame(state.animationFrameId);
-      draw(0);
+      draw();
     };
     window.addEventListener('resize', onRes);
     state.cleanup.add(() => window.removeEventListener('resize', onRes));
-    draw(0);
+    draw();
   };
 
   if (!webglSupported || prefersRM) {
@@ -213,19 +201,16 @@ async function initNeuralBackground() {
       { RenderPass },
       { UnrealBloomPass },
       { SSAOPass },
-      { MotionBlurPass },
-      { ToneMappingPass }
+      { BokehPass }
     ] = await Promise.all([
       import('https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js'),
       import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/EffectComposer.js'),
       import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/RenderPass.js'),
       import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/UnrealBloomPass.js'),
       import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/SSAOPass.js'),
-      import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/MotionBlurPass.js'),
-      import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/ToneMappingPass.js'),
+      import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/BokehPass.js')
     ]);
 
-    // Renderer & Scene
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setPixelRatio(DPR);
     renderer.setSize(innerWidth, innerHeight);
@@ -237,25 +222,18 @@ async function initNeuralBackground() {
     const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 1000);
     camera.position.z = 35;
 
-    // Lights
     scene.add(new THREE.AmbientLight(0x404040, 0.8));
     const pl = new THREE.PointLight(0x6be2eb, 2.5, 40);
     pl.position.set(10, 10, 10); scene.add(pl);
-    const dl = new THREE.DirectionalLight(0xb39ddb, 0.5); // Pastel purple accent
-    dl.position.set(0, 15, 15); scene.add(dl);
 
-    // Composer & Passes
     const composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
     composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 1.0, 0.5, 0.8));
     composer.addPass(new SSAOPass(scene, camera, innerWidth, innerHeight, 1.5, 0.8));
-    composer.addPass(new MotionBlurPass(scene, camera));
-    composer.addPass(new ToneMappingPass(THREE.ACESFilmicToneMapping, 1.0));
+    composer.addPass(new BokehPass(scene, camera, { focus: 35, aperture: 0.025, maxblur: 1.5 }));
 
-    // Adaptive scaling
     adaptResolution(renderer, composer, camera);
 
-    // Create nodes & edges
     const NODE_COUNT = isMobile ? 300 : 600;
     const clusters = 6;
     const nodes = Array.from({ length: NODE_COUNT }, () => ({
@@ -264,7 +242,7 @@ async function initNeuralBackground() {
       cluster: Math.floor(Math.random() * clusters),
       pulse: Math.random() * 2 * Math.PI,
       rotation: Math.random() * 2 * Math.PI,
-      size: 6 + Math.random() * 4,
+      size: 6 + Math.random() * 4
     }));
     const edges = Array.from({ length: NODE_COUNT * 2 }, () => {
       let s = Math.floor(Math.random() * NODE_COUNT), t;
@@ -272,7 +250,6 @@ async function initNeuralBackground() {
       return { s, t, pulse: Math.random() * 2 * Math.PI };
     });
 
-    // BufferGeometry & Shaders for nodes
     const posArr = new Float32Array(NODE_COUNT * 3);
     const pulseArr = new Float32Array(NODE_COUNT);
     const rotArr = new Float32Array(NODE_COUNT);
@@ -303,18 +280,17 @@ async function initNeuralBackground() {
         void main(){
           vec2 uv = gl_PointCoord - 0.5;
           float d = length(uv);
-          if(d > 0.5) discard;
+          if (d > 0.5) discard;
           float a = smoothstep(0.5, 0.2, d) * (0.8 + 0.4 * sin(vPulse));
           float fade = 1.0 - abs(vPos.z / 15.0);
-          a *= (0.9 + 0.1 * rand(gl_PointCoord + vPos.xy)); // Blue noise
-          gl_FragColor = vec4(0.42, 0.89, 0.92, a * fade); // #6be2eb
+          a *= (0.9 + 0.1 * rand(gl_PointCoord + vPos.xy));
+          gl_FragColor = vec4(0.49, 0.83, 0.99, a * fade);
         }`,
-      transparent: true,
+      transparent: true
     });
     const points = new THREE.Points(nodeGeo, nodeMat);
     scene.add(points);
 
-    // BufferGeometry & Shaders за edges
     const edgeArr = new Float32Array(edges.length * 6);
     const edgePulseArr = new Float32Array(edges.length);
     const edgeGeo = new THREE.BufferGeometry();
@@ -322,7 +298,7 @@ async function initNeuralBackground() {
     edgeGeo.setAttribute('pulse', new THREE.BufferAttribute(edgePulseArr, 1));
 
     const edgeMat = new THREE.ShaderMaterial({
-      vertexShader: `
+      vertexShader Robocop style: `
         attribute float pulse;
         varying float vPulse;
         varying vec3 vPos;
@@ -337,14 +313,13 @@ async function initNeuralBackground() {
         void main(){
           float f = 1.0 - abs(vPos.z / 15.0);
           float alpha = 0.3 + 0.3 * sin(vPulse);
-          gl_FragColor = vec4(0.42, 0.89, 0.92, alpha * f); // #6be2eb
+          gl_FragColor = vec4(0.49, 0.83, 0.99, alpha * f);
         }`,
-      transparent: true,
+      transparent: true
     });
     const lines = new THREE.LineSegments(edgeGeo, edgeMat);
     scene.add(lines);
 
-    // Gradient plane зад всичко
     const gradGeo = new THREE.PlaneGeometry(40, 40);
     const gradMat = new THREE.ShaderMaterial({
       vertexShader: `
@@ -356,28 +331,22 @@ async function initNeuralBackground() {
       fragmentShader: `
         varying vec2 vUv;
         uniform float time;
-        float perlin(vec2 p) {
-          return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
-        }
         void main(){
-          vec2 uv = vUv;
-          vec3 c = mix(vec3(0.94, 0.97, 1.0), vec3(0.42, 0.89, 0.92), uv.y);
-          float noise = perlin(uv * 10.0 + time * 0.001);
+          vec3 c = mix(vec3(0.94, 0.97, 1.0), vec3(0.49, 0.83, 0.99), vUv.y);
+          float noise = fract(sin(dot(vUv * time * 0.001, vec2(12.9898, 78.233))) * 43758.5453);
           c += noise * 0.02;
           gl_FragColor = vec4(c, 0.4);
         }`,
       transparent: true,
-      uniforms: { time: { value: 0 } },
+      uniforms: { time: { value: 0 } }
     });
     const gradMesh = new THREE.Mesh(gradGeo, gradMat);
     gradMesh.position.z = -12;
     scene.add(gradMesh);
 
-    // Основен анимационен loop
     let last = 0;
     function animate(t) {
       if (t - last > 16) {
-        // Обнови буферите
         nodes.forEach((n, i) => {
           posArr.set([n.pos.x, n.pos.y, n.pos.z], i * 3);
           pulseArr[i] = n.pulse;
@@ -397,15 +366,13 @@ async function initNeuralBackground() {
         edgeGeo.attributes.position.needsUpdate = true;
         edgeGeo.attributes.pulse.needsUpdate = true;
 
-        // Движение на възлите с пружинна анимация
         nodes.forEach(n => {
           n.pos.add(n.vel);
-          n.pulse += 0.08; // По-бързо пулсиране
+          n.pulse += 0.08;
           ['x', 'y', 'z'].forEach(ax => {
             const lim = ax === 'z' ? 15 : 30;
             if (Math.abs(n.pos[ax]) > lim) n.vel[ax] *= -1;
           });
-          // Spring attraction
           const center = new THREE.Vector3();
           let cnt = 0;
           nodes.forEach(o => {
@@ -429,7 +396,7 @@ async function initNeuralBackground() {
       }
       if (!prefersRM) state.animationFrameId = requestAnimationFrame(animate);
     }
-    // Резайз
+
     const onResize = () => {
       renderer.setSize(innerWidth, innerHeight);
       composer.setSize(innerWidth, innerHeight);
@@ -438,14 +405,8 @@ async function initNeuralBackground() {
     };
     window.addEventListener('resize', onResize);
     state.cleanup.add(() => window.removeEventListener('resize', onResize));
-    animate(0);
 
-    state.cleanup.add(() => {
-      if (state.animationFrameId) cancelAnimationFrame(state.animationFrameId);
-      renderer.dispose();
-      renderer.forceContextLoss();
-      host.removeChild(renderer.domElement);
-    });
+    animate(0);
   } catch (err) {
     console.error('WebGL failed, fallback2D:', err);
     fallback2D();
@@ -453,20 +414,20 @@ async function initNeuralBackground() {
 }
 
 // ——————————————————————————————————————————————————————————————
-// initHexVisualizer (с пълни CDN импорти)
+// initHexVisualizer
 // ——————————————————————————————————————————————————————————————
 async function initHexVisualizer() {
   const container = $('#hex-visualizer');
   if (!container) return console.warn('Hex container not found');
-  if (!webglSupported || prefersRM) {
-    container.innerHTML = '<p aria-live="polite">WebGL disabled by preference or not supported.</p>';
+  if (prefersRM) {
+    container.innerHTML = '<p>WebGL disabled by preference.</p>';
     return;
   }
   try {
     console.debug('Loading Three.js & OrbitControls...');
     const [{ default: THREE }, { OrbitControls }] = await Promise.all([
       import('https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js'),
-      import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/controls/OrbitControls.js'),
+      import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/controls/OrbitControls.js')
     ]);
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setPixelRatio(isMobile ? 1.2 : 1.5);
@@ -485,7 +446,7 @@ async function initHexVisualizer() {
     const hexGeo = new THREE.CylinderGeometry(0.5, 0.5, 0.2, 6);
     const hexMat = new THREE.MeshPhongMaterial({
       color: 0x6be2eb, transparent: true, opacity: 0.8,
-      emissive: 0xb39ddb, emissiveIntensity: 0.3,
+      emissive: 0x4f8dfd, emissiveIntensity: 0.3
     });
     const grid = new THREE.Group();
     const size = 8;
@@ -513,22 +474,19 @@ async function initHexVisualizer() {
       renderer.render(scene, camera);
       state.hexFrameId = requestAnimationFrame(animateHex);
     };
+
     const onResize = () => {
       renderer.setSize(container.clientWidth, container.clientHeight);
       camera.aspect = container.clientWidth / container.clientHeight;
       camera.updateProjectionMatrix();
     };
     window.addEventListener('resize', onResize);
-    state.cleanup.add(() => {
-      window.removeEventListener('resize', onResize);
-      if (state.hexFrameId) cancelAnimationFrame(state.hexFrameId);
-      renderer.dispose();
-      container.removeChild(renderer.domElement);
-    });
+    state.cleanup.add(() => window.removeEventListener('resize', onResize));
+
     animateHex(0);
   } catch (err) {
     console.error('Hex visualizer error:', err);
-    container.innerHTML = '<p aria-live="polite">Failed to load hex visualizer.</p>';
+    container.innerHTML = '<p>Failed to load hex visualizer.</p>';
   }
 }
 
@@ -778,31 +736,16 @@ function throttle(fn, ms) {
 }
 
 // ——————————————————————————————————————————————————————————————
-// initEverything и bootstrapping
+// initEverything and bootstrapping
 // ——————————————————————————————————————————————————————————————
 async function initEverything() {
   const loading = $('#loading');
   try {
-    console.debug('DOM loaded, initializing...');
     if (loading) {
-      console.debug('Hiding loading overlay...');
       await new Promise(r => setTimeout(r, 300));
       loading.classList.add('hidden'); loading.style.display = 'none';
-    } else {
-      console.warn('Loading overlay not found');
     }
     if (!$('main')) throw new Error('Main element missing');
-    const cssLink = document.querySelector('link[href="/style.css"]');
-    if (!cssLink) {
-      console.warn('style.css not found, applying fallback styles');
-      const style = document.createElement('style');
-      style.textContent = `
-        body { font-family: sans-serif; background: #f0f8ff; color: #0c0d10; }
-        main { padding: 20px; text-align: center; }
-        .error-message { color: red; padding: 20px; text-align: center; }
-      `;
-      document.head.appendChild(style);
-    }
     await initNeuralBackground();
     modules.initThemeToggle?.();
     initScrollSpy();
@@ -820,11 +763,8 @@ async function initEverything() {
     initTimelineViewer();
     const snapBtn = $('.snapshot-button');
     if (snapBtn) {
-      console.debug('Binding snapshot button...');
       snapBtn.addEventListener('click', exportSnapshot);
       state.cleanup.add(() => snapBtn.removeEventListener('click', exportSnapshot));
-    } else {
-      console.warn('Snapshot button not found');
     }
     const obs = new IntersectionObserver(entries => {
       entries.forEach(e => {
@@ -836,54 +776,29 @@ async function initEverything() {
     }, { threshold: 0.1 });
     $$('section').forEach(s => obs.observe(s));
     state.cleanup.add(() => obs.disconnect());
-    const nexusScript = document.querySelector('script[src="/nexus.js"]');
-    if (nexusScript) {
-      nexusScript.addEventListener('error', () => {
-        console.error('Failed to load /nexus.js');
-        document.body.insertAdjacentHTML('beforeend', '<p class="error-message">Error loading application. Please try again later.</p>');
-      });
-    }
-    console.debug('Initialization completed successfully');
   } catch (err) {
     console.error('Initialization failed:', err);
-    if (loading) {
-      console.log('Hiding loading overlay due to error');
-      loading.classList.add('hidden'); loading.style.display = 'none';
-    }
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message';
-    errorDiv.textContent = 'Failed to load application. Contact support at ceo@aurora-core.net.';
-    document.body.appendChild(errorDiv);
+    const ld = $('#loading');
+    if (ld) { ld.classList.add('hidden'); ld.style.display = 'none'; }
+    document.body.insertAdjacentHTML('beforeend',
+      '<div class="error-message">Failed to load application. Contact support.</div>');
   }
 }
 
-// Boot
 try {
-  console.debug('Checking document readiness...');
-  if (document.readyState === 'loading') {
-    console.debug('Document still loading, binding DOMContentLoaded...');
-    document.addEventListener('DOMContentLoaded', initEverything);
-  } else {
-    console.debug('Document already loaded, running initEverything...');
-    initEverything();
-  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initEverything);
+  else initEverything();
   window.addEventListener('unload', () => {
-    console.debug('Cleaning up on unload...');
-    if (state.animationFrameId) cancelAnimationFrame(state.animationFrameId);
-    if (state.hexFrameId) cancelAnimationFrame(state.hexFrameId);
     state.cleanup.forEach(fn => fn());
+    cancelAnimationFrame(state.animationFrameId);
+    cancelAnimationFrame(state.hexFrameId);
   });
 } catch (err) {
   console.error('Fatal init error:', err);
-  const loading = $('#loading');
-  if (loading) {
-    console.log('Hiding loading overlay due to fatal error');
-    loading.classList.add('hidden'); loading.style.display = 'none';
-  }
-  const errorDiv = document.createElement('div');
-  errorDiv.className = 'error-message';
-  errorDiv.textContent = 'Fatal initialization error. Contact support at ceo@aurora-core.net.';
-  document.body.appendChild(errorDiv);
+  const ld = $('#loading');
+  if (ld) { ld.classList.add('hidden'); ld.style.display = 'none'; }
+  document.body.insertAdjacentHTML('beforeend',
+    '<div class="error-message">Fatal initialization error.</div>');
 }
 
 console.log('nexus.js v2.1 loaded');
