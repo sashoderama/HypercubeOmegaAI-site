@@ -1,24 +1,22 @@
-/* theme-toggle.js */
+/* theme-toggle.js – Theme Toggle for Elvira Genesis-Elvira */
 export function initThemeToggle() {
-  console.debug('Initializing theme toggle...');
-  const toggle = document.querySelector('.theme-toggle');
-  if (!toggle) {
-    console.warn('Theme toggle button not found');
+  console.debug('Initializing theme toggle module...');
+  const toggleBtn = document.querySelector('.theme-toggle');
+  if (!toggleBtn) {
+    console.warn('Theme toggle button missing');
     return;
   }
 
-  const setTheme = theme => {
-    document.body.dataset.theme = theme;
-    localStorage.setItem('theme', theme);
-    console.debug(`Theme set to: ${theme}`);
-  };
-
-  toggle.addEventListener('click', () => {
-    console.debug('Theme toggle clicked');
-    const currentTheme = document.body.dataset.theme || 'frost';
-    setTheme(currentTheme === 'frost' ? 'light' : 'frost');
+  toggleBtn.addEventListener('click', () => {
+    console.debug('Toggling theme');
+    document.body.dataset.theme = document.body.dataset.theme === 'high-contrast' ? 'frost' : 'high-contrast';
   });
 
-  const savedTheme = localStorage.getItem('theme') || 'frost';
-  setTheme(savedTheme);
+  const cleanup = () => {
+    console.debug('Cleaning up theme toggle');
+    toggleBtn.removeEventListener('click', toggleBtn.onclick);
+  };
+
+  window.addEventListener('beforeunload', cleanup);
+  window.addEventListener('pagehide', cleanup);
 }
