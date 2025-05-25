@@ -62,7 +62,7 @@ class ModuleLogger {
   }
 }
 
-const moduleLogger = new ModuleLogger(); // Optional: 'ws://localhost:3030'
+const moduleLogger = new ModuleLogger();
 
 // Module Loader with Circuit Breaker
 class ModuleLoader {
@@ -291,7 +291,7 @@ class WebGLManager {
 // Performance Manager
 class PerformanceManager {
   static TARGET_FPS = 60;
-  static LOG_INTERVAL = 5000; // Throttle FPS logging
+  static LOG_INTERVAL = 5000;
   static _instance = null;
 
   constructor() {
@@ -389,17 +389,13 @@ class NeuralBackground {
         { EffectComposer },
         { RenderPass },
         { UnrealBloomPass },
-        { SSAOPass },
-        { MotionBlurPass },
-        { ToneMappingPass }
+        { SSAOPass }
       ] = await Promise.all([
         import('three'),
         import('three/examples/jsm/postprocessing/EffectComposer.js'),
         import('three/examples/jsm/postprocessing/RenderPass.js'),
         import('three/examples/jsm/postprocessing/UnrealBloomPass.js'),
-        import('three/examples/jsm/postprocessing/SSAOPass.js'),
-        import('three/examples/jsm/postprocessing/MotionBlurPass.js'),
-        import('three/examples/jsm/postprocessing/ToneMappingPass.js'),
+        import('three/examples/jsm/postprocessing/SSAOPass.js')
       ]);
 
       this._renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
@@ -408,7 +404,7 @@ class NeuralBackground {
       }
       this._renderer.setPixelRatio(this._DPR);
       this._renderer.setSize(innerWidth, innerHeight);
-      this._renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      this._renderer.toneMapping = THREE.ACESFilmicToneMapping; // Native tone mapping
       this._renderer.toneMappingExposure = 1.0;
       this._container.appendChild(this._renderer.domElement);
 
@@ -426,8 +422,6 @@ class NeuralBackground {
       this._composer.addPass(new RenderPass(this._scene, this._camera));
       this._composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 1.0, 0.5, 0.8));
       this._composer.addPass(new SSAOPass(this._scene, this._camera, innerWidth, innerHeight, 1.5, 0.8));
-      this._composer.addPass(new MotionBlurPass(this._scene, this._camera));
-      this._composer.addPass(new ToneMappingPass(THREE.ACESFilmicToneMapping, 1.0));
 
       this._initParticles();
       this._initEdges();
@@ -596,7 +590,6 @@ class NeuralBackground {
       transparent: true,
     });
 
-    // Validate shader compilation
     if (!nodeMat.program) {
       const err = new Error('Shader compilation failed');
       ModuleLoader.log('Particle shader compilation failed:', err);
@@ -647,7 +640,6 @@ class NeuralBackground {
       transparent: true,
     });
 
-    // Validate shader compilation
     if (!edgeMat.program) {
       const err = new Error('Edge shader compilation failed');
       ModuleLoader.log('Edge shader compilation failed:', err);
@@ -689,7 +681,6 @@ class NeuralBackground {
       uniforms: { time: { value: 0 } },
     });
 
-    // Validate shader compilation
     if (!gradMat.program) {
       const err = new Error('Gradient plane shader compilation failed');
       ModuleLoader.log('Gradient plane shader compilation failed:', err);
