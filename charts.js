@@ -1,5 +1,5 @@
 /* charts.js */
-export function initCharts() {
+export function initCharts(state) {
   console.debug('Initializing charts module...');
   if (window.__charts__) {
     console.debug('Charts already initialized, skipping');
