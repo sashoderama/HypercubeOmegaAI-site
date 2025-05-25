@@ -20,11 +20,12 @@ class ModuleLoader {
     const timeoutId = setTimeout(() => controller.abort(), this.TIMEOUT);
 
     try {
-      const module = await Promise.race([
-        import(url, { signal: controller.signal }),
-        new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Module load timeout')), this.TIMEOUT)
-      ]);
+    const module = await Promise.race([
+      import(url, { signal: controller.signal }),
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Module load timeout')), this.TIMEOUT))
+    ]);
+
       
       this.circuitStates.set(moduleName, { failures: 0, isOpen: false });
       console.debug(`Successfully loaded module: ${url}`);
