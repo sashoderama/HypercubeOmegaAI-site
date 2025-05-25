@@ -59,7 +59,7 @@ export function initCharts() {
       },
       plugins: {
         legend: { labels: { color: '#0c0d10', font: { family: 'Sora', size: 12 } } },
-        title: { display: true, text: 'Threat Detection Latency', color: '#0c0d10' }
+        title: { display: true, text: 'Threat Detection Latency', color: '#0c0d10', font: { family: 'Sora', size: 16 } }
       },
       responsive: true,
       maintainAspectRatio: false
@@ -97,7 +97,7 @@ export function initCharts() {
       },
       plugins: {
         legend: { labels: { color: '#0c0d10', font: { family: 'Sora', size: 12 } } },
-        title: { display: true, text: 'Revenue Projections', color: '#0c0d10' }
+        title: { display: true, text: 'Revenue Projections', color: '#0c0d10', font: { family: 'Sora', size: 16 } }
       },
       responsive: true,
       maintainAspectRatio: false
@@ -123,7 +123,7 @@ export function initCharts() {
           position: 'bottom',
           labels: { color: '#0c0d10', font: { family: 'Sora', size: 12 } }
         },
-        title: { display: true, text: 'Compliance Coverage', color: '#0c0d10' }
+        title: { display: true, text: 'Compliance Coverage', color: '#0c0d10', font: { family: 'Sora', size: 16 } }
       },
       responsive: true,
       maintainAspectRatio: false
@@ -144,6 +144,6 @@ export function initCharts() {
     entropyChart.destroy();
     activityChart.destroy();
     ethicsChart.destroy();
-    tabButtons.forEach(button => button.removeEventListener('click', button));
+    tabButtons.forEach(button => button.removeEventListener('click', button.onclick));
   });
 }
