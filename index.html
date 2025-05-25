@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0c0d10">
   <meta name="color-scheme" content="dark light">
-  <meta name="description" content="Elvira Genesis-Elvira: AI-Powered Cybersecurity Platform with GPU-accelerated threat detection">
+  <meta name="description" content="Elvira Genesis-Elvira: AI-Powered Cybersecurity Platform">
   <meta name="keywords" content="cybersecurity, AI, GPU, threat detection, Elvira Architect, zero-trust">
   <meta name="robots" content="index,follow">
   <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -14,16 +14,17 @@
   <meta http-equiv="Expires" content="0">
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
-    script-src 'self' 'nonce-nexus2025' https://cdn.jsdelivr.net https://aurora-core.net/cdn-cgi/;
+    script-src 'self' 'nonce-nexus2025' https://cdn.jsdelivr.net;
     style-src 'self' 'nonce-nexus2025' https://fonts.googleapis.com;
     font-src 'self' https://fonts.gstatic.com;
     img-src 'self' data: https:;
     connect-src 'self';
     object-src 'none';
     base-uri 'none';
+    media-src 'self' mediastream;
   ">
   <meta itemprop="name" content="Elvira Genesis-Elvira">
-  <meta itemprop="description" content="AI-Powered Cybersecurity Platform with GPU-accelerated threat detection">
+  <meta itemprop="description" content="AI-Powered Cybersecurity Platform">
   <meta itemprop="applicationCategory" content="Security">
   <meta itemprop="operatingSystem" content="Windows, Linux, macOS">
   <meta property="og:title" content="Elvira Genesis-Elvira - AI Cybersecurity Platform">
@@ -34,7 +35,6 @@
   <title>Elvira Genesis-Elvira</title>
   <link rel="icon" href="data:," type="image/x-icon">
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-  <!-- Import map first to avoid loading error -->
   <script type="importmap" id="importmap" nonce="nexus2025">
     {
       "imports": {
@@ -730,38 +730,37 @@
       </div>
     </section>
   </main>
-  <aside class="telemetry-hud" aria-live="polite">
-    <h3>Telemetry</h3>
-    <p>Latency: <span id="latency">1ms</span></p>
-    <p>Events/Sec: <span id="events">5M</span></p>
-    <p>False Positives: <span id="false-positives">0.1%</span></p>
-    <p>Compliance: <span id="compliance">100%</span></p>
-    <button class="cyber-button snapshot-button">Snapshot</button>
+  <aside class="avatar-hud glass-panel hidden" aria-live="polite">
+    <h3>Elvira Assistant</h3>
+    <button class="cyber-button avatar-toggle">Activate Avatar</button>
+    <div id="avatar-panel" class="hidden">
+      <video id="avatar-video" autoplay playsinline muted></video>
+      <canvas id="avatar-overlay"></canvas>
+    </div>
   </aside>
   <footer role="contentinfo" itemscope itemtype="https://schema.org/Organization">
     <div class="container">
       <p itemprop="name">© 2025 Elvira Genesis-Elvira</p>
-      <img src="https://data.jsdelivr.com/v1/package/npm/three/badge" alt="jsDelivr hits" crossorigin="anonymous" loading="lazy">
+      <img src="https://data.jsdelivr.com/v1/package/npm/three/badge" alt="jsDelivr hits" loading="lazy" crossorigin="anonymous">
       <p><a href="mailto:ceo@aurora-core.net" itemprop="email">Contact Us</a> | GDPR, SOC2, HIPAA Compliant</p>
     </div>
   </footer>
-  <div id="consent-popup" class="hidden">
+  <div id="consent-popup" class="glass-panel hidden">
     <p>We use cookies to enhance your experience. Accept?</p>
     <button class="cyber-button consent-accept">Accept</button>
     <button class="cyber-button consent-decline">Decline</button>
   </div>
-  <div id="dev-panel" class="hidden">
+  <div id="dev-panel" class="glass-panel hidden">
     <h3>Dev Panel</h3>
-    <p>Debug info: Latency, events/sec, compliance metrics.</p>
+    <p>Debug info: Snapshot, theme, navigation state.</p>
   </div>
-  <div id="keyboard-overlay" class="hidden">Ctrl+D: Toggle Dev Panel | Alt+/: High Contrast</div>
+  <div id="keyboard-overlay" class="glass-panel hidden">Ctrl+D: Toggle Dev Panel | Alt+/: High Contrast</div>
   <noscript>
     <p>This site requires JavaScript and WebGL for optimal functionality. Please enable JavaScript in your browser settings.</p>
   </noscript>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" nonce="nexus2025" defer></script>
-  <script type="module" src="/nexus.js" nonce="nexus2025"></script>
+  <script type="module" src="/nexus.js" nonce="nexus2025" defer></script>
   <script nonce="nexus2025">
-    // Keyboard navigation support
     document.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'A' && e.key === 'Enter') {
         e.target.click();
