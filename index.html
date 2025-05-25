@@ -31,13 +31,16 @@
   {
     "imports": {
       "three": "https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js",
-      "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
     }
   }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" nonce="nexus2025"></script>
 </head>
 <body data-theme="frost">
+  <div class="loading-overlay" id="loading">
+    <div class="loader"></div>
+  </div>
   <div class="quantum-field">
     <canvas class="quantum-canvas"></canvas>
   </div>
@@ -735,7 +738,6 @@
     <p>This site requires JavaScript and WebGL for full functionality.</p>
   </noscript>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" nonce="nexus2025"></script>
-  <script type="module" src="/quantum.js" nonce="nexus2025"></script>
   <script type="module" src="/nexus.js" nonce="nexus2025" defer></script>
 </body>
 </html>

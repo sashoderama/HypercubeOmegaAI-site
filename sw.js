@@ -7,7 +7,6 @@ self.addEventListener('install', event => {
         '/index.html',
         '/style.css',
         '/nexus.js',
-        '/quantum.js',
         '/charts.js',
         '/llm.js',
         '/theme-toggle.js',

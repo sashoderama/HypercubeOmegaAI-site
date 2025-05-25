@@ -193,11 +193,11 @@ class NeuralBackground {
         { BokehPass }
       ] = await Promise.all([
         import('three'),
-        import('three/examples/jsm/postprocessing/EffectComposer.js'),
-        import('three/examples/jsm/postprocessing/RenderPass.js'),
-        import('three/examples/jsm/postprocessing/UnrealBloomPass.js'),
-        import('three/examples/jsm/postprocessing/SSAOPass.js'),
-        import('three/examples/jsm/postprocessing/BokehPass.js')
+        import('three/addons/postprocessing/EffectComposer.js'),
+        import('three/addons/postprocessing/RenderPass.js'),
+        import('three/addons/postprocessing/UnrealBloomPass.js'),
+        import('three/addons/postprocessing/SSAOPass.js'),
+        import('three/addons/postprocessing/BokehPass.js')
       ]);
 
       this.#renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
@@ -529,73 +529,6 @@ class NeuralBackground {
   }
 }
 
-// Quantum Engine for Particle System and Parallax
-class QuantumEngine {
-  constructor() {
-    this.initParticleSystem();
-    this.initParallaxPhysics();
-    this.setupTemporalCaching();
-  }
-
-  initParticleSystem() {
-    this.particleCanvas = document.querySelector('.quantum-canvas');
-    if (!this.particleCanvas) return;
-    this.ctx = this.particleCanvas.getContext('2d');
-    this.particles = Array.from({ length: 1000 }, () => ({
-      x: Math.random() * innerWidth,
-      y: Math.random() * innerHeight,
-      vx: (Math.random() - 0.5) * 0.2,
-      vy: (Math.random() - 0.5) * 0.2,
-      size: Math.random() * 3 + 1
-    }));
-    this.animateParticles();
-  }
-
-  animateParticles = () => {
-    this.particleCanvas.width = innerWidth * devicePixelRatio;
-    this.particleCanvas.height = innerHeight * devicePixelRatio;
-    this.particleCanvas.style.width = `${innerWidth}px`;
-    this.particleCanvas.style.height = `${innerHeight}px`;
-    this.ctx.scale(devicePixelRatio, devicePixelRatio);
-
-    this.ctx.clearRect(0, 0, innerWidth, innerHeight);
-    this.particles.forEach(p => {
-      p.x += p.vx;
-      p.y += p.vy;
-      if (p.x < 0 || p.x > innerWidth) p.vx *= -1;
-      if (p.y < 0 || p.y > innerHeight) p.vy *= -1;
-      this.ctx.beginPath();
-      this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      this.ctx.fillStyle = `rgba(107, 226, 235, ${0.2 * p.size})`;
-      this.ctx.fill();
-    });
-    appState.trackAnimation('quantum-particles', this.animateParticles);
-  }
-
-  initParallaxPhysics() {
-    document.querySelectorAll('[data-parallax]').forEach(el => {
-      el.addEventListener('mousemove', (e) => {
-        const rect = el.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width;
-        const y = (e.clientY - rect.top) / rect.height;
-        el.style.setProperty('--x', `${x * 100}%`);
-        el.style.setProperty('--y', `${y * 100}%`);
-      });
-    });
-  }
-
-  setupTemporalCaching() {
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js', {
-        scope: '/',
-        type: 'module',
-        updateViaCache: 'none'
-      }).then(reg => console.debug('Service Worker registered'))
-        .catch(err => console.warn('Service Worker registration failed:', err));
-    }
-  }
-}
-
 // Auth Flow for Intro and Terms
 class AuthFlow {
   constructor() {
@@ -606,7 +539,9 @@ class AuthFlow {
   initLoader() {
     window.addEventListener('load', () => {
       const loader = document.getElementById('quantum-loader');
+      const loadingOverlay = document.getElementById('loading');
       if (loader) loader.remove();
+      if (loadingOverlay) loadingOverlay.remove();
     });
   }
 
@@ -720,7 +655,7 @@ async function initElviraAvatar() {
     }
   };
 
-  toggleBtn.addEventListener('click', async () => {
+  const handleToggleAvatar = async () => {
     console.debug('Toggling Elvira Avatar');
     if (panel.classList.contains('hidden')) {
       try {
@@ -745,13 +680,15 @@ async function initElviraAvatar() {
       toggleBtn.textContent = 'Activate Avatar';
       appState.cancelAnimation('avatar-overlay');
     }
-  });
+  };
+
+  toggleBtn.addEventListener('click', handleToggleAvatar);
 
   appState.addCleanup(() => {
     if (stream) {
       stream.getTracks().forEach(track => track.stop());
     }
-    toggleBtn.removeEventListener('click', toggleBtn.onclick);
+    toggleBtn.removeEventListener('click', handleToggleAvatar);
   });
 }
 
@@ -769,7 +706,7 @@ async function initHexVisualizer() {
   try {
     const [{ default: THREE }, { OrbitControls }] = await Promise.all([
       import('three'),
-      import('three/examples/jsm/controls/OrbitControls.js')
+      import('three/addons/controls/OrbitControls.js')
     ]);
 
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
@@ -1056,14 +993,16 @@ async function initApplication() {
     const modules = await initCoreModules();
     const neuralBg = new NeuralBackground(document.getElementById('neural-bg'));
     await neuralBg.init();
-    new QuantumEngine();
     new AuthFlow();
     await initElviraAvatar();
     await initHexVisualizer();
     initTimelineViewer();
 
     if (modules.initThemeToggle) modules.initThemeToggle();
-    if (modules.initCharts) modules.initCharts();
+    if (modules.initCharts) {
+      const chartsState = modules.initCharts();
+      appState.addCleanup(chartsState.cleanup);
+    }
     if (modules.initLLM) {
       const orig = modules.initLLM;
       modules.initLLM = async (...a) => { appState.llmCallCount++; return orig(...a); };
@@ -1097,3 +1036,6 @@ window.addEventListener('beforeunload', () => {
 });
 
 console.log('Aurora Core v3.1 initialized');
+</xaiArtifact>
+
+#### 4. charts.js

@@ -176,6 +176,15 @@ h2 {
   100% { transform: rotate(360deg) scale(0.9); opacity: 0.8; }
 }
 
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--stark);
+  z-index: 10002;
+}
+
 .quantum-field {
   position: fixed;
   inset: 0;

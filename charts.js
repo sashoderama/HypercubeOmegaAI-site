@@ -1,9 +1,22 @@
 /* charts.js – Enhanced GPU-friendly analytics for Elvira Genesis-Elvira (v1.4) */
 export function initCharts() {
+  const state = {
+    cleanup: () => {
+      console.debug('Cleaning up charts...');
+      clearInterval(state.interval);
+      if (entropyChart) entropyChart.destroy();
+      if (activityChart) activityChart.destroy();
+      if (ethicsChart) ethicsChart.destroy();
+      tabButtons.forEach(button => button.removeEventListener('click', handleTabClick));
+      window.__charts__ = false;
+    },
+    interval: null
+  };
+
   console.debug('Initializing charts module...');
   if (window.__charts__) {
     console.debug('Charts already initialized, skipping');
-    return;
+    return state;
   }
   window.__charts__ = true;
 
@@ -12,7 +25,7 @@ export function initCharts() {
         pC = document.querySelector('#ethics-chart');
   if (!eC || !aC || !pC) {
     console.warn('Chart canvases missing');
-    return;
+    return state;
   }
 
   const tabButtons = document.querySelectorAll('.tab-button');
@@ -43,7 +56,7 @@ export function initCharts() {
     return g;
   };
 
-  const entropyChart = new Chart(eC, {
+  let entropyChart = new Chart(eC, {
     type: 'bar',
     data: {
       labels: ['XSS', 'SQL Injection', 'DDoS', 'Zero-Day', 'Phishing'],
@@ -83,7 +96,7 @@ export function initCharts() {
     }
   });
 
-  const activityChart = new Chart(aC, {
+  let activityChart = new Chart(aC, {
     type: 'line',
     data: {
       labels: ['2025', '2027', '2029'],
@@ -123,7 +136,7 @@ export function initCharts() {
     }
   });
 
-  const ethicsChart = new Chart(pC, {
+  let ethicsChart = new Chart(pC, {
     type: 'pie',
     data: {
       labels: ['GDPR', 'SOC2', 'HIPAA', 'FIPS 140-3'],
@@ -149,7 +162,7 @@ export function initCharts() {
     }
   });
 
-  const interval = setInterval(() => {
+  state.interval = setInterval(() => {
     console.debug('Updating chart data...');
     entropyChart.data.datasets[0].data = entropyChart.data.datasets[0].data.map(v =>
       Math.max(0.8, Math.min(1.0, v + (Math.random() - 0.5) * 0.1)));
@@ -158,16 +171,5 @@ export function initCharts() {
     ethicsChart.update();
   }, 5000);
 
-  const cleanup = () => {
-    console.debug('Cleaning up charts...');
-    clearInterval(interval);
-    entropyChart.destroy();
-    activityChart.destroy();
-    ethicsChart.destroy();
-    tabButtons.forEach(button => button.removeEventListener('click', handleTabClick));
-    window.__charts__ = false;
-  };
-
-  window.addEventListener('beforeunload', cleanup);
-  window.addEventListener('pagehide', cleanup);
+  return state;
 }
