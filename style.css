@@ -7,24 +7,10 @@
   box-sizing: border-box;
 }
 
-/* Root Variables (Dark Theme Fallback) */
+/* Root Variables */
 :root {
   --bg: #0c0d10;
   --fg: #e0e3f4;
-  --accent: #4f8dfd;
-  --secondary: #adb9cc;
-  --glow: #8fa9ff;
-  --blur: rgba(255, 255, 255, 0.04);
-  --glass-bg: rgba(255, 255, 255, 0.02);
-  --glass-border: rgba(255, 255, 255, 0.06);
-  --radius: 12px;
-  --shadow-elevate: 0 10px 30px rgba(0, 0, 0, 0.4);
-}
-
-/* Frost Theme (Default) */
-:root[data-theme="frost"] {
-  --bg: rgba(240, 248, 255, 0.98);
-  --fg: #0c0d10;
   --accent: #7cd4fc;
   --secondary: #a8c6e5;
   --glow: rgba(124, 212, 252, 0.2);
@@ -35,17 +21,21 @@
   --shadow-elevate: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
+/* Frost Theme (Default) */
+:root[data-theme="frost"] {
+  --bg: rgba(240, 248, 255, 0.98);
+  --fg: #0c0d10;
+  --accent: #7cd4fc;
+  --secondary: #a8c6e5;
+}
+
 /* Light Theme */
-@media (prefers-color-scheme: light), (prefers-color-scheme: no-preference) {
+@media (prefers-color-scheme: light) {
   :root[data-theme="light"] {
     --bg: #e0e3f4;
     --fg: #0c0d10;
     --accent: #4f8dfd;
     --secondary: #4a5a77;
-    --glow: #4f8dfd;
-    --blur: rgba(12, 13, 16, 0.08);
-    --glass-bg: rgba(0, 0, 0, 0.02);
-    --glass-border: rgba(0, 0, 0, 0.08);
   }
 }
 
@@ -55,10 +45,6 @@
   --fg: #fff;
   --accent: #00f;
   --secondary: #ccc;
-  --glow: #00f;
-  --blur: rgba(255, 255, 255, 0.5);
-  --glass-bg: rgba(255, 255, 255, 0.1);
-  --glass-border: #fff;
 }
 
 /* HTML and Body */
@@ -73,8 +59,6 @@ body {
   color: var(--fg);
   line-height: 1.6;
   overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
 }
 
 /* Neural Background */
@@ -100,7 +84,6 @@ header {
   width: 100%;
   background: var(--glass-bg);
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--glass-border);
   z-index: 1000;
   padding: 0.75rem 0;
@@ -114,7 +97,7 @@ header .container {
   padding: 0 1rem;
 }
 h1 {
-  font: 700 1.8rem 'Sora', sans-serif;
+  font: 700 1.8rem 'Sora';
 }
 .nav-links {
   display: flex;
@@ -126,8 +109,8 @@ h1 {
   text-decoration: none;
   font-weight: 600;
   font-size: 0.95rem;
-  transition: color 0.3s;
   padding: 0.5rem;
+  transition: color 0.3s;
 }
 .nav-links a:hover, .nav-links a.active {
   color: var(--accent);
@@ -140,7 +123,7 @@ h1 {
   color: var(--fg);
   font-size: 1.3rem;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s;
 }
 .theme-toggle:hover {
   transform: scale(1.1);
@@ -174,14 +157,14 @@ section.visible {
   transform: translateY(0);
 }
 h2 {
-  font: 700 2.2rem 'Sora', sans-serif;
+  font: 700 2.2rem 'Sora';
   margin-bottom: 1.5rem;
   text-align: center;
   grid-column: 1 / -1;
   text-shadow: 0 0 10px var(--glow);
 }
 h3 {
-  font: 600 1.2rem 'Sora', sans-serif;
+  font: 600 1.2rem 'Sora';
   margin-bottom: 0.5rem;
 }
 p {
@@ -217,16 +200,8 @@ ul li::before {
   border-radius: var(--radius);
   padding: 1.5rem;
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   box-shadow: var(--shadow-elevate);
   grid-column: 1 / -1;
-  transition: opacity 0.3s;
-}
-.card.hidden {
-  opacity: 0;
-}
-.card.visible {
-  opacity: 1;
 }
 .card-grid {
   display: grid;
@@ -264,9 +239,9 @@ td {
   color: var(--fg);
   padding: 0.8rem 1.5rem;
   border-radius: 8px;
-  font: 600 0.95rem 'Sora', sans-serif;
+  font: 600 0.95rem 'Sora';
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s;
   position: relative;
   overflow: hidden;
   backdrop-filter: blur(8px);
@@ -287,7 +262,7 @@ td {
   width: 100%;
   height: 100%;
   background: linear-gradient(90deg, transparent, var(--glow), transparent);
-  transition: left 0.5s ease;
+  transition: left 0.5s;
 }
 .cyber-button:hover::before, .cyber-button:focus::before {
   left: 100%;
@@ -326,9 +301,9 @@ td {
   color: var(--fg);
   padding: 0.9rem 1.8rem;
   border-radius: 10px;
-  font: 600 1rem 'Sora', sans-serif;
+  font: 600 1rem 'Sora';
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s;
 }
 .tab-button:hover, .tab-button.active, .tab-button:focus {
   border-color: var(--accent);
@@ -441,7 +416,7 @@ td {
   box-shadow: -6px -6px 25px rgba(0, 0, 0, 0.3);
 }
 .telemetry-hud h3 {
-  font: 600 1.1rem 'Sora', sans-serif;
+  font: 600 1.1rem 'Sora';
   margin-bottom: 1.2rem;
 }
 .telemetry-hud p {
@@ -478,7 +453,7 @@ footer a:hover {
   text-align: left;
   cursor: pointer;
   color: var(--fg);
-  font: 600 1rem 'Sora', sans-serif;
+  font: 600 1rem 'Sora';
   transition: background 0.3s;
 }
 .accordion-header:hover, .accordion-header:focus {
@@ -491,7 +466,7 @@ footer a:hover {
   display: none;
   padding: 1.2rem;
 }
-.accordion-item[aria-expanded="true"] .accordion-content {
+.accordion-content.active {
   display: block;
 }
 
@@ -505,7 +480,7 @@ footer a:hover {
   justify-content: center;
   z-index: 10000;
   opacity: 1;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.5s;
 }
 .loading-overlay.hidden {
   opacity: 0;
@@ -550,7 +525,7 @@ footer a:hover {
   background: var(--glass-bg);
   border-left: 1px solid var(--glass-border);
   padding: 1.2rem;
-  transition: right 0.3s ease;
+  transition: right 0.3s;
 }
 #dev-panel.active {
   right: 0;
@@ -651,9 +626,8 @@ footer a:hover {
   .card { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25); }
 }
 @media (prefers-reduced-motion: reduce), (max-device-width: 768px) {
-  .glass-panel, .card, .cyber-button {
+  .card, .cyber-button {
     backdrop-filter: none;
-    background: var(--glass-bg);
   }
   .neuro-universe::after {
     display: none;
