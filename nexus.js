@@ -1,54 +1,66 @@
-
-
-/* nexus.js – Unified Entry Point for Elvira Genesis-Elvira (v3.1) */
+/* nexus.js - Enhanced Core v3.1 */
 'use strict';
 
+// -------------------------------
+// Module Loader with Circuit Breaker
+// -------------------------------
 class ModuleLoader {
   static RETRY_LIMIT = 3;
   static RETRY_DELAY = 1000;
   static TIMEOUT = 5000;
+  static circuitStates = new Map();
 
   static async load(url, moduleName) {
-    const TIMEOUT = this.TIMEOUT ?? 5000;
-    const timeoutId = setTimeout(() => {
-      console.warn(`⏱ Timeout triggered for ${url}`);
-    }, TIMEOUT);
+    if (this.circuitStates.get(moduleName)?.isOpen) {
+      console.warn(`Circuit open for ${moduleName}, skipping load`);
+      return null;
+    }
 
-    for (let i = 0; i < this.RETRY_LIMIT; i++) {
-      try {
-        console.debug(`Attempting to load module: ${url}, attempt ${i + 1}`);
-        const module = await Promise.race([
-          import(url), // ✅ FIXED: removed second argument
-          new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Module load timeout')), TIMEOUT)
-          )
-        ]);
-        clearTimeout(timeoutId);
-        console.debug(`✅ Successfully loaded module: ${url}`);
-        return module;
-      } catch (err) {
-        console.warn(`⚠️ Module "${moduleName}" failed (${url}), attempt ${i + 1}: ${err.message}`);
-        if (i === this.RETRY_LIMIT - 1) {
-          console.error(`❌ Exhausted retries for "${moduleName}"`);
-          return null;
-        }
-        await new Promise(r => setTimeout(r, this.RETRY_DELAY * (i + 1)));
-      } finally {
-        clearTimeout(timeoutId);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), this.TIMEOUT);
+
+    try {
+      const module = await Promise.race([
+        import(url, { signal: controller.signal }),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Module load timeout')), this.TIMEOUT)
+      ]);
+      
+      this.circuitStates.set(moduleName, { failures: 0, isOpen: false });
+      console.debug(`Successfully loaded module: ${url}`);
+      return module;
+    } catch (err) {
+      console.error(`Module load failed: ${moduleName}`, err);
+      const state = this.circuitStates.get(moduleName) || { failures: 0 };
+      state.failures++;
+      
+      if (state.failures >= this.RETRY_LIMIT) {
+        state.isOpen = true;
+        setTimeout(() => {
+          state.isOpen = false;
+          state.failures = 0;
+        }, 30000);
       }
+      
+      this.circuitStates.set(moduleName, state);
+      throw err;
+    } finally {
+      clearTimeout(timeoutId);
     }
   }
 }
 
-
-
-
-// State Management
+// -------------------------------
+// State Manager with Cleanup
+// -------------------------------
 class AppState {
   constructor() {
     this.llmCallCount = 0;
     this.animations = new Map();
     this.cleanupHandlers = new Set();
+    this.resources = new FinalizationRegistry(url => {
+      console.debug(`Cleaning up resources for ${url}`);
+    });
   }
 
   trackAnimation(id, callback) {
@@ -70,13 +82,16 @@ class AppState {
     this.cleanupHandlers.add(fn);
   }
 
-  cleanup() {
+  async cleanup() {
     this.animations.forEach((_, id) => this.cancelAnimation(id));
     this.cleanupHandlers.forEach(fn => fn());
+    this.resources.unregisterAll();
   }
 }
 
+// -------------------------------
 // WebGL Context Manager
+// -------------------------------
 class WebGLManager {
   static async createContext(container, { alpha = true, antialias = true } = {}) {
     const canvas = document.createElement('canvas');
@@ -90,7 +105,9 @@ class WebGLManager {
     try {
       const gl = canvas.getContext('webgl2', attributes) || 
                  canvas.getContext('webgl', attributes);
+      
       if (!gl) throw new Error('WebGL unavailable');
+      
       container.appendChild(canvas);
       return {
         canvas,
@@ -113,6 +130,7 @@ class WebGLManager {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d', { alpha: true });
     container.appendChild(canvas);
+    
     return {
       canvas,
       ctx,
@@ -126,7 +144,9 @@ class WebGLManager {
   }
 }
 
+// -------------------------------
 // Performance Manager
+// -------------------------------
 class PerformanceManager {
   static TARGET_FPS = 60;
   static #instance;
@@ -145,21 +165,27 @@ class PerformanceManager {
   monitor() {
     const now = performance.now();
     const delta = now - this.lastFrameTime;
+    
     this.frameTimes.push(delta);
     if (this.frameTimes.length > 60) this.frameTimes.shift();
-    const avgDelta = this.frameTimes.reduce((a, b) => a + b, 0) / this.frameTimes.length;
+    
+    const avgDelta = this.frameTimes.reduce((a,b) => a + b, 0) / this.frameTimes.length;
     const currentFPS = 1000 / avgDelta;
+
     if (currentFPS < this.constructor.TARGET_FPS * 0.9) {
       this.qualityLevel = Math.max(0.5, this.qualityLevel - 0.1);
     } else if (currentFPS > this.constructor.TARGET_FPS * 1.1) {
       this.qualityLevel = Math.min(1.0, this.qualityLevel + 0.1);
     }
+
     this.lastFrameTime = now;
     return this.qualityLevel;
   }
 }
 
+// -------------------------------
 // Neural Background
+// -------------------------------
 class NeuralBackground {
   #context;
   #performanceManager = PerformanceManager.getInstance();
@@ -182,6 +208,7 @@ class NeuralBackground {
       console.error('Neural background container not found');
       return;
     }
+
     if (!this.prefersRM) {
       await this.#initWebGL();
     } else {
@@ -198,14 +225,16 @@ class NeuralBackground {
         { RenderPass },
         { UnrealBloomPass },
         { SSAOPass },
-        { BokehPass }
+        { MotionBlurPass },
+        { ToneMappingPass }
       ] = await Promise.all([
         import('three'),
-        import('three/addons/postprocessing/EffectComposer.js'),
-        import('three/addons/postprocessing/RenderPass.js'),
-        import('three/addons/postprocessing/UnrealBloomPass.js'),
-        import('three/addons/postprocessing/SSAOPass.js'),
-        import('three/addons/postprocessing/BokehPass.js')
+        import('three/examples/jsm/postprocessing/EffectComposer.js'),
+        import('three/examples/jsm/postprocessing/RenderPass.js'),
+        import('three/examples/jsm/postprocessing/UnrealBloomPass.js'),
+        import('three/examples/jsm/postprocessing/SSAOPass.js'),
+        import('three/examples/jsm/postprocessing/MotionBlurPass.js'),
+        import('three/examples/jsm/postprocessing/ToneMappingPass.js'),
       ]);
 
       this.#renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
@@ -221,17 +250,16 @@ class NeuralBackground {
 
       this.#scene.add(new THREE.AmbientLight(0x404040, 0.8));
       const pl = new THREE.PointLight(0x6be2eb, 2.5, 40);
-      pl.position.set(10, 10, 10);
-      this.#scene.add(pl);
+      pl.position.set(10, 10, 10); this.#scene.add(pl);
       const dl = new THREE.DirectionalLight(0xb39ddb, 0.5);
-      dl.position.set(0, 15, 15);
-      this.#scene.add(dl);
+      dl.position.set(0, 15, 15); this.#scene.add(dl);
 
       this.#composer = new EffectComposer(this.#renderer);
       this.#composer.addPass(new RenderPass(this.#scene, this.#camera));
       this.#composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 1.0, 0.5, 0.8));
       this.#composer.addPass(new SSAOPass(this.#scene, this.#camera, innerWidth, innerHeight, 1.5, 0.8));
-      this.#composer.addPass(new BokehPass(this.#scene, this.#camera, { focus: 35, aperture: 0.025, maxblur: 1.5 }));
+      this.#composer.addPass(new MotionBlurPass(this.#scene, this.#camera));
+      this.#composer.addPass(new ToneMappingPass(THREE.ACESFilmicToneMapping, 1.0));
 
       this.#initParticles();
       this.#initEdges();
@@ -249,9 +277,7 @@ class NeuralBackground {
       appState.addCleanup(() => {
         this.#renderer.dispose();
         this.#renderer.forceContextLoss();
-        if (this.container.contains(this.#renderer.domElement)) {
-          this.container.removeChild(this.#renderer.domElement);
-        }
+        this.container.removeChild(this.#renderer.domElement);
       });
     } catch (err) {
       console.error('WebGL failed, fallback2D:', err);
@@ -265,7 +291,7 @@ class NeuralBackground {
     const N = Math.max(100, Math.min(600, Math.floor(area / 50_000)));
     const canvas = Object.assign(document.createElement('canvas'), {
       id: 'neural-bg-fallback',
-      'aria-label': 'Fallback neural network'
+      'aria-label': 'Fallback neural network',
     });
     this.container.appendChild(canvas);
     const ctx = canvas.getContext('2d', { alpha: true });
@@ -275,7 +301,7 @@ class NeuralBackground {
       vx: (Math.random() - 0.5) * 1.0,
       vy: (Math.random() - 0.5) * 1.0,
       pulse: Math.random() * 2 * Math.PI,
-      size: 4 + Math.random() * 4
+      size: 4 + Math.random() * 4,
     }));
     this.#edges = Array.from({ length: N * 2 }, () => {
       let s = Math.floor(Math.random() * N), t;
@@ -316,9 +342,7 @@ class NeuralBackground {
       });
 
       this.#particles.forEach(n => {
-        n.x += n.vx;
-        n.y += n.vy;
-        n.pulse += 0.06;
+        n.x += n.vx; n.y += n.vy; n.pulse += 0.06;
         if (n.x < 0 || n.x > innerWidth) n.vx *= -1;
         if (n.y < 0 || n.y > innerHeight) n.vy *= -1;
         ctx.beginPath();
@@ -352,7 +376,7 @@ class NeuralBackground {
       cluster: Math.floor(Math.random() * clusters),
       pulse: Math.random() * 2 * Math.PI,
       rotation: Math.random() * 2 * Math.PI,
-      size: 6 + Math.random() * 4
+      size: 6 + Math.random() * 4,
     }));
 
     const posArr = new Float32Array(NODE_COUNT * 3);
@@ -388,10 +412,10 @@ class NeuralBackground {
           if(d > 0.5) discard;
           float a = smoothstep(0.5, 0.2, d) * (0.8 + 0.4 * sin(vPulse));
           float fade = 1.0 - abs(vPos.z / 15.0);
-          a *= (0.9 + 0.1 * rand(gl_PointCoord + vPos.xy));
+          a *= (0.9 + 0.1 * rand(gl_PointCoord + vPos.xy)); // Blue noise
           gl_FragColor = vec4(0.42, 0.89, 0.92, a * fade); // #6be2eb
         }`,
-      transparent: true
+      transparent: true,
     });
     const points = new THREE.Points(nodeGeo, nodeMat);
     this.#scene.add(points);
@@ -431,7 +455,7 @@ class NeuralBackground {
           float alpha = 0.3 + 0.3 * sin(vPulse);
           gl_FragColor = vec4(0.42, 0.89, 0.92, alpha * f); // #6be2eb
         }`,
-      transparent: true
+      transparent: true,
     });
     const lines = new THREE.LineSegments(edgeGeo, edgeMat);
     this.#scene.add(lines);
@@ -462,7 +486,7 @@ class NeuralBackground {
           gl_FragColor = vec4(c, 0.4);
         }`,
       transparent: true,
-      uniforms: { time: { value: 0 } }
+      uniforms: { time: { value: 0 } },
     });
     const gradMesh = new THREE.Mesh(gradGeo, gradMat);
     gradMesh.position.z = -12;
@@ -505,8 +529,7 @@ class NeuralBackground {
       let cnt = 0;
       this.#particles.forEach(o => {
         if (o.cluster === n.cluster) {
-          center.add(o.pos);
-          cnt++;
+          center.add(o.pos); cnt++;
         }
       });
       if (cnt) {
@@ -537,7 +560,83 @@ class NeuralBackground {
   }
 }
 
+// -------------------------------
+// Quantum Engine for Particle System and Parallax
+// -------------------------------
+class QuantumEngine {
+  constructor() {
+    this.initParticleSystem();
+    this.initParallaxPhysics();
+    this.setupTemporalCaching();
+  }
+
+  initParticleSystem() {
+    this.particleCanvas = document.querySelector('.quantum-canvas');
+    if (!this.particleCanvas) return;
+    this.ctx = this.particleCanvas.getContext('2d');
+    this.particles = Array.from({ length: 1000 }, () => ({
+      x: Math.random() * innerWidth,
+      y: Math.random() * innerHeight,
+      vx: (Math.random() - 0.5) * 0.2,
+      vy: (Math.random() - 0.5) * 0.2,
+      size: Math.random() * 3 + 1
+    }));
+    
+    this.animateParticles();
+  }
+
+  animateParticles = () => {
+    this.particleCanvas.width = innerWidth * devicePixelRatio;
+    this.particleCanvas.height = innerHeight * devicePixelRatio;
+    this.particleCanvas.style.width = `${innerWidth}px`;
+    this.particleCanvas.style.height = `${innerHeight}px`;
+    this.ctx.scale(devicePixelRatio, devicePixelRatio);
+
+    this.ctx.clearRect(0, 0, innerWidth, innerHeight);
+    
+    this.particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0 || p.x > innerWidth) p.vx *= -1;
+      if (p.y < 0 || p.y > innerHeight) p.vy *= -1;
+      
+      this.ctx.beginPath();
+      this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      this.ctx.fillStyle = `rgba(107, 226, 235, ${0.2 * p.size})`;
+      this.ctx.fill();
+    });
+    
+    appState.trackAnimation('quantum-particles', this.animateParticles);
+  }
+
+  initParallaxPhysics() {
+    document.querySelectorAll('[data-parallax]').forEach(el => {
+      el.addEventListener('mousemove', (e) => {
+        const rect = el.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = (e.clientY - rect.top) / rect.height;
+        
+        el.style.setProperty('--x', `${x * 100}%`);
+        el.style.setProperty('--y', `${y * 100}%`);
+      });
+    });
+  }
+
+  setupTemporalCaching() {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js', {
+        scope: '/',
+        type: 'module',
+        updateViaCache: 'none'
+      }).then(reg => console.debug('Service Worker registered'))
+        .catch(err => console.warn('Service Worker registration failed:', err));
+    }
+  }
+}
+
+// -------------------------------
 // Auth Flow for Intro and Terms
+// -------------------------------
 class AuthFlow {
   constructor() {
     this.initLoader();
@@ -547,9 +646,7 @@ class AuthFlow {
   initLoader() {
     window.addEventListener('load', () => {
       const loader = document.getElementById('quantum-loader');
-      const loadingOverlay = document.getElementById('loading');
       if (loader) loader.remove();
-      if (loadingOverlay) loadingOverlay.remove();
     });
   }
 
@@ -557,6 +654,7 @@ class AuthFlow {
     const intro = document.getElementById('intro-sequence');
     if (!intro) return;
     const letters = document.querySelectorAll('.logo-particle');
+    
     letters.forEach((letter, i) => {
       anime({
         targets: letter,
@@ -567,6 +665,7 @@ class AuthFlow {
         easing: 'easeOutExpo'
       });
     });
+
     anime({
       targets: intro,
       opacity: [1, 0],
@@ -584,6 +683,7 @@ class AuthFlow {
     const authFlow = document.getElementById('auth-flow');
     const termsModal = authFlow.querySelector('.terms-modal');
     if (!authFlow || !termsModal) return;
+    
     authFlow.style.display = 'grid';
     anime({
       targets: termsModal,
@@ -592,6 +692,7 @@ class AuthFlow {
       duration: 800,
       easing: 'easeOutBack'
     });
+
     document.querySelector('.accept-terms').addEventListener('click', () => {
       anime({
         targets: authFlow,
@@ -604,7 +705,9 @@ class AuthFlow {
   }
 }
 
+// -------------------------------
 // Core Initialization
+// -------------------------------
 const appState = new AppState();
 
 async function initCoreModules() {
@@ -613,12 +716,14 @@ async function initCoreModules() {
       ModuleLoader.load('/theme-toggle.js', 'theme-toggle').then(m => ({ initThemeToggle: m?.initThemeToggle })),
       ModuleLoader.load('/llm.js', 'llm').then(m => ({ initLLM: m?.initLLM })),
       ModuleLoader.load('/charts.js', 'charts').then(m => ({ initCharts: m?.initCharts })),
+      ModuleLoader.load('/telemetry.js', 'telemetry').then(m => ({ initTelemetry: m?.initTelemetry })),
       ModuleLoader.load('/accordion.js', 'accordion').then(m => ({ initAccordion: m?.initAccordion }))
     ]);
 
     const loadedModules = modules.reduce((acc, result, index) => {
-      const name = ['theme-toggle', 'llm', 'charts', 'accordion'][index];
+      const name = ['theme-toggle', 'llm', 'charts', 'telemetry', 'accordion'][index];
       if (result.status === 'fulfilled' && result.value) {
+        appState.resources.register(result.value, name);
         return { ...acc, ...result.value };
       }
       console.warn(`Module ${name} failed to load`);
@@ -632,329 +737,13 @@ async function initCoreModules() {
   }
 }
 
-// Elvira Avatar
-async function initElviraAvatar() {
-  const toggleBtn = document.querySelector('.avatar-toggle');
-  const panel = document.getElementById('avatar-panel');
-  const video = document.getElementById('avatar-video');
-  const overlay = document.getElementById('avatar-overlay');
-  if (!toggleBtn || !panel || !video || !overlay) {
-    console.warn('Avatar elements missing');
-    return;
-  }
-
-  let stream = null;
-  const ctx = overlay.getContext('2d');
-
-  const drawOverlay = (t) => {
-    overlay.width = video.videoWidth;
-    overlay.height = video.videoHeight;
-    ctx.clearRect(0, 0, overlay.width, overlay.height);
-    ctx.strokeStyle = `rgba(107, 226, 235, ${0.5 + 0.3 * Math.sin(t * 0.002)})`;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(overlay.width / 2, overlay.height / 2, 50, 0, 2 * Math.PI);
-    ctx.stroke();
-    ctx.font = '20px Sora';
-    ctx.fillStyle = '#6be2eb';
-    ctx.fillText('Elvira AI', overlay.width / 2 - 30, overlay.height / 2 + 70);
-    if (!panel.classList.contains('hidden')) {
-      appState.trackAnimation('avatar-overlay', drawOverlay);
-    }
-  };
-
-  const handleToggleAvatar = async () => {
-    console.debug('Toggling Elvira Avatar');
-    if (panel.classList.contains('hidden')) {
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        video.srcObject = stream;
-        video.onloadedmetadata = () => {
-          video.play();
-          drawOverlay(0);
-        };
-        panel.classList.remove('hidden');
-        toggleBtn.textContent = 'Deactivate Avatar';
-      } catch (err) {
-        console.error('Camera access failed:', err);
-        alert('Failed to access camera. Please grant permission.');
-      }
-    } else {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
-        stream = null;
-      }
-      panel.classList.add('hidden');
-      toggleBtn.textContent = 'Activate Avatar';
-      appState.cancelAnimation('avatar-overlay');
-    }
-  };
-
-  toggleBtn.addEventListener('click', handleToggleAvatar);
-
-  appState.addCleanup(() => {
-    if (stream) {
-      stream.getTracks().forEach(track => track.stop());
-    }
-    toggleBtn.removeEventListener('click', handleToggleAvatar);
-  });
-}
-
-// Hex Visualizer
-async function initHexVisualizer() {
-  const container = document.getElementById('hex-visualizer');
-  if (!container) return console.warn('Hex container not found');
-
-  const prefersRM = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersRM) {
-    container.innerHTML = '<p>WebGL disabled by preference.</p>';
-    return;
-  }
-
-  try {
-    const [{ default: THREE }, { OrbitControls }] = await Promise.all([
-      import('three'),
-      import('three/addons/controls/OrbitControls.js')
-    ]);
-
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setPixelRatio(this.isMobile ? 1.2 : 1.5);
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    container.appendChild(renderer.domElement);
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 100);
-    camera.position.set(0, 5, 12);
-    camera.lookAt(0, 0, 0);
-
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.enableZoom = true;
-    controls.minDistance = 5;
-    controls.maxDistance = 20;
-
-    const hexGeo = new THREE.CylinderGeometry(0.5, 0.5, 0.2, 6);
-    const hexMat = new THREE.MeshPhongMaterial({
-      color: 0x6be2eb,
-      transparent: true,
-      opacity: 0.8,
-      emissive: 0x4f8dfd,
-      emissiveIntensity: 0.3
-    });
-    const grid = new THREE.Group();
-    const size = 8;
-    for (let x = -size; x <= size; x++) {
-      for (let y = -size; y <= size; y++) {
-        const hex = new THREE.Mesh(hexGeo, hexMat);
-        hex.position.set(x + (y % 2 ? 0.5 : 0), 0, y * 0.866);
-        grid.add(hex);
-      }
-    }
-    scene.add(grid);
-    const pointLight = new THREE.PointLight(0xffffff, 1.5, 100);
-    pointLight.position.set(5, 5, 5);
-    scene.add(pointLight);
-    scene.add(new THREE.AmbientLight(0x404040, 0.8));
-
-    const animateHex = t => {
-      grid.children.forEach(hex => {
-        const e = Math.sin(t * 0.001 + hex.position.x + hex.position.z) * 0.5 + 0.5;
-        hex.scale.y = 0.2 + e * 1.2;
-        hex.material.opacity = 0.6 + e * 0.4;
-        hex.rotation.y += 0.01 * e;
-      });
-      controls.update();
-      renderer.render(scene, camera);
-      appState.trackAnimation('hex-visualizer', animateHex);
-    };
-
-    const onResize = () => {
-      renderer.setSize(container.clientWidth, container.clientHeight);
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-    };
-    window.addEventListener('resize', onResize);
-    appState.addCleanup(() => {
-      window.removeEventListener('resize', onResize);
-      appState.cancelAnimation('hex-visualizer');
-      renderer.dispose();
-      if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement);
-      }
-    });
-
-    animateHex(0);
-  } catch (err) {
-    console.error('Hex visualizer error:', err);
-    container.innerHTML = '<p>Failed to load hex visualizer.</p>';
-  }
-}
-
-// Timeline Viewer
-function initTimelineViewer() {
-  const container = document.getElementById('timeline-viewer');
-  if (!container) return console.warn('Timeline viewer container not found');
-
-  const canvas = document.createElement('canvas');
-  canvas.setAttribute('aria-label', 'Timeline viewer for attack sequences');
-  canvas.tabIndex = 0;
-  container.appendChild(canvas);
-  const ctx = canvas.getContext('2d');
-
-  const events = [
-    { time: '2025-05-01', label: 'Initial Breach' },
-    { time: '2025-05-02', label: 'Lateral Movement' },
-    { time: '2025-05-03', label: 'Data Exfiltration' },
-    { time: '2025-05-04', label: 'Containment' }
-  ];
-
-  let selectedEvent = null;
-
-  const draw = () => {
-    const w = container.clientWidth * devicePixelRatio,
-          h = container.clientHeight * devicePixelRatio;
-    canvas.width = w;
-    canvas.height = h;
-    canvas.style.width = `${container.clientWidth}px`;
-    canvas.style.height = `${container.clientHeight}px`;
-
-    ctx.fillStyle = 'rgba(240, 248, 255, 0.15)';
-    ctx.fillRect(0, 0, w, h);
-
-    ctx.strokeStyle = '#6be2eb';
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.moveTo(w * 0.1, h / 2);
-    ctx.lineTo(w * 0.9, h / 2);
-    ctx.stroke();
-
-    events.forEach((event, i) => {
-      const x = w * (0.1 + (i / (events.length - 1)) * 0.8);
-      ctx.beginPath();
-      ctx.arc(x, h / 2, selectedEvent === i ? 8 : 6, 0, 2 * Math.PI);
-      ctx.fillStyle = '#6be2eb';
-      ctx.fill();
-      ctx.font = '14px Sora';
-      ctx.fillStyle = '#0c0d10';
-      ctx.fillText(event.label, x - 30, h / 2 - 20);
-      ctx.fillText(event.time, x - 30, h / 2 + 30);
-    });
-
-    appState.trackAnimation('timeline-viewer', draw);
-  };
-
-  canvas.addEventListener('click', (e) => {
-    const rect = canvas.getBoundingClientRect();
-    const x = (e.clientX - rect.left) * devicePixelRatio;
-    const w = rect.width * devicePixelRatio;
-    events.forEach((event, i) => {
-      const ex = w * (0.1 + (i / (events.length - 1)) * 0.8);
-      if (Math.abs(x - ex) < 20) {
-        selectedEvent = i;
-      }
-    });
-    draw();
-  });
-
-  const onResize = () => {
-    appState.cancelAnimation('timeline-viewer');
-    draw();
-  };
-  window.addEventListener('resize', onResize);
-  appState.addCleanup(() => {
-    window.removeEventListener('resize', onResize);
-    appState.cancelAnimation('timeline-viewer');
-    if (container.contains(canvas)) {
-      container.removeChild(canvas);
-    }
-  });
-
-  draw();
-}
-
-// Scroll Spy
-function initScrollSpy() {
-  const links = document.querySelectorAll('.nav-links a');
-  const sections = Array.from(links).map(link => document.querySelector(link.getAttribute('href')));
-  
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        links.forEach(link => {
-          link.classList.remove('active');
-          if (link.getAttribute('href') === `#${entry.target.id}`) {
-            link.classList.add('active');
-          }
-        });
-      }
-    });
-  }, { threshold: 0.5 });
-
-  sections.forEach(section => observer.observe(section));
-  appState.addCleanup(() => observer.disconnect());
-}
-
-// Consent Popup
-function initConsentPopup() {
-  const popup = document.getElementById('consent-popup');
-  if (!popup) return;
-
-  if (!localStorage.getItem('consent')) {
-    popup.classList.remove('hidden');
-  }
-
-  document.querySelector('.consent-accept').addEventListener('click', () => {
-    localStorage.setItem('consent', 'accepted');
-    popup.classList.add('hidden');
-  });
-
-  document.querySelector('.consent-decline').addEventListener('click', () => {
-    localStorage.setItem('consent', 'declined');
-    popup.classList.add('hidden');
-  });
-}
-
-// Dev Panel
-function initDevPanel() {
-  const panel = document.getElementById('dev-panel');
-  if (!panel) return;
-
-  document.addEventListener('keydown', (e) => {
-    if (e.ctrlKey && e.key === 'd') {
-      panel.classList.toggle('hidden');
-    }
-    if (e.altKey && e.key === '/') {
-      document.body.dataset.theme = document.body.dataset.theme === 'high-contrast' ? 'frost' : 'high-contrast';
-    }
-  });
-}
-
-// Snapshot Export
-function initSnapshotExport() {
-  const snapshotBtn = document.querySelector('.snapshot-button');
-  if (!snapshotBtn) return;
-
-  snapshotBtn.addEventListener('click', () => {
-    const data = {
-      timestamp: new Date().toISOString(),
-      page: window.location.hash,
-      theme: document.body.dataset.theme
-    };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'snapshot.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  });
-}
-
+// -------------------------------
 // Accessibility Enhancements
+// -------------------------------
 function initAccessibility() {
   document.documentElement.lang = 'en';
   document.documentElement.setAttribute('role', 'document');
+  
   const skipLink = document.createElement('a');
   skipLink.href = '#main';
   skipLink.textContent = 'Skip to main content';
@@ -972,19 +761,25 @@ function initAccessibility() {
   });
 }
 
+// -------------------------------
 // Performance Monitoring
+// -------------------------------
 function initPerformanceMonitoring() {
   const perfObserver = new PerformanceObserver(list => {
     const entries = list.getEntries();
     console.debug('Performance metrics:', entries);
   });
+
   perfObserver.observe({ entryTypes: ['measure', 'resource', 'navigation'] });
 }
 
+// -------------------------------
 // Error Handling
+// -------------------------------
 function handleFatalError(err) {
   console.error('Fatal application error:', err);
   document.getElementById('quantum-loader')?.remove();
+  
   const errorDiv = document.createElement('div');
   errorDiv.className = 'critical-error';
   errorDiv.innerHTML = `
@@ -992,54 +787,50 @@ function handleFatalError(err) {
     <p>${err.message}</p>
     <button onclick="window.location.reload()">Reload Application</button>
   `;
+  
   document.body.prepend(errorDiv);
 }
 
+// -------------------------------
 // Main Initialization Flow
+// -------------------------------
 async function initApplication() {
   try {
     const modules = await initCoreModules();
     const neuralBg = new NeuralBackground(document.getElementById('neural-bg'));
     await neuralBg.init();
+    new QuantumEngine();
     new AuthFlow();
-    await initElviraAvatar();
-    await initHexVisualizer();
-    initTimelineViewer();
 
     if (modules.initThemeToggle) modules.initThemeToggle();
-    if (modules.initCharts) {
-      const chartsState = modules.initCharts(appState);
-      if (chartsState?.cleanup) {
-        appState.addCleanup(chartsState.cleanup);
-      }
-    }
-
-
+    if (modules.initCharts) modules.initCharts();
     if (modules.initLLM) {
       const orig = modules.initLLM;
       modules.initLLM = async (...a) => { appState.llmCallCount++; return orig(...a); };
       modules.initLLM();
     }
+    if (modules.initTelemetry) modules.initTelemetry();
     if (modules.initAccordion) modules.initAccordion(['#features']);
 
-    initScrollSpy();
-    initConsentPopup();
-    initDevPanel();
-    initSnapshotExport();
     initAccessibility();
     initPerformanceMonitoring();
 
-    appState.addCleanup(() => neuralBg.destroy());
+    appState.addCleanup(() => {
+      neuralBg.destroy();
+    });
   } catch (err) {
     handleFatalError(err);
   }
 }
 
+// -------------------------------
 // Boot Sequence
+// -------------------------------
 document.addEventListener('DOMContentLoaded', () => {
   if (window.NodeList && !NodeList.prototype.forEach) {
     NodeList.prototype.forEach = Array.prototype.forEach;
   }
+
   initApplication();
 });
 
@@ -1048,6 +839,3 @@ window.addEventListener('beforeunload', () => {
 });
 
 console.log('Aurora Core v3.1 initialized');
-</xaiArtifact>
-
-#### 4. charts.js
