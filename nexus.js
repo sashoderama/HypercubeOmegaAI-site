@@ -1,3 +1,5 @@
+
+
 /* nexus.js – Unified Entry Point for Elvira Genesis-Elvira (v3.1) */
 'use strict';
 
@@ -19,7 +21,6 @@ class ModuleLoader {
           new Promise((_, reject) => 
             setTimeout(() => reject(new Error('Module load timeout')), this.TIMEOUT))
         ]);
-
         console.debug(`Successfully loaded module: ${url}`);
         return module;
       } catch (err) {
@@ -35,6 +36,7 @@ class ModuleLoader {
     }
   }
 }
+
 
 // State Management
 class AppState {
