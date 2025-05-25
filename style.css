@@ -1,4 +1,4 @@
-/* style.css – Elvira Genesis-Elvira Stylesheet */
+/* style.css – Aurora Neural Core Stylesheet */
 
 /* Reset */
 *, *::before, *::after {
@@ -21,7 +21,7 @@
     rgba(255, 255, 255, 0.12) 100%
   );
   --cryo-shadow: 0 8px 16px rgba(107, 226, 235, 0.2);
-  --hyper-blur: blur(8px); /* Reduced for GPU */
+  --hyper-blur: blur(8px);
   --quantum-border: 1px solid rgba(255, 255, 255, 0.2);
   --stark: rgba(0, 0, 0, 0.8);
   --particle-glow: radial-gradient(
@@ -33,38 +33,13 @@
   --quantum-ease: cubic-bezier(0.33, 1, 0.68, 1);
 }
 
-/* Themes */
-:root[data-theme="frost"] {
-  --bg: rgba(240, 248, 255, 0.98);
-  --fg: #0c0d10;
-}
-@media (prefers-color-scheme: light) {
-  :root[data-theme="light"] {
-    --bg: #e0e3f4;
-    --fg: #0c0d10;
-    --accent: #4f8dfd;
-    --secondary: #4a5a77;
-  }
-}
-:root[data-theme="high-contrast"] {
-  --bg: #000;
-  --fg: #fff;
-  --accent: #00f;
-  --secondary: #ccc;
-}
-
 /* Base */
-html {
-  scroll-behavior: smooth;
-  font-size: 16px;
-  scroll-padding-top: 100px;
-}
-body {
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg);
   font-family: 'Sora', system-ui, -apple-system, sans-serif;
-  background: var(--bg);
   color: var(--fg);
-  line-height: 1.6;
-  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   perspective: 1000px;
@@ -224,6 +199,9 @@ body::after {
 .terms-modal {
   width: min(95vw, 600px);
   padding: 2rem;
+  background: var(--ice-gradient);
+  border: var(--quantum-border);
+  border-radius: 12px;
 }
 .terms-content {
   margin: 1.5rem 0;
@@ -237,28 +215,12 @@ body::after {
   border-radius: 12px;
   font: 600 1rem 'Sora';
   cursor: pointer;
-  position: relative;
-  overflow: visible;
-  transform-style: preserve-3d;
   transition: transform 0.4s var(--quantum-ease), box-shadow 0.4s ease;
   will-change: transform, box-shadow;
 }
-.quantum-btn::after {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  background: var(--particle-glow);
-  filter: blur(16px);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  z-index: -1;
-}
 .quantum-btn:hover {
-  transform: scale(1.08) translateZ(20px) rotateX(5deg) rotateY(2deg);
+  transform: scale(1.08);
   box-shadow: var(--cryo-shadow);
-}
-.quantum-btn:hover::after {
-  opacity: 1;
 }
 @media (prefers-reduced-motion: reduce) {
   .quantum-btn {
@@ -275,13 +237,6 @@ body::after {
   position: fixed;
   inset: 0;
   z-index: -1;
-  pointer-events: none;
-}
-.neuro-universe::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background: radial-gradient(circle at 50% 50%, var(--glow) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -320,7 +275,6 @@ h1 {
   font-size: 0.95rem;
   padding: 0.5rem;
   transition: color 0.4s var(--quantum-ease);
-  will-change: color;
 }
 .nav-links a:hover, .nav-links a.active {
   color: var(--accent);
@@ -334,7 +288,6 @@ h1 {
   font-size: 1.3rem;
   cursor: pointer;
   transition: transform 0.4s var(--quantum-ease);
-  will-change: transform;
 }
 .theme-toggle:hover {
   transform: scale(1.1);
@@ -356,61 +309,27 @@ main {
   grid-template-columns: repeat(12, 1fr);
   gap: 1.5rem;
 }
+.content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding-top: 30vh;
+}
 section {
   padding: 3rem 0;
   grid-column: 1 / -1;
-}
-[data-scroll] {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.6s var(--quantum-ease), transform 0.6s var(--quantum-ease);
-}
-[data-scroll="in"] {
-  opacity: 1;
-  transform: translateY(0);
-}
-@media (prefers-reduced-motion: reduce) {
-  [data-scroll] {
-    transition: none;
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 h2 {
   font: 800 clamp(1.75rem, 6vw, 3rem) 'Sora';
   margin-bottom: 1.5rem;
   text-align: center;
-  grid-column: 1 / -1;
   text-shadow: 0 0 10px var(--glow);
-}
-h3 {
-  font: 600 1.2rem 'Sora';
-  margin-bottom: 0.5rem;
 }
 p {
   font-size: 1rem;
   max-width: 800px;
   margin: 0 auto 1.5rem;
   text-align: center;
-  grid-column: 1 / -1;
-}
-ul {
-  list-style: none;
-  padding: 0;
-  max-width: 800px;
-  margin: 0 auto;
-}
-ul li {
-  font-size: 0.95rem;
-  margin-bottom: 0.5rem;
-  position: relative;
-  padding-left: 1.5rem;
-}
-ul li::before {
-  content: '•';
-  color: var(--accent);
-  position: absolute;
-  left: 0;
 }
 
 /* Neuro Card */
@@ -421,7 +340,6 @@ ul li::before {
   backdrop-filter: var(--hyper-blur);
   box-shadow: 0 0 20px rgba(107, 226, 235, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  will-change: transform, box-shadow;
   border-radius: 24px;
   padding: 1.5rem;
 }
@@ -429,63 +347,10 @@ ul li::before {
   transform: translateY(-5px) perspective(1000px) rotateX(3deg) rotateY(2deg);
   box-shadow: 0 10px 30px rgba(107, 226, 235, 0.3);
 }
-.neuro-card::before {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  background: var(--particle-glow);
-  z-index: -1;
-  animation: hologram-pulse 3s ease-in-out infinite;
-  border-radius: inherit;
-}
-.hologram-layer {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
-    var(--glow) 0%, 
-    transparent 70%
-  );
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-.cryo-border {
-  position: absolute;
-  inset: -2px;
-  border: var(--quantum-border);
-  border-radius: 24px;
-  z-index: -1;
-}
-.neuro-card:hover .hologram-layer {
-  opacity: 1;
-}
 .card-grid {
   display: grid;
   gap: 2rem;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  grid-auto-flow: dense;
-}
-.card-grid > .neuro-card:is(:nth-child(3n+1)) {
-  grid-column: span 2;
-}
-
-/* Table */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 1rem 0;
-}
-th, td {
-  padding: 0.6rem;
-  text-align: left;
-  border-bottom: var(--quantum-border);
-}
-th {
-  background: var(--accent);
-  color: #fff;
-  font-weight: 600;
-}
-td {
-  font-size: 0.9rem;
 }
 
 /* Cyber Button */
@@ -499,160 +364,14 @@ td {
   color: #fff;
   font: 600 0.95rem 'Sora';
   cursor: pointer;
-  position: relative;
-  overflow: visible;
-  transform-style: preserve-3d;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  will-change: transform, box-shadow;
 }
 .cyber-button:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 8px rgba(107, 226, 235, 0.5); /* Replaced drop-shadow */
-}
-@media (prefers-reduced-motion: reduce) {
-  .cyber-button {
-    transition: none;
-  }
-  .cyber-button:hover {
-    transform: none;
-    box-shadow: none;
-  }
+  box-shadow: 0 0 8px rgba(107, 226, 235, 0.5);
 }
 .cyber-button:focus {
   outline: 2px solid var(--accent);
-}
-.contact-link {
-  color: inherit;
-  text-decoration: none;
-}
-
-/* Hero Section */
-#hero {
-  min-height: 80vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  text-align: center;
-}
-
-/* Analytics Section */
-#analytics .neuro-card {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-}
-.tab-nav {
-  display: flex;
-  gap: 1.2rem;
-  justify-content: center;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-}
-.tab-button {
-  background: var(--ice-gradient);
-  border: var(--quantum-border);
-  color: var(--fg);
-  padding: 0.9rem 1.8rem;
-  border-radius: 12px;
-  font: 600 1rem 'Sora';
-  cursor: pointer;
-  transition: transform 0.4s var(--quantum-ease), box-shadow 0.4s ease;
-  will-change: transform, box-shadow;
-}
-.tab-button:hover, .tab-button.active, .tab-button:focus {
-  transform: scale(1.05);
-  box-shadow: var(--cryo-shadow);
-}
-.tab-button:focus {
-  outline: 2px solid var(--accent);
-}
-.tab-content {
-  display: none;
-}
-.tab-content.active {
-  display: block;
-}
-.canvas-container {
-  position: relative;
-  height: 320px;
-  margin: 1.8rem 0;
-  background: var(--ice-gradient);
-  border-radius: 24px;
-  border: var(--quantum-border);
-  padding: 1.2rem;
-  box-shadow: var(--cryo-shadow);
-}
-.canvas-fallback {
-  text-align: center;
-  color: var(--fg);
-  padding: 1.2rem;
-  font-size: 0.95rem;
-}
-
-/* LLM Section */
-.llm-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2.5rem;
-}
-.llm-form, .llm-output {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-}
-#llm-query, #llm-response {
-  background: var(--ice-gradient);
-  border: var(--quantum-border);
-  color: var(--fg);
-  padding: 1.2rem;
-  border-radius: 12px;
-  font-size: 1rem;
-  resize: vertical;
-  min-height: 140px;
-  backdrop-filter: var(--hyper-blur);
-}
-.llm-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-.llm-options-panel {
-  display: none;
-  background: var(--ice-gradient);
-  border: var(--quantum-border);
-  padding: 1.2rem;
-  border-radius: 12px;
-  backdrop-filter: var(--hyper-blur);
-}
-.llm-options-panel.active {
-  display: block;
-}
-.llm-options-panel label {
-  display: block;
-  margin-bottom: 0.6rem;
-  font-size: 0.95rem;
-}
-#llm-provider, #llm-verbose {
-  background: var(--bg);
-  color: var(--fg);
-  border: var(--quantum-border);
-  padding: 0.6rem;
-  border-radius: 6px;
-  font-size: 0.95rem;
-}
-#llm-history-list {
-  list-style: none;
-  max-height: 240px;
-  overflow-y: auto;
-  padding-left: 0;
-}
-#llm-history-list li {
-  padding: 0.6rem;
-  border-bottom: var(--quantum-border);
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.95rem;
 }
 
 /* Telemetry HUD */
@@ -692,36 +411,6 @@ footer p {
 footer a {
   color: var(--accent);
   text-decoration: none;
-  transition: color 0.4s var(--quantum-ease);
-}
-footer a:hover {
-  color: var(--secondary);
-}
-
-/* Accordion */
-.accordion-header {
-  background: var(--ice-gradient);
-  border: none;
-  padding: 1.2rem;
-  width: 100%;
-  text-align: left;
-  cursor: pointer;
-  color: var(--fg);
-  font: 600 1rem 'Sora';
-  transition: background 0.4s var(--quantum-ease);
-}
-.accordion-header:hover, .accordion-header:focus {
-  background: rgba(107, 226, 235, 0.1);
-}
-.accordion-header:focus {
-  outline: 2px solid var(--accent);
-}
-.accordion-content {
-  display: none;
-  padding: 1.2rem;
-}
-.accordion-content.active {
-  display: block;
 }
 
 /* Consent Popup */
@@ -740,61 +429,6 @@ footer a:hover {
   display: none;
 }
 
-/* Dev Panel */
-#dev-panel {
-  position: fixed;
-  top: 0;
-  right: -320px;
-  width: 320px;
-  height: 100%;
-  background: var(--ice-gradient);
-  border-left: var(--quantum-border);
-  padding: 1.2rem;
-  transition: right 0.3s ease;
-}
-#dev-panel.active {
-  right: 0;
-}
-
-/* Keyboard Overlay */
-#keyboard-overlay {
-  position: fixed;
-  bottom: 1.2rem;
-  right: 1.2rem;
-  background: var(--ice-gradient);
-  padding: 0.6rem;
-  border-radius: 12px;
-  display: none;
-}
-#keyboard-overlay.active {
-  display: block;
-}
-
-/* Error Message */
-.error-message {
-  color: #ff4d4d;
-  text-align: center;
-  padding: 1.5rem;
-  font-size: 1rem;
-}
-
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 12px;
-  background: rgba(0, 0, 0, 0.1);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--ice-gradient);
-  border-radius: 6px;
-  border: var(--quantum-border);
-}
-@supports (scrollbar-width: thin) {
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: var(--accent) rgba(0, 0, 0, 0.1);
-  }
-}
-
 /* Skip Link */
 .skip-link {
   position: absolute;
@@ -810,17 +444,6 @@ footer a:hover {
 }
 
 /* Responsive */
-@media (max-width: 1024px) {
-  .container {
-    grid-template-columns: repeat(8, 1fr);
-  }
-  .card-grid {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  }
-  .llm-container {
-    grid-template-columns: 1fr;
-  }
-}
 @media (max-width: 768px) {
   .container {
     grid-template-columns: 1fr;
@@ -828,67 +451,6 @@ footer a:hover {
   }
   h1 { font-size: clamp(1.5rem, 6vw, 2.5rem); }
   h2 { font-size: clamp(1.5rem, 5vw, 2.5rem); }
-  h3 { font-size: 1.1rem; }
-  p, ul li { font-size: 0.95rem; }
-  .nav-links {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    width: 100%;
-    padding-bottom: 8px;
-  }
-  .nav-links a {
-    font-size: 0.9rem;
-    padding: 0.4rem;
-  }
-  .card-grid {
-    grid-template-columns: 1fr;
-  }
-  .card-grid > .neuro-card:is(:nth-child(3n+1)) {
-    grid-column: span 1;
-  }
-  .cyber-button {
-    padding: 0.7rem 1.4rem;
-    font-size: 0.9rem;
-  }
-  .telemetry-hud {
-    width: 100%;
-    border-radius: 0;
-    box-shadow: none;
-  }
-  table {
-    font-size: 0.8rem;
-  }
-  th, td {
-    padding: 0.5rem;
-  }
-  .canvas-container {
-    height: 200px;
-  }
-  .tab-nav {
-    gap: 0.8rem;
-  }
-  .tab-button {
-    padding: 0.7rem 1.2rem;
-    font-size: 0.9rem;
-  }
-  header .container {
-    flex-direction: column;
-    gap: 1rem;
-  }
-  .intro-sequence {
-    transform: scale(0.9);
-  }
-  .hologram-logo {
-    font-size: 3rem;
-    letter-spacing: -0.1em;
-  }
-  .terms-modal {
-    width: min(95vw, 400px);
-    padding: 1.5rem;
-  }
-}
-@media screen and (min-resolution: 192dpi) {
-  body { font-size: 17px; }
-  .neuro-card { box-shadow: var(--cryo-shadow); }
-  h2 { text-shadow: 0 0 12px var(--glow); }
+  .content { padding-top: 20vh; }
+  .telemetry-hud { width: 100%; border-radius: 0; }
 }
