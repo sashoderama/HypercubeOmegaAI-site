@@ -1,498 +1,149 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0c0d10">
-  <meta name="color-scheme" content="dark light">
-  <meta name="description" content="Elvira Genesis-Elvira: AI-Powered Cybersecurity Platform">
-  <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    script-src 'self' 'nonce-nexus2025' https://cdn.jsdelivr.net;
-    style-src 'self' 'nonce-nexus2025' https://fonts.googleapis.com;
-    font-src 'self' https://fonts.gstatic.com;
-    img-src 'self' data: https:;
-    connect-src 'self';
-    object-src 'none';
-    base-uri 'none';
-  ">
-  <title>Elvira Genesis-Elvira</title>
-  <link rel="icon" href="data:," type="image/x-icon">
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap">
-  <link rel="stylesheet" href="/style.css" nonce="nexus2025">
-</head>
-<body data-theme="frost">
-  <div class="loading-overlay" id="loading">
-    <div class="loader" aria-label="Loading"></div>
-  </div>
-  <div id="neural-bg" class="neuro-universe"></div>
-  <header role="banner">
-    <div class="container">
-      <h1>Elvira Genesis-Elvira</h1>
-      <nav role="navigation" aria-label="Main navigation" class="nav-links">
-        <a href="#hero" class="active">Home</a>
-        <a href="#overview">Overview</a>
-        <a href="#market">Market</a>
-        <a href="#features">Features</a>
-        <a href="#architect">Elvira Architect</a>
-        <a href="#architecture">Architecture</a>
-        <a href="#forensics">Forensics</a>
-        <a href="#analytics">Analytics</a>
-        <a href="#llm">LLM</a>
-        <a href="#scalability">Scalability</a>
-        <a href="#advantages">Advantages</a>
-        <a href="#revenue-model">Revenue</a>
-        <a href="#financials">Financials</a>
-        <a href="#go-to-market">Strategy</a>
-        <a href="#team">Team</a>
-        <a href="#investment-ask">Investment</a>
-        <a href="#contact">Contact</a>
-      </nav>
-      <button class="theme-toggle" aria-label="Toggle theme">
-        <span class="sr-only">Toggle Theme</span>
-        <svg width="24" height="24" fill="none" stroke="currentColor" aria-hidden="true">
-          <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-        </svg>
-      </button>
-    </div>
-  </header>
-  <main role="main">
-    <section id="hero">
-      <div class="container">
-        <h2>Revolutionary Cybersecurity AI</h2>
-        <p>Elvira Genesis-Elvira delivers GPU-accelerated, AI-powered cybersecurity, securing network, cloud, endpoint, and identity layers with sub-1ms response times.</p>
-        <button class="cyber-button">Engage Elvira</button>
-      </div>
-    </section>
-    <section id="overview">
-      <div class="container">
-        <h2>Overview & Mission</h2>
-        <div class="card">
-          <p><strong>Overview:</strong> Elvira Genesis-Elvira leverages GPU-accelerated ML, behavioral analytics, and autonomous response to protect against APTs, zero-day exploits, and insider threats across network, cloud, endpoint, and identity layers.</p>
-          <p><strong>Mission:</strong> Provide proactive, scalable, and autonomous cybersecurity solutions for real-time threat prevention, detection, and response, processing up to 5M events/sec.</p>
-        </div>
-        <div class="card-grid">
-          <div class="card">
-            <h3>Core Features</h3>
-            <ul>
-              <li>Multi-layered AI threat detection (ML + NLP)</li>
-              <li>Zero-trust networking integration</li>
-              <li>Autonomous response with forensics</li>
-              <li>Post-quantum cryptography</li>
-              <li>1M+ events/sec with <0.1% false positives</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="market">
-      <div class="container">
-        <h2>Market Opportunity</h2>
-        <div class="card">
-          <p><strong>Industry Overview:</strong> The global cybersecurity market grows from $185.65B (2023) to $375.60B (2028) at 15.1% CAGR, driven by zero-day threats, ransomware, and supply chain attacks.</p>
-          <p><strong>Market Fit:</strong> Elvira Genesis-Elvira targets a $45B+ AI market, $25B+ compliance, $15B+ threat intelligence, and $100B+ cyber insurance/DeFi pools, serving enterprises, government, finance, and infrastructure.</p>
-        </div>
-        <div class="card-grid">
-          <div class="card">
-            <h3>Market Size</h3>
-            <p>$185.65B in 2023, $375.60B by 2028.</p>
-          </div>
-          <div class="card">
-            <h3>Target Sectors</h3>
-            <p>SMBs, Healthcare, Finance, Infrastructure.</p>
-          </div>
-          <div class="card">
-            <h3>Growth Drivers</h3>
-            <p>Zero-day threats, ransomware, supply chain attacks.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="features">
-      <div class="container">
-        <h2>Key Features & Technologies</h2>
-        <div class="accordion">
-          <div class="accordion-item">
-            <button class="accordion-header" aria-expanded="false" aria-controls="feat1">AI-Enhanced Threat Detection</button>
-            <div class="accordion-content" id="feat1">Real-time anomaly detection with ML (XGBoost, transformers, autoencoders), adversarial robustness, UEBA, and 50% faster TLS 1.3 inspection.</div>
-          </div>
-          <div class="accordion-item">
-            <button class="accordion-header" aria-expanded="false" aria-controls="feat2">Autonomous Incident Response</button>
-            <div class="accordion-content" id="feat2">AI-driven playbooks, 10s asset isolation, 98% ransomware blocking, dynamic traffic rerouting, and vulnerability patching.</div>
-          </div>
-          <div class="accordion-item">
-            <button class="accordion-header" aria-expanded="false" aria-controls="feat3">Zero-Trust Networking</button>
-            <div class="accordion-content" id="feat3">Continuous authentication, behavior-based access controls for secure system access.</div>
-          </div>
-          <div class="accordion-item">
-            <button class="accordion-header" aria-expanded="false" aria-controls="feat4">Post-Quantum Cryptography</button>
-            <div class="accordion-content" id="feat4">Quantum-resilient algorithms, seamless PKI integration, FIPS-compliant cryptography.</div>
-          </div>
-          <div class="accordion-item">
-            <button class="accordion-header" aria-expanded="false" aria-controls="feat5">Infinite Training with Elvira</button>
-            <div class="accordion-content" id="feat5">Continuous ML training with Elvira model, using Sparse MoE, adversarial robustness, synthetic datasets, and real-time feedback for evolving threats.</div>
-          </div>
-        </div>
-        <div class="card-grid">
-          <div class="card">
-            <h3>Behavioral Analytics</h3>
-            <p>UEBA detects insider threats with 90% efficacy.</p>
-          </div>
-          <div class="card">
-            <h3>Compliance Automation</h3>
-            <p>60% cost reduction for GDPR, SOC2, HIPAA.</p>
-          </div>
-          <div class="card">
-            <h3>Scalability</h3>
-            <p>From 100 users to 50,000+ endpoints.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="architect">
-      <div class="container">
-        <h2>Elvira Architect</h2>
-        <div class="card">
-          <p><strong>Overview:</strong> Elvira Architect is a high-performance AI platform optimized for dual-GPU systems, delivering deep learning, NLP, and multi-modal AI tasks locally for privacy and control.</p>
-          <p><strong>Key Features:</strong> Dual-GPU optimization (RTX 3060/4070, FP8, CUDA 12.8), Sparse MoE with 256 experts, Elvira model integration, multi-modal AI, RAG, PyQt5 GUI, real-time GPU monitoring, and seamless ML pipeline integration.</p>
-        </div>
-        <div class="card-grid">
-          <div class="card">
-            <h3>Dual-GPU Optimization</h3>
-            <p>High throughput with minimal memory using CUDA 12.8 and Triton kernels.</p>
-          </div>
-          <div class="card">
-            <h3>Sparse MoE Models</h3>
-            <p>256 SparseExpert instances for efficient task processing.</p>
-          </div>
-          <div class="card">
-            <h3>Elvira Model</h3>
-            <p>Advanced reasoning, NLP, and multi-modal tasks.</p>
-          </div>
-          <div class="card">
-            <h3>Applications</h3>
-            <p>Cybersecurity, research, inference, education.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="architecture">
-      <div class="container">
-        <h2>System Architecture</h2>
-        <div class="card">
-          <p><strong>GPU-Accelerated Infrastructure:</strong> Dual GPU orchestration with Triton Inference Server, deep learning, adversarial networks, and graph analytics for 5–7ms latency.</p>
-          <p><strong>Data Pipeline:</strong> Kafka streaming, Prometheus/OpenTelemetry, zero-knowledge proofs.</p>
-        </div>
-        <div class="card-grid">
-          <div class="card">
-            <h3>Threat Detection</h3>
-            <p>ML + NLP hybrid models (33+ modules).</p>
-          </div>
-          <div class="card">
-            <h3>Autonomous Response</h3>
-            <p>Kubernetes + AWS for rapid mitigation.</p>
-          </div>
-          <div class="card">
-            <h3>Forensic Tools</h3>
-            <p>Volatility, disk forensics, network graphs.</p>
-          </div>
-          <div class="card">
-            <h3>Compliance Automation</h3>
-            <p>GDPR, SOC2, HIPAA-compliant security.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="forensics">
-      <div class="container">
-        <h2>Advanced Forensics & Monitoring</h2>
-        <div class="card">
-          <p><strong>Forensic Data Collection:</strong> Continuous monitoring of network traffic, system behavior, and file integrity with deep analysis.</p>
-          <p><strong>Entropy 3D Hex Visualizer:</strong> WebGL-based 3D hexagonal grid for real-time entropy visualization.</p>
-          <p><strong>Timeline Viewer:</strong> Interactive timeline for attack sequences and forensic replay.</p>
-          <p><strong>Customizable Dashboards:</strong> Real-time telemetry, alerts, and threat graphs.</p>
-        </div>
-        <div class="card-grid">
-          <div class="card">
-            <h3>3D Hex Visualizer</h3>
-            <p>Visualizes entropy in a 3D hexagonal grid.</p>
-            <div id="hex-visualizer" class="canvas-container"></div>
-          </div>
-          <div class="card">
-            <h3>Timeline Viewer</h3>
-            <p>Interactive attack sequence replay.</p>
-            <div id="timeline-viewer" class="canvas-container"></div>
-          </div>
-          <div class="card">
-            <h3>Threat Graphs</h3>
-            <p>Visualizes attack vectors and escalations.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="analytics">
-      <div class="container">
-        <h2>Analytics Dashboard</h2>
-        <div class="card">
-          <nav class="tab-nav">
-            <button class="tab-button active" data-tab="entropy-tab">Entropy</button>
-            <button class="tab-button" data-tab="activity-tab">Revenue</button>
-            <button class="tab-button" data-tab="ethics-tab">Compliance</button>
-          </nav>
-          <div class="tab-content active" id="entropy-tab">
-            <div class="canvas-container">
-              <canvas id="entropy-chart" aria-label="Bar chart showing threat detection latency"></canvas>
-              <div class="canvas-fallback" hidden>Entropy chart unavailable. Contact support.</div>
-            </div>
-          </div>
-          <div class="tab-content" id="activity-tab">
-            <div class="canvas-container">
-              <canvas id="activity-chart" aria-label="Line chart showing revenue projections"></canvas>
-              <div class="canvas-fallback" hidden>Revenue chart unavailable. Contact support.</div>
-            </div>
-          </div>
-          <div class="tab-content" id="ethics-tab">
-            <div class="canvas-container">
-              <canvas id="ethics-chart" aria-label="Pie chart showing compliance coverage"></canvas>
-              <div class="canvas-fallback" hidden>Compliance chart unavailable. Contact support.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="llm">
-      <div class="container">
-        <h2>LLM Analysis</h2>
-        <div class="card llm-container">
-          <div class="llm-form">
-            <textarea id="llm-query" placeholder="Enter threat query..." aria-label="Query input"></textarea>
-            <div class="llm-controls">
-              <button class="cyber-button llm-submit">Analyze</button>
-              <button class="cyber-button speech-to-text" aria-label="Speech to text">🎤</button>
-              <button class="cyber-button copy-button" aria-label="Copy response">📋</button>
-              <button class="cyber-button llm-options" aria-label="Options">⚙️</button>
-              <button class="cyber-button toggle-history">🧾 History</button>
-            </div>
-            <div class="llm-options-panel">
-              <label>Provider: <select id="llm-provider">
-                <option>Elvira</option>
-                <option>OpenAI</option>
-                <option>Claude</option>
-                <option>Local LLaMA</option>
-              </select></label>
-              <label><input type="checkbox" id="llm-verbose"> Verbose</label>
-            </div>
-          </div>
-          <div class="llm-output">
-            <p id="llm-response" aria-live="polite">Response will appear here.</p>
-            <ul id="llm-history-list" hidden></ul>
-            <button class="cyber-button export-history">Export History</button>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="scalability">
-      <div class="container">
-        <h2>Scalability & Performance</h2>
-        <div class="card">
-          <p><strong>Multi-Cluster Architecture:</strong> Kubernetes-based, cloud-native deployment with auto-scaling up to 5M EPS, supporting on-premise and hybrid setups.</p>
-          <p><strong>Performance:</strong> Sub-1ms detection/mitigation, 5–7ms end-to-end latency, optimized for high-throughput and edge environments.</p>
-        </div>
-        <div class="card-grid">
-          <div class="card">
-            <h3>High Throughput</h3>
-            <p>Handles up to 5M events/sec.</p>
-          </div>
-          <div class="card">
-            <h3>Low Latency</h3>
-            <p>Sub-1ms response times.</p>
-          </div>
-          <div class="card">
-            <h3>Cost Efficiency</h3>
-            <p>Runs on $1,500 hardware vs. $10,000 cloud.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="advantages">
-      <div class="container">
-        <h2>Competitive Advantages</h2>
-        <div class="card-grid">
-          <div class="card">
-            <h3>AI Efficiency</h3>
-            <p>GPU-accelerated, adaptive ML for superior performance.</p>
-          </div>
-          <div class="card">
-            <h3>Post-Quantum Resilience</h3>
-            <p>Quantum-safe cryptography for future-proofing.</p>
-          </div>
-          <div class="card">
-            <h3>Comprehensive Coverage</h3>
-            <p>Protects network, cloud, endpoint, identity, data.</p>
-          </div>
-          <div class="card">
-            <h3>Integration</h3>
-            <p>Seamless with SIEM, SOAR, DevSecOps tools.</p>
-          </div>
-          <div class="card">
-            <h3>Accuracy</h3>
-            <p>~0.1% false positives, saving analyst time.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="revenue-model">
-      <div class="container">
-        <h2>Revenue Model</h2>
-        <div class="card">
-          <p><strong>SaaS:</strong> Subscription-based pricing ($25/endpoint/mo, tiered for SMBs, enterprises, government).</p>
-          <p><strong>Premium Features:</strong> 24/7 monitoring, enterprise support, custom integrations, API access ($5k-$50k/mo).</p>
-          <p><strong>Licensing:</strong> On-premise licenses for high-security environments.</p>
-          <p><strong>Marketplace:</strong> IOC syndication ($0.10/indicator), security bonds via yield-sharing.</p>
-        </div>
-        <div class="card-grid">
-          <div class="card">
-            <h3>Subscription Tiers</h3>
-            <p>Flexible pricing for diverse clients.</p>
-          </div>
-          <div class="card">
-            <h3>Enterprise Support</h3>
-            <p>Dedicated technical account management.</p>
-          </div>
-          <div class="card">
-            <h3>Threat Intel</h3>
-            <p>Usage-based marketplace revenue.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="financials">
-      <div class="container">
-        <h2>Financial Projections</h2>
-        <div class="card">
-          <table>
-            <thead>
-              <tr><th>Year</th><th>Revenue</th><th>Notes</th></tr>
-            </thead>
-            <tbody>
-              <tr><td>2025</td><td>$5M</td><td>Initial adoption, API/IOC ramp-up</td></tr>
-              <tr><td>2027</td><td>$30M</td><td>Enterprise scaling, MSSP partnerships</td></tr>
-              <tr><td>2029</td><td>$100M</td><td>Global expansion, strategic partnerships</td></tr>
-            </tbody>
-          </table>
-          <p>Break-even by Year 2, 400% ROI by Year 3, $7M+ total revenue by 2027.</p>
-        </div>
-      </div>
-    </section>
-    <section id="go-to-market">
-      <div class="container">
-        <h2>Go-To-Market Strategy</h2>
-        <div class="card">
-          <ul>
-            <li><strong>Phase 1 (2025):</strong> Pilot deployments with enterprises, direct sales, and MSSPs.</li>
-            <li><strong>Phase 2 (2026-27):</strong> Global SaaS expansion via AWS/Azure marketplaces, open-source R&D.</li>
-            <li><strong>Phase 3 (2028-29):</strong> Government contracts, ISACs, and strategic tech partnerships.</li>
-          </ul>
-        </div>
-        <div class="card-grid">
-          <div class="card">
-            <h3>Pilot Focus</h3>
-            <p>Tailored deployments for large organizations.</p>
-          </div>
-          <div class="card">
-            <h3>Global SaaS</h3>
-            <p>Cloud-based scalability for SMEs.</p>
-          </div>
-          <div class="card">
-            <h3>Partnerships</h3>
-            <p>Defense agencies and tech consortia.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="team">
-      <div class="container">
-        <h2>Our Team</h2>
-        <div class="card-grid">
-          <div class="card">
-            <h3>Sasho Derama</h3>
-            <p>Founder & CEO, AI & cybersecurity visionary with enterprise software expertise.</p>
-          </div>
-          <div class="card">
-            <h3>Dr. Jane Lee</h3>
-            <p>Chief AI Scientist, PhD in ML, pioneered GNN-based threat detection.</p>
-          </div>
-          <div class="card">
-            <h3>Michael Chen</h3>
-            <p>CTO, OSCP-certified, 15+ years in GPU-accelerated systems.</p>
-          </div>
-          <div class="card">
-            <h3>Alex Patel</h3>
-            <p>Head of Sales & Marketing, expert in cybersecurity sales and partnerships.</p>
-          </div>
-          <div class="card">
-            <h3>Core Team</h3>
-            <p>10+ OSCP-certified engineers and AI specialists.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="investment-ask">
-      <div class="container">
-        <h2>Investment Opportunity</h2>
-        <div class="card">
-          <p><strong>Funding:</strong> $20M to scale operations, R&D, and global expansion ($3M for GPU clusters, product dev, sales, compliance).</p>
-          <p><strong>Use of Funds:</strong> 40% R&D, 30% sales/marketing, 30% infrastructure.</p>
-          <p><strong>Milestones:</strong> Beta Q1 2025, SaaS Q3 2025, break-even Q2 2026, market leadership in 3 years.</p>
-          <button class="cyber-button contact-invest"><a href="mailto:ceo@aurora-core.net" class="contact-link">Contact to Invest</a></button>
-        </div>
-      </div>
-    </section>
-    <section id="contact">
-      <div class="container">
-        <h2>Contact Us</h2>
-        <div class="card">
-          <p>Join Elvira Genesis-Elvira to transform cybersecurity. Contact us for investment and partnership opportunities.</p>
-          <p><strong>Email:</strong> <a href="mailto:ceo@aurora-core.net">ceo@aurora-core.net</a></p>
-          <p><strong>Website:</strong> <a href="https://elvira-core.net">elvira-core.net</a></p>
-        </div>
-      </div>
-    </section>
-  </main>
-  <aside class="telemetry-hud" aria-live="polite">
-    <h3>Telemetry</h3>
-    <p>Latency: <span id="latency">1ms</span></p>
-    <p>Events/Sec: <span id="events">5M</span></p>
-    <p>False Positives: <span id="false-positives">0.1%</span></p>
-    <p>Compliance: <span id="compliance">100%</span></p>
-    <button class="cyber-button snapshot-button">Snapshot</button>
-  </aside>
-  <footer role="contentinfo">
-    <div class="container">
-      <p>© 2025 Elvira Genesis-Elvira</p>
-      <img src="https://data.jsdelivr.com/v1/package/npm/three/badge" alt="jsDelivr hits">
-      <p><a href="mailto:ceo@aurora-core.net">Contact Us</a> | GDPR, SOC2, HIPAA Compliant</p>
-    </div>
-  </footer>
-  <div id="consent-popup" class="hidden">
-    <p>We use cookies to enhance your experience. Accept?</p>
-    <button class="cyber-button consent-accept">Accept</button>
-    <button class="cyber-button consent-decline">Decline</button>
-  </div>
-  <div id="dev-panel" class="hidden">
-    <h3>Dev Panel</h3>
-    <p>Debug info: Latency, events/sec, compliance metrics.</p>
-  </div>
-  <div id="keyboard-overlay" class="hidden">Ctrl+D: Toggle Dev Panel | Alt+/: High Contrast</div>
-  <noscript>
-    <p>This site requires JavaScript and WebGL for full functionality.</p>
-  </noscript>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" nonce="nexus2025"></script>
-  <script type="module" src="/nexus.js" nonce="nexus2025" defer></script>
-</body>
-</html>
+/* charts.js */
+export function initCharts() {
+  console.debug('Initializing charts module...');
+  if (window.__charts__) {
+    console.debug('Charts already initialized, skipping');
+    return;
+  }
+  window.__charts__ = true;
+
+  const eC = document.querySelector('#entropy-chart'),
+        aC = document.querySelector('#activity-chart'),
+        pC = document.querySelector('#ethics-chart');
+  if (!eC || !aC || !pC) {
+    console.warn('Chart canvases missing');
+    return;
+  }
+
+  const tabButtons = document.querySelectorAll('.tab-button');
+  const tabContents = document.querySelectorAll('.tab-content');
+
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      console.debug(`Tab button clicked: ${button.dataset.tab}`);
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      tabContents.forEach(content => content.classList.remove('active'));
+      button.classList.add('active');
+      const tabId = button.dataset.tab;
+      document.querySelector(`#${tabId}`).classList.add('active');
+    });
+  });
+
+  const entropyChart = new Chart(eC, {
+    type: 'bar',
+    data: {
+      labels: ['XSS', 'SQL Injection', 'DDoS', 'Zero-Day', 'Phishing'],
+      datasets: [{
+        label: 'Latency (ms)',
+        data: [0.8, 0.9, 0.85, 1.0, 0.95],
+        backgroundColor: '#7cd4fc',
+        borderColor: '#a8c6e5',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      animation: !matchMedia('(prefers-reduced-motion: reduce)').matches,
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 1.5,
+          title: { display: true, text: 'Latency (ms)', color: '#0c0d10', font: { family: 'Sora', size: 14 } },
+          grid: { color: '#a8c6e5' },
+          ticks: { color: '#0c0d10' }
+        },
+        x: {
+          title: { display: true, text: 'Threat Type', color: '#0c0d10', font: { family: 'Sora', size: 14 } },
+          grid: { color: '#a8c6e5' },
+          ticks: { color: '#0c0d10' }
+        }
+      },
+      plugins: {
+        legend: { labels: { color: '#0c0d10', font: { family: 'Sora', size: 12 } } },
+        title: { display: true, text: 'Threat Detection Latency', color: '#0c0d10', font: { family: 'Sora', size: 16 } }
+      },
+      responsive: true,
+      maintainAspectRatio: false
+    }
+  });
+
+  const activityChart = new Chart(aC, {
+    type: 'line',
+    data: {
+      labels: ['2025', '2027', '2029'],
+      datasets: [{
+        label: 'Revenue ($M)',
+        data: [5, 30, 100],
+        borderColor: '#7cd4fc',
+        backgroundColor: 'rgba(124, 212, 252, 0.3)',
+        fill: true,
+        tension: 0.4
+      }]
+    },
+    options: {
+      animation: !matchMedia('(prefers-reduced-motion: reduce)').matches,
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 120,
+          title: { display: true, text: 'Revenue ($M)', color: '#0c0d10', font: { family: 'Sora', size: 14 } },
+          grid: { color: '#a8c6e5' },
+          ticks: { color: '#0c0d10' }
+        },
+        x: {
+          title: { display: true, text: 'Year', color: '#0c0d10', font: { family: 'Sora', size: 14 } },
+          grid: { color: '#a8c6e5' },
+          ticks: { color: '#0c0d10' }
+        }
+      },
+      plugins: {
+        legend: { labels: { color: '#0c0d10', font: { family: 'Sora', size: 12 } } },
+        title: { display: true, text: 'Revenue Projections', color: '#0c0d10', font: { family: 'Sora', size: 16 } }
+      },
+      responsive: true,
+      maintainAspectRatio: false
+    }
+  });
+
+  const ethicsChart = new Chart(pC, {
+    type: 'pie',
+    data: {
+      labels: ['GDPR', 'SOC2', 'HIPAA', 'FIPS 140-3'],
+      datasets: [{
+        label: 'Compliance Efficacy',
+        data: [25, 25, 25, 25],
+        backgroundColor: ['#7cd4fc', '#a8c6e5', '#4f8dfd', '#8fa9ff'],
+        borderColor: '#0c0d10',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      animation: !matchMedia('(prefers-reduced-motion: reduce)').matches,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { color: '#0c0d10', font: { family: 'Sora', size: 12 } }
+        },
+        title: { display: true, text: 'Compliance Coverage', color: '#0c0d10', font: { family: 'Sora', size: 16 } }
+      },
+      responsive: true,
+      maintainAspectRatio: false
+    }
+  });
+
+  const interval = setInterval(() => {
+    console.debug('Updating chart data...');
+    entropyChart.data.datasets[0].data = entropyChart.data.datasets[0].data.map(v => Math.max(0.8, Math.min(1.0, v + (Math.random() - 0.5) * 0.1)));
+    entropyChart.update();
+    ethicsChart.data.datasets[0].data = [25, 25, 25, 25];
+    ethicsChart.update();
+  }, 5000);
+
+  state.cleanup.add(() => {
+    console.debug('Cleaning up charts...');
+    clearInterval(interval);
+    entropyChart.destroy();
+    activityChart.destroy();
+    ethicsChart.destroy();
+    tabButtons.forEach(button => button.removeEventListener('click', button.onclick));
+  });
+}
