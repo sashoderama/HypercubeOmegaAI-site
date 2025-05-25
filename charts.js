@@ -1,5 +1,5 @@
 /* charts.js – Enhanced GPU-friendly analytics for Elvira Genesis-Elvira (v1.4) */
-export function initCharts() {
+export function initCharts(state) {
   const state = {
     cleanup: () => {
       console.debug('Cleaning up charts...');
