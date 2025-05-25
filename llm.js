@@ -1,18 +1,18 @@
-/* llm.js */
+/* llm.js – Language Model Interface for Elvira Genesis-Elvira */
 export function initLLM() {
   console.debug('Initializing LLM module...');
-  const queryInput = $('#llm-query'),
-        submitBtn = $('.llm-submit'),
-        responseOutput = $('#llm-response'),
-        historyList = $('#llm-history-list'),
-        toggleHistoryBtn = $('.toggle-history'),
-        exportHistoryBtn = $('.export-history'),
-        copyBtn = $('.copy-button'),
-        speechBtn = $('.speech-to-text'),
-        providerSelect = $('#llm-provider'),
-        verboseCheckbox = $('#llm-verbose'),
-        optionsBtn = $('.llm-options'),
-        optionsPanel = $('.llm-options-panel');
+  const queryInput = document.querySelector('#llm-query'),
+        submitBtn = document.querySelector('.llm-submit'),
+        responseOutput = document.querySelector('#llm-response'),
+        historyList = document.querySelector('#llm-history-list'),
+        toggleHistoryBtn = document.querySelector('.toggle-history'),
+        exportHistoryBtn = document.querySelector('.export-history'),
+        copyBtn = document.querySelector('.copy-button'),
+        speechBtn = document.querySelector('.speech-to-text'),
+        providerSelect = document.querySelector('#llm-provider'),
+        verboseCheckbox = document.querySelector('#llm-verbose'),
+        optionsBtn = document.querySelector('.llm-options'),
+        optionsPanel = document.querySelector('.llm-options-panel');
 
   if (!queryInput || !submitBtn || !responseOutput || !historyList || !toggleHistoryBtn || !exportHistoryBtn || !copyBtn || !speechBtn || !providerSelect || !verboseCheckbox || !optionsBtn || !optionsPanel) {
     console.warn('LLM elements missing');
@@ -40,7 +40,7 @@ export function initLLM() {
     });
   };
 
-  submitBtn.addEventListener('click', async () => {
+  const handleSubmit = async () => {
     console.debug('LLM submit button clicked');
     const query = queryInput.value.trim();
     if (!query) {
@@ -60,15 +60,15 @@ export function initLLM() {
     } finally {
       submitBtn.disabled = false;
     }
-  });
+  };
 
-  toggleHistoryBtn.addEventListener('click', () => {
+  const handleToggleHistory = () => {
     console.debug('Toggling LLM history');
     historyList.hidden = !historyList.hidden;
     updateHistory();
-  });
+  };
 
-  exportHistoryBtn.addEventListener('click', () => {
+  const handleExportHistory = () => {
     console.debug('Exporting LLM history...');
     try {
       const blob = new Blob([JSON.stringify(history, null, 2)], { type: 'application/json' });
@@ -82,17 +82,17 @@ export function initLLM() {
       console.error('History export failed:', err);
       alert('Failed to export history. Please try again.');
     }
-  });
+  };
 
-  copyBtn.addEventListener('click', () => {
+  const handleCopy = () => {
     console.debug('Copying LLM response...');
     navigator.clipboard.writeText(responseOutput.textContent).catch(err => {
       console.error('Copy failed:', err);
       alert('Failed to copy response.');
     });
-  });
+  };
 
-  speechBtn.addEventListener('click', () => {
+  const handleSpeech = () => {
     console.debug('Starting speech recognition...');
     if (!('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)) {
       console.warn('Speech recognition not supported');
@@ -110,22 +110,32 @@ export function initLLM() {
       console.error('Speech recognition error:', err);
       alert('Speech recognition failed.');
     };
-  });
+  };
 
-  optionsBtn.addEventListener('click', () => {
+  const handleOptions = () => {
     console.debug('Toggling LLM options panel');
     optionsPanel.classList.toggle('active');
-  });
+  };
 
-  state.cleanup.add(() => {
+  submitBtn.addEventListener('click', handleSubmit);
+  toggleHistoryBtn.addEventListener('click', handleToggleHistory);
+  exportHistoryBtn.addEventListener('click', handleExportHistory);
+  copyBtn.addEventListener('click', handleCopy);
+  speechBtn.addEventListener('click', handleSpeech);
+  optionsBtn.addEventListener('click', handleOptions);
+
+  const cleanup = () => {
     console.debug('Cleaning up LLM event listeners');
-    submitBtn.removeEventListener('click', submitBtn);
-    toggleHistoryBtn.removeEventListener('click', toggleHistoryBtn);
-    exportHistoryBtn.removeEventListener('click', exportHistoryBtn);
-    copyBtn.removeEventListener('click', copyBtn);
-    speechBtn.removeEventListener('click', speechBtn);
-    optionsBtn.removeEventListener('click', optionsBtn);
-  });
+    submitBtn.removeEventListener('click', handleSubmit);
+    toggleHistoryBtn.removeEventListener('click', handleToggleHistory);
+    exportHistoryBtn.removeEventListener('click', handleExportHistory);
+    copyBtn.removeEventListener('click', handleCopy);
+    speechBtn.removeEventListener('click', handleSpeech);
+    optionsBtn.removeEventListener('click', handleOptions);
+  };
+
+  window.addEventListener('beforeunload', cleanup);
+  window.addEventListener('pagehide', cleanup);
 
   updateHistory();
 }
