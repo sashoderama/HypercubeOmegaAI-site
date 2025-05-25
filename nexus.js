@@ -261,6 +261,11 @@ class NeuralBackground {
   #camera;
   #renderer;
   #composer;
+  #particleGeometry; // ✅ ← ДОБАВИ ТОВА
+  #particleAttributes;
+  #edgeGeometry;
+  #edgeAttributes;
+  #gradientMaterial;
 
   constructor(container) {
     this.container = container;
