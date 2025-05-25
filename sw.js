@@ -1,4 +1,3 @@
-/* sw.js – Service Worker for Elvira Genesis-Elvira */
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open('elvira-v1').then(cache => {
@@ -7,10 +6,12 @@ self.addEventListener('install', event => {
         '/index.html',
         '/style.css',
         '/nexus.js',
-        '/charts.js',
-        '/llm.js',
         '/theme-toggle.js',
-        '/accordion.js'
+        '/llm.js',
+        '/charts.js',
+        '/telemetry.js',
+        '/accordion.js',
+        '/import-map.json'
       ]);
     })
   );
