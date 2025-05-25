@@ -1,7 +1,7 @@
 /* nexus.js - Enhanced Core v3.1 */
 'use strict';
 
-// Centralized Module Logger for real-time tracing
+// Centralized Module Logger
 class ModuleLogger {
   constructor(wsUrl = null) {
     this._ws = null;
@@ -404,7 +404,7 @@ class NeuralBackground {
       }
       this._renderer.setPixelRatio(this._DPR);
       this._renderer.setSize(innerWidth, innerHeight);
-      this._renderer.toneMapping = THREE.ACESFilmicToneMapping; // Native tone mapping
+      this._renderer.toneMapping = THREE.ACESFilmicToneMapping;
       this._renderer.toneMappingExposure = 1.0;
       this._container.appendChild(this._renderer.domElement);
 
@@ -453,8 +453,6 @@ class NeuralBackground {
   _init2DFallback() {
     ModuleLoader.log('Using 2D canvas fallback');
     moduleLogger.log('2d_fallback_init', {});
-    const area = innerWidth * innerHeight;
-    const N = Math.max(100, Math.min(600, Math.floor(area / 50_000)));
     const canvas = Object.assign(document.createElement('canvas'), {
       id: 'neural-bg-fallback',
       'aria-label': 'Fallback neural network',
@@ -467,65 +465,46 @@ class NeuralBackground {
       moduleLogger.log('2d_fallback_error', { error: err.message });
       throw err;
     }
-    this._particles = Array.from({ length: N }, () => ({
-      x: Math.random() * innerWidth,
-      y: Math.random() * innerHeight,
-      vx: (Math.random() - 0.5) * 1.0,
-      vy: (Math.random() - 0.5) * 1.0,
-      pulse: Math.random() * 2 * Math.PI,
-      size: 4 + Math.random() * 4,
+    const pulses = Array.from({ length: 150 }, () => ({
+      x: Math.random(),
+      y: Math.random(),
+      angle: Math.random() * Math.PI * 2,
+      speed: 0.001 + Math.random() * 0.002,
+      radius: 0.002 + Math.random() * 0.01,
+      hue: 185 + Math.random() * 30,
     }));
-    this._edges = Array.from({ length: N * 2 }, () => {
-      let s = Math.floor(Math.random() * N), t;
-      do t = Math.floor(Math.random() * N); while (t === s);
-      return { s, t, pulse: Math.random() * 2 * Math.PI };
-    });
 
     const draw = (t) => {
       canvas.width = innerWidth * devicePixelRatio;
       canvas.height = innerHeight * devicePixelRatio;
       canvas.style.width = `${innerWidth}px`;
       canvas.style.height = `${innerHeight}px`;
+      ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
 
-      ctx.globalAlpha = 0.1;
-      ctx.fillStyle = '#0c0d10';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.globalAlpha = 1;
+      ctx.fillStyle = 'rgba(12,13,16,0.2)';
+      ctx.fillRect(0, 0, innerWidth, innerHeight);
 
-      const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      grad.addColorStop(0, 'rgba(107,226,235,0.2)');
-      grad.addColorStop(0.5, 'rgba(107,226,235,0.2)');
-      grad.addColorStop(1, 'rgba(179,157,219,0.2)');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      for (let p of pulses) {
+        p.x += Math.cos(p.angle) * p.speed;
+        p.y += Math.sin(p.angle) * p.speed;
 
-      ctx.lineWidth = 1.2;
-      this._edges.forEach(e => {
-        const a = this._particles[e.s], b = this._particles[e.t];
-        const d = Math.hypot(a.x - b.x, a.y - b.y);
-        if (d < 300) {
-          e.pulse += 0.04;
-          ctx.strokeStyle = `rgba(107,226,235,${(0.2 + 0.3 * Math.sin(e.pulse)) * (1 - d / 300)})`;
-          ctx.beginPath();
-          ctx.moveTo(a.x * devicePixelRatio, a.y * devicePixelRatio);
-          ctx.lineTo(b.x * devicePixelRatio, b.y * devicePixelRatio);
-          ctx.stroke();
+        if (p.x < 0 || p.x > 1 || p.y < 0 || p.y > 1) {
+          p.x = Math.random(); p.y = Math.random();
         }
-      });
 
-      this._particles.forEach(n => {
-        n.x += n.vx; n.y += n.vy; n.pulse += 0.06;
-        if (n.x < 0 || n.x > innerWidth) n.vx *= -1;
-        if (n.y < 0 || n.y > innerHeight) n.vy *= -1;
+        const px = p.x * innerWidth;
+        const py = p.y * innerHeight;
+        const r = p.radius * Math.min(innerWidth, innerHeight);
+
+        const grad = ctx.createRadialGradient(px, py, 0, px, py, r);
+        grad.addColorStop(0, `hsla(${p.hue}, 100%, 70%, 0.4)`);
+        grad.addColorStop(1, `hsla(${p.hue}, 100%, 70%, 0)`);
+
         ctx.beginPath();
-        ctx.arc(n.x * devicePixelRatio, n.y * devicePixelRatio,
-                n.size * (1 + 0.3 * Math.sin(n.pulse)), 0, 2 * Math.PI);
-        ctx.fillStyle = 'rgba(107,226,235,0.9)';
-        ctx.shadowColor = '#6be2eb';
-        ctx.shadowBlur = 12;
+        ctx.fillStyle = grad;
+        ctx.arc(px, py, r, 0, 2 * Math.PI);
         ctx.fill();
-        ctx.shadowBlur = 0;
-      });
+      }
 
       if (!this._prefersRM) appState.trackAnimation('neural-bg-2d', draw);
     };
@@ -584,7 +563,7 @@ class NeuralBackground {
           if(d > 0.5) discard;
           float a = smoothstep(0.5, 0.2, d) * (0.8 + 0.4 * sin(vPulse));
           float fade = 1.0 - abs(vPos.z / 15.0);
-          a *= (0.9 + 0.1 * rand(gl_PointCoord + vPos.xy)); // Blue noise
+          a *= (0.9 + 0.1 * rand(gl_PointCoord + vPos.xy));
           gl_FragColor = vec4(0.42, 0.89, 0.92, a * fade); // #6be2eb
         }`,
       transparent: true,
@@ -978,14 +957,11 @@ async function initCoreModules() {
   try {
     const modules = await Promise.allSettled([
       ModuleLoader.load('/theme-toggle.js', 'theme-toggle').then(m => ({ initThemeToggle: m?.initThemeToggle })),
-      ModuleLoader.load('/llm.js', 'llm').then(m => ({ initLLM: m?.initLLM })),
-      ModuleLoader.load('/charts.js', 'charts').then(m => ({ initCharts: m?.initCharts })),
-      ModuleLoader.load('/telemetry.js', 'telemetry').then(m => ({ initTelemetry: m?.initTelemetry })),
-      ModuleLoader.load('/accordion.js', 'accordion').then(m => ({ initAccordion: m?.initAccordion }))
+      ModuleLoader.load('/telemetry.js', 'telemetry').then(m => ({ initTelemetry: m?.initTelemetry }))
     ]);
 
     const loadedModules = modules.reduce((acc, result, index) => {
-      const name = ['theme-toggle', 'llm', 'charts', 'telemetry', 'accordion'][index];
+      const name = ['theme-toggle', 'telemetry'][index];
       if (result.status === 'fulfilled' && result.value) {
         appState._resources.register(result.value, name);
         return { ...acc, ...result.value };
@@ -1072,19 +1048,7 @@ async function initApplication() {
     new AuthFlow();
 
     if (modules.initThemeToggle) modules.initThemeToggle();
-    if (modules.initCharts) modules.initCharts();
-    if (modules.initLLM) {
-      const orig = modules.initLLM;
-      modules.initLLM = async (...a) => { 
-        appState._llmCallCount++; 
-        ModuleLoader.log(`LLM call count: ${appState._llmCallCount}`);
-        moduleLogger.log('llm_call', { count: appState._llmCallCount });
-        return orig(...a); 
-      };
-      modules.initLLM();
-    }
     if (modules.initTelemetry) modules.initTelemetry();
-    if (modules.initAccordion) modules.initAccordion(['#features']);
 
     initAccessibility();
     initPerformanceMonitoring();
