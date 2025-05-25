@@ -11,9 +11,9 @@
 :root {
   --bg: #0c0d10;
   --fg: #e0e3f4;
-  --accent: #7cd4fc;
-  --secondary: #a8c6e5;
-  --glow: rgba(124, 212, 252, 0.3);
+  --accent: #6be2eb;
+  --secondary: #b39ddb; /* Pastel purple */
+  --glow: rgba(107, 226, 235, 0.3);
   --blur: rgba(255, 255, 255, 0.4);
   --glass-bg: linear-gradient(145deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%);
   --glass-border: rgba(255, 255, 255, 0.3);
@@ -25,8 +25,8 @@
 :root[data-theme="frost"] {
   --bg: rgba(240, 248, 255, 0.98);
   --fg: #0c0d10;
-  --accent: #7cd4fc;
-  --secondary: #a8c6e5;
+  --accent: #6be2eb;
+  --secondary: #b39ddb;
 }
 
 /* Light Theme */
@@ -74,7 +74,7 @@ body {
   content: '';
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(124, 212, 252, 0.2) 0%, transparent 70%);
+  background: radial-gradient(circle at 50% 50%, rgba(107, 226, 235, 0.25) 0%, transparent 70%);
   pointer-events: none;
   contain: strict;
 }
@@ -112,7 +112,7 @@ h1 {
   font-weight: 600;
   font-size: 0.95rem;
   padding: 0.5rem;
-  transition: color 0.2s ease-out;
+  transition: color 0.15s ease-out;
   will-change: color;
 }
 .nav-links a:hover, .nav-links a.active {
@@ -126,7 +126,7 @@ h1 {
   color: var(--fg);
   font-size: 1.3rem;
   cursor: pointer;
-  transition: transform 0.2s ease-out;
+  transition: transform 0.15s ease-out;
   will-change: transform;
 }
 .theme-toggle:hover {
@@ -165,7 +165,7 @@ h2 {
   margin-bottom: 1.5rem;
   text-align: center;
   grid-column: 1 / -1;
-  text-shadow: 0 0 12px var(--glow);
+  text-shadow: 0 0 15px var(--glow);
 }
 h3 {
   font: 600 1.2rem 'Sora';
@@ -245,7 +245,7 @@ td {
   border-radius: 8px;
   font: 600 0.95rem 'Sora';
   cursor: pointer;
-  transition: transform 0.2s ease-out, border-color 0.2s ease-out, box-shadow 0.2s ease-out;
+  transition: transform 0.15s ease-out, border-color 0.15s ease-out, box-shadow 0.15s ease-out;
   position: relative;
   overflow: hidden;
   will-change: transform, border-color, box-shadow;
@@ -307,7 +307,7 @@ td {
   border-radius: 10px;
   font: 600 1rem 'Sora';
   cursor: pointer;
-  transition: transform 0.2s ease-out, border-color 0.2s ease-out, box-shadow 0.2s ease-out;
+  transition: transform 0.15s ease-out, border-color 0.15s ease-out, box-shadow 0.15s ease-out;
   will-change: transform, border-color, box-shadow;
 }
 .tab-button:hover, .tab-button.active, .tab-button:focus {
@@ -443,10 +443,10 @@ footer p {
 footer a {
   color: var(--accent);
   text-decoration: none;
-  transition: color 0.2s ease-out;
+  transition: color 0.15s ease-out;
 }
 footer a:hover {
-  color: #4f8dfd;
+  color: #b39ddb;
 }
 
 /* Accordion */
@@ -459,10 +459,10 @@ footer a:hover {
   cursor: pointer;
   color: var(--fg);
   font: 600 1rem 'Sora';
-  transition: background 0.2s ease-out;
+  transition: background 0.15s ease-out;
 }
 .accordion-header:hover, .accordion-header:focus {
-  background: rgba(124, 212, 252, 0.1);
+  background: rgba(107, 226, 235, 0.1);
 }
 .accordion-header:focus {
   outline: 2px solid var(--accent);
@@ -629,7 +629,7 @@ footer a:hover {
 @media screen and (min-resolution: 192dpi) {
   body { font-size: 17px; }
   .card { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25); }
-  h2 { text-shadow: 0 0 15px var(--glow); }
+  h2 { text-shadow: 0 0 18px var(--glow); }
 }
 @media (prefers-reduced-motion: reduce), (max-device-width: 768px) {
   .card, .cyber-button, .tab-button, .accordion-header {
