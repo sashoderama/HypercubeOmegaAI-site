@@ -802,7 +802,7 @@ async function initEverything() {
     await initNeuralBackground();
     modules.initThemeToggle?.();
     initScrollSpy();
-    modules.initCharts?.(state);
+    modules.initCharts?.(state); // Pass state
     if (modules.initLLM) {
       const orig = modules.initLLM;
       modules.initLLM = async (...a) => { state.llmCallCount++; return orig(...a); };
