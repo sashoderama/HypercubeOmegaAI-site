@@ -1,7 +1,9 @@
-/* nexus.js – Unified Entry Point for Elvira Genesis-Elvira */
+/* nexus.js – Unified Entry Point for Elvira Genesis-Elvira (Enhanced Full v2.1) */
 'use strict';
 
+// ——————————————————————————————————————————————————————————————
 // Module imports with retry logic
+// ——————————————————————————————————————————————————————————————
 const loadModule = async (url, retries = 3) => {
   for (let i = 0; i < retries; i++) {
     try {
@@ -13,13 +15,14 @@ const loadModule = async (url, retries = 3) => {
       console.warn(`Failed to load ${url} on attempt ${i + 1}: ${err.message}`);
       if (i === retries - 1) {
         console.error(`Exhausted retries for ${url}: ${err.message}`);
-        throw new Error(`Failed to load ${url}: ${err.message}`);
+        throw err;
       }
-      await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1)));
+      await new Promise(r => setTimeout(r, 1000 * (i + 1)));
     }
   }
 };
 
+// Загрузи външни модули
 const modules = await Promise.allSettled([
   loadModule('/theme-toggle.js').then(m => ({ initThemeToggle: m.initThemeToggle })),
   loadModule('/llm.js').then(m => ({ initLLM: m.initLLM })),
@@ -28,13 +31,12 @@ const modules = await Promise.allSettled([
   loadModule('/accordion.js').then(m => ({ initAccordion: m.initAccordion })),
 ]).then(results => {
   const loaded = {};
-  results.forEach((result, i) => {
-    const moduleName = ['theme-toggle', 'llm', 'charts', 'telemetry', 'accordion'][i];
-    if (result.status === 'fulfilled') {
-      console.debug(`Module ${moduleName} loaded successfully`);
-      Object.assign(loaded, result.value);
+  ['theme-toggle', 'llm', 'charts', 'telemetry', 'accordion'].forEach((name, i) => {
+    if (results[i].status === 'fulfilled') {
+      Object.assign(loaded, results[i].value);
+      console.debug(`Module ${name} loaded successfully`);
     } else {
-      console.warn(`Module ${moduleName} failed: ${result.reason}`);
+      console.warn(`Module ${name} failed: ${results[i].reason}`);
     }
   });
   return loaded;
@@ -43,7 +45,9 @@ const modules = await Promise.allSettled([
   return {};
 });
 
-// Helpers
+// ——————————————————————————————————————————————————————————————
+// DOM helpers, media queries и състояние
+// ——————————————————————————————————————————————————————————————
 const $ = s => {
   const el = document.querySelector(s);
   if (!el) console.warn(`Element not found: ${s}`);
@@ -56,6 +60,40 @@ const $$ = s => {
 };
 const prefersRM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isMobile = window.innerWidth <= 768;
+let DPR = Math.min(devicePixelRatio, isMobile ? 1.5 : 2);
+const state = {
+  llmCallCount: 0,
+  animationFrameId: null,
+  hexFrameId: null,
+  cleanup: new Set(),
+};
+
+// ——————————————————————————————————————————————————————————————
+// Adaptive Resolution Scaling функция
+// ——————————————————————————————————————————————————————————————
+function adaptResolution(renderer, composer, camera) {
+  let lastFPS = 60, frames = 0, lastTime = performance.now();
+  const measure = t => {
+    frames++;
+    if (t - lastTime >= 1000) {
+      lastFPS = frames;
+      frames = 0;
+      lastTime = t;
+      if (lastFPS > 65 && DPR < 2.5) DPR = +(DPR + 0.1).toFixed(2);
+      else if (lastFPS < 55 && DPR > 1) DPR = +(DPR - 0.1).toFixed(2);
+      renderer.setPixelRatio(DPR);
+      composer.setSize(innerWidth, innerHeight);
+      camera.updateProjectionMatrix();
+      console.debug(`Adaptive DPR=${DPR}, FPS=${lastFPS}`);
+    }
+    requestAnimationFrame(measure);
+  };
+  requestAnimationFrame(measure);
+}
+
+// ——————————————————————————————————————————————————————————————
+// WebGL Support Check
+// ——————————————————————————————————————————————————————————————
 const webglSupported = (() => {
   try {
     const canvas = document.createElement('canvas');
@@ -68,161 +106,173 @@ const webglSupported = (() => {
   }
 })();
 
-// State
-const state = {
-  llmCallCount: 0,
-  animationFrameId: null,
-  hexFrameId: null,
-  cleanup: new Set(),
-};
-
-// Neural Background (Omni-Level Upscaled)
+// ——————————————————————————————————————————————————————————————
+// initNeuralBackground – пълна версия
+// ——————————————————————————————————————————————————————————————
 async function initNeuralBackground() {
   const host = $('#neural-bg');
-  if (!host) {
-    console.error('Neural background container not found');
-    return;
-  }
+  if (!host) return console.error('Neural background container not found');
 
   console.debug('Initializing neural background...');
   const area = innerWidth * innerHeight;
-  let renderer, composer;
 
+  // 2D fallback
   const fallback2D = () => {
-    console.debug('Falling back to 2D canvas for neural background');
-    const N = Math.max(50, Math.min(300, Math.floor(area / 80_000))); // Increased nodes
+    console.debug('Using 2D canvas fallback');
+    const N = Math.max(100, Math.min(600, Math.floor(area / 50_000)));
     const canvas = Object.assign(document.createElement('canvas'), {
       id: 'neural-bg-fallback',
-      'aria-label': 'Decorative neural network visualization',
+      'aria-label': 'Fallback neural network',
     });
     host.appendChild(canvas);
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true });
     const nodes = Array.from({ length: N }, () => ({
       x: Math.random() * innerWidth,
       y: Math.random() * innerHeight,
-      vx: (Math.random() - 0.5) * 0.8,
-      vy: (Math.random() - 0.5) * 0.8,
-      pulse: Math.random() * Math.PI * 2,
-      size: 4 + Math.random() * 3,
+      vx: (Math.random() - 0.5) * 1.0,
+      vy: (Math.random() - 0.5) * 1.0,
+      pulse: Math.random() * 2 * Math.PI,
+      size: 4 + Math.random() * 4,
     }));
-    const edges = Array.from({ length: N * 1.5 }, () => {
+    const edges = Array.from({ length: N * 2 }, () => {
       let s = Math.floor(Math.random() * N), t;
-      do { t = Math.floor(Math.random() * N); } while (t === s);
-      return { s, t, pulse: Math.random() * Math.PI * 2 };
+      do t = Math.floor(Math.random() * N); while (t === s);
+      return { s, t, pulse: Math.random() * 2 * Math.PI };
     });
 
-    const draw = ts => {
+    function draw(t) {
       canvas.width = innerWidth * devicePixelRatio;
       canvas.height = innerHeight * devicePixelRatio;
       canvas.style.width = `${innerWidth}px`;
       canvas.style.height = `${innerHeight}px`;
 
-      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      gradient.addColorStop(0, 'rgba(124, 212, 252, 0.2)');
-      gradient.addColorStop(1, 'rgba(79, 141, 253, 0.2)');
-      ctx.fillStyle = gradient;
+      ctx.globalAlpha = 0.1;
+      ctx.fillStyle = '#0c0d10';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.globalAlpha = 1;
+
+      // Градиент фон
+      const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+      grad.addColorStop(0, 'rgba(124,212,252,0.2)');
+      grad.addColorStop(0.5, 'rgba(107,226,235,0.2)');
+      grad.addColorStop(1, 'rgba(179,157,219,0.2)'); // Pastel purple accent
+      ctx.fillStyle = grad;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.lineWidth = 1.5;
-      edges.forEach(({ s, t, pulse }) => {
-        const a = nodes[s], b = nodes[t], d = Math.hypot(a.x - b.x, a.y - b.y);
+      ctx.lineWidth = 1.2;
+      edges.forEach(e => {
+        const a = nodes[e.s], b = nodes[e.t];
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
         if (d < 300) {
-          pulse += 0.03;
-          ctx.strokeStyle = `rgba(124, 212, 252, ${(0.3 + 0.25 * Math.sin(pulse)) * (1 - d / 300)})`;
+          e.pulse += 0.04;
+          ctx.strokeStyle = `rgba(107,226,235,${(0.2 + 0.3 * Math.sin(e.pulse)) * (1 - d / 300)})`;
           ctx.beginPath();
           ctx.moveTo(a.x * devicePixelRatio, a.y * devicePixelRatio);
           ctx.lineTo(b.x * devicePixelRatio, b.y * devicePixelRatio);
           ctx.stroke();
         }
-        edges[s].pulse = pulse;
       });
 
       nodes.forEach(n => {
-        n.x += n.vx; n.y += n.vy; n.pulse += 0.04;
+        n.x += n.vx; n.y += n.vy; n.pulse += 0.06;
         if (n.x < 0 || n.x > innerWidth) n.vx *= -1;
         if (n.y < 0 || n.y > innerHeight) n.vy *= -1;
         ctx.beginPath();
-        ctx.arc(n.x * devicePixelRatio, n.y * devicePixelRatio, n.size * (1 + 0.4 * Math.sin(n.pulse)), 0, 2 * Math.PI);
-        ctx.fillStyle = 'rgba(124, 212, 252, 0.9)';
-        ctx.shadowColor = '#7cd4fc';
-        ctx.shadowBlur = 15;
+        ctx.arc(n.x * devicePixelRatio, n.y * devicePixelRatio,
+                n.size * (1 + 0.3 * Math.sin(n.pulse)), 0, 2 * Math.PI);
+        ctx.fillStyle = 'rgba(107,226,235,0.9)';
+        ctx.shadowColor = '#6be2eb';
+        ctx.shadowBlur = 12;
         ctx.fill();
         ctx.shadowBlur = 0;
       });
 
       if (!prefersRM) state.animationFrameId = requestAnimationFrame(draw);
-    };
+    }
 
-    const resize = () => {
+    const onRes = () => {
       if (state.animationFrameId) cancelAnimationFrame(state.animationFrameId);
-      requestAnimationFrame(draw);
+      draw(0);
     };
-    window.addEventListener('resize', resize);
-    state.cleanup.add(() => window.removeEventListener('resize', resize));
-    requestAnimationFrame(draw);
+    window.addEventListener('resize', onRes);
+    state.cleanup.add(() => window.removeEventListener('resize', onRes));
+    draw(0);
   };
 
   if (!webglSupported || prefersRM) {
-    console.log('WebGL not supported or reduced motion preferred, falling back to 2D');
+    console.log('WebGL not supported or reduced motion → fallback2D');
     return fallback2D();
   }
 
+  // WebGL path
   try {
-    console.debug('Loading Three.js dependencies...');
+    console.debug('Loading Three.js & postprocessing...');
     const [
       { default: THREE },
       { EffectComposer },
       { RenderPass },
       { UnrealBloomPass },
-      { SSAOPass }
+      { SSAOPass },
+      { MotionBlurPass },
+      { ToneMappingPass }
     ] = await Promise.all([
       import('https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js'),
       import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/EffectComposer.js'),
       import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/RenderPass.js'),
       import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/UnrealBloomPass.js'),
       import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/SSAOPass.js'),
+      import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/MotionBlurPass.js'),
+      import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/postprocessing/ToneMappingPass.js'),
     ]);
 
-    const DPR = isMobile ? Math.min(devicePixelRatio, 1.5) : Math.min(devicePixelRatio, 2);
-    renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    // Renderer & Scene
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setPixelRatio(DPR);
     renderer.setSize(innerWidth, innerHeight);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.0;
     host.appendChild(renderer.domElement);
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 1000);
     camera.position.z = 35;
 
-    const ambientLight = new THREE.AmbientLight(0x404040, 0.8);
-    scene.add(ambientLight);
-    const pointLight = new THREE.PointLight(0x7cd4fc, 2.0, 30);
-    pointLight.position.set(10, 10, 10);
-    scene.add(pointLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-    directionalLight.position.set(0, 15, 15);
-    scene.add(directionalLight);
+    // Lights
+    scene.add(new THREE.AmbientLight(0x404040, 0.8));
+    const pl = new THREE.PointLight(0x6be2eb, 2.5, 40);
+    pl.position.set(10, 10, 10); scene.add(pl);
+    const dl = new THREE.DirectionalLight(0xb39ddb, 0.5); // Pastel purple accent
+    dl.position.set(0, 15, 15); scene.add(dl);
 
-    composer = new EffectComposer(renderer);
+    // Composer & Passes
+    const composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-    composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 0.7, 0.3, 0.9));
-    composer.addPass(new SSAOPass(scene, camera, innerWidth, innerHeight));
+    composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 1.0, 0.5, 0.8));
+    composer.addPass(new SSAOPass(scene, camera, innerWidth, innerHeight, 1.5, 0.8));
+    composer.addPass(new MotionBlurPass(scene, camera));
+    composer.addPass(new ToneMappingPass(THREE.ACESFilmicToneMapping, 1.0));
 
-    const NODE_COUNT = isMobile ? 150 : 300; // Upscaled particles
+    // Adaptive scaling
+    adaptResolution(renderer, composer, camera);
+
+    // Create nodes & edges
+    const NODE_COUNT = isMobile ? 300 : 600;
     const clusters = 6;
     const nodes = Array.from({ length: NODE_COUNT }, () => ({
       pos: new THREE.Vector3((Math.random() - 0.5) * 30, (Math.random() - 0.5) * 30, (Math.random() - 0.5) * 15),
-      vel: new THREE.Vector3((Math.random() - 0.5) * 0.06, (Math.random() - 0.5) * 0.06, (Math.random() - 0.5) * 0.03),
+      vel: new THREE.Vector3((Math.random() - 0.5) * 0.08, (Math.random() - 0.5) * 0.08, (Math.random() - 0.5) * 0.04),
       cluster: Math.floor(Math.random() * clusters),
-      pulse: Math.random() * Math.PI * 2,
-      rotation: Math.random() * Math.PI * 2,
-      size: 5 + Math.random() * 3,
+      pulse: Math.random() * 2 * Math.PI,
+      rotation: Math.random() * 2 * Math.PI,
+      size: 6 + Math.random() * 4,
     }));
-    const edges = Array.from({ length: NODE_COUNT * 1.5 }, () => {
+    const edges = Array.from({ length: NODE_COUNT * 2 }, () => {
       let s = Math.floor(Math.random() * NODE_COUNT), t;
-      do { t = Math.floor(Math.random() * NODE_COUNT); } while (t === s);
-      return { s, t, pulse: Math.random() * Math.PI * 2 };
+      do t = Math.floor(Math.random() * NODE_COUNT); while (t === s);
+      return { s, t, pulse: Math.random() * 2 * Math.PI };
     });
 
+    // BufferGeometry & Shaders for nodes
     const posArr = new Float32Array(NODE_COUNT * 3);
     const pulseArr = new Float32Array(NODE_COUNT);
     const rotArr = new Float32Array(NODE_COUNT);
@@ -232,187 +282,154 @@ async function initNeuralBackground() {
     nodeGeo.setAttribute('pulse', new THREE.BufferAttribute(pulseArr, 1));
     nodeGeo.setAttribute('rotation', new THREE.BufferAttribute(rotArr, 1));
     nodeGeo.setAttribute('size', new THREE.BufferAttribute(sizeArr, 1));
+
     const nodeMat = new THREE.ShaderMaterial({
       vertexShader: `
         attribute float pulse;
         attribute float rotation;
         attribute float size;
-        varying float vP;
+        varying float vPulse;
         varying vec3 vPos;
-        void main() {
-          vP = pulse;
+        void main(){
+          vPulse = pulse;
           vPos = position;
           gl_PointSize = size * (1.0 + 0.5 * sin(pulse));
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-      `,
+        }`,
       fragmentShader: `
-        varying float vP;
+        varying float vPulse;
         varying vec3 vPos;
-        void main() {
-          vec2 c = gl_PointCoord - 0.5;
-          float d = length(c);
-          if (d > 0.5) discard;
-          float a = smoothstep(0.5, 0.2, d) * (0.8 + 0.4 * sin(vP));
+        float rand(vec2 c){ return fract(sin(dot(c, vec2(12.9898, 78.233))) * 43758.5453); }
+        void main(){
+          vec2 uv = gl_PointCoord - 0.5;
+          float d = length(uv);
+          if(d > 0.5) discard;
+          float a = smoothstep(0.5, 0.2, d) * (0.8 + 0.4 * sin(vPulse));
           float fade = 1.0 - abs(vPos.z / 15.0);
-          gl_FragColor = vec4(0.49, 0.83, 0.99, a * fade * 0.9);
-        }
-      `,
+          a *= (0.9 + 0.1 * rand(gl_PointCoord + vPos.xy)); // Blue noise
+          gl_FragColor = vec4(0.42, 0.89, 0.92, a * fade); // #6be2eb
+        }`,
       transparent: true,
     });
-    scene.add(new THREE.Points(nodeGeo, nodeMat));
+    const points = new THREE.Points(nodeGeo, nodeMat);
+    scene.add(points);
 
+    // BufferGeometry & Shaders за edges
     const edgeArr = new Float32Array(edges.length * 6);
     const edgePulseArr = new Float32Array(edges.length);
     const edgeGeo = new THREE.BufferGeometry();
     edgeGeo.setAttribute('position', new THREE.BufferAttribute(edgeArr, 3));
     edgeGeo.setAttribute('pulse', new THREE.BufferAttribute(edgePulseArr, 1));
+
     const edgeMat = new THREE.ShaderMaterial({
       vertexShader: `
         attribute float pulse;
-        varying float vP;
+        varying float vPulse;
         varying vec3 vPos;
-        void main() {
-          vP = pulse;
+        void main(){
+          vPulse = pulse;
           vPos = position;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-      `,
+        }`,
       fragmentShader: `
-        varying float vP;
+        varying float vPulse;
         varying vec3 vPos;
-        void main() {
+        void main(){
           float f = 1.0 - abs(vPos.z / 15.0);
-          float pulseAlpha = 0.3 + 0.3 * sin(vP);
-          gl_FragColor = vec4(0.49, 0.83, 0.99, pulseAlpha * f * 0.8);
-        }
-      `,
+          float alpha = 0.3 + 0.3 * sin(vPulse);
+          gl_FragColor = vec4(0.42, 0.89, 0.92, alpha * f); // #6be2eb
+        }`,
       transparent: true,
     });
-    scene.add(new THREE.LineSegments(edgeGeo, edgeMat));
+    const lines = new THREE.LineSegments(edgeGeo, edgeMat);
+    scene.add(lines);
 
-    const gradientGeo = new THREE.PlaneGeometry(40, 40);
-    const gradientMat = new THREE.ShaderMaterial({
+    // Gradient plane зад всичко
+    const gradGeo = new THREE.PlaneGeometry(40, 40);
+    const gradMat = new THREE.ShaderMaterial({
       vertexShader: `
         varying vec2 vUv;
-        void main() {
+        void main(){
           vUv = uv;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }
-      `,
+        }`,
       fragmentShader: `
         varying vec2 vUv;
         uniform float time;
-        void main() {
-          vec2 uv = vUv;
-          vec3 color = mix(vec3(0.94, 0.97, 1.0), vec3(0.49, 0.83, 0.99), uv.y);
-          float noise = fract(sin(dot(uv * time * 0.001, vec2(12.9898, 78.233))) * 43758.5453);
-          color += noise * 0.02;
-          gl_FragColor = vec4(color, 0.4);
+        float perlin(vec2 p) {
+          return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
         }
-      `,
+        void main(){
+          vec2 uv = vUv;
+          vec3 c = mix(vec3(0.94, 0.97, 1.0), vec3(0.42, 0.89, 0.92), uv.y);
+          float noise = perlin(uv * 10.0 + time * 0.001);
+          c += noise * 0.02;
+          gl_FragColor = vec4(c, 0.4);
+        }`,
+      transparent: true,
       uniforms: { time: { value: 0 } },
-      transparent: true,
     });
-    const gradientMesh = new THREE.Mesh(gradientGeo, gradientMat);
-    gradientMesh.position.z = -12;
-    scene.add(gradientMesh);
+    const gradMesh = new THREE.Mesh(gradGeo, gradMat);
+    gradMesh.position.z = -12;
+    scene.add(gradMesh);
 
-    const particleCount = isMobile ? 150 : 300; // Upscaled particles
-    const particleGeo = new THREE.BufferGeometry();
-    const particlePos = new Float32Array(particleCount * 3);
-    const particleVel = new Float32Array(particleCount * 3);
-    const particleSize = new Float32Array(particleCount);
-    for (let i = 0; i < particleCount; i++) {
-      particlePos[i * 3] = (Math.random() - 0.5) * 35;
-      particlePos[i * 3 + 1] = (Math.random() - 0.5) * 35;
-      particlePos[i * 3 + 2] = (Math.random() - 0.5) * 18;
-      particleVel[i * 3] = (Math.random() - 0.5) * 0.03;
-      particleVel[i * 3 + 1] = (Math.random() - 0.5) * 0.03;
-      particleVel[i * 3 + 2] = (Math.random() - 0.5) * 0.02;
-      particleSize[i] = 1.5 + Math.random() * 1.0;
-    }
-    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePos, 3));
-    particleGeo.setAttribute('size', new THREE.BufferAttribute(particleSize, 1));
-    const particleMat = new THREE.PointsMaterial({
-      color: 0x7cd4fc,
-      size: isMobile ? 1.2 : 1.8,
-      transparent: true,
-      opacity: 0.7,
-      blending: THREE.AdditiveBlending,
-    });
-    const particles = new THREE.Points(particleGeo, particleMat);
-    scene.add(particles);
-
-    const refreshBuffers = () => {
-      nodes.forEach((n, i) => {
-        posArr.set([n.pos.x, n.pos.y, n.pos.z], i * 3);
-        pulseArr[i] = n.pulse;
-        rotArr[i] = n.rotation;
-        sizeArr[i] = n.size;
-      });
-      nodeGeo.attributes.position.needsUpdate = true;
-      nodeGeo.attributes.pulse.needsUpdate = true;
-      nodeGeo.attributes.rotation.needsUpdate = true;
-      nodeGeo.attributes.size.needsUpdate = true;
-
-      edges.forEach(({ s, t, pulse }, i) => {
-        const a = nodes[s].pos, b = nodes[t].pos;
-        edgeArr.set([a.x, a.y, a.z, b.x, b.y, b.z], i * 6);
-        edgePulseArr[i] = pulse;
-      });
-      edgeGeo.attributes.position.needsUpdate = true;
-      edgeGeo.attributes.pulse.needsUpdate = true;
-
-      for (let i = 0; i < particleCount; i++) {
-        particlePos[i * 3] += particleVel[i * 3];
-        particlePos[i * 3 + 1] += particleVel[i * 3 + 1];
-        particlePos[i * 3 + 2] += particleVel[i * 3 + 2];
-        if (Math.abs(particlePos[i * 3]) > 35) particleVel[i * 3] *= -1;
-        if (Math.abs(particlePos[i * 3 + 1]) > 35) particleVel[i * 3 + 1] *= -1;
-        if (Math.abs(particlePos[i * 3 + 2]) > 18) particleVel[i * 3 + 2] *= -1;
-      }
-      particleGeo.attributes.position.needsUpdate = true;
-    };
-
+    // Основен анимационен loop
     let last = 0;
-    const animate = t => {
-      if (t - last > 16) { // Target 60fps
+    function animate(t) {
+      if (t - last > 16) {
+        // Обнови буферите
+        nodes.forEach((n, i) => {
+          posArr.set([n.pos.x, n.pos.y, n.pos.z], i * 3);
+          pulseArr[i] = n.pulse;
+          rotArr[i] = n.rotation;
+          sizeArr[i] = n.size;
+        });
+        nodeGeo.attributes.position.needsUpdate = true;
+        nodeGeo.attributes.pulse.needsUpdate = true;
+        nodeGeo.attributes.rotation.needsUpdate = true;
+        nodeGeo.attributes.size.needsUpdate = true;
+
+        edges.forEach((e, i) => {
+          const a = nodes[e.s].pos, b = nodes[e.t].pos;
+          edgeArr.set([a.x, a.y, a.z, b.x, b.y, b.z], i * 6);
+          edgePulseArr[i] = e.pulse;
+        });
+        edgeGeo.attributes.position.needsUpdate = true;
+        edgeGeo.attributes.pulse.needsUpdate = true;
+
+        // Движение на възлите с пружинна анимация
         nodes.forEach(n => {
           n.pos.add(n.vel);
-          n.pulse += 0.05;
-          n.rotation += 0.02;
+          n.pulse += 0.08; // По-бързо пулсиране
           ['x', 'y', 'z'].forEach(ax => {
             const lim = ax === 'z' ? 15 : 30;
             if (Math.abs(n.pos[ax]) > lim) n.vel[ax] *= -1;
           });
+          // Spring attraction
           const center = new THREE.Vector3();
           let cnt = 0;
           nodes.forEach(o => {
             if (o.cluster === n.cluster) {
-              center.add(o.pos);
-              cnt++;
+              center.add(o.pos); cnt++;
             }
           });
           if (cnt) {
             center.divideScalar(cnt);
-            n.vel.add(center.sub(n.pos).multiplyScalar(0.001));
+            n.vel.add(center.sub(n.pos).multiplyScalar(0.002));
           }
         });
-        edges.forEach(e => {
-          e.pulse += 0.04;
-        });
-        gradientMat.uniforms.time.value = t * 0.001;
+        edges.forEach(e => e.pulse += 0.04);
+        gradMat.uniforms.time.value = t * 0.001;
         camera.position.x = Math.sin(t * 0.00015) * 5;
         camera.position.y = Math.cos(t * 0.00012) * 4;
         camera.lookAt(0, 0, 0);
-        refreshBuffers();
+
         composer.render();
         last = t;
       }
       if (!prefersRM) state.animationFrameId = requestAnimationFrame(animate);
-    };
-
+    }
+    // Резайз
     const onResize = () => {
       renderer.setSize(innerWidth, innerHeight);
       composer.setSize(innerWidth, innerHeight);
@@ -421,8 +438,7 @@ async function initNeuralBackground() {
     };
     window.addEventListener('resize', onResize);
     state.cleanup.add(() => window.removeEventListener('resize', onResize));
-    onResize();
-    state.animationFrameId = requestAnimationFrame(animate);
+    animate(0);
 
     state.cleanup.add(() => {
       if (state.animationFrameId) cancelAnimationFrame(state.animationFrameId);
@@ -431,31 +447,27 @@ async function initNeuralBackground() {
       host.removeChild(renderer.domElement);
     });
   } catch (err) {
-    console.error('WebGL failed, using fallback:', err);
+    console.error('WebGL failed, fallback2D:', err);
     fallback2D();
   }
 }
 
-// Entropy 3D Hex Visualizer
+// ——————————————————————————————————————————————————————————————
+// initHexVisualizer (с пълни CDN импорти)
+// ——————————————————————————————————————————————————————————————
 async function initHexVisualizer() {
   const container = $('#hex-visualizer');
-  if (!container) {
-    console.warn('Hex visualizer container not found');
+  if (!container) return console.warn('Hex container not found');
+  if (!webglSupported || prefersRM) {
+    container.innerHTML = '<p aria-live="polite">WebGL disabled by preference or not supported.</p>';
     return;
   }
-
-  if (!webglSupported) {
-    container.innerHTML = '<p aria-live="polite">WebGL not supported. Please use a compatible browser.</p>';
-    return;
-  }
-
   try {
-    console.debug('Loading Three.js for hex visualizer...');
+    console.debug('Loading Three.js & OrbitControls...');
     const [{ default: THREE }, { OrbitControls }] = await Promise.all([
       import('https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js'),
       import('https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/controls/OrbitControls.js'),
     ]);
-
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setPixelRatio(isMobile ? 1.2 : 1.5);
     renderer.setSize(container.clientWidth, container.clientHeight);
@@ -467,52 +479,40 @@ async function initHexVisualizer() {
     camera.lookAt(0, 0, 0);
 
     const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.enableZoom = true;
-    controls.minDistance = 5;
-    controls.maxDistance = 20;
+    controls.enableDamping = true; controls.dampingFactor = 0.05;
+    controls.enableZoom = true; controls.minDistance = 5; controls.maxDistance = 20;
 
-    const hexGeometry = new THREE.CylinderGeometry(0.5, 0.5, 0.2, 6);
-    const hexMaterial = new THREE.MeshPhongMaterial({
-      color: 0x7cd4fc,
-      transparent: true,
-      opacity: 0.8,
-      side: THREE.DoubleSide,
-      emissive: 0x4f8dfd,
-      emissiveIntensity: 0.3,
+    const hexGeo = new THREE.CylinderGeometry(0.5, 0.5, 0.2, 6);
+    const hexMat = new THREE.MeshPhongMaterial({
+      color: 0x6be2eb, transparent: true, opacity: 0.8,
+      emissive: 0xb39ddb, emissiveIntensity: 0.3,
     });
-
-    const hexGrid = new THREE.Group();
-    const gridSize = 8; // Increased for denser grid
-    for (let x = -gridSize; x <= gridSize; x++) {
-      for (let y = -gridSize; y <= gridSize; y++) {
-        const hex = new THREE.Mesh(hexGeometry, hexMaterial);
-        const offset = y % 2 ? 0.5 : 0;
-        hex.position.set(x + offset, 0, y * 0.866);
-        hexGrid.add(hex);
+    const grid = new THREE.Group();
+    const size = 8;
+    for (let x = -size; x <= size; x++) {
+      for (let y = -size; y <= size; y++) {
+        const hex = new THREE.Mesh(hexGeo, hexMat);
+        hex.position.set(x + (y % 2 ? 0.5 : 0), 0, y * 0.866);
+        grid.add(hex);
       }
     }
-    scene.add(hexGrid);
-
+    scene.add(grid);
     const pointLight = new THREE.PointLight(0xffffff, 1.5, 100);
     pointLight.position.set(5, 5, 5);
     scene.add(pointLight);
-    const ambientLight = new THREE.AmbientLight(0x404040, 0.8);
-    scene.add(ambientLight);
+    scene.add(new THREE.AmbientLight(0x404040, 0.8));
 
     const animateHex = t => {
-      hexGrid.children.forEach(hex => {
-        const entropy = Math.sin(t * 0.001 + hex.position.x + hex.position.z) * 0.5 + 0.5;
-        hex.scale.y = 0.2 + entropy * 1.2;
-        hex.material.opacity = 0.6 + entropy * 0.4;
-        hex.rotation.y += 0.01 * entropy;
+      grid.children.forEach(hex => {
+        const e = Math.sin(t * 0.001 + hex.position.x + hex.position.z) * 0.5 + 0.5;
+        hex.scale.y = 0.2 + e * 1.2;
+        hex.material.opacity = 0.6 + e * 0.4;
+        hex.rotation.y += 0.01 * e;
       });
       controls.update();
       renderer.render(scene, camera);
       state.hexFrameId = requestAnimationFrame(animateHex);
     };
-
     const onResize = () => {
       renderer.setSize(container.clientWidth, container.clientHeight);
       camera.aspect = container.clientWidth / container.clientHeight;
@@ -525,15 +525,16 @@ async function initHexVisualizer() {
       renderer.dispose();
       container.removeChild(renderer.domElement);
     });
-
-    state.hexFrameId = requestAnimationFrame(animateHex);
+    animateHex(0);
   } catch (err) {
-    console.error('Hex visualizer failed:', err);
-    container.innerHTML = '<p aria-live="polite">Failed to load visualizer. Please try again.</p>';
+    console.error('Hex visualizer error:', err);
+    container.innerHTML = '<p aria-live="polite">Failed to load hex visualizer.</p>';
   }
 }
 
-// Timeline Viewer
+// ——————————————————————————————————————————————————————————————
+// initTimelineViewer
+// ——————————————————————————————————————————————————————————————
 function initTimelineViewer() {
   const container = $('#timeline-viewer');
   if (!container) {
@@ -568,7 +569,7 @@ function initTimelineViewer() {
     ctx.fillStyle = 'rgba(240, 248, 255, 0.15)';
     ctx.fillRect(0, 0, w, h);
 
-    ctx.strokeStyle = '#7cd4fc';
+    ctx.strokeStyle = '#6be2eb';
     ctx.lineWidth = 2.5;
     ctx.beginPath();
     ctx.moveTo(w * 0.1, h / 2);
@@ -579,7 +580,7 @@ function initTimelineViewer() {
       const x = w * (0.1 + (i / (events.length - 1)) * 0.8);
       ctx.beginPath();
       ctx.arc(x, h / 2, selectedEvent === i ? 8 : 6, 0, 2 * Math.PI);
-      ctx.fillStyle = selectedEvent === i ? '#a8c6e5' : '#7cd4fc';
+      ctx.fillStyle = selectedEvent === i ? '#a8c6e5' : '#6be2eb';
       ctx.fill();
 
       ctx.font = `14px Sora`;
@@ -592,7 +593,7 @@ function initTimelineViewer() {
     if (selectedEvent !== null) {
       const event = events[selectedEvent];
       const x = w * (0.1 + (selectedEvent / (events.length - 1)) * 0.8);
-      ctx.fillStyle = 'rgba(124, 212, 252, 0.9)';
+      ctx.fillStyle = 'rgba(107, 226, 235, 0.9)';
       ctx.fillRect(x - 60, h / 2 - 60, 120, 50);
       ctx.fillStyle = '#0c0d10';
       ctx.font = '12px Sora';
@@ -641,7 +642,9 @@ function initTimelineViewer() {
   draw();
 }
 
-// Scroll-Spy
+// ——————————————————————————————————————————————————————————————
+// initScrollSpy
+// ——————————————————————————————————————————————————————————————
 function initScrollSpy() {
   console.debug('Initializing scroll-spy...');
   const handler = throttle(() => {
@@ -660,7 +663,9 @@ function initScrollSpy() {
   state.cleanup.add(() => document.removeEventListener('scroll', handler));
 }
 
-// Consent Popup
+// ——————————————————————————————————————————————————————————————
+// initConsent
+// ——————————————————————————————————————————————————————————————
 function initConsent() {
   const pop = $('#consent-popup'),
         accept = $('.consent-accept'),
@@ -690,7 +695,9 @@ function initConsent() {
   });
 }
 
-// Dev Panel and Accessibility
+// ——————————————————————————————————————————————————————————————
+// initDevPanel
+// ——————————————————————————————————————————————————————————————
 function initDevPanel() {
   const panel = $('#dev-panel'),
         overlay = $('#keyboard-overlay');
@@ -729,7 +736,9 @@ function initDevPanel() {
   });
 }
 
-// Snapshot Export
+// ——————————————————————————————————————————————————————————————
+// exportSnapshot
+// ——————————————————————————————————————————————————————————————
 function exportSnapshot() {
   console.debug('Exporting snapshot...');
   const snap = {
@@ -755,7 +764,9 @@ function exportSnapshot() {
   }
 }
 
+// ——————————————————————————————————————————————————————————————
 // Utilities
+// ——————————————————————————————————————————————————————————————
 function throttle(fn, ms) {
   let timer;
   return (...args) => {
@@ -766,28 +777,21 @@ function throttle(fn, ms) {
   };
 }
 
-// Initialization
+// ——————————————————————————————————————————————————————————————
+// initEverything и bootstrapping
+// ——————————————————————————————————————————————————————————————
 async function initEverything() {
   const loading = $('#loading');
   try {
     console.debug('DOM loaded, initializing...');
     if (loading) {
       console.debug('Hiding loading overlay...');
-      await new Promise(resolve => setTimeout(resolve, 300));
-      loading.classList.add('hidden');
-      loading.style.display = 'none';
+      await new Promise(r => setTimeout(r, 300));
+      loading.classList.add('hidden'); loading.style.display = 'none';
     } else {
       console.warn('Loading overlay not found');
     }
-
-    console.debug('Checking main content...');
-    const main = $('main');
-    if (!main) {
-      console.error('Main element not found');
-      throw new Error('Main element missing');
-    }
-
-    console.debug('Checking CSS load...');
+    if (!$('main')) throw new Error('Main element missing');
     const cssLink = document.querySelector('link[href="/style.css"]');
     if (!cssLink) {
       console.warn('style.css not found, applying fallback styles');
@@ -799,64 +803,39 @@ async function initEverything() {
       `;
       document.head.appendChild(style);
     }
-
-    console.debug('Initializing neural background...');
     await initNeuralBackground();
-    if (modules.initThemeToggle) {
-      console.debug('Initializing theme toggle...');
-      modules.initThemeToggle();
-    }
-    console.debug('Initializing scroll-spy...');
+    modules.initThemeToggle?.();
     initScrollSpy();
-    if (modules.initCharts) {
-      console.debug('Initializing charts...');
-      modules.initCharts(state); // Pass state
-    }
+    modules.initCharts?.(state);
     if (modules.initLLM) {
-      console.debug('Initializing LLM...');
+      const orig = modules.initLLM;
+      modules.initLLM = async (...a) => { state.llmCallCount++; return orig(...a); };
       modules.initLLM();
-      const originalLLM = modules.initLLM;
-      modules.initLLM = async (...args) => {
-        state.llmCallCount++;
-        return originalLLM(...args);
-      };
     }
-    if (modules.initTelemetry) {
-      console.debug('Initializing telemetry...');
-      modules.initTelemetry();
-    }
-    if (modules.initAccordion) {
-      console.debug('Initializing accordion...');
-      modules.initAccordion(['#features']);
-    }
+    modules.initTelemetry?.();
+    modules.initAccordion?.(['#features']);
     initConsent();
     initDevPanel();
     initHexVisualizer();
     initTimelineViewer();
-
-    const snapshotBtn = $('.snapshot-button');
-    if (snapshotBtn) {
+    const snapBtn = $('.snapshot-button');
+    if (snapBtn) {
       console.debug('Binding snapshot button...');
-      snapshotBtn.addEventListener('click', exportSnapshot);
-      state.cleanup.add(() => snapshotBtn.removeEventListener('click', exportSnapshot));
+      snapBtn.addEventListener('click', exportSnapshot);
+      state.cleanup.add(() => snapBtn.removeEventListener('click', exportSnapshot));
     } else {
       console.warn('Snapshot button not found');
     }
-
-    // Intersection Observer for section visibility
-    console.debug('Setting up intersection observer...');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          console.debug(`Section visible: ${entry.target.id}`);
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          console.debug(`Section visible: ${e.target.id}`);
         }
       });
     }, { threshold: 0.1 });
-    $$('section').forEach(section => observer.observe(section));
-    state.cleanup.add(() => observer.disconnect());
-
-    // Handle script errors
+    $$('section').forEach(s => obs.observe(s));
+    state.cleanup.add(() => obs.disconnect());
     const nexusScript = document.querySelector('script[src="/nexus.js"]');
     if (nexusScript) {
       nexusScript.addEventListener('error', () => {
@@ -864,18 +843,16 @@ async function initEverything() {
         document.body.insertAdjacentHTML('beforeend', '<p class="error-message">Error loading application. Please try again later.</p>');
       });
     }
-
     console.debug('Initialization completed successfully');
   } catch (err) {
     console.error('Initialization failed:', err);
     if (loading) {
       console.log('Hiding loading overlay due to error');
-      loading.classList.add('hidden');
-      loading.style.display = 'none';
+      loading.classList.add('hidden'); loading.style.display = 'none';
     }
     const errorDiv = document.createElement('div');
     errorDiv.className = 'error-message';
-    errorDiv.textContent = 'Failed to load the application. Please try refreshing or contact support at ceo@aurora-core.net.';
+    errorDiv.textContent = 'Failed to load application. Contact support at ceo@aurora-core.net.';
     document.body.appendChild(errorDiv);
   }
 }
@@ -901,13 +878,12 @@ try {
   const loading = $('#loading');
   if (loading) {
     console.log('Hiding loading overlay due to fatal error');
-    loading.classList.add('hidden');
-    loading.style.display = 'none';
+    loading.classList.add('hidden'); loading.style.display = 'none';
   }
   const errorDiv = document.createElement('div');
   errorDiv.className = 'error-message';
-  errorDiv.textContent = 'Fatal initialization error. Please refresh or contact support at ceo@aurora-core.net.';
+  errorDiv.textContent = 'Fatal initialization error. Contact support at ceo@aurora-core.net.';
   document.body.appendChild(errorDiv);
 }
 
-console.log('nexus.js loaded');
+console.log('nexus.js v2.1 loaded');
