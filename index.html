@@ -12,14 +12,13 @@
   <meta http-equiv="Expires" content="0">
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
-    script-src 'self' 'nonce-nexus2025' https://cdn.jsdelivr.net;
+    script-src 'self' 'nonce-nexus2025' https://cdn.jsdelivr.net https://aurora-core.net/cdn-cgi/;
     style-src 'self' 'nonce-nexus2025' https://fonts.googleapis.com;
     font-src 'self' https://fonts.gstatic.com;
     img-src 'self' data: https:;
     connect-src 'self';
     object-src 'none';
     base-uri 'none';
-    media-src 'self' mediastream;
   ">
   <title>Elvira Genesis-Elvira</title>
   <link rel="icon" href="data:," type="image/x-icon">
@@ -27,21 +26,13 @@
   <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="/style.css" nonce="nexus2025">
-  <script type="importmap" nonce="nexus2025">
-  {
-    "imports": {
-      "three": "https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js",
-      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
-    }
-  }
-  </script>
+  <script type="importmap" src="/import-map.json" nonce="nexus2025"></script>
   <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" nonce="nexus2025"></script>
 </head>
 <body data-theme="frost">
-  <div class="loading-overlay" id="loading">
-    <div class="loader"></div>
-  </div>
   <div class="quantum-field">
+    <div class="energy-stream"></div>
+    <div class="particle-decay"></div>
     <canvas class="quantum-canvas"></canvas>
   </div>
   <div class="quantum-loader" id="quantum-loader">
@@ -49,21 +40,22 @@
   </div>
   <section class="intro-sequence" id="intro-sequence">
     <div class="hologram-logo">
-      <span class="logo-particle">E</span>
-      <span class="logo-particle">l</span>
-      <span class="logo-particle">v</span>
-      <span class="logo-particle">i</span>
-      <span class="logo-particle">r</span>
-      <span class="logo-particle">a</span>
+      <span class="logo-particle E">E</span>
+      <span class="logo-particle l">l</span>
+      <span class="logo-particle v">v</span>
+      <span class="logo-particle i">i</span>
+      <span class="logo-particle r">r</span>
+      <span class="logo-particle a">a</span>
       <div class="logo-divider"></div>
-      <span class="logo-particle">G</span>
-      <span class="logo-particle">e</span>
-      <span class="logo-particle">n</span>
-      <span class="logo-particle">e</span>
-      <span class="logo-particle">s</span>
-      <span class="logo-particle">i</span>
-      <span class="logo-particle">s</span>
+      <span class="logo-particle G">G</span>
+      <span class="logo-particle e">e</span>
+      <span class="logo-particle n">n</span>
+      <span class="logo-particle e2">e</span>
+      <span class="logo-particle s">s</span>
+      <span class="logo-particle i2">i</span>
+      <span class="logo-particle s2">s</span>
     </div>
+    <div class="cyber-pulse"></div>
   </section>
   <section class="auth-flow" id="auth-flow">
     <div class="terms-modal glass-panel">
@@ -339,7 +331,7 @@
             <p><strong>Forensic Data Collection:</strong> Continuous monitoring of network traffic, system behavior, and file integrity with deep analysis.</p>
             <p><strong>Entropy 3D Hex Visualizer:</strong> WebGL-based 3D hexagonal grid for real-time entropy visualization.</p>
             <p><strong>Timeline Viewer:</strong> Interactive timeline for attack sequences and forensic replay.</p>
-            <p><strong>Customizable Dashboards:</strong> Real-time alerts and threat graphs.</p>
+            <p><strong>Customizable Dashboards:</strong> Real-time telemetry, alerts, and threat graphs.</p>
           </div>
         </div>
         <div class="card-grid">
@@ -709,13 +701,13 @@
       </div>
     </section>
   </main>
-  <aside class="avatar-hud glass-panel" aria-live="polite">
-    <h3>Elvira Assistant</h3>
-    <button class="cyber-button avatar-toggle">Activate Avatar</button>
-    <div id="avatar-panel" class="hidden">
-      <video id="avatar-video" autoplay playsinline></video>
-      <canvas id="avatar-overlay"></canvas>
-    </div>
+  <aside class="telemetry-hud" aria-live="polite">
+    <h3>Telemetry</h3>
+    <p>Latency: <span id="latency">1ms</span></p>
+    <p>Events/Sec: <span id="events">5M</span></p>
+    <p>False Positives: <span id="false-positives">0.1%</span></p>
+    <p>Compliance: <span id="compliance">100%</span></p>
+    <button class="cyber-button snapshot-button">Snapshot</button>
   </aside>
   <footer role="contentinfo">
     <div class="container">
@@ -724,16 +716,16 @@
       <p><a href="mailto:ceo@aurora-core.net">Contact Us</a> | GDPR, SOC2, HIPAA Compliant</p>
     </div>
   </footer>
-  <div id="consent-popup" class="glass-panel hidden">
+  <div id="consent-popup" class="hidden">
     <p>We use cookies to enhance your experience. Accept?</p>
     <button class="cyber-button consent-accept">Accept</button>
     <button class="cyber-button consent-decline">Decline</button>
   </div>
-  <div id="dev-panel" class="glass-panel hidden">
+  <div id="dev-panel" class="hidden">
     <h3>Dev Panel</h3>
-    <p>Debug info: Snapshot, theme, navigation state.</p>
+    <p>Debug info: Latency, events/sec, compliance metrics.</p>
   </div>
-  <div id="keyboard-overlay" class="glass-panel hidden">Ctrl+D: Toggle Dev Panel | Alt+/: High Contrast</div>
+  <div id="keyboard-overlay" class="hidden">Ctrl+D: Toggle Dev Panel | Alt+/: High Contrast</div>
   <noscript>
     <p>This site requires JavaScript and WebGL for full functionality.</p>
   </noscript>
