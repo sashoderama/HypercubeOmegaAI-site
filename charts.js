@@ -67,4 +67,85 @@ export function initCharts(state) {
   });
 
   const activityChart = new Chart(aC, {
-    type
+    type: 'line',
+    data: {
+      labels: ['2025', '2027', '2029'],
+      datasets: [{
+        label: 'Revenue ($M)',
+        data: [5, 30, 100],
+        borderColor: '#6be2eb',
+        backgroundColor: 'rgba(107, 226, 235, 0.3)',
+        fill: true,
+        tension: 0.4
+      }]
+    },
+    options: {
+      animation: !matchMedia('(prefers-reduced-motion: reduce)').matches,
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 120,
+          title: { display: true, text: 'Revenue ($M)', color: '#0c0d10', font: { family: 'Sora', size: 14 } },
+          grid: { color: '#b39ddb' },
+          ticks: { color: '#0c0d10' }
+        },
+        x: {
+          title: { display: true, text: 'Year', color: '#0c0d10', font: { family: 'Sora', size: 14 } },
+          grid: { color: '#b39ddb' },
+          ticks: { color: '#0c0d10' }
+        }
+      },
+      plugins: {
+        legend: { labels: { color: '#0c0d10', font: { family: 'Sora', size: 12 } } },
+        title: { display: true, text: 'Revenue Projections', color: '#0c0d10', font: { family: 'Sora', size: 16 } }
+      },
+      responsive: true,
+      maintainAspectRatio: false
+    }
+  });
+
+  const ethicsChart = new Chart(pC, {
+    type: 'pie',
+    data: {
+      labels: ['GDPR', 'SOC2', 'HIPAA', 'FIPS 140-3'],
+      datasets: [{
+        label: 'Compliance Efficacy',
+        data: [25, 25, 25, 25],
+        backgroundColor: ['#6be2eb', '#b39ddb', '#4f8dfd', '#8fa9ff'],
+        borderColor: '#0c0d10',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      animation: !matchMedia('(prefers-reduced-motion: reduce)').matches,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { color: '#0c0d10', font: { family: 'Sora', size: 12 } }
+        },
+        title: { display: true, text: 'Compliance Coverage', color: '#0c0d10', font: { family: 'Sora', size: 16 } }
+      },
+      responsive: true,
+      maintainAspectRatio: false
+    }
+  });
+
+  const interval = setInterval(() => {
+    console.debug('Updating chart data...');
+    entropyChart.data.datasets[0].data = entropyChart.data.datasets[0].data.map(v => Math.max(0.8, Math.min(1.0, v + (Math.random() - 0.5) * 0.1)));
+    entropyChart.update();
+    ethicsChart.data.datasets[0].data = [25, 25, 25, 25];
+    ethicsChart.update();
+  }, 5000);
+
+  state.cleanup.add(() => {
+    console.debug('Cleaning up charts...');
+    clearInterval(interval);
+    entropyChart.destroy();
+    activityChart.destroy();
+    ethicsChart.destroy();
+    tabButtons.forEach(button => {
+      button.removeEventListener('click', button.onclick);
+    });
+  });
+}
