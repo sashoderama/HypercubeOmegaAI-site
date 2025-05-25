@@ -45,10 +45,968 @@
   </script>
   <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js">
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" as="style" crossorigin>
-  <link rel="preload" href="/style.css" as="style" nonce="nexus2025">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap">
-  <link rel="stylesheet" href="/style.css" nonce="nexus2025">
-  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" nonce="nexus2025"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" nonce="nexus2025" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" nonce="nexus2025" defer></script>
+  <style nonce="nexus2025">
+    /* Embedded CSS for Elvira Genesis-Elvira */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0c0d10;
+      --fg: #e0e3f4;
+      --accent: #6be2eb;
+      --secondary: #b39ddb;
+      --glow: rgba(107, 226, 235, 0.3);
+      --ice-gradient: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.12) 0%,
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0.12) 100%
+      );
+      --cryo-shadow: 0 8px 16px rgba(107, 226, 235, 0.2);
+      --hyper-blur: blur(8px);
+      --quantum-border: 1px solid rgba(255, 255, 255, 0.2);
+      --stark: rgba(0, 0, 0, 0.8);
+      --particle-glow: radial-gradient(
+        circle at 50% 50%, 
+        rgba(107, 226, 235, 0.4) 0%, 
+        rgba(179, 157, 219, 0.2) 70%,
+        transparent 100%
+      );
+      --quantum-ease: cubic-bezier(0.33, 1, 0.68, 1);
+    }
+
+    :root[data-theme="frost"] {
+      --bg: rgba(240, 248, 255, 0.98);
+      --fg: #0c0d10;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root[data-theme="light"] {
+        --bg: #e0e3f4;
+        --fg: #0c0d10;
+        --accent: #4f8dfd;
+        --secondary: #4a5a77;
+      }
+    }
+
+    :root[data-theme="high-contrast"] {
+      --bg: #000;
+      --fg: #fff;
+      --accent: #00f;
+      --secondary: #ccc;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+      scroll-padding-top: 100px;
+    }
+
+    body {
+      font-family: 'Sora', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      perspective: 1000px;
+      transform-style: preserve-3d;
+    }
+
+    @keyframes scanline {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 100%; }
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, 
+        transparent 50%, 
+        rgba(0, 0, 0, 0.1) 51%, 
+        transparent 52%
+      );
+      background-size: 100% 4px;
+      animation: scanline 4s linear infinite;
+      pointer-events: none;
+      mix-blend-mode: overlay;
+      z-index: 9999;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body::after {
+        animation: none;
+      }
+    }
+
+    .quantum-field {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .energy-stream {
+      background: linear-gradient(
+        90deg,
+        rgba(107, 226, 235, 0.1) 0%,
+        rgba(179, 157, 219, 0.2) 50%,
+        rgba(107, 226, 235, 0.1) 100%
+      );
+      background-size: 200% 200%;
+      animation: quantum-flow 12s linear infinite;
+      mix-blend-mode: screen;
+      position: absolute;
+      inset: 0;
+    }
+
+    .particle-decay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        circle at 20% 80%, 
+        rgba(107, 226, 235, 0.15) 0%, 
+        transparent 40%
+      ),
+      radial-gradient(
+        circle at 80% 20%, 
+        rgba(179, 157, 219, 0.15) 0%, 
+        transparent 40%
+      );
+      mix-blend-mode: screen;
+    }
+
+    .quantum-canvas {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      mix-blend-mode: screen;
+    }
+
+    @keyframes quantum-entangle {
+      0% { transform: rotate(0deg) scale(0.8); opacity: 0; }
+      50% { transform: rotate(180deg) scale(1.2); opacity: 1; }
+      100% { transform: rotate(360deg) scale(0.8); opacity: 0; }
+    }
+
+    .quantum-loader {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: var(--stark);
+      z-index: 10001;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+    }
+
+    .quantum-loader.hidden {
+      opacity: 0;
+      pointer-events: none;
+      display: none;
+    }
+
+    .cryo-spinner {
+      width: 60px;
+      height: 60px;
+      border: 3px solid var(--accent);
+      border-top-color: transparent;
+      animation: quantum-entangle 1.8s var(--quantum-ease) infinite;
+    }
+
+    .intro-sequence {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: var(--stark);
+      z-index: 10000;
+    }
+
+    .hologram-logo {
+      display: flex;
+      font: 800 4rem 'Sora';
+      color: var(--accent);
+      text-shadow: 0 0 30px var(--glow);
+    }
+
+    .logo-particle {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: particle-emerge 0.6s var(--quantum-ease) forwards;
+    }
+
+    .logo-divider {
+      width: 2rem;
+      height: 4rem;
+      background: linear-gradient(to bottom, var(--accent), var(--secondary));
+      margin: 0 1rem;
+    }
+
+    @keyframes particle-emerge {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .logo-particle {
+        animation: none;
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .auth-flow {
+      position: fixed;
+      inset: 0;
+      display: none;
+      place-items: center;
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: var(--hyper-blur);
+      z-index: 9999;
+    }
+
+    .terms-modal {
+      width: min(95vw, 600px);
+      padding: 2rem;
+      background: var(--ice-gradient);
+      border: var(--quantum-border);
+      border-radius: 12px;
+    }
+
+    .terms-content {
+      margin: 1.5rem 0;
+      font-size: 1rem;
+    }
+
+    .quantum-btn {
+      background: var(--ice-gradient);
+      border: var(--quantum-border);
+      color: var(--fg);
+      padding: 1.2rem 2rem;
+      border-radius: 12px;
+      font: 600 1rem 'Sora';
+      cursor: pointer;
+      position: relative;
+      overflow: visible;
+      transform-style: preserve-3d;
+      transition: transform 0.4s var(--quantum-ease), box-shadow 0.4s ease;
+      will-change: transform, box-shadow;
+    }
+
+    .quantum-btn::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      background: var(--particle-glow);
+      filter: blur(16px);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: -1;
+    }
+
+    .quantum-btn:hover {
+      transform: scale(1.08) translateZ(20px) rotateX(5deg) rotateY(2deg);
+      box-shadow: var(--cryo-shadow);
+    }
+
+    .quantum-btn:hover::after {
+      opacity: 1;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .quantum-btn {
+        transition: none;
+      }
+      .quantum-btn:hover {
+        transform: none;
+        box-shadow: none;
+      }
+    }
+
+    #neural-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .neuro-universe::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, var(--glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: var(--ice-gradient);
+      backdrop-filter: var(--hyper-blur);
+      border-bottom: var(--quantum-border);
+      z-index: 1000;
+      padding: 0.75rem 0;
+    }
+
+    header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    h1 {
+      font: 800 clamp(2rem, 8vw, 4rem) 'Sora';
+      text-shadow: 0 0 16px var(--glow);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: var(--fg);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 0.5rem;
+      transition: color 0.4s var(--quantum-ease);
+      will-change: color;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--accent);
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: var(--fg);
+      font-size: 1.3rem;
+      cursor: pointer;
+      transition: transform 0.4s var(--quantum-ease);
+      will-change: transform;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.1);
+    }
+
+    .theme-toggle:focus {
+      outline: 2px solid var(--accent);
+    }
+
+    main {
+      padding-top: 5rem;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 1rem;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1.5rem;
+    }
+
+    section {
+      padding: 3rem 0;
+      grid-column: 1 / -1;
+    }
+
+    [data-scroll] {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.6s var(--quantum-ease), transform 0.6s var(--quantum-ease);
+    }
+
+    [data-scroll="in"] {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      [data-scroll] {
+        transition: none;
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h2 {
+      font: 800 clamp(1.75rem, 6vw, 3rem) 'Sora';
+      margin-bottom: 1.5rem;
+      text-align: center;
+      grid-column: 1 / -1;
+      text-shadow: 0 0 10px var(--glow);
+    }
+
+    h3 {
+      font: 600 1.2rem 'Sora';
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      font-size: 1rem;
+      max-width: 800px;
+      margin: 0 auto 1.5rem;
+      text-align: center;
+      grid-column: 1 / -1;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    ul li {
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+      position: relative;
+      padding-left: 1.5rem;
+    }
+
+    ul li::before {
+      content: '•';
+      color: var(--accent);
+      position: absolute;
+      left: 0;
+    }
+
+    .neuro-card {
+      position: relative;
+      border: 1px solid rgba(107, 226, 235, 0.3);
+      background: linear-gradient(145deg, rgba(16, 18, 27, 0.9), rgba(32, 35, 45, 0.9));
+      backdrop-filter: var(--hyper-blur);
+      box-shadow: 0 0 20px rgba(107, 226, 235, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      will-change: transform, box-shadow;
+      border-radius: 24px;
+      padding: 1.5rem;
+    }
+
+    .neuro-card:hover {
+      transform: translateY(-5px) perspective(1000px) rotateX(3deg) rotateY(2deg);
+      box-shadow: 0 10px 30px rgba(107, 226, 235, 0.3);
+    }
+
+    .neuro-card::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      background: var(--particle-glow);
+      z-index: -1;
+      animation: hologram-pulse 3s ease-in-out infinite;
+      border-radius: inherit;
+    }
+
+    .hologram-layer {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
+        var(--glow) 0%, 
+        transparent 70%
+      );
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .cryo-border {
+      position: absolute;
+      inset: -2px;
+      border: var(--quantum-border);
+      border-radius: 24px;
+      z-index: -1;
+    }
+
+    .neuro-card:hover .hologram-layer {
+      opacity: 1;
+    }
+
+    .card-grid {
+      display: grid;
+      gap: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-auto-flow: dense;
+    }
+
+    .card-grid > .neuro-card:is(:nth-child(3n+1)) {
+      grid-column: span 2;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+    }
+
+    th, td {
+      padding: 0.6rem;
+      text-align: left;
+      border-bottom: var(--quantum-border);
+    }
+
+    th {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    td {
+      font-size: 0.9rem;
+    }
+
+    .cyber-button {
+      background: linear-gradient(45deg, #6be2eb, #b39ddb);
+      border: none;
+      padding: 12px 24px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+      color: #fff;
+      font: 600 0.95rem 'Sora';
+      cursor: pointer;
+      position: relative;
+      overflow: visible;
+      transform-style: preserve-3d;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      will-change: transform, box-shadow;
+    }
+
+    .cyber-button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 8px rgba(107, 226, 235, 0.5);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cyber-button {
+        transition: none;
+      }
+      .cyber-button:hover {
+        transform: none;
+        box-shadow: none;
+      }
+    }
+
+    .cyber-button:focus {
+      outline: 2px solid var(--accent);
+    }
+
+    .contact-link {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    #hero {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    #analytics .neuro-card {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .tab-nav {
+      display: flex;
+      gap: 1.2rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-button {
+      background: var(--ice-gradient);
+      border: var(--quantum-border);
+      color: var(--fg);
+      padding: 0.9rem 1.8rem;
+      border-radius: 12px;
+      font: 600 1rem 'Sora';
+      cursor: pointer;
+      transition: transform 0.4s var(--quantum-ease), box-shadow 0.4s ease;
+      will-change: transform, box-shadow;
+    }
+
+    .tab-button:hover, .tab-button.active, .tab-button:focus {
+      transform: scale(1.05);
+      box-shadow: var(--cryo-shadow);
+    }
+
+    .tab-button:focus {
+      outline: 2px solid var(--accent);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .canvas-container {
+      position: relative;
+      height: 320px;
+      margin: 1.8rem 0;
+      background: var(--ice-gradient);
+      border-radius: 24px;
+      border: var(--quantum-border);
+      padding: 1.2rem;
+      box-shadow: var(--cryo-shadow);
+    }
+
+    .canvas-fallback {
+      text-align: center;
+      color: var(--fg);
+      padding: 1.2rem;
+      font-size: 0.95rem;
+    }
+
+    .llm-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+    }
+
+    .llm-form, .llm-output {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    #llm-query, #llm-response {
+      background: var(--ice-gradient);
+      border: var(--quantum-border);
+      color: var(--fg);
+      padding: 1.2rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      resize: vertical;
+      min-height: 140px;
+      backdrop-filter: var(--hyper-blur);
+    }
+
+    .llm-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .llm-options-panel {
+      display: none;
+      background: var(--ice-gradient);
+      border: var(--quantum-border);
+      padding: 1.2rem;
+      border-radius: 12px;
+      backdrop-filter: var(--hyper-blur);
+    }
+
+    .llm-options-panel.active {
+      display: block;
+    }
+
+    .llm-options-panel label {
+      display: block;
+      margin-bottom: 0.6rem;
+      font-size: 0.95rem;
+    }
+
+    #llm-provider, #llm-verbose {
+      background: var(--bg);
+      color: var(--fg);
+      border: var(--quantum-border);
+      padding: 0.6rem;
+      border-radius: 6px;
+      font-size: 0.95rem;
+    }
+
+    #llm-history-list {
+      list-style: none;
+      max-height: 240px;
+      overflow-y: auto;
+      padding-left: 0;
+    }
+
+    #llm-history-list li {
+      padding: 0.6rem;
+      border-bottom: var(--quantum-border);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.95rem;
+    }
+
+    .avatar-hud {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      width: 280px;
+      background: var(--ice-gradient);
+      padding: 1.2rem;
+      border-radius: 14px 0 0 0;
+      border-top: var(--quantum-border);
+      border-left: var(--quantum-border);
+      backdrop-filter: var(--hyper-blur);
+      box-shadow: var(--cryo-shadow);
+    }
+
+    .avatar-hud h3 {
+      font: 600 1.1rem 'Sora';
+      margin-bottom: 1.2rem;
+    }
+
+    .avatar-hud p {
+      margin: 0.6rem 0;
+      font-size: 0.9rem;
+    }
+
+    footer {
+      background: var(--ice-gradient);
+      padding: 2rem 0;
+      text-align: center;
+      border-top: var(--quantum-border);
+    }
+
+    footer p {
+      font-size: 0.95rem;
+      color: var(--secondary);
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.4s var(--quantum-ease);
+    }
+
+    footer a:hover {
+      color: var(--secondary);
+    }
+
+    .accordion-header {
+      background: var(--ice-gradient);
+      border: none;
+      padding: 1.2rem;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      color: var(--fg);
+      font: 600 1rem 'Sora';
+      transition: background 0.4s var(--quantum-ease);
+    }
+
+    .accordion-header:hover, .accordion-header:focus {
+      background: rgba(107, 226, 235, 0.1);
+    }
+
+    .accordion-header:focus {
+      outline: 2px solid var(--accent);
+    }
+
+    .accordion-content {
+      display: none;
+      padding: 1.2rem;
+    }
+
+    .accordion-content.active {
+      display: block;
+    }
+
+    #consent-popup {
+      position: fixed;
+      bottom: 1.2rem;
+      left: 1.2rem;
+      background: var(--ice-gradient);
+      border: var(--quantum-border);
+      padding: 1.2rem;
+      border-radius: 12px;
+      backdrop-filter: var(--hyper-blur);
+      z-index: 1000;
+    }
+
+    #consent-popup.hidden {
+      display: none;
+    }
+
+    #dev-panel {
+      position: fixed;
+      top: 0;
+      right: -320px;
+      width: 320px;
+      height: 100%;
+      background: var(--ice-gradient);
+      border-left: var(--quantum-border);
+      padding: 1.2rem;
+      transition: right 0.3s ease;
+    }
+
+    #dev-panel.active {
+      right: 0;
+    }
+
+    #keyboard-overlay {
+      position: fixed;
+      bottom: 1.2rem;
+      right: 1.2rem;
+      background: var(--ice-gradient);
+      padding: 0.6rem;
+      border-radius: 12px;
+      display: none;
+    }
+
+    #keyboard-overlay.active {
+      display: block;
+    }
+
+    .error-message {
+      color: #ff4d4d;
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 1rem;
+    }
+
+    ::-webkit-scrollbar {
+      width: 12px;
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--ice-gradient);
+      border-radius: 6px;
+      border: var(--quantum-border);
+    }
+
+    @supports (scrollbar-width: thin) {
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: var(--accent) rgba(0, 0, 0, 0.1);
+      }
+    }
+
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--accent);
+      color: #fff;
+      padding: 8px;
+      z-index: 10000;
+    }
+
+    .skip-link:focus {
+      top: 0;
+    }
+
+    @media (max-width: 1024px) {
+      .container {
+        grid-template-columns: repeat(8, 1fr);
+      }
+      .card-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+      .llm-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+        padding: 0 0.5rem;
+      }
+      h1 { font-size: clamp(1.5rem, 6vw, 2.5rem); }
+      h2 { font-size: clamp(1.5rem, 5vw, 2.5rem); }
+      h3 { font-size: 1.1rem; }
+      p, ul li { font-size: 0.95rem; }
+      .nav-links {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        width: 100%;
+        padding-bottom: 8px;
+      }
+      .nav-links a {
+        font-size: 0.9rem;
+        padding: 0.4rem;
+      }
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+      .card-grid > .neuro-card:is(:nth-child(3n+1)) {
+        grid-column: span 1;
+      }
+      .cyber-button {
+        padding: 0.7rem 1.4rem;
+        font-size: 0.9rem;
+      }
+      .avatar-hud {
+        width: 100%;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      table {
+        font-size: 0.8rem;
+      }
+      th, td {
+        padding: 0.5rem;
+      }
+      .canvas-container {
+        height: 200px;
+      }
+      .tab-nav {
+        gap: 0.8rem;
+      }
+      .tab-button {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.9rem;
+      }
+      header .container {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .intro-sequence {
+        transform: scale(0.9);
+      }
+      .hologram-logo {
+        font-size: 3rem;
+        letter-spacing: -0.1em;
+      }
+      .terms-modal {
+        width: min(95vw, 400px);
+        padding: 1.5rem;
+      }
+    }
+
+    @media screen and (min-resolution: 192dpi) {
+      body { font-size: 17px; }
+      .neuro-card { box-shadow: var(--cryo-shadow); }
+      h2 { text-shadow: 0 0 12px var(--glow); }
+    }
+  </style>
 </head>
 <body data-theme="frost">
   <a href="#main" class="skip-link">Skip to main content</a>
@@ -756,16 +1714,1223 @@
   </div>
   <div id="keyboard-overlay" class="glass-panel hidden">Ctrl+D: Toggle Dev Panel | Alt+/: High Contrast</div>
   <noscript>
-    <p>This site requires JavaScript and WebGL for optimal functionality. Please enable JavaScript in your browser settings.</p>
+    <p class="error-message">This site requires JavaScript and WebGL for optimal functionality. Please enable JavaScript in your browser settings.</p>
   </noscript>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" nonce="nexus2025" defer></script>
-  <script type="module" src="/nexus.js" nonce="nexus2025" defer></script>
-  <script nonce="nexus2025">
-    document.addEventListener('keydown', (e) => {
-      if (e.target.tagName === 'A' && e.key === 'Enter') {
-        e.target.click();
+  <script type="module" nonce="nexus2025">
+    /* Embedded nexus.js - Enhanced Core v3.1 */
+    'use strict';
+
+    // Centralized Module Logger
+    class ModuleLogger {
+      constructor(wsUrl = null) {
+        this._ws = null;
+        this._wsUrl = wsUrl;
+        this._retryCount = 0;
+        this._maxRetries = 3;
+        this._retryDelay = 5000;
+        if (wsUrl) this._initWebSocket();
       }
+
+      _initWebSocket() {
+        try {
+          this._ws = new WebSocket(this._wsUrl);
+          this._ws.onopen = () => {
+            console.log('[ModuleLogger] WebSocket connected');
+            this._retryCount = 0;
+          };
+          this._ws.onerror = e => {
+            console.warn('[ModuleLogger] WebSocket error', e);
+            this._retryConnection();
+          };
+          this._ws.onclose = () => {
+            console.warn('[ModuleLogger] WebSocket closed');
+            this._retryConnection();
+          };
+        } catch (err) {
+          console.warn('[ModuleLogger] WebSocket initialization failed:', err);
+          this._retryConnection();
+        }
+      }
+
+      _retryConnection() {
+        if (this._retryCount >= this._maxRetries) {
+          console.warn('[ModuleLogger] Max WebSocket retries reached');
+          return;
+        }
+        this._retryCount++;
+        setTimeout(() => {
+          console.log('[ModuleLogger] Retrying WebSocket connection...');
+          this._initWebSocket();
+        }, this._retryDelay);
+      }
+
+      log(event, data = {}) {
+        const payload = JSON.stringify({
+          event,
+          timestamp: new Date().toISOString(),
+          ...data
+        });
+        console.log('[ModuleLogger]', payload);
+        if (this._ws && this._ws.readyState === WebSocket.OPEN) {
+          try {
+            this._ws.send(payload);
+          } catch (err) {
+            console.warn('[ModuleLogger] Failed to send WebSocket message:', err);
+          }
+        }
+      }
+    }
+
+    const moduleLogger = new ModuleLogger();
+
+    // Module Loader with Circuit Breaker
+    class ModuleLoader {
+      static RETRY_LIMIT = 3;
+      static RETRY_DELAY = 1000;
+      static TIMEOUT = 5000;
+      static circuitStates = new Map();
+      static verbose = true;
+
+      static log(msg, ...args) {
+        if (this.verbose) console.log(`[ModuleLoader] ${msg}`, ...args);
+      }
+
+      static async load(url, moduleName) {
+        if (typeof url !== 'string' || !url) {
+          const err = new Error('Invalid module URL');
+          this.log(`Module load failed: ${moduleName}`, err);
+          moduleLogger.log('module_error', { moduleName, url, error: err.message });
+          throw err;
+        }
+
+        if (!url.endsWith('.js')) {
+          this.log(`Module ${url} might be blocked by MIME/CORS policy`);
+          moduleLogger.log('invalid_mime', { moduleName, url });
+        }
+
+        if (this.circuitStates.get(moduleName)?.isOpen) {
+          this.log(`Circuit open for ${moduleName}, skipping load`);
+          moduleLogger.log('circuit_open', { moduleName, url });
+          return null;
+        }<script type="module" nonce="nexus2025">
+  /* Embedded nexus.js - Enhanced Core v3.1 */
+  'use strict';
+
+  // Centralized Module Logger
+  class ModuleLogger {
+    constructor(wsUrl = null) {
+      this._ws = null;
+      this._wsUrl = wsUrl;
+      this._retryCount = 0;
+      this._maxRetries = 3;
+      this._retryDelay = 5000;
+      if (wsUrl) this._initWebSocket();
+    }
+
+    _initWebSocket() {
+      try {
+        this._ws = new WebSocket(this._wsUrl);
+        this._ws.onopen = () => {
+          console.log('[ModuleLogger] WebSocket connected');
+          this._retryCount = 0;
+        };
+        this._ws.onerror = e => {
+          console.warn('[ModuleLogger] WebSocket error', e);
+          this._retryConnection();
+        };
+        this._ws.onclose = () => {
+          console.warn('[ModuleLogger] WebSocket closed');
+          this._retryConnection();
+        };
+      } catch (err) {
+        console.warn('[ModuleLogger] WebSocket initialization failed:', err);
+        this._retryConnection();
+      }
+    }
+
+    _retryConnection() {
+      if (this._retryCount >= this._maxRetries) {
+        console.warn('[ModuleLogger] Max WebSocket retries reached');
+        return;
+      }
+      this._retryCount++;
+      setTimeout(() => {
+        console.log('[ModuleLogger] Retrying WebSocket connection...');
+        this._initWebSocket();
+      }, this._retryDelay);
+    }
+
+    log(event, data = {}) {
+      const payload = JSON.stringify({
+        event,
+        timestamp: new Date().toISOString(),
+        ...data
+      });
+      console.log('[ModuleLogger]', payload);
+      if (this._ws && this._ws.readyState === WebSocket.OPEN) {
+        try {
+          this._ws.send(payload);
+        } catch (err) {
+          console.warn('[ModuleLogger] Failed to send WebSocket message:', err);
+        }
+      }
+    }
+  }
+
+  const moduleLogger = new ModuleLogger();
+
+  // Module Loader with Circuit Breaker
+  class ModuleLoader {
+    static RETRY_LIMIT = 3;
+    static RETRY_DELAY = 1000;
+    static TIMEOUT = 5000;
+    static circuitStates = new Map();
+    static verbose = true;
+
+    static log(msg, ...args) {
+      if (this.verbose) console.log(`[ModuleLoader] ${msg}`, ...args);
+    }
+
+    static async load(url, moduleName) {
+      if (typeof url !== 'string' || !url) {
+        const err = new Error('Invalid module URL');
+        this.log(`Module load failed: ${moduleName}`, err);
+        moduleLogger.log('module_error', { moduleName, url, error: err.message });
+        throw err;
+      }
+
+      if (!url.endsWith('.js')) {
+        this.log(`Module ${url} might be blocked by MIME/CORS policy`);
+        moduleLogger.log('invalid_mime', { moduleName, url });
+      }
+
+      if (this.circuitStates.get(moduleName)?.isOpen) {
+        this.log(`Circuit open for ${moduleName}, skipping load`);
+        moduleLogger.log('circuit_open', { moduleName, url });
+        return null;
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), this.TIMEOUT);
+
+      try {
+        const module = await Promise.race([
+          import(url, { signal: controller.signal }),
+          new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Module load timeout')), this.TIMEOUT))
+        ]);
+        
+        this.circuitStates.set(moduleName, { failures: 0, isOpen: false });
+        this.log(`Successfully loaded module: ${url}`);
+        moduleLogger.log('module_loaded', { moduleName, url });
+        return module;
+      } catch (err) {
+        this.log(`Module load failed: ${moduleName}`, err);
+        moduleLogger.log('module_error', { moduleName, url, error: err.message });
+        const state = this.circuitStates.get(moduleName) || { failures: 0 };
+        state.failures++;
+        
+        if (state.failures >= this.RETRY_LIMIT) {
+          state.isOpen = true;
+          this.log(`Circuit breaker tripped for ${moduleName}`);
+          moduleLogger.log('circuit_tripped', { moduleName, url });
+          setTimeout(() => {
+            state.isOpen = false;
+            state.failures = 0;
+            this.log(`Circuit breaker reset for ${moduleName}`);
+            moduleLogger.log('circuit_reset', { moduleName, url });
+          }, 30000);
+        }
+        
+        this.circuitStates.set(moduleName, state);
+        throw err;
+      } finally {
+        clearTimeout(timeoutId);
+      }
+    }
+  }
+
+  // State Manager with Cleanup
+  class AppState {
+    constructor() {
+      this._animations = new Map();
+      this._cleanupHandlers = new Set();
+      this._resources = new FinalizationRegistry(url => {
+        ModuleLoader.log(`Cleaning up resources for ${url}`);
+        moduleLogger.log('resource_cleanup', { url });
+      });
+    }
+
+    trackAnimation(id, callback) {
+      if (typeof callback !== 'function') {
+        const err = new Error('Expected function for animation callback');
+        ModuleLoader.log(`Animation tracking failed: ${id}`, err);
+        moduleLogger.log('animation_error', { id, error: err.message });
+        throw err;
+      }
+      const frameId = requestAnimationFrame(function animate(t) {
+        callback(t);
+        this._animations.set(id, requestAnimationFrame(animate.bind(this)));
+      }.bind(this));
+      this._animations.set(id, frameId);
+      ModuleLoader.log(`Animation tracked: ${id}`);
+      moduleLogger.log('animation_tracked', { id });
+    }
+
+    cancelAnimation(id) {
+      if (this._animations.has(id)) {
+        cancelAnimationFrame(this._animations.get(id));
+        this._animations.delete(id);
+        ModuleLoader.log(`Animation cancelled: ${id}`);
+        moduleLogger.log('animation_cancelled', { id });
+      }
+    }
+
+    addCleanup(fn) {
+      if (typeof fn !== 'function') {
+        const err = new Error('Expected function for cleanup');
+        ModuleLoader.log('Cleanup addition failed', err);
+        moduleLogger.log('cleanup_error', { error: err.message });
+        throw err;
+      }
+      this._cleanupHandlers.add(fn);
+    }
+
+    async cleanup() {
+      this._animations.forEach((_, id) => this.cancelAnimation(id));
+      this._cleanupHandlers.forEach(fn => {
+        try {
+          fn();
+        } catch (err) {
+          ModuleLoader.log('Cleanup handler failed:', err);
+          moduleLogger.log('cleanup_handler_error', { error: err.message });
+        }
+      });
+      this._resources.unregisterAll();
+      ModuleLoader.log('Application state cleaned up');
+      moduleLogger.log('state_cleanup', {});
+    }
+  }
+
+  // WebGL Context Manager
+  class WebGLManager {
+    static async createContext(container, { alpha = true, antialias = true } = {}) {
+      if (!(container instanceof HTMLElement)) {
+        const err = new Error('Invalid container element');
+        ModuleLoader.log('WebGL context creation failed:', err);
+        moduleLogger.log('webgl_context_error', { error: err.message });
+        throw err;
+      }
+
+      const canvas = document.createElement('canvas');
+      const attributes = { 
+        alpha, 
+        antialias,
+        desynchronized: true,
+        powerPreference: 'high-performance'
+      };
+
+      try {
+        const gl = canvas.getContext('webgl2', attributes) || 
+                   canvas.getContext('webgl', attributes);
+        
+        if (!gl) {
+          throw new Error('WebGL unavailable');
+        }
+        
+        container.appendChild(canvas);
+        ModuleLoader.log('WebGL context created successfully');
+        moduleLogger.log('webgl_context_created', { container: container.id });
+        return {
+          canvas,
+          gl,
+          resize: (width, height) => {
+            if (typeof width !== 'number' || typeof height !== 'number') {
+              ModuleLoader.log('Invalid resize dimensions:', { width, height });
+              moduleLogger.log('webgl_resize_error', { width, height });
+              return;
+            }
+            canvas.width = width * devicePixelRatio;
+            canvas.height = height * devicePixelRatio;
+            canvas.style.width = `${width}px`;
+            canvas.style.height = `${height}px`;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+          }
+        };
+      } catch (err) {
+        ModuleLoader.log('WebGL initialization failed:', err);
+        moduleLogger.log('webgl_init_error', { error: err.message });
+        return this.create2DFallback(container);
+      }
+    }
+
+    static create2DFallback(container) {
+      if (!(container instanceof HTMLElement)) {
+        const err = new Error('Invalid container element');
+        ModuleLoader.log('2D fallback creation failed:', err);
+        moduleLogger.log('2d_fallback_error', { error: err.message });
+        throw err;
+      }
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d', { alpha: true });
+      if (!ctx) {
+        const err = new Error('2D context unavailable');
+        ModuleLoader.log('2D fallback creation failed:', err);
+        moduleLogger.log('2d_fallback_error', { error: err.message });
+        throw err;
+      }
+      
+      container.appendChild(canvas);
+      ModuleLoader.log('2D canvas fallback created');
+      moduleLogger.log('2d_fallback_created', { container: container.id });
+      return {
+        canvas,
+        ctx,
+        resize: (width, height) => {
+          if (typeof width !== 'number' || typeof height !== 'number') {
+            ModuleLoader.log('Invalid resize dimensions:', { width, height });
+            moduleLogger.log('2d_resize_error', { width, height });
+            return;
+          }
+          canvas.width = width * devicePixelRatio;
+          canvas.height = height * devicePixelRatio;
+          canvas.style.width = `${width}px`;
+          canvas.style.height = `${height}px`;
+        }
+      };
+    }
+  }
+
+  // Performance Manager
+  class PerformanceManager {
+    static TARGET_FPS = 60;
+    static LOG_INTERVAL = 5000;
+    static _instance = null;
+
+    constructor() {
+      this._lastFrameTime = 0;
+      this._frameTimes = [];
+      this._qualityLevel = 1.0;
+      this._lastLogTime = 0;
+    }
+
+    static getInstance() {
+      if (!this._instance) {
+        this._instance = new PerformanceManager();
+      }
+      return this._instance;
+    }
+
+    monitor() {
+      const now = performance.now();
+      const delta = now - this._lastFrameTime;
+      
+      this._frameTimes.push(delta);
+      if (this._frameTimes.length > 60) {
+        this._frameTimes.shift();
+      }
+      
+      const avgDelta = this._frameTimes.reduce((a, b) => a + b, 0) / this._frameTimes.length;
+      const currentFPS = 1000 / avgDelta;
+
+      if (currentFPS < this.constructor.TARGET_FPS * 0.9) {
+        this._qualityLevel = Math.max(0.5, this._qualityLevel - 0.1);
+      } else if (currentFPS > this.constructor.TARGET_FPS * 1.1) {
+        this._qualityLevel = Math.min(1.0, this._qualityLevel + 0.1);
+      }
+
+      if (now - this._lastLogTime > this.constructor.LOG_INTERVAL) {
+        ModuleLoader.log(`FPS: ${currentFPS.toFixed(1)}, Quality: ${this._qualityLevel.toFixed(2)}`);
+        moduleLogger.log('fps_update', { fps: currentFPS, quality: this._qualityLevel });
+        this._lastLogTime = now;
+      }
+
+      this._lastFrameTime = now;
+      return this._qualityLevel;
+    }
+  }
+
+  // Neural Background
+  class NeuralBackground {
+    constructor(container) {
+      if (!(container instanceof HTMLElement)) {
+        const err = new Error('Invalid container element');
+        ModuleLoader.log('Neural background creation failed:', err);
+        moduleLogger.log('neural_bg_error', { error: err.message });
+        throw err;
+      }
+      this._container = container;
+      this._prefersRM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      this._isMobile = window.innerWidth <= 768;
+      this._DPR = Math.min(devicePixelRatio, this._isMobile ? 1.5 : 2);
+      this._context = null;
+      this._performanceManager = PerformanceManager.getInstance();
+      this._particles = [];
+      this._edges = [];
+      this._scene = null;
+      this._camera = null;
+      this._renderer = null;
+      this._composer = null;
+      this._particleGeometry = null;
+      this._particleAttributes = null;
+      this._edgeGeometry = null;
+      this._edgeAttributes = null;
+      this._gradientMaterial = null;
+    }
+
+    async init() {
+      if (!this._container) {
+        const err = new Error('Neural background container not found');
+        ModuleLoader.log('Neural background init failed:', err);
+        moduleLogger.log('neural_bg_error', { error: err.message });
+        throw err;
+      }
+
+      if (!this._prefersRM) {
+        await this._initWebGL();
+      } else {
+        this._init2DFallback();
+      }
+    }
+
+    async _initWebGL() {
+      try {
+        ModuleLoader.log('Loading Three.js & postprocessing...');
+        moduleLogger.log('loading_threejs', {});
+        const [
+          { default: THREE },
+          { EffectComposer },
+          { RenderPass },
+          { UnrealBloomPass },
+          { SSAOPass }
+        ] = await Promise.all([
+          import('three'),
+          import('three/examples/jsm/postprocessing/EffectComposer.js'),
+          import('three/examples/jsm/postprocessing/RenderPass.js'),
+          import('three/examples/jsm/postprocessing/UnrealBloomPass.js'),
+          import('three/examples/jsm/postprocessing/SSAOPass.js')
+        ]);
+
+        this._renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        if (!this._renderer) {
+          throw new Error('WebGL renderer creation failed');
+        }
+        this._renderer.setPixelRatio(this._DPR);
+        this._renderer.setSize(innerWidth, innerHeight);
+        this._renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this._renderer.toneMappingExposure = 1.0;
+        this._container.appendChild(this._renderer.domElement);
+
+        this._scene = new THREE.Scene();
+        this._camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 1000);
+        this._camera.position.z = 35;
+
+        this._scene.add(new THREE.AmbientLight(0x404040, 0.8));
+        const pl = new THREE.PointLight(0x6be2eb, 2.5, 40);
+        pl.position.set(10, 10, 10); this._scene.add(pl);
+        const dl = new THREE.DirectionalLight(0xb39ddb, 0.5);
+        dl.position.set(0, 15, 15); this._scene.add(dl);
+
+        this._composer = new EffectComposer(this._renderer);
+        this._composer.addPass(new RenderPass(this._scene, this._camera));
+        this._composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 1.0, 0.5, 0.8));
+        this._composer.addPass(new SSAOPass(this._scene, this._camera, innerWidth, innerHeight, 1.5, 0.8));
+
+        this._initParticles();
+        this._initEdges();
+        this._initGradientPlane();
+        this._animate(0);
+
+        const onResize = () => {
+          this._renderer.setSize(innerWidth, innerHeight);
+          this._composer.setSize(innerWidth, innerHeight);
+          this._camera.aspect = innerWidth / innerHeight;
+          this._camera.updateProjectionMatrix();
+          ModuleLoader.log('Neural background resized');
+          moduleLogger.log('neural_bg_resize', { width: innerWidth, height: innerHeight });
+        };
+        window.addEventListener('resize', onResize);
+        appState.addCleanup(() => {
+          window.removeEventListener('resize', onResize);
+          this.destroy();
+          ModuleLoader.log('Neural background cleanup registered');
+          moduleLogger.log('neural_bg_cleanup', {});
+        });
+      } catch (err) {
+        ModuleLoader.log('WebGL initialization failed:', err);
+        moduleLogger.log('webgl_init_error', { error: err.message });
+        this._init2DFallback();
+      }
+    }
+
+    _init2DFallback() {
+      ModuleLoader.log('Using 2D canvas fallback');
+      moduleLogger.log('2d_fallback_init', {});
+      const canvas = Object.assign(document.createElement('canvas'), {
+        id: 'neural-bg-fallback',
+        'aria-label': 'Fallback neural network',
+      });
+      this._container.appendChild(canvas);
+      const ctx = canvas.getContext('2d', { alpha: true });
+      if (!ctx) {
+        const err = new Error('2D context unavailable');
+        ModuleLoader.log('2D fallback creation failed:', err);
+        moduleLogger.log('2d_fallback_error', { error: err.message });
+        throw err;
+      }
+      const pulses = Array.from({ length: 150 }, () => ({
+        x: Math.random(),
+        y: Math.random(),
+        angle: Math.random() * Math.PI * 2,
+        speed: 0.001 + Math.random() * 0.002,
+        radius: 0.002 + Math.random() * 0.01,
+        hue: 185 + Math.random() * 30,
+      }));
+
+      const draw = (t) => {
+        canvas.width = innerWidth * devicePixelRatio;
+        canvas.height = innerHeight * devicePixelRatio;
+        canvas.style.width = `${innerWidth}px`;
+        canvas.style.height = `${innerHeight}px`;
+        ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+
+        ctx.fillStyle = 'rgba(12,13,16,0.2)';
+        ctx.fillRect(0, 0, innerWidth, innerHeight);
+
+        for (let p of pulses) {
+          p.x += Math.cos(p.angle) * p.speed;
+          p.y += Math.sin(p.angle) * p.speed;
+
+          if (p.x < 0 || p.x > 1 || p.y < 0 || p.y > 1) {
+            p.x = Math.random(); p.y = Math.random();
+          }
+
+          const px = p.x * innerWidth;
+          const py = p.y * innerHeight;
+          const r = p.radius * Math.min(innerWidth, innerHeight);
+
+          const grad = ctx.createRadialGradient(px, py, 0, px, py, r);
+          grad.addColorStop(0, `hsla(${p.hue}, 100%, 70%, 0.4)`);
+          grad.addColorStop(1, `hsla(${p.hue}, 100%, 70%, 0)`);
+
+          ctx.beginPath();
+          ctx.fillStyle = grad;
+          ctx.arc(px, py, r, 0, 2 * Math.PI);
+          ctx.fill();
+        }
+
+        if (!this._prefersRM) appState.trackAnimation('neural-bg-2d', draw);
+      };
+
+      const onRes = () => {
+        appState.cancelAnimation('neural-bg-2d');
+        draw(0);
+      };
+      window.addEventListener('resize', onRes);
+      appState.addCleanup(() => window.removeEventListener('resize', onRes));
+      draw(0);
+    }
+
+    _initParticles() {
+      const NODE_COUNT = this._isMobile ? 300 : 600;
+      const clusters = 6;
+      this._particles = Array.from({ length: NODE_COUNT }, () => ({
+        pos: new THREE.Vector3((Math.random() - 0.5) * 30, (Math.random() - 0.5) * 30, (Math.random() - 0.5) * 15),
+        vel: new THREE.Vector3((Math.random() - 0.5) * 0.08, (Math.random() - 0.5) * 0.08, (Math.random() - 0.5) * 0.04),
+        cluster: Math.floor(Math.random() * clusters),
+        pulse: Math.random() * 2 * Math.PI,
+        rotation: Math.random() * 2 * Math.PI,
+        size: 6 + Math.random() * 4,
+      }));
+
+      const posArr = new Float32Array(NODE_COUNT * 3);
+      const pulseArr = new Float32Array(NODE_COUNT);
+      const rotArr = new Float32Array(NODE_COUNT);
+      const sizeArr = new Float32Array(NODE_COUNT);
+      const nodeGeo = new THREE.BufferGeometry();
+      nodeGeo.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
+      nodeGeo.setAttribute('pulse', new THREE.BufferAttribute(pulseArr, 1));
+      nodeGeo.setAttribute('rotation', new THREE.BufferAttribute(rotArr, 1));
+      nodeGeo.setAttribute('size', new THREE.BufferAttribute(sizeArr, 1));
+
+      const nodeMat = new THREE.ShaderMaterial({
+        vertexShader: `
+          attribute float pulse;
+          attribute float rotation;
+          attribute float size;
+          varying float vPulse;
+          varying vec3 vPos;
+          void main(){
+            vPulse = pulse;
+            vPos = position;
+            gl_PointSize = size * (1.0 + 0.5 * sin(pulse));
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }`,
+        fragmentShader: `
+          varying float vPulse;
+          varying vec3 vPos;
+          float rand(vec2 c){ return fract(sin(dot(c, vec2(12.9898, 78.233))) * 43758.5453); }
+          void main(){
+            vec2 uv = gl_PointCoord - 0.5;
+            float d = length(uv);
+            if(d > 0.5) discard;
+            float a = smoothstep(0.5, 0.2, d) * (0.8 + 0.4 * sin(vPulse));
+            float fade = 1.0 - abs(vPos.z / 15.0);
+            a *= (0.9 + 0.1 * rand(gl_PointCoord + vPos.xy));
+            gl_FragColor = vec4(0.42, 0.89, 0.92, a * fade); // #6be2eb
+          }`,
+        transparent: true,
+      });
+
+      if (!nodeMat.program) {
+        const err = new Error('Shader compilation failed');
+        ModuleLoader.log('Particle shader compilation failed:', err);
+        moduleLogger.log('shader_error', { error: err.message });
+        throw err;
+      }
+
+      const points = new THREE.Points(nodeGeo, nodeMat);
+      this._scene.add(points);
+      this._particleGeometry = nodeGeo;
+      this._particleAttributes = { posArr, pulseArr, rotArr, sizeArr };
+      ModuleLoader.log(`Initialized ${NODE_COUNT} particles`);
+      moduleLogger.log('particles_init', { count: NODE_COUNT });
+    }
+
+    _initEdges() {
+      const EDGE_COUNT = this._particles.length * 2;
+      this._edges = Array.from({ length: EDGE_COUNT }, () => {
+        let s = Math.floor(Math.random() * this._particles.length), t;
+        do t = Math.floor(Math.random() * this._particles.length); while (t === s);
+        return { s, t, pulse: Math.random() * 2 * Math.PI };
+      });
+
+      const edgeArr = new Float32Array(EDGE_COUNT * 6);
+      const edgePulseArr = new Float32Array(EDGE_COUNT);
+      const edgeGeo = new THREE.BufferGeometry();
+      edgeGeo.setAttribute('position', new THREE.BufferAttribute(edgeArr, 3));
+      edgeGeo.setAttribute('pulse', new THREE.BufferAttribute(edgePulseArr, 1));
+
+      const edgeMat = new THREE.ShaderMaterial({
+        vertexShader: `
+          attribute float pulse;
+          varying float vPulse;
+          varying vec3 vPos;
+          void main(){
+            vPulse = pulse;
+            vPos = position;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }`,
+        fragmentShader: `
+          varying float vPulse;
+          varying vec3 vPos;
+          void main(){
+            float f = 1.0 - abs(vPos.z / 15.0);
+            float alpha = 0.3 + 0.3 * sin(vPulse);
+            gl_FragColor = vec4(0.42, 0.89, 0.92, alpha * f); // #6be2eb
+          }`,
+        transparent: true,
+      });
+
+      if (!edgeMat.program) {
+        const err = new Error('Edge shader compilation failed');
+        ModuleLoader.log('Edge shader compilation failed:', err);
+        moduleLogger.log('shader_error', { error: err.message });
+        throw err;
+      }
+
+      const lines = new THREE.LineSegments(edgeGeo, edgeMat);
+      this._scene.add(lines);
+      this._edgeGeometry = edgeGeo;
+      this._edgeAttributes = { edgeArr, edgePulseArr };
+      ModuleLoader.log(`Initialized ${EDGE_COUNT} edges`);
+      moduleLogger.log('edges_init', { count: EDGE_COUNT });
+    }
+
+    _initGradientPlane() {
+      const gradGeo = new THREE.PlaneGeometry(40, 40);
+      const gradMat = new THREE.ShaderMaterial({
+        vertexShader: `
+          varying vec2 vUv;
+          void main(){
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }`,
+        fragmentShader: `
+          varying vec2 vUv;
+          uniform float time;
+          float perlin(vec2 p) {
+            return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+          }
+          void main(){
+            vec2 uv = vUv;
+            vec3 c = mix(vec3(0.94, 0.97, 1.0), vec3(0.70, 0.61, 0.86), uv.y); // #b39ddb
+            float noise = perlin(uv * 10.0 + time * 0.001);
+            c += noise * 0.02;
+            gl_FragColor = vec4(c, 0.4);
+          }`,
+        transparent: true,
+        uniforms: { time: { value: 0 } },
+      });
+
+      if (!gradMat.program) {
+        const err = new Error('Gradient plane shader compilation failed');
+        ModuleLoader.log('Gradient plane shader compilation failed:', err);
+        moduleLogger.log('shader_error', { error: err.message });
+        throw err;
+      }
+
+      const gradMesh = new THREE.Mesh(gradGeo, gradMat);
+      gradMesh.position.z = -12;
+      this._scene.add(gradMesh);
+      this._gradientMaterial = gradMat;
+      ModuleLoader.log('Gradient plane initialized');
+      moduleLogger.log('gradient_plane_init', {});
+    }
+
+    _animate(t) {
+      const quality = this._performanceManager.monitor();
+      if (!this._particleGeometry || !this._edgeGeometry || !this._gradientMaterial) {
+        ModuleLoader.log('Animation failed: Missing geometry or material');
+        moduleLogger.log('animation_error', { error: 'Missing geometry or material' });
+        return;
+      }
+
+      const { posArr, pulseArr, rotArr, sizeArr } = this._particleAttributes;
+      const { edgeArr, edgePulseArr } = this._edgeAttributes;
+
+      this._particles.forEach((n, i) => {
+        posArr.set([n.pos.x, n.pos.y, n.pos.z], i * 3);
+        pulseArr[i] = n.pulse;
+        rotArr[i] = n.rotation;
+        sizeArr[i] = n.size;
+      });
+      this._particleGeometry.attributes.position.needsUpdate = true;
+      this._particleGeometry.attributes.pulse.needsUpdate = true;
+      this._particleGeometry.attributes.rotation.needsUpdate = true;
+      this._particleGeometry.attributes.size.needsUpdate = true;
+
+      this._edges.forEach((e, i) => {
+        const a = this._particles[e.s].pos, b = this._particles[e.t].pos;
+        edgeArr.set([a.x, a.y, a.z, b.x, b.y, b.z], i * 6);
+        edgePulseArr[i] = e.pulse;
+      });
+      this._edgeGeometry.attributes.position.needsUpdate = true;
+      this._edgeGeometry.attributes.pulse.needsUpdate = true;
+
+      this._particles.forEach(n => {
+        n.pos.add(n.vel.clone().multiplyScalar(quality));
+        n.pulse += 0.08 * quality;
+        ['x', 'y', 'z'].forEach(ax => {
+          const lim = ax === 'z' ? 15 : 30;
+          if (Math.abs(n.pos[ax]) > lim) n.vel[ax] *= -1;
+        });
+        const center = new THREE.Vector3();
+        let cnt = 0;
+        this._particles.forEach(o => {
+          if (o.cluster === n.cluster) {
+            center.add(o.pos); cnt++;
+          }
+        });
+        if (cnt) {
+          center.divideScalar(cnt);
+          n.vel.add(center.sub(n.pos).multiplyScalar(0.002 * quality));
+        }
+      });
+      this._edges.forEach(e => e.pulse += 0.04 * quality);
+      this._gradientMaterial.uniforms.time.value = t * 0.001;
+      this._camera.position.x = Math.sin(t * 0.00015) * 5;
+      this._camera.position.y = Math.cos(t * 0.00012) * 4;
+      this._camera.lookAt(0, 0, 0);
+
+      this._composer.render();
+      if (!this._prefersRM) appState.trackAnimation('neural-bg', this._animate.bind(this));
+    }
+
+    destroy() {
+      appState.cancelAnimation('neural-bg');
+      appState.cancelAnimation('neural-bg-2d');
+      if (this._renderer) {
+        this._renderer.dispose();
+        this._renderer.forceContextLoss();
+        if (this._container.contains(this._renderer.domElement)) {
+          this._container.removeChild(this._renderer.domElement);
+          ModuleLoader.log('Neural background destroyed');
+          moduleLogger.log('neural_bg_destroyed', {});
+        }
+      }
+    }
+  }
+
+  // Quantum Engine for Particle System and Parallax
+  class QuantumEngine {
+    constructor() {
+      this._particleCanvas = null;
+      this._ctx = null;
+      this._particles = [];
+      this.initParticleSystem();
+      this.initParallaxPhysics();
+      this.setupTemporalCaching();
+    }
+
+    initParticleSystem() {
+      this._particleCanvas = document.querySelector('.quantum-canvas');
+      if (!this._particleCanvas) {
+        ModuleLoader.log('Quantum canvas not found');
+        moduleLogger.log('quantum_canvas_error', { error: 'Canvas not found' });
+        return;
+      }
+      this._ctx = this._particleCanvas.getContext('2d');
+      if (!this._ctx) {
+        ModuleLoader.log('2D context unavailable for particle canvas');
+        moduleLogger.log('quantum_canvas_error', { error: '2D context unavailable' });
+        return;
+      }
+      this._particles = Array.from({ length: 1000 }, () => ({
+        x: Math.random() * innerWidth,
+        y: Math.random() * innerHeight,
+        vx: (Math.random() - 0.5) * 0.2,
+        vy: (Math.random() - 0.5) * 0.2,
+        size: Math.random() * 3 + 1
+      }));
+      
+      ModuleLoader.log('Quantum particle system initialized', { particleCount: this._particles.length });
+      moduleLogger.log('quantum_particles_init', { count: this._particles.length });
+      this.animateParticles();
+    }
+
+    animateParticles = () => {
+      if (!this._particleCanvas || !this._ctx) {
+        ModuleLoader.log('Animation failed: Missing canvas or context');
+        moduleLogger.log('animation_error', { error: 'Missing canvas or context' });
+        return;
+      }
+      this._particleCanvas.width = innerWidth * devicePixelRatio;
+      this._particleCanvas.height = innerHeight * devicePixelRatio;
+      this._particleCanvas.style.width = `${innerWidth}px`;
+      this._particleCanvas.style.height = `${innerHeight}px`;
+      this._ctx.scale(devicePixelRatio, devicePixelRatio);
+
+      this._ctx.clearRect(0, 0, innerWidth, innerHeight);
+      
+      this._particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > innerWidth) p.vx *= -1;
+        if (p.y < 0 || p.y > innerHeight) p.vy *= -1;
+        
+        this._ctx.beginPath();
+        this._ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        this._ctx.fillStyle = `rgba(107, 226, 235, ${0.2 * p.size})`;
+        this._ctx.fill();
+      });
+      
+      appState.trackAnimation('quantum-particles', this.animateParticles);
+    }
+
+    initParallaxPhysics() {
+      document.querySelectorAll('[data-parallax]').forEach(el => {
+        const handler = (e) => {
+          const rect = el.getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width;
+          const y = (e.clientY - rect.top) / rect.height;
+          
+          el.style.setProperty('--x', `${x * 100}%`);
+          el.style.setProperty('--y', `${y * 100}%`);
+        };
+        el.addEventListener('mousemove', handler);
+        appState.addCleanup(() => el.removeEventListener('mousemove', handler));
+      });
+      ModuleLoader.log('Parallax physics initialized');
+      moduleLogger.log('parallax_init', {});
+    }
+
+    setupTemporalCaching() {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js', {
+          scope: '/',
+          type: 'module',
+          updateViaCache: 'none'
+        }).then(reg => {
+          ModuleLoader.log('Service Worker registered');
+          moduleLogger.log('service_worker_registered', {});
+        }).catch(err => {
+          ModuleLoader.log('Service Worker registration failed:', err);
+          moduleLogger.log('service_worker_error', { error: err.message });
+        });
+      }
+    }
+  }
+
+  // Auth Flow for Intro and Terms
+  class AuthFlow {
+    constructor() {
+      this._acceptTermsHandler = null;
+      this.initLoader();
+      this.playIntro();
+    }
+
+    initLoader() {
+      const handler = () => {
+        const loader = document.getElementById('quantum-loader');
+        if (loader) {
+          loader.remove();
+          ModuleLoader.log('Quantum loader removed');
+          moduleLogger.log('loader_removed', {});
+        }
+      };
+      window.addEventListener('load', handler);
+      appState.addCleanup(() => window.removeEventListener('load', handler));
+    }
+
+    playIntro() {
+      const intro = document.getElementById('intro-sequence');
+      if (!intro) {
+        ModuleLoader.log('Intro sequence not found');
+        moduleLogger.log('intro_sequence_error', { error: 'Element not found' });
+        return;
+      }
+      const letters = document.querySelectorAll('.logo-particle');
+      
+      letters.forEach((letter, i) => {
+        anime({
+          targets: letter,
+          opacity: [0, 1],
+          translateY: [20, 0],
+          delay: i * 80,
+          duration: 1200,
+          easing: 'easeOutExpo'
+        });
+      });
+
+      anime({
+        targets: intro,
+        opacity: [1, 0],
+        delay: 4500,
+        duration: 1000,
+        easing: 'easeInOutQuad',
+        complete: () => {
+          intro.remove();
+          ModuleLoader.log('Intro sequence completed');
+          moduleLogger.log('intro_sequence_completed', {});
+          this.showTerms();
+        }
+      });
+    }
+
+    showTerms() {
+      const authFlow = document.getElementById('auth-flow');
+      const termsModal = authFlow?.querySelector('.terms-modal');
+      if (!authFlow || !termsModal) {
+        ModuleLoader.log('Auth flow or terms modal not found');
+        moduleLogger.log('auth_flow_error', { error: 'Element not found' });
+        return;
+      }
+      
+      authFlow.style.display = 'grid';
+      anime({
+        targets: termsModal,
+        scale: [0.9, 1],
+        opacity: [0, 1],
+        duration: 800,
+        easing: 'easeOutBack'
+      });
+
+      const acceptButton = document.querySelector('.accept-terms');
+      if (acceptButton) {
+        this._acceptTermsHandler = () => {
+          anime({
+            targets: authFlow,
+            opacity: 0,
+            duration: 800,
+            easing: 'easeInOutQuad',
+            complete: () => {
+              authFlow.remove();
+              ModuleLoader.log('Terms modal accepted and removed');
+              moduleLogger.log('terms_accepted', {});
+            }
+          });
+        };
+        acceptButton.addEventListener('click', this._acceptTermsHandler);
+        appState.addCleanup(() => {
+          if (this._acceptTermsHandler) {
+            acceptButton.removeEventListener('click', this._acceptTermsHandler);
+          }
+        });
+      }
+      ModuleLoader.log('Terms modal displayed');
+      moduleLogger.log('terms_modal_displayed', {});
+    }
+  }
+
+  // Core Initialization
+  const appState = new AppState();
+
+  async function initCoreModules() {
+    try {
+      const modules = await Promise.allSettled([
+        ModuleLoader.load('/theme-toggle.js', 'theme-toggle').then(m => ({ initThemeToggle: m?.initThemeToggle })),
+        ModuleLoader.load('/telemetry.js', 'telemetry').then(m => ({ initTelemetry: m?.initTelemetry }))
+      ]);
+
+      const loadedModules = modules.reduce((acc, result, index) => {
+        const name = ['theme-toggle', 'telemetry'][index];
+        if (result.status === 'fulfilled' && result.value) {
+          appState._resources.register(result.value, name);
+          return { ...acc, ...result.value };
+        }
+        ModuleLoader.log(`Module ${name} failed to load`);
+        moduleLogger.log('module_load_failed', { moduleName: name });
+        return acc;
+      }, {});
+
+      ModuleLoader.log('Core modules initialized', Object.keys(loadedModules));
+      moduleLogger.log('core_modules_initialized', { modules: Object.keys(loadedModules) });
+      return loadedModules;
+    } catch (err) {
+      ModuleLoader.log('Critical module initialization error:', err);
+      moduleLogger.log('core_init_error', { error: err.message });
+      throw err;
+    }
+  }
+
+  // Accessibility Enhancements
+  function initAccessibility() {
+    document.documentElement.lang = 'en';
+    document.documentElement.setAttribute('role', 'document');
+    
+    const skipLink = document.querySelector('.skip-link');
+    if (!skipLink) {
+      const newSkipLink = document.createElement('a');
+      newSkipLink.href = '#main';
+      newSkipLink.textContent = 'Skip to main content';
+      newSkipLink.classList.add('skip-link');
+      document.body.prepend(newSkipLink);
+    }
+
+    document.querySelectorAll('[data-scroll]').forEach(el => {
+      const observer = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          el.setAttribute('data-scroll', 'in');
+        }
+      }, { threshold: 0.1 });
+      observer.observe(el);
+      appState.addCleanup(() => observer.disconnect());
     });
-  </script>
+    ModuleLoader.log('Accessibility enhancements initialized');
+    moduleLogger.log('accessibility_init', {});
+  }
+
+  // Performance Monitoring
+  function initPerformanceMonitoring() {
+    const perfObserver = new PerformanceObserver(list => {
+      const entries = list.getEntries();
+      ModuleLoader.log('Performance metrics:', entries);
+      moduleLogger.log('performance_metrics', { entries: entries.map(e => e.name) });
+    });
+
+    perfObserver.observe({ entryTypes: ['measure', 'resource', 'navigation'] });
+    ModuleLoader.log('Performance monitoring initialized');
+    moduleLogger.log('performance_monitoring_init', {});
+  }
+
+  // Error Handling
+  function handleFatalError(err) {
+    ModuleLoader.log('Fatal application error:', err);
+    moduleLogger.log('fatal_error', { error: err.message });
+    document.getElementById('quantum-loader')?.remove();
+    
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.innerHTML = `
+      <h2>System Error</h2>
+      <p>${err.message}</p>
+      <button onclick="window.location.reload()">Reload Application</button>
+    `;
+    
+    document.body.prepend(errorDiv);
+  }
+
+  // Main Initialization Flow
+  async function initApplication() {
+    try {
+      const modules = await initCoreModules();
+      const neuralBg = new NeuralBackground(document.getElementById('neural-bg'));
+      await neuralBg.init();
+      new QuantumEngine();
+      new AuthFlow();
+
+      if (modules.initThemeToggle) modules.initThemeToggle();
+      if (modules.initTelemetry) modules.initTelemetry();
+
+      initAccessibility();
+      initPerformanceMonitoring();
+
+      appState.addCleanup(() => {
+        neuralBg.destroy();
+        ModuleLoader.log('Application cleanup initiated');
+        moduleLogger.log('app_cleanup', {});
+      });
+    } catch (err) {
+      handleFatalError(err);
+    }
+  }
+
+  // Boot Sequence
+  document.addEventListener('DOMContentLoaded', () => {
+    if (window.NodeList && !NodeList.prototype.forEach) {
+      NodeList.prototype.forEach = Array.prototype.forEach;
+    }
+
+    initApplication();
+    ModuleLoader.log('Application boot sequence started');
+    moduleLogger.log('app_boot', {});
+  });
+
+  window.addEventListener('beforeunload', () => {
+    appState.cleanup();
+    ModuleLoader.log('Application unloading');
+    moduleLogger.log('app_unload', {});
+  });
+
+  ModuleLoader.log('Elvira Core v3.1 initialized');
+  moduleLogger.log('core_initialized', { version: '3.1' });
+
+  /* Embedded telemetry.js - Telemetry Module for Elvira Genesis-Elvira */
+  function initTelemetry() {
+    const telemetryHud = document.querySelector('.telemetry-hud');
+    if (!telemetryHud) {
+      console.warn('[Telemetry] HUD element not found');
+      return;
+    }
+
+    const updateTelemetry = () => {
+      const latencyEl = document.getElementById('latency');
+      const eventsEl = document.getElementById('events');
+      const complianceEl = document.getElementById('compliance');
+
+      if (latencyEl) latencyEl.textContent = `${Math.random().toFixed(1)}ms`;
+      if (eventsEl) eventsEl.textContent = `${(Math.random() * 5e6).toFixed(0)}`;
+      if (complianceEl) complianceEl.textContent = '100%';
+    };
+
+    updateTelemetry();
+    const interval = setInterval(updateTelemetry, 5000);
+    window.addEventListener('beforeunload', () => clearInterval(interval));
+
+    console.log('[Telemetry] Initialized');
+  }
+
+  // Expose initTelemetry for core initialization
+  window.initTelemetry = initTelemetry;
+</script>
+<script nonce="nexus2025">
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'A' && e.key === 'Enter') {
+      e.target.click();
+    }
+  });
+</script>
 </body>
 </html>
