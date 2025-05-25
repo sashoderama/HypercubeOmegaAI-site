@@ -1,35 +1,33 @@
-/* accordion.js */
-export function initAccordion(sectionIds = ['#features']) {
-  console.debug('Initializing accordion...');
-  sectionIds.forEach(sectionId => {
-    const items = document.querySelectorAll(`${sectionId} .accordion-item`);
-    if (!items.length) {
-      console.warn(`Accordion items missing in ${sectionId}`);
+/* accordion.js – Accordion for Elvira Genesis-Elvira */
+export function initAccordion(selectors) {
+  console.debug('Initializing accordion module...');
+  selectors.forEach(selector => {
+    const accordion = document.querySelector(selector);
+    if (!accordion) {
+      console.warn(`Accordion not found: ${selector}`);
       return;
     }
 
+    const items = accordion.querySelectorAll('.accordion-item');
     items.forEach(item => {
       const header = item.querySelector('.accordion-header');
       const content = item.querySelector('.accordion-content');
-      if (!header || !content) {
-        console.warn(`Accordion header or content missing in ${sectionId}`);
-        return;
-      }
+      if (!header || !content) return;
 
       header.addEventListener('click', () => {
-        console.debug(`Accordion header clicked in ${sectionId}`);
+        console.debug(`Accordion header clicked: ${header.textContent}`);
         const isExpanded = header.getAttribute('aria-expanded') === 'true';
         header.setAttribute('aria-expanded', !isExpanded);
-        content.classList.toggle('active', !isExpanded);
-      });
-    });
-
-    state.cleanup.add(() => {
-      console.debug(`Cleaning up accordion in ${sectionId}`);
-      items.forEach(item => {
-        const header = item.querySelector('.accordion-header');
-        if (header) header.removeEventListener('click', header);
+        content.style.display = isExpanded ? 'none' : 'block';
       });
     });
   });
+
+  const cleanup = () => {
+    console.debug('Cleaning up accordion');
+    // Event listeners are not removed as they are scoped to DOM elements
+  };
+
+  window.addEventListener('beforeunload', cleanup);
+  window.addEventListener('pagehide', cleanup);
 }
