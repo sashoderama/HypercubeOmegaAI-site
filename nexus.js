@@ -2,6 +2,45 @@
 'use strict';
 
 // -------------------------------
+// Centralized Module Logger
+// -------------------------------
+class ModuleLogger {
+  constructor(wsUrl = null) {
+    this.ws = null;
+    if (wsUrl) this.initWebSocket(wsUrl);
+  }
+
+  initWebSocket(wsUrl) {
+    try {
+      this.ws = new WebSocket(wsUrl);
+      this.ws.onopen = () => console.log('[ModuleLogger] WebSocket connected');
+      this.ws.onerror = e => console.warn('[ModuleLogger] WebSocket error', e);
+      this.ws.onclose = () => console.warn('[ModuleLogger] WebSocket closed');
+    } catch (err) {
+      console.warn('[ModuleLogger] WebSocket initialization failed:', err);
+    }
+  }
+
+  log(event, data = {}) {
+    const payload = JSON.stringify({
+      event,
+      timestamp: new Date().toISOString(),
+      ...data
+    });
+    console.log('[ModuleLogger]', payload);
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      try {
+        this.ws.send(payload);
+      } catch (err) {
+        console.warn('[ModuleLogger] Failed to send WebSocket message:', err);
+      }
+    }
+  }
+}
+
+const moduleLogger = new ModuleLogger(); // Optional: 'ws://localhost:3030'
+
+// -------------------------------
 // Module Loader with Circuit Breaker
 // -------------------------------
 class ModuleLoader {
@@ -9,37 +48,53 @@ class ModuleLoader {
   static RETRY_DELAY = 1000;
   static TIMEOUT = 5000;
   static circuitStates = new Map();
+  static verbose = true; // Enable detailed logging
+
+  static log(msg, ...args) {
+    if (this.verbose) console.log(`[ModuleLoader] ${msg}`, ...args);
+  }
 
   static async load(url, moduleName) {
     if (this.circuitStates.get(moduleName)?.isOpen) {
-      console.warn(`Circuit open for ${moduleName}, skipping load`);
+      this.log(`Circuit open for ${moduleName}, skipping load`);
+      moduleLogger.log('circuit_open', { moduleName, url });
       return null;
+    }
+
+    if (!url.endsWith('.js')) {
+      this.log(`Module ${url} might be blocked by MIME/CORS policy`);
+      moduleLogger.log('invalid_mime', { moduleName, url });
     }
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), this.TIMEOUT);
 
     try {
-    const module = await Promise.race([
-      import(url, { signal: controller.signal }),
-      new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Module load timeout')), this.TIMEOUT))
-    ]);
-
+      const module = await Promise.race([
+        import(url, { signal: controller.signal }),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Module load timeout')), this.TIMEOUT))
+      ]);
       
       this.circuitStates.set(moduleName, { failures: 0, isOpen: false });
-      console.debug(`Successfully loaded module: ${url}`);
+      this.log(`Successfully loaded module: ${url}`);
+      moduleLogger.log('module_loaded', { moduleName, url });
       return module;
     } catch (err) {
-      console.error(`Module load failed: ${moduleName}`, err);
+      this.log(`Module load failed: ${moduleName}`, err);
+      moduleLogger.log('module_error', { moduleName, url, error: err.message });
       const state = this.circuitStates.get(moduleName) || { failures: 0 };
       state.failures++;
       
       if (state.failures >= this.RETRY_LIMIT) {
         state.isOpen = true;
+        this.log(`Circuit breaker tripped for ${moduleName}`);
+        moduleLogger.log('circuit_tripped', { moduleName, url });
         setTimeout(() => {
           state.isOpen = false;
           state.failures = 0;
+          this.log(`Circuit breaker reset for ${moduleName}`);
+          moduleLogger.log('circuit_reset', { moduleName, url });
         }, 30000);
       }
       
@@ -60,7 +115,8 @@ class AppState {
     this.animations = new Map();
     this.cleanupHandlers = new Set();
     this.resources = new FinalizationRegistry(url => {
-      console.debug(`Cleaning up resources for ${url}`);
+      ModuleLoader.log(`Cleaning up resources for ${url}`);
+      moduleLogger.log('resource_cleanup', { url });
     });
   }
 
@@ -110,6 +166,8 @@ class WebGLManager {
       if (!gl) throw new Error('WebGL unavailable');
       
       container.appendChild(canvas);
+      ModuleLoader.log('WebGL context created successfully');
+      moduleLogger.log('webgl_context_created', { container: container.id });
       return {
         canvas,
         gl,
@@ -122,7 +180,8 @@ class WebGLManager {
         }
       };
     } catch (err) {
-      console.error('WebGL initialization failed:', err);
+      ModuleLoader.log('WebGL initialization failed:', err);
+      moduleLogger.log('webgl_init_error', { error: err.message });
       return this.create2DFallback(container);
     }
   }
@@ -132,6 +191,8 @@ class WebGLManager {
     const ctx = canvas.getContext('2d', { alpha: true });
     container.appendChild(canvas);
     
+    ModuleLoader.log('2D canvas fallback created');
+    moduleLogger.log('2d_fallback_created', { container: container.id });
     return {
       canvas,
       ctx,
@@ -175,8 +236,12 @@ class PerformanceManager {
 
     if (currentFPS < this.constructor.TARGET_FPS * 0.9) {
       this.qualityLevel = Math.max(0.5, this.qualityLevel - 0.1);
+      ModuleLoader.log(`FPS dropped to ${currentFPS.toFixed(1)}, reducing quality to ${this.qualityLevel.toFixed(2)}`);
+      moduleLogger.log('fps_drop', { fps: currentFPS, quality: this.qualityLevel });
     } else if (currentFPS > this.constructor.TARGET_FPS * 1.1) {
       this.qualityLevel = Math.min(1.0, this.qualityLevel + 0.1);
+      ModuleLoader.log(`FPS increased to ${currentFPS.toFixed(1)}, increasing quality to ${this.qualityLevel.toFixed(2)}`);
+      moduleLogger.log('fps_increase', { fps: currentFPS, quality: this.qualityLevel });
     }
 
     this.lastFrameTime = now;
@@ -206,7 +271,8 @@ class NeuralBackground {
 
   async init() {
     if (!this.container) {
-      console.error('Neural background container not found');
+      ModuleLoader.log('Neural background container not found');
+      moduleLogger.log('neural_bg_error', { error: 'Container not found' });
       return;
     }
 
@@ -219,7 +285,8 @@ class NeuralBackground {
 
   async #initWebGL() {
     try {
-      console.debug('Loading Three.js & postprocessing...');
+      ModuleLoader.log('Loading Three.js & postprocessing...');
+      moduleLogger.log('loading_threejs', {});
       const [
         { default: THREE },
         { EffectComposer },
@@ -272,22 +339,30 @@ class NeuralBackground {
         this.#composer.setSize(innerWidth, innerHeight);
         this.#camera.aspect = innerWidth / innerHeight;
         this.#camera.updateProjectionMatrix();
+        ModuleLoader.log('Neural background resized');
+        moduleLogger.log('neural_bg_resize', { width: innerWidth, height: innerHeight });
       };
       window.addEventListener('resize', onResize);
       appState.addCleanup(() => window.removeEventListener('resize', onResize));
       appState.addCleanup(() => {
         this.#renderer.dispose();
         this.#renderer.forceContextLoss();
-        this.container.removeChild(this.#renderer.domElement);
+        if (this.container.contains(this.#renderer.domElement)) {
+          this.container.removeChild(this.#renderer.domElement);
+          ModuleLoader.log('Neural background renderer cleaned up');
+          moduleLogger.log('neural_bg_cleanup', {});
+        }
       });
     } catch (err) {
-      console.error('WebGL failed, fallback2D:', err);
+      ModuleLoader.log('WebGL failed, fallback2D:', err);
+      moduleLogger.log('webgl_init_error', { error: err.message });
       this.#init2DFallback();
     }
   }
 
   #init2DFallback() {
-    console.debug('Using 2D canvas fallback');
+    ModuleLoader.log('Using 2D canvas fallback');
+    moduleLogger.log('2d_fallback_init', {});
     const area = innerWidth * innerHeight;
     const N = Math.max(100, Math.min(600, Math.floor(area / 50_000)));
     const canvas = Object.assign(document.createElement('canvas'), {
@@ -422,6 +497,8 @@ class NeuralBackground {
     this.#scene.add(points);
     this.#particleGeometry = nodeGeo;
     this.#particleAttributes = { posArr, pulseArr, rotArr, sizeArr };
+    ModuleLoader.log(`Initialized ${NODE_COUNT} particles`);
+    moduleLogger.log('particles_init', { count: NODE_COUNT });
   }
 
   #initEdges() {
@@ -462,6 +539,8 @@ class NeuralBackground {
     this.#scene.add(lines);
     this.#edgeGeometry = edgeGeo;
     this.#edgeAttributes = { edgeArr, edgePulseArr };
+    ModuleLoader.log(`Initialized ${EDGE_COUNT} edges`);
+    moduleLogger.log('edges_init', { count: EDGE_COUNT });
   }
 
   #initGradientPlane() {
@@ -493,6 +572,8 @@ class NeuralBackground {
     gradMesh.position.z = -12;
     this.#scene.add(gradMesh);
     this.#gradientMaterial = gradMat;
+    ModuleLoader.log('Gradient plane initialized');
+    moduleLogger.log('gradient_plane_init', {});
   }
 
   #animate(t) {
@@ -556,6 +637,8 @@ class NeuralBackground {
       this.#renderer.forceContextLoss();
       if (this.container.contains(this.#renderer.domElement)) {
         this.container.removeChild(this.#renderer.domElement);
+        ModuleLoader.log('Neural background destroyed');
+        moduleLogger.log('neural_bg_destroyed', {});
       }
     }
   }
@@ -573,7 +656,11 @@ class QuantumEngine {
 
   initParticleSystem() {
     this.particleCanvas = document.querySelector('.quantum-canvas');
-    if (!this.particleCanvas) return;
+    if (!this.particleCanvas) {
+      ModuleLoader.log('Quantum canvas not found');
+      moduleLogger.log('quantum_canvas_error', { error: 'Canvas not found' });
+      return;
+    }
     this.ctx = this.particleCanvas.getContext('2d');
     this.particles = Array.from({ length: 1000 }, () => ({
       x: Math.random() * innerWidth,
@@ -583,6 +670,8 @@ class QuantumEngine {
       size: Math.random() * 3 + 1
     }));
     
+    ModuleLoader.log('Quantum particle system initialized', { particleCount: this.particles.length });
+    moduleLogger.log('quantum_particles_init', { count: this.particles.length });
     this.animateParticles();
   }
 
@@ -621,6 +710,8 @@ class QuantumEngine {
         el.style.setProperty('--y', `${y * 100}%`);
       });
     });
+    ModuleLoader.log('Parallax physics initialized');
+    moduleLogger.log('parallax_init', {});
   }
 
   setupTemporalCaching() {
@@ -629,8 +720,13 @@ class QuantumEngine {
         scope: '/',
         type: 'module',
         updateViaCache: 'none'
-      }).then(reg => console.debug('Service Worker registered'))
-        .catch(err => console.warn('Service Worker registration failed:', err));
+      }).then(reg => {
+        ModuleLoader.log('Service Worker registered');
+        moduleLogger.log('service_worker_registered', {});
+      }).catch(err => {
+        ModuleLoader.log('Service Worker registration failed:', err);
+        moduleLogger.log('service_worker_error', { error: err.message });
+      });
     }
   }
 }
@@ -647,13 +743,21 @@ class AuthFlow {
   initLoader() {
     window.addEventListener('load', () => {
       const loader = document.getElementById('quantum-loader');
-      if (loader) loader.remove();
+      if (loader) {
+        loader.remove();
+        ModuleLoader.log('Quantum loader removed');
+        moduleLogger.log('loader_removed', {});
+      }
     });
   }
 
   playIntro() {
     const intro = document.getElementById('intro-sequence');
-    if (!intro) return;
+    if (!intro) {
+      ModuleLoader.log('Intro sequence not found');
+      moduleLogger.log('intro_sequence_error', { error: 'Element not found' });
+      return;
+    }
     const letters = document.querySelectorAll('.logo-particle');
     
     letters.forEach((letter, i) => {
@@ -675,6 +779,8 @@ class AuthFlow {
       easing: 'easeInOutQuad',
       complete: () => {
         intro.remove();
+        ModuleLoader.log('Intro sequence completed');
+        moduleLogger.log('intro_sequence_completed', {});
         this.showTerms();
       }
     });
@@ -683,7 +789,11 @@ class AuthFlow {
   showTerms() {
     const authFlow = document.getElementById('auth-flow');
     const termsModal = authFlow.querySelector('.terms-modal');
-    if (!authFlow || !termsModal) return;
+    if (!authFlow || !termsModal) {
+      ModuleLoader.log('Auth flow or terms modal not found');
+      moduleLogger.log('auth_flow_error', { error: 'Element not found' });
+      return;
+    }
     
     authFlow.style.display = 'grid';
     anime({
@@ -700,9 +810,15 @@ class AuthFlow {
         opacity: 0,
         duration: 800,
         easing: 'easeInOutQuad',
-        complete: () => authFlow.remove()
+        complete: () => {
+          authFlow.remove();
+          ModuleLoader.log('Terms modal accepted and removed');
+          moduleLogger.log('terms_accepted', {});
+        }
       });
     });
+    ModuleLoader.log('Terms modal displayed');
+    moduleLogger.log('terms_modal_displayed', {});
   }
 }
 
@@ -727,13 +843,17 @@ async function initCoreModules() {
         appState.resources.register(result.value, name);
         return { ...acc, ...result.value };
       }
-      console.warn(`Module ${name} failed to load`);
+      ModuleLoader.log(`Module ${name} failed to load`);
+      moduleLogger.log('module_load_failed', { moduleName: name });
       return acc;
     }, {});
 
+    ModuleLoader.log('Core modules initialized', Object.keys(loadedModules));
+    moduleLogger.log('core_modules_initialized', { modules: Object.keys(loadedModules) });
     return loadedModules;
   } catch (err) {
-    console.error('Critical module initialization error:', err);
+    ModuleLoader.log('Critical module initialization error:', err);
+    moduleLogger.log('core_init_error', { error: err.message });
     throw err;
   }
 }
@@ -760,6 +880,8 @@ function initAccessibility() {
     observer.observe(el);
     appState.addCleanup(() => observer.disconnect());
   });
+  ModuleLoader.log('Accessibility enhancements initialized');
+  moduleLogger.log('accessibility_init', {});
 }
 
 // -------------------------------
@@ -768,17 +890,21 @@ function initAccessibility() {
 function initPerformanceMonitoring() {
   const perfObserver = new PerformanceObserver(list => {
     const entries = list.getEntries();
-    console.debug('Performance metrics:', entries);
+    ModuleLoader.log('Performance metrics:', entries);
+    moduleLogger.log('performance_metrics', { entries: entries.map(e => e.name) });
   });
 
   perfObserver.observe({ entryTypes: ['measure', 'resource', 'navigation'] });
+  ModuleLoader.log('Performance monitoring initialized');
+  moduleLogger.log('performance_monitoring_init', {});
 }
 
 // -------------------------------
 // Error Handling
 // -------------------------------
 function handleFatalError(err) {
-  console.error('Fatal application error:', err);
+  ModuleLoader.log('Fatal application error:', err);
+  moduleLogger.log('fatal_error', { error: err.message });
   document.getElementById('quantum-loader')?.remove();
   
   const errorDiv = document.createElement('div');
@@ -807,7 +933,12 @@ async function initApplication() {
     if (modules.initCharts) modules.initCharts();
     if (modules.initLLM) {
       const orig = modules.initLLM;
-      modules.initLLM = async (...a) => { appState.llmCallCount++; return orig(...a); };
+      modules.initLLM = async (...a) => { 
+        appState.llmCallCount++; 
+        ModuleLoader.log(`LLM call count: ${appState.llmCallCount}`);
+        moduleLogger.log('llm_call', { count: appState.llmCallCount });
+        return orig(...a); 
+      };
       modules.initLLM();
     }
     if (modules.initTelemetry) modules.initTelemetry();
@@ -818,6 +949,8 @@ async function initApplication() {
 
     appState.addCleanup(() => {
       neuralBg.destroy();
+      ModuleLoader.log('Application cleanup initiated');
+      moduleLogger.log('app_cleanup', {});
     });
   } catch (err) {
     handleFatalError(err);
@@ -833,10 +966,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   initApplication();
+  ModuleLoader.log('Application boot sequence started');
+  moduleLogger.log('app_boot', {});
 });
 
 window.addEventListener('beforeunload', () => {
   appState.cleanup();
+  ModuleLoader.log('Application unloading');
+  moduleLogger.log('app_unload', {});
 });
 
-console.log('Aurora Core v3.1 initialized');
+ModuleLoader.log('Aurora Core v3.1 initialized');
+moduleLogger.log('core_initialized', { version: '3.1' });
