@@ -9,23 +9,25 @@ class ModuleLoader {
   static TIMEOUT = 5000;
 
   static async load(url, moduleName) {
-    const controller = new AbortController();
     const TIMEOUT = this.TIMEOUT ?? 5000;
-    const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
+    const timeoutId = setTimeout(() => {
+      console.warn(`⏱ Timeout triggered for ${url}`);
+    }, TIMEOUT);
 
     for (let i = 0; i < this.RETRY_LIMIT; i++) {
       try {
         console.debug(`Attempting to load module: ${url}, attempt ${i + 1}`);
         const module = await Promise.race([
-          import(url, { signal: controller.signal }),
+          import(url), // ✅ FIXED: removed second argument
           new Promise((_, reject) =>
             setTimeout(() => reject(new Error('Module load timeout')), TIMEOUT)
           )
         ]);
-        console.debug(`Successfully loaded module: ${url}`);
+        clearTimeout(timeoutId);
+        console.debug(`✅ Successfully loaded module: ${url}`);
         return module;
       } catch (err) {
-        console.warn(`Module "${moduleName}" load failed (${url}), attempt ${i + 1}: ${err}`);
+        console.warn(`⚠️ Module "${moduleName}" failed (${url}), attempt ${i + 1}: ${err.message}`);
         if (i === this.RETRY_LIMIT - 1) {
           console.error(`❌ Exhausted retries for "${moduleName}"`);
           return null;
@@ -35,8 +37,8 @@ class ModuleLoader {
         clearTimeout(timeoutId);
       }
     }
-  } // 👈 добави тази затваряща скоба
-} // 👈 и тази – затваря класа!
+  }
+}
 
 
 
@@ -1006,9 +1008,13 @@ async function initApplication() {
 
     if (modules.initThemeToggle) modules.initThemeToggle();
     if (modules.initCharts) {
-      const chartsState = modules.initCharts();
-      appState.addCleanup(chartsState.cleanup);
+      const chartsState = modules.initCharts(appState);
+      if (chartsState?.cleanup) {
+        appState.addCleanup(chartsState.cleanup);
+      }
     }
+
+
     if (modules.initLLM) {
       const orig = modules.initLLM;
       modules.initLLM = async (...a) => { appState.llmCallCount++; return orig(...a); };
