@@ -17,8 +17,9 @@ class ModuleLoader {
         const module = await Promise.race([
           import(url, { signal: controller.signal }),
           new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('Module load timeout')), this.TIMEOUT)
+            setTimeout(() => reject(new Error('Module load timeout')), this.TIMEOUT))
         ]);
+
         console.debug(`Successfully loaded module: ${url}`);
         return module;
       } catch (err) {
