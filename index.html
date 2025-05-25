@@ -6,6 +6,8 @@
   <meta name="theme-color" content="#0c0d10">
   <meta name="color-scheme" content="dark light">
   <meta name="description" content="Elvira Genesis-Elvira: AI-Powered Cybersecurity Platform">
+  <meta name="keywords" content="cybersecurity, AI, GPU, threat detection, Elvira Architect, zero-trust"> <!-- Added for SEO -->
+  <meta name="robots" content="index,follow">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
@@ -26,10 +28,18 @@
   <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="/style.css" nonce="nexus2025">
-  <script type="importmap" src="/import-map.json" nonce="nexus2025"></script>
+  <script type="importmap" nonce="nexus2025">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.168.0/build/three.module.js",
+        "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.168.0/examples/jsm/"
+      }
+    }
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" nonce="nexus2025"></script>
 </head>
 <body data-theme="frost">
+  <a href="#main" class="skip-link">Skip to main content</a>
   <div class="quantum-field">
     <div class="energy-stream"></div>
     <div class="particle-decay"></div>
@@ -98,7 +108,7 @@
       </button>
     </div>
   </header>
-  <main role="main">
+  <main role="main" id="main">
     <section id="hero" data-scroll>
       <div class="container">
         <h2>Revolutionary Cybersecurity AI</h2>
@@ -712,7 +722,7 @@
   <footer role="contentinfo">
     <div class="container">
       <p>© 2025 Elvira Genesis-Elvira</p>
-      <img src="https://data.jsdelivr.com/v1/package/npm/three/badge" alt="jsDelivr hits">
+      <img src="https://data.jsdelivr.com/v1/package/npm/three/badge" alt="jsDelivr hits" crossorigin="anonymous">
       <p><a href="mailto:ceo@aurora-core.net">Contact Us</a> | GDPR, SOC2, HIPAA Compliant</p>
     </div>
   </footer>
@@ -727,9 +737,9 @@
   </div>
   <div id="keyboard-overlay" class="hidden">Ctrl+D: Toggle Dev Panel | Alt+/: High Contrast</div>
   <noscript>
-    <p>This site requires JavaScript and WebGL for full functionality.</p>
+    <p>This site requires JavaScript and WebGL for optimal functionality. Please enable JavaScript in your browser settings.</p>
   </noscript>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" nonce="nexus2025"></script>
-  <script type="module" src="/nexus.js" nonce="nexus2025" defer></script>
+  <script type="module" src="/nexus.js" nonce="nexus2025"></script>
 </body>
 </html>
