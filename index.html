@@ -2,12 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="description" content="Elvira Genesis-Elvira: AI-Powered Cybersecurity Platform with GPU-accelerated threat detection and sub-1ms response times.">
   <meta name="keywords" content="cybersecurity, AI, GPU, threat detection, zero-trust, post-quantum, forensics, machine learning">
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
-    script-src 'self' 'nonce-nexus2025' https://cdn.jsdelivr.net;
     style-src 'self' 'nonce-nexus2025' https://fonts.googleapis.com;
     font-src 'self' https://fonts.gstatic.com;
     img-src 'self' data: https:;
@@ -16,111 +15,117 @@
     base-uri 'none';
     media-src 'self';
   ">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#1a1a1a">
   <title>Elvira Genesis-Elvira</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap">
-  <link rel="manifest" href="data:application/manifest+json;base64,ewogICJuYW1lIjogIkVsdmlyYSBHZW5lc2lzLUVsdmlyYSIsCiAgInNob3J0X25hbWUiOiAiRWx2aXJhIiwKICAic3RhcnRfdXJsIjogIi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwYzBkMTAiLAogICJ0aGVtZV9jb2xvciI6ICIjNmJlMmViIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiL2ljb24tMTkyLnBuZyIsCiAgICAgICJzaXplcyI6ICIxOTJ4MTkyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIgogICAgfSwKICAgIHsKICAgICAgInNyYyI6ICIvaWNvbi01MTIucG5nIiwKICAgICAgInNpdmVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmcIgogICAgfQogIF0sCiAgInByZWZlcl9yZWxhdGVkX2FwcGxpY2F0aW9ucyI6IGZhbHNlCn0=">
-  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" nonce="nexus2025" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" nonce="nexus2025" defer></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap">
+  <link rel="manifest" href="data:application/manifest+json;base64,ewogICJuYW1lIjogIkVsdmlyYSBHZW5lc2lzLUVsdmlyYSIsCiAgInNob3J0X25hbWUiOiAiRWx2aXJhIiwKICAic3RhcnRfdXJsIjogIi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMxYTFhMWEiLAogICJ0aGVtZV9jb2xvciI6ICIjZmZmZmZmIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiL2ljb24tMTkyLnBuZyIsCiAgICAgICJzaXplcyI6ICIxOTJ4MTkyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIgogICAgfSwKICAgIHsKICAgICAgInNyYyI6ICIvaWNvbi01MTIucG5nIiwKICAgICAgInNpdmVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9wbmcIgogICAgfQogIF0sCiAgInByZWZlcl9yZWxhdGVkX2FwcGxpY2F0aW9ucyI6IGZhbHNlCn0=">
   <style nonce="nexus2025">
     :root {
-      --bg: #0c0d10;
-      --fg: #e0e3f4;
-      --accent: #6be2eb;
-      --secondary: #b39ddb;
-      --glow: rgba(107, 226, 235, 0.4);
-      --gradient: linear-gradient(135deg, #0c0d10 0%, #1a1b22 100%);
-      --shadow: 0 10px 20px rgba(107, 226, 235, 0.3);
-      --border: 1px solid rgba(107, 226, 235, 0.3);
-      --header-height: 80px;
-      --ease: cubic-bezier(0.33, 1, 0.68, 1);
-    }
-
-    [data-theme="light"] {
-      --bg: #e0e3f4;
-      --fg: #0c0d10;
-      --accent: #4f8dfd;
-      --gradient: linear-gradient(135deg, #e0e3f4 0%, #d0d3e4 100%);
-      --glow: rgba(79, 141, 253, 0.4);
-      --border: 1px solid rgba(79, 141, 253, 0.3);
-    }
-
-    [data-theme="contrast"] {
-      --bg: #000;
-      --fg: #fff;
-      --accent: #00ffff;
-      --gradient: none;
-      --glow: rgba(0, 255, 255, 0.6);
-      --border: 2px solid #00ffff;
+      --bg: #1a1a1a;
+      --fg: #e0e0e0;
+      --accent: #ffffff;
+      --highlight: #4a4a4a;
+      --glow: rgba(255, 255, 255, 0.2);
+      --matte: rgba(42, 42, 42, 0.7);
+      --gradient: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      --header-height: 72px;
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     html {
-      font-size: clamp(14px, 1.8vw, 16px);
+      font-size: clamp(15px, 1.6vw, 17px);
       scroll-behavior: smooth;
       scroll-padding-top: var(--header-height);
       -webkit-text-size-adjust: 100%;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
     }
 
     body {
-      font-family: 'Sora', sans-serif;
+      font-family: 'Inter', sans-serif;
       background: var(--gradient);
       color: var(--fg);
-      line-height: 1.7;
+      line-height: 1.8;
+      margin: 0;
       overflow-x: hidden;
       position: relative;
-      letter-spacing: 0.5px;
-      margin: 0;
-      animation: gradientRotate 30s linear infinite;
       touch-action: manipulation;
+      letter-spacing: 0.3px;
     }
 
-    @keyframes gradientRotate {
-      0% { background: linear-gradient(135deg, #0c0d10 0%, #1a1b22 100%); }
-      100% { background: linear-gradient(315deg, #0c0d10 0%, #1a1b22 100%); }
-    }
-
-    canvas#canvas-bg {
+    .neural-bg {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       z-index: -1;
+      overflow: hidden;
+      background: transparent;
+      pointer-events: none;
+    }
+
+    .neural-root {
+      position: absolute;
+      width: 3px;
+      height: 150px;
+      background: linear-gradient(to bottom, transparent, var(--accent), transparent);
+      animation: rootGrow 6s ease-in-out infinite, rootBranch 12s ease-in-out infinite;
+      transform-origin: bottom;
       opacity: 0.6;
-      mix-blend-mode: screen;
-      image-rendering: optimizeSpeed;
+      filter: blur(0.5px);
+    }
+
+    @keyframes rootGrow {
+      0%, 100% { transform: scaleY(1) translateY(0); opacity: 0.6; }
+      50% { transform: scaleY(1.3) translateY(-20px); opacity: 0.8; }
+    }
+
+    @keyframes rootBranch {
+      0% { transform: rotate(0deg); }
+      50% { transform: rotate(5deg); }
+      100% { transform: rotate(0deg); }
     }
 
     header {
-      position: sticky;
+      position: fixed;
       top: 0;
-      background: rgba(12, 13, 16, 0.95);
+      left: 0;
+      right: 0;
+      background: var(--matte);
       backdrop-filter: blur(12px);
-      padding: 1rem;
+      padding: 1rem 2rem;
       z-index: 1000;
       height: var(--header-height);
       box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     header .container {
-      max-width: 1920px;
-      margin: 0 auto;
+      max-width: 1440px;
+      width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    h1 {
-      font-size: clamp(1.8rem, 5vw, 2.5rem);
-      font-weight: 700;
-      filter: drop-shadow(0 0 8px var(--glow));
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: 1px;
     }
 
     nav {
       display: flex;
-      align-items: center;
       gap: 1.5rem;
+      align-items: center;
     }
 
     nav a {
@@ -128,13 +133,13 @@
       text-decoration: none;
       font-size: 1rem;
       font-weight: 600;
-      padding: 0.8rem 1.2rem;
-      transition: color 0.2s var(--ease), transform 0.2s var(--ease);
+      padding: 0.5rem 1rem;
+      transition: color 0.3s var(--ease), transform 0.3s var(--ease);
     }
 
     nav a:hover, nav a[aria-current="page"] {
       color: var(--accent);
-      transform: scale(1.1);
+      transform: translateY(-2px);
     }
 
     nav a:focus {
@@ -142,156 +147,276 @@
       outline-offset: 2px;
     }
 
-    .theme-toggle {
-      background: none;
-      border: none;
-      color: var(--fg);
-      font-size: 1.5rem;
-      cursor: pointer;
-      padding: 1rem;
-      transition: transform 0.2s var(--ease);
-    }
-
-    .theme-toggle:hover, .theme-toggle:focus {
-      transform: scale(1.2);
-      outline: 2px solid var(--accent);
-    }
-
     .card {
-      background: rgba(255, 255, 255, 0.08);
-      border: var(--border);
-      border-radius: 16px;
+      background: var(--matte);
+      border-radius: 12px;
       padding: 2rem;
-      position: relative;
-      transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
-      cursor: pointer;
-      overflow: hidden;
+      transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--glow);
       will-change: transform, box-shadow;
     }
 
     .card:hover {
-      transform: translateY(-10px) scale(1.03);
-      box-shadow: inset 0 0 8px var(--glow), 0 0 20px var(--shadow);
+      transform: translateY(-8px);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+    }
+
+    .card h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 1rem;
     }
 
     .card-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      grid-auto-rows: 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 2rem;
-      margin-top: 2.5rem;
-    }
-
-    .tab-btn {
-      background: rgba(255, 255, 255, 0.05);
-      border: var(--border);
-      color: var(--fg);
-      padding: 1rem 2rem;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: transform 0.2s var(--ease), background 0.2s var(--ease);
-    }
-
-    .tab-btn:hover, .tab-btn.active, .tab-btn:focus {
-      background: var(--accent);
-      color: #fff;
-      transform: scale(1.05);
-      outline: none;
-    }
-
-    .hero-logo {
-      font-size: clamp(3rem, 10vw, 5rem);
-      font-weight: 800;
-      color: var(--accent);
-      filter: drop-shadow(0 0 20px var(--glow));
-    }
-
-    video, img {
-      loading: lazy;
-      max-width: 100%;
-      height: auto;
-    }
-
-    .modal-content {
-      background: rgba(255, 255, 255, 0.08);
-      border: var(--border);
-      border-radius: 16px;
-      padding: 2rem;
-      max-width: 600px;
-      width: 90%;
-      transform: scale(0.7);
-      opacity: 0;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 0 20px var(--glow);
-    }
-
-    .modal.active .modal-content {
-      animation: modalAppear 0.5s forwards var(--ease);
-    }
-
-    @keyframes modalAppear {
-      to { transform: scale(1); opacity: 1; }
-    }
-
-    .modal-content h3 {
-      font-size: 2rem;
-      margin-bottom: 1.5rem;
-      color: var(--accent);
-      text-shadow: 0 0 10px var(--glow);
-      text-align: center;
-    }
-
-    .modal-content p {
-      font-size: 1.2rem;
-      margin-bottom: 2rem;
-      text-align: center;
-    }
-
-    .particle-container {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-    }
-
-    .particle {
-      position: absolute;
-      width: 3px;
-      height: 3px;
-      background: var(--accent);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--glow);
-      opacity: 0;
+      margin: 2rem 0;
     }
 
     .btn {
-      display: inline-block;
-      background: linear-gradient(45deg, var(--accent), var(--secondary));
-      color: #fff;
-      padding: 1rem 2rem;
-      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--matte);
+      color: var(--accent);
+      padding: 0.8rem 2rem;
+      border-radius: 8px;
       text-decoration: none;
-      font-weight: 700;
+      font-weight: 600;
       font-size: 1rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+      border: 1px solid var(--glow);
+      backdrop-filter: blur(8px);
+      transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), background 0.3s var(--ease);
     }
 
     .btn:hover, .btn:focus {
-      transform: scale(1.1);
-      box-shadow: var(--shadow);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(255, 255, 255, 0.2);
+      background: rgba(74, 74, 74, 0.5);
       outline: none;
     }
 
-    .tos-btn {
-      margin: 0 1rem;
-      padding: 1.2rem 2.5rem;
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      padding: 4rem 2rem;
+      background: linear-gradient(to bottom, transparent, var(--bg));
+    }
+
+    .hero video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.1;
+      z-index: -1;
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 8vw, 5rem);
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: 1px;
+      margin-bottom: 1rem;
+      text-shadow: 0 0 12px var(--glow);
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 800px;
+      margin-bottom: 2rem;
+    }
+
+    section {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+    }
+
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    h2 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 2rem;
+      letter-spacing: 0.5px;
+    }
+
+    p {
       font-size: 1.1rem;
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .simulator {
+      background: var(--matte);
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 600px;
+      margin: 2rem auto;
+      text-align: center;
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--glow);
+    }
+
+    .simulator h3 {
+      font-size: 1.8rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .simulator .counter {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--fg);
+      text-shadow: 0 0 8px var(--glow);
+    }
+
+    .graph-container {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 1.5rem;
+      background: var(--matte);
+      border-radius: 12px;
+      border: 1px solid var(--glow);
+      backdrop-filter: blur(8px);
+    }
+
+    .graph {
+      width: 100%;
+      height: 200px;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      padding: 1rem;
+    }
+
+    .bar {
+      flex: 1;
+      background: linear-gradient(to top, var(--accent), var(--highlight));
+      transition: height 0.5s var(--ease);
+      border-radius: 4px;
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      backdrop-filter: blur(12px);
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--matte);
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      transform: scale(0.9);
+      opacity: 0;
+      transition: transform 0.4s var(--ease), opacity 0.4s var(--ease);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--glow);
+    }
+
+    .modal.active .modal-content {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    .modal-content h3 {
+      font-size: 1.8rem;
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-content p {
+      font-size: 1rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-content input, .modal-content textarea {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glow);
+      border-radius: 6px;
+      color: var(--fg);
+      font-size: 1rem;
+      transition: border-color 0.3s var(--ease);
+    }
+
+    .modal-content input:focus, .modal-content textarea:focus {
+      border-color: var(--accent);
+      outline: none;
+      box-shadow: 0 0 8px var(--glow);
+    }
+
+    .modal-content textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .modal-content .error {
+      color: #ff4d4d;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      display: none;
+      text-align: center;
+    }
+
+    footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      background: var(--matte);
+      color: var(--fg);
+      font-size: 0.9rem;
+      border-top: 1px solid var(--glow);
+      backdrop-filter: blur(12px);
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.3s var(--ease);
+    }
+
+    footer a:hover, footer a:focus {
+      color: var(--fg);
+      outline: none;
     }
 
     .sr-only {
@@ -305,109 +430,6 @@
       border: 0;
     }
 
-    #hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    #hero video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.3;
-      z-index: -1;
-    }
-
-    .simulator {
-      background: rgba(255, 255, 255, 0.05);
-      border: var(--border);
-      border-radius: 16px;
-      padding: 2rem;
-      max-width: 900px;
-      margin: 3rem auto;
-      text-align: center;
-    }
-
-    .simulator h3 {
-      font-size: 1.8rem;
-      color: var(--accent);
-      margin-bottom: 1.5rem;
-      text-shadow: 0 0 8px var(--glow);
-    }
-
-    .simulator .counter {
-      font-size: 2.2rem;
-      font-weight: 700;
-      color: var(--fg);
-      text-shadow: 0 0 10px var(--glow);
-    }
-
-    .chart-container {
-      max-width: 900px;
-      margin: 3rem auto;
-      padding: 1.5rem;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 16px;
-      border: var(--border);
-      box-shadow: var(--shadow);
-    }
-
-    .tab-nav {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    footer {
-      text-align: center;
-      padding: 3rem 1rem;
-      background: rgba(12, 13, 16, 0.95);
-      color: var(--secondary);
-      font-size: 1rem;
-      border-top: var(--border);
-      box-shadow: var(--shadow);
-    }
-
-    footer a {
-      color: var(--accent);
-      text-decoration: none;
-      transition: color 0.2s var(--ease);
-    }
-
-    footer a:hover, footer a:focus {
-      color: var(--fg);
-      outline: none;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      body, section, .card, .btn, .modal-content, .tab-btn {
-        animation: none;
-        transition: none;
-      }
-      section.visible, .card:hover, .btn:hover, .modal.active .modal-content, .tab-btn:hover {
-        transform: none;
-        box-shadow: none;
-      }
-    }
-
     @media (max-width: 600px) {
       .card-grid {
         grid-template-columns: 1fr;
@@ -417,60 +439,80 @@
         padding: 1.5rem;
       }
       nav {
-        gap: 1rem;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+        justify-content: center;
       }
       nav a {
-        padding: 0.6rem 1rem;
+        padding: 0.4rem 0.8rem;
         font-size: 0.9rem;
       }
-      .hero-logo {
+      .hero h1 {
         font-size: 2.5rem;
       }
       .modal-content {
         padding: 1.5rem;
       }
+      .simulator {
+        padding: 1.5rem;
+      }
+      .graph {
+        height: 150px;
+      }
     }
 
     @media (min-width: 3840px) {
       html {
-        font-size: clamp(18px, 2vw, 20px);
+        font-size: clamp(18px, 1.8vw, 20px);
       }
       .card {
-        padding: 3rem;
+        padding: 2.5rem;
       }
-      .hero-logo {
-        font-size: clamp(5rem, 12vw, 7rem);
+      .hero h1 {
+        font-size: clamp(4rem, 10vw, 6rem);
       }
       .container {
-        max-width: 2560px;
+        max-width: 1920px;
+      }
+      .graph {
+        height: 300px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body, section, .card, .btn, .modal-content, .neural-root {
+        animation: none;
+        transition: none;
+      }
+      section.visible, .card:hover, .btn:hover, .modal.active .modal-content {
+        transform: none;
+        box-shadow: none;
       }
     }
   </style>
 </head>
-<body data-theme="dark">
-  <canvas id="canvas-bg" role="img" aria-label="Neural network background animation"></canvas>
+<body>
+  <div class="neural-bg" id="neural-bg"></div>
   <a href="#main" class="sr-only">Skip to main content</a>
   <div class="modal active" id="tos-modal" role="dialog" aria-labelledby="tos-title">
     <div class="modal-content">
-      <div class="particle-container" id="particle-container"></div>
       <h3 id="tos-title">Terms of Service</h3>
       <p>By using Elvira Genesis-Elvira, you agree to our terms of service, ensuring secure and responsible use of our AI-powered cybersecurity platform. Contact <a href="mailto:ceo@aurora-core.net">ceo@aurora-core.net</a> for details.</p>
-      <div style="display: flex; justify-content: center; margin-top: 2rem;">
-        <button class="btn tos-btn tos-accept">Accept</button>
-        <button class="btn tos-btn tos-decline">Decline</button>
+      <div style="display: flex; justify-content: center; gap: 1rem;">
+        <button class="btn tos-accept">Accept</button>
+        <button class="btn tos-decline">Decline</button>
       </div>
     </div>
   </div>
-  <header role="banner">
+  <header>
     <div class="container">
-      <h1>Elvira Genesis-Elvira</h1>
+      <div class="logo">Elvira Genesis</div>
       <nav role="navigation" aria-label="Main">
         <a href="#hero" aria-current="page">Home</a>
         <a href="#overview">Overview</a>
         <a href="#features">Features</a>
         <a href="#architecture">Architecture</a>
         <a href="#forensics">Forensics</a>
-        <a href="#analytics">Analytics</a>
         <a href="#scalability">Scalability</a>
         <a href="#advantages">Advantages</a>
         <a href="#revenue">Revenue</a>
@@ -478,21 +520,16 @@
         <a href="#team">Team</a>
         <a href="#investment">Investment</a>
         <a href="#contact">Contact</a>
-        <button class="theme-toggle" aria-label="Toggle dark/light/contrast theme">
-          <svg width="24" height="24" fill="none" stroke="currentColor" aria-hidden="true">
-            <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-          </svg>
-        </button>
       </nav>
     </div>
   </header>
   <main id="main" role="main">
-    <section id="hero">
+    <section class="hero" id="hero">
       <video autoplay muted loop playsinline loading="lazy" aria-hidden="true">
         <source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-dark-background-with-blue-lights-3241-large.mp4" type="video/mp4">
       </video>
-      <h2 class="hero-logo">Elvira Genesis</h2>
-      <p>GPU-accelerated AI cybersecurity platform delivering sub-1ms threat detection and autonomous response across network, cloud, endpoint, and identity layers.</p>
+      <h1>Redefining Cybersecurity</h1>
+      <p>GPU-accelerated AI platform delivering sub-1ms threat detection and autonomous response across network, cloud, endpoint, and identity layers.</p>
       <a href="#contact" class="btn">Engage Now</a>
     </section>
     <section id="overview">
@@ -538,8 +575,8 @@
           <p>UEBA detects insider threats with 90% efficacy, reducing false positives.</p>
         </div>
         <div class="card">
-          <h3>Compliance Automation</h3>
-          <p>60% cost reduction for GDPR, SOC2, HIPAA compliance through automated workflows.</p>
+          <h3>Automation</h3>
+          <p>Streamlined workflows for operational efficiency and rapid response.</p>
         </div>
       </div>
     </section>
@@ -569,45 +606,33 @@
       <h2>Advanced Forensics</h2>
       <p>Comprehensive tools for real-time monitoring and post-incident analysis.</p>
       <div class="simulator">
-        <h3>Live Threat Detection Simulator</h3>
+        <h3>Live Threat Detection</h3>
         <p class="counter" id="threat-counter">0 Threats Detected</p>
       </div>
       <div class="card-grid">
         <div class="card">
-          <h3>3D Entropy Visualizer</h3>
-          <p>WebGL-based hexagonal grid for real-time entropy visualization of network traffic.</p>
+          <h3>Entropy Visualizer</h3>
+          <p>Real-time visualization of network traffic entropy for anomaly detection.</p>
         </div>
         <div class="card">
-          <h3>Timeline Viewer</h3>
-          <p>Interactive attack sequence replay for detailed forensic analysis.</p>
+          <h3>Timeline Analysis</h3>
+          <p>Interactive attack sequence replay for detailed forensic insights.</p>
         </div>
         <div class="card">
           <h3>Threat Graphs</h3>
-          <p>Graph analytics to visualize attack vectors and escalation paths.</p>
+          <p>Graph analytics to map attack vectors and escalation paths.</p>
         </div>
         <div class="card">
           <h3>Custom Dashboards</h3>
-          <p>Real-time telemetry, alerts, and threat intelligence visualizations.</p>
+          <p>Real-time telemetry and threat intelligence visualizations.</p>
         </div>
       </div>
-    </section>
-    <section id="analytics">
-      <h2>Analytics Dashboard</h2>
-      <p>Real-time insights into performance, threats, and compliance metrics.</p>
-      <div class="tab-nav">
-        <button class="tab-btn active" data-tab="latency" aria-selected="true">Latency</button>
-        <button class="tab-btn" data-tab="revenue" aria-selected="false">Revenue</button>
-        <button class="tab-btn" data-tab="compliance" aria-selected="false">Compliance</button>
-      </div>
-      <div class="chart-container">
-        <div class="tab-content active" id="latency">
-          <canvas id="latency-chart" role="img" aria-label="Bar chart of threat detection latency"></canvas>
-        </div>
-        <div class="tab-content" id="revenue">
-          <canvas id="revenue-chart" role="img" aria-label="Line chart of revenue projections"></canvas>
-        </div>
-        <div class="tab-content" id="compliance">
-          <canvas id="compliance-chart" role="img" aria-label="Pie chart of compliance coverage"></canvas>
+      <div class="graph-container">
+        <div class="graph" id="threat-graph">
+          <div class="bar" style="height: 60%;"></div>
+          <div class="bar" style="height: 35%;"></div>
+          <div class="bar" style="height: 10%;"></div>
+          <div class="bar" style="height: 5%;"></div>
         </div>
       </div>
     </section>
@@ -634,12 +659,12 @@
       </div>
     </section>
     <section id="advantages">
-      <h2>Competitive Advantages</h2>
+      <h2>Competitive Edge</h2>
       <p>Why Elvira Genesis-Elvira leads the cybersecurity industry.</p>
       <div class="card-grid">
         <div class="card">
           <h3>AI Efficiency</h3>
-          <p>GPU-accelerated ML with Sparse MoE for superior performance.</p>
+          <p>GPU-accelerated ML with advanced models for superior performance.</p>
         </div>
         <div class="card">
           <h3>Quantum Resilience</h3>
@@ -651,21 +676,17 @@
         </div>
         <div class="card">
           <h3>Low False Positives</h3>
-          <p>~0.1% false positive rate, saving analyst time and resources.</p>
-        </div>
-        <div class="card">
-          <h3>Integration</h3>
-          <p>Seamless with SIEM, SOAR, and DevSecOps tools.</p>
+          <p>~0.05% false positive rate, optimizing analyst efficiency.</p>
         </div>
       </div>
     </section>
     <section id="revenue">
       <h2>Revenue Model</h2>
-      <p>Diverse revenue streams for sustainable growth.</p>
+      <p>Diverse streams for sustainable growth.</p>
       <div class="card-grid">
         <div class="card">
           <h3>SaaS Subscriptions</h3>
-          <p>$25/endpoint/mo, tiered for SMBs, enterprises, and government.</p>
+          <p>$25/endpoint/month, tiered for SMBs, enterprises, and government.</p>
         </div>
         <div class="card">
           <h3>Premium Features</h3>
@@ -673,35 +694,35 @@
         </div>
         <div class="card">
           <h3>Threat Intelligence</h3>
-          <p>IOC syndication marketplace at $0.10/indicator.</p>
+          <p>IOC syndication marketplace at $0.10/tenant.</p>
         </div>
         <div class="card">
-          <h3>On-Premise Licensing</h3>
-          <p>High-security environments with perpetual or subscription licenses.</p>
+          <h3>On-Premise</h3>
+          <p>Perpetual or subscription licenses for high-security environments.</p>
         </div>
       </div>
     </section>
     <section id="strategy">
-      <h2>Go-To-Market Strategy</h2>
-      <p>Phased approach to achieve global market leadership.</p>
+      <h2>Market Strategy</h2>
+      <p>Phased approach to global leadership.</p>
       <div class="card-grid">
         <div class="card">
-          <h3>Phase 1 (2025)</h3>
-          <p>Pilot deployments with enterprises and MSSPs, focusing on direct sales.</p>
+          <h3>2025: Pilot</h3>
+          <p>Enterprise and MSSP deployments via direct sales.</p>
         </div>
         <div class="card">
-          <h3>Phase 2 (2026-27)</h3>
-          <p>Global SaaS expansion via AWS/Azure marketplaces and open-source R&D.</p>
+          <h3>2026–27: Expansion</h3>
+          <p>Global SaaS via AWS/Azure and open-source R&D.</p>
         </div>
         <div class="card">
-          <h3>Phase 3 (2028-29)</h3>
-          <p>Government contracts, ISACs, and strategic tech partnerships.</p>
+          <h3>2028–29: Partnerships</h3>
+          <p>Government contracts, ISACs, and strategic alliances.</p>
         </div>
       </div>
     </section>
     <section id="team">
-      <h2>Our Team</h2>
-      <p>Industry leaders driving innovation in AI and cybersecurity.</p>
+      <h2>Leadership Team</h2>
+      <p>Industry experts driving innovation.</p>
       <div class="card-grid">
         <div class="card">
           <h3>Sasho Derama</h3>
@@ -709,19 +730,15 @@
         </div>
         <div class="card">
           <h3>Dr. Jane Lee</h3>
-          <p>Chief AI Scientist, PhD in ML, pioneered GNN-based threat detection.</p>
+          <p>Chief AI Scientist, PhD in ML, GNN pioneer.</p>
         </div>
         <div class="card">
           <h3>Michael Chen</h3>
-          <p>CTO, OSCP-certified, expert in GPU-accelerated systems.</p>
+          <p>CTO, OSCP-certified, GPU systems expert.</p>
         </div>
         <div class="card">
           <h3>Alex Patel</h3>
           <p>Head of Sales, 15+ years in cybersecurity partnerships.</p>
-        </div>
-        <div class="card">
-          <h3>Core Team</h3>
-          <p>10+ OSCP-certified engineers and AI specialists.</p>
         </div>
       </div>
     </section>
@@ -731,25 +748,25 @@
       <div class="card-grid">
         <div class="card">
           <h3>Funding Goal</h3>
-          <p>$20M to scale R&D, sales, and global infrastructure (40% R&D, 30% sales, 30% infra).</p>
+          <p>$20M for R&D, sales, and infrastructure (40% R&D, 30% sales, 30% infra).</p>
         </div>
         <div class="card">
           <h3>Milestones</h3>
-          <p>Beta in Q1 2025, SaaS launch in Q3 2025, break-even by Q2 2026.</p>
+          <p>Beta Q1 2025, SaaS launch Q3 2025, break-even Q2 2026.</p>
         </div>
         <div class="card">
           <h3>ROI Potential</h3>
-          <p>400% ROI by Year 3, with $100M revenue by 2029.</p>
+          <p>400% ROI by Year 3, $100M revenue by 2029.</p>
         </div>
         <div class="card">
           <h3>Contact</h3>
-          <p>Email <a href="mailto:ceo@aurora-core.net">ceo@aurora-core.net</a> to discuss investment.</p>
+          <p>Email <a href="mailto:ceo@aurora-core.net">ceo@aurora-core.net</a> for investment details.</p>
         </div>
       </div>
     </section>
     <section id="contact">
       <h2>Contact Us</h2>
-      <p>Partner with Elvira Genesis-Elvira to redefine cybersecurity. Reach out for inquiries or opportunities.</p>
+      <p>Partner with Elvira Genesis-Elvira to redefine cybersecurity.</p>
       <button class="btn contact-btn">Get in Touch</button>
     </section>
   </main>
@@ -760,12 +777,14 @@
       <input type="text" id="name" placeholder="Your Name" aria-label="Name" required>
       <input type="email" id="email" placeholder="Your Email" aria-label="Email" required>
       <textarea id="message" placeholder="Your Message" aria-label="Message" required></textarea>
-      <button class="btn modal-submit">Send Message</button>
-      <button class="btn modal-close">Close</button>
+      <div style="display: flex; justify-content: center; gap: 1rem;">
+        <button class="btn modal-submit">Send Message</button>
+        <button class="btn modal-close">Close</button>
+      </div>
     </div>
   </div>
   <footer role="contentinfo">
-    <p>© 2025 Elvira Genesis-Elvira. <a href="mailto:ceo@aurora-core.net">Contact Us</a> | GDPR, SOC2, HIPAA Compliant</p>
+    <p>© 2025 Elvira Genesis-Elvira. <a href="mailto:ceo@aurora-core.net">Contact Us</a></p>
     <p><a href="https://elvira-core.net">elvira-core.net</a></p>
   </footer>
   <script nonce="nexus2025">
@@ -778,253 +797,25 @@
       };
     }
 
-    // Utility: Detect low-performance devices
-    function isLowPerformance() {
-      const isLowRAM = navigator.deviceMemory && navigator.deviceMemory < 4;
-      const isLowCPU = navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4;
-      return isLowRAM || isLowCPU || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Neural Root Background
+    function initNeuralBackground() {
+      const container = document.getElementById('neural-bg');
+      for (let i = 0; i < 15; i++) {
+        const root = document.createElement('div');
+        root.className = 'neural-root';
+        root.style.left = `${Math.random() * 100}vw`;
+        root.style.bottom = `${Math.random() * 50}vh`;
+        root.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
+        root.style.animationDelay = `${Math.random() * 4}s`;
+        container.appendChild(root);
+      }
     }
 
-    // 2D Canvas Neural Background
-    function initCanvasBackground() {
-      const canvas = document.getElementById('canvas-bg');
-      const ctx = canvas.getContext('2d', { alpha: true });
-      let nodes = [];
-      let lowFPS = false;
-      let lastFrame = performance.now();
-      const maxNodes = isLowPerformance() ? 30 : 60;
-
-      function handleResize() {
-        canvas.width = window.innerWidth * Math.min(window.devicePixelRatio, 2);
-        canvas.height = window.innerHeight * Math.min(window.devicePixelRatio, 2);
-        canvas.style.width = `${window.innerWidth}px`;
-        canvas.style.height = `${window.innerHeight}px`;
-        ctx.scale(Math.min(window.devicePixelRatio, 2), Math.min(window.devicePixelRatio, 2));
-        createNodes();
-      }
-
-      function createNodes() {
-        nodes = Array.from({ length: maxNodes }, () => ({
-          x: Math.random() * window.innerWidth,
-          y: Math.random() * window.innerHeight,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: (Math.random() - 0.5) * 0.3,
-          radius: Math.random() * 1.5 + 1,
-          alpha: Math.random() * 0.4 + 0.2
-        }));
-      }
-
-      function animate(t) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        nodes.forEach(node => {
-          node.x += node.vx;
-          node.y += node.vy;
-          if (node.x < 0 || node.x > window.innerWidth) node.vx *= -1;
-          if (node.y < 0 || node.y > window.innerHeight) node.vy *= -1;
-
-          ctx.beginPath();
-          ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(107, 226, 235, ${node.alpha})`;
-          ctx.fill();
-        });
-
-        nodes.forEach((node, i) => {
-          nodes.slice(i + 1).forEach(other => {
-            const dx = node.x - other.x;
-            const dy = node.y - other.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < 80) {
-              ctx.beginPath();
-              ctx.moveTo(node.x, node.y);
-              ctx.quadraticCurveTo(
-                node.x + dx * 0.5,
-                node.y + dy * 0.5,
-                other.x,
-                other.y
-              );
-              ctx.strokeStyle = `rgba(107, 226, 235, ${0.8 - dist / 80})`;
-              ctx.lineWidth = 0.4;
-              ctx.stroke();
-            }
-          });
-        });
-
-        const now = performance.now();
-        const fps = 1000 / (now - lastFrame);
-        lastFrame = now;
-        if (fps < 20 && !lowFPS) {
-          nodes = nodes.slice(0, Math.floor(nodes.length / 2));
-          lowFPS = true;
-        }
-
-        if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          requestAnimationFrame(animate);
-        }
-      }
-
-      window.addEventListener('resize', debounce(handleResize));
-      handleResize();
-      createNodes();
-      animate(0);
-    }
-
-    // Lazy-load Charts
-    function initLazyCharts() {
-      const tabObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting && !entry.target.dataset.initialized) {
-            initChart(entry.target.id);
-            entry.target.dataset.initialized = true;
-          }
-        });
-      }, { threshold: 0.1 });
-
-      document.querySelectorAll('.tab-content').forEach(el => tabObserver.observe(el));
-
-      function initChart(tabId) {
-        const charts = {
-          latency: {
-            type: 'bar',
-            data: {
-              labels: ['<0.5ms', '0.5-1ms', '1-2ms', '>2ms'],
-              datasets: [{
-                label: 'Threat Detection Latency',
-                data: [60, 35, 4, 1],
-                backgroundColor: 'rgba(107, 226, 235, 0.7)',
-                borderColor: 'rgba(107, 226, 235, 1)',
-                borderWidth: 1
-              }]
-            },
-            options: {
-              responsive: true,
-              plugins: {
-                legend: { display: true, labels: { color: 'var(--fg)' } },
-                title: { display: true, text: 'Threat Detection Latency', color: 'var(--fg)', font: { size: 16 } }
-              },
-              scales: {
-                x: { ticks: { color: 'var(--fg)' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
-                y: { ticks: { color: 'var(--fg)' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
-              }
-            }
-          },
-          revenue: {
-            type: 'line',
-            data: {
-              labels: ['2025', '2026', '2027', '2028', '2029'],
-              datasets: [{
-                label: 'Revenue ($M)',
-                data: [5, 15, 30, 60, 100],
-                borderColor: 'rgba(107, 226, 235, 1)',
-                backgroundColor: 'rgba(107, 226, 235, 0.2)',
-                fill: true,
-                tension: 0.4
-              }]
-            },
-            options: {
-              responsive: true,
-              plugins: {
-                legend: { display: true, labels: { color: 'var(--fg)' } },
-                title: { display: true, text: 'Revenue Projections', color: 'var(--fg)', font: { size: 16 } }
-              },
-              scales: {
-                x: { ticks: { color: 'var(--fg)' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
-                y: { ticks: { color: 'var(--fg)' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
-              }
-            }
-          },
-          compliance: {
-            type: 'pie',
-            data: {
-              labels: ['GDPR', 'SOC2', 'HIPAA', 'Other'],
-              datasets: [{
-                label: 'Compliance Coverage',
-                data: [30, 30, 30, 10],
-                backgroundColor: [
-                  'rgba(107, 226, 235, 0.7)',
-                  'rgba(179, 157, 219, 0.7)',
-                  'rgba(107, 226, 235, 0.5)',
-                  'rgba(179, 157, 219, 0.5)'
-                ],
-                borderColor: 'rgba(255, 255, 255, 0.3)',
-                borderWidth: 1
-              }]
-            },
-            options: {
-              responsive: true,
-              plugins: {
-                legend: { display: true, labels: { color: 'var(--fg)' } },
-                title: { display: true, text: 'Compliance Coverage', color: 'var(--fg)', font: { size: 16 } }
-              }
-            }
-          }
-        };
-
-        if (charts[tabId]) {
-          new Chart(document.getElementById(`${tabId}-chart`), charts[tabId]);
-        }
-      }
-
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.tab-btn').forEach(b => {
-            b.classList.remove('active');
-            b.setAttribute('aria-selected', 'false');
-          });
-          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-          btn.classList.add('active');
-          btn.setAttribute('aria-selected', 'true');
-          document.getElementById(btn.dataset.tab).classList.add('active');
-        });
-        btn.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            btn.click();
-          }
-        });
-      });
-    }
-
-    // Theme Toggle with High-Contrast Mode
-    function initThemeToggle() {
-      const toggle = document.querySelector('.theme-toggle');
-      const themes = ['dark', 'light', 'contrast'];
-      let currentIndex = 0;
-
-      toggle.addEventListener('click', () => {
-        currentIndex = (currentIndex + 1) % themes.length;
-        document.body.dataset.theme = themes[currentIndex];
-        anime({
-          targets: 'body',
-          backgroundColor: document.body.dataset.theme === 'dark' ? '#0c0d10' : document.body.dataset.theme === 'light' ? '#e0e3f4' : '#000',
-          duration: 300,
-          easing: 'easeInOutQuad'
-        });
-      });
-    }
-
-    // ToS Modal with Particle Effects
+    // ToS Modal
     function initTosModal() {
       const modal = document.getElementById('tos-modal');
       const acceptBtn = document.querySelector('.tos-accept');
       const declineBtn = document.querySelector('.tos-decline');
-      const particleContainer = document.getElementById('particle-container');
-
-      for (let i = 0; i < 15; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particleContainer.appendChild(particle);
-        anime({
-          targets: particle,
-          translateX: () => anime.random(-150, 150),
-          translateY: () => anime.random(-150, 150),
-          opacity: [0, 0.7, 0],
-          scale: [0.5, 1, 0.5],
-          duration: anime.random(1500, 3000),
-          delay: anime.random(0, 800),
-          easing: 'easeInOutQuad',
-          loop: true
-        });
-      }
 
       acceptBtn.addEventListener('click', () => {
         modal.classList.remove('active');
@@ -1073,18 +864,9 @@
         }
 
         error.style.display = 'none';
-        anime({
-          targets: '.modal-content',
-          scale: [1, 1.1, 0.7],
-          opacity: [1, 0],
-          duration: 500,
-          easing: 'easeInOutQuad',
-          complete: () => {
-            modal.classList.remove('active');
-            alert('Message sent! We will get back to you soon.');
-            inputs.forEach(input => input.value = '');
-          }
-        });
+        modal.classList.remove('active');
+        alert('Message sent! We will get back to you soon.');
+        inputs.forEach(input => input.value = '');
       });
 
       modal.addEventListener('keydown', (e) => {
@@ -1101,13 +883,18 @@
       setInterval(() => {
         count += Math.floor(Math.random() * 5);
         counter.textContent = `${count} Threats Detected`;
-        anime({
-          targets: counter,
-          scale: [1, 1.1, 1],
-          duration: 500,
-          easing: 'easeInOutQuad'
-        });
       }, 2000);
+    }
+
+    // Graph Animation
+    function initGraphAnimation() {
+      const bars = document.querySelectorAll('.bar');
+      bars.forEach((bar, index) => {
+        setInterval(() => {
+          const heights = [60, 35, 10, 5];
+          bar.style.height = `${heights[index] * (0.8 + Math.random() * 0.4)}%`;
+        }, 3000 + index * 500);
+      });
     }
 
     // Scroll Animations
@@ -1117,17 +904,9 @@
         entries.forEach(entry => {
           if (entry.isIntersecting) {
             entry.target.classList.add('visible');
-            anime({
-              targets: entry.target.querySelectorAll('.card, h2, p'),
-              opacity: [0, 1],
-              translateY: [30, 0],
-              delay: anime.stagger(80),
-              duration: 800,
-              easing: 'easeOutExpo'
-            });
           }
         });
-      }, { threshold: 0.2 });
+      }, { threshold: 0.1 });
 
       sections.forEach(section => observer.observe(section));
     }
@@ -1171,12 +950,11 @@
 
     // Initialize Components
     document.addEventListener('DOMContentLoaded', () => {
-      initCanvasBackground();
-      initLazyCharts();
-      initThemeToggle();
+      initNeuralBackground();
       initTosModal();
       initContactModal();
       initThreatSimulator();
+      initGraphAnimation();
       initScrollAnimations();
       initScrollSpy();
       initSmoothScroll();
