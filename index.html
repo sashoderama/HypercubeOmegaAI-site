@@ -10,11 +10,11 @@
     script-src 'self' 'nonce-nexus2025' https://cdn.jsdelivr.net;
     style-src 'self' 'nonce-nexus2025' https://fonts.googleapis.com;
     font-src 'self' https://fonts.gstatic.com;
-    img-src 'self' data: https: ./assets/;
+    img-src 'self' data: https:;
     connect-src 'self';
     object-src 'none';
     base-uri 'none';
-    media-src 'self' https://assets.mixkit.co;
+    media-src 'self';
   ">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -22,6 +22,7 @@
   <title>Elvira Genesis-Elvira</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap">
   <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./assets/favicon.ico">
   <style nonce="nexus2025">
     :root {
       --bg: #111216;
@@ -41,9 +42,9 @@
       --page-padding: clamp(1rem, 4vw, 4rem);
     }
 
-    * {
-      transform: translateZ(0);
+    .neural-root, .card-inner, .btn, .modal-content {
       will-change: transform, opacity;
+      transform: translateZ(0);
       backface-visibility: hidden;
     }
 
@@ -123,10 +124,13 @@
       top: 0;
       left: 0;
       background: radial-gradient(circle at center, rgba(255,255,255,0.02), transparent 80%);
-      transform: translateZ(var(--z)) scale(1.2);
+      transform: scale(1.2);
       filter: blur(24px);
       mix-blend-mode: screen;
     }
+
+    .z-layer-3 { transform: translateZ(-3px) scale(1.2); }
+    .z-layer-6 { transform: translateZ(-6px) scale(1.2); }
 
     header {
       position: fixed;
@@ -236,7 +240,6 @@
     .card-inner {
       transform-style: preserve-3d;
       transition: transform var(--ui-transition), box-shadow var(--ui-transition);
-      will-change: transform, box-shadow;
       padding: 2rem;
       border-radius: 12px;
     }
@@ -667,8 +670,8 @@
 <body>
   <canvas id="particle-bg"></canvas>
   <div class="parallax-layers">
-    <div class="layer blur-plane" style="--z: -3;"></div>
-    <div class="layer blur-plane" style="--z: -6;"></div>
+    <div class="layer blur-plane z-layer-3"></div>
+    <div class="layer blur-plane z-layer-6"></div>
   </div>
   <div class="neural-bg" id="neural-bg"></div>
   <a href="#main" class="sr-only">Skip to main content</a>
@@ -704,7 +707,7 @@
   <main id="main" role="main">
     <section class="hero" id="hero">
       <video autoplay muted loop playsinline loading="lazy" aria-hidden="true">
-        <source src="https://assets.mixkit.co/videos/preview/mixkit-abstract-dark-background-with-blue-lights-3241-large.mp4" type="video/mp4">
+        <source src="./assets/video.mp4" type="video/mp4">
       </video>
       <h1 class="bloom-glow">Redefining Cybersecurity</h1>
       <p>GPU-accelerated AI platform delivering sub-1ms threat detection and autonomous response across network, cloud, endpoint, and identity layers.</p>
