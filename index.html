@@ -1,1169 +1,2159 @@
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>ElviraGenesis-OMEGA | Quantum Interface</title>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800&display=swap">
-        <style>
-            /* CSS Variables */
-            :root {
-                --primary: #000000;
-                --secondary: #0a0a0a;
-                --accent: #ffffff;
-                --accent-dim: #333333;
-                --accent-ultra-dim: #111111;
-                --text-primary: #ffffff;
-                --text-secondary: #999999;
-                --text-tertiary: #666666;
-                --border: #1a1a1a; /* Used for nav borders */
-                --surface: rgba(5, 5, 5, 0.95);
-                --glow: rgba(255, 255, 255, 0.03);
-                --neural-primary: #00ff88;
-                --neural-primary-rgb: 0, 255, 136; /* For rgba usage */
-                --neural-secondary: #0088ff;
-                --neural-secondary-rgb: 0, 136, 255;
-                --neural-dim: rgba(0, 255, 136, 0.1);
-                --neural-glow: rgba(0, 255, 136, 0.3);
-                --quantum-blue: #00ccff;
-                --quantum-blue-rgb: 0, 204, 255;
-                --quantum-purple: #cc00ff;
-                --quantum-purple-rgb: 204, 0, 255;
-            }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ELVIRA-OMEGA: A transformative AGI system revolutionizing industries with autonomous learning and ethical frameworks.">
+    <title>ELVIRA-OMEGA | The Future of Artificial General Intelligence</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Enhanced CSS with additional features */
+        :root {
+            --primary: #000000;
+            --secondary: #0a0a0a;
+            --accent: #ffffff;
+            --accent-dim: #333333;
+            --accent-ultra-dim: #111111;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+            --text-tertiary: #808080;
+            --border: #1a1a1a;
+            --surface: rgba(5, 5, 5, 0.95);
+            --glow: rgba(255, 255, 255, 0.03);
+            --neural-primary: #00ff88;
+            --neural-primary-rgb: 0, 255, 136;
+            --neural-secondary: #0088ff;
+            --neural-secondary-rgb: 0, 136, 255;
+            --neural-dim: rgba(0, 255, 136, 0.1);
+            --neural-glow: rgba(0, 255, 136, 0.3);
+            --quantum-blue: #00ccff;
+            --quantum-blue-rgb: 0, 204, 255;
+            --quantum-purple: #cc00ff;
+            --quantum-purple-rgb: 204, 0, 255;
+            --transition-ease: cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-            /* General Styles */
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            will-change: transform, opacity;
+        }
 
-            html {
-                font-size: 16px;
-                overflow-x: hidden;
-                -webkit-text-size-adjust: 100%;
-                scroll-behavior: smooth;
-            }
+        html {
+            font-size: 16px;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+            scroll-behavior: smooth;
+        }
 
-            body {
-                font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-                background: var(--primary);
-                color: var(--text-secondary);
-                line-height: 1.4;
-                font-weight: 400;
-                -webkit-font-smoothing: antialiased;
-                -moz-osx-font-smoothing: grayscale;
-                overflow-x: hidden;
-                cursor: none;
-                min-height: 100vh;
-                position: relative;
-            }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background: var(--primary);
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+            cursor: none;
+            min-height: 100vh;
+            position: relative;
+        }
 
-            /* Custom Cursor */
-            .cursor {
-                position: fixed;
-                width: 10px;
-                height: 10px;
-                background: var(--neural-primary);
-                border-radius: 50%;
-                pointer-events: none;
-                z-index: 10000;
-                mix-blend-mode: difference;
-                transform: translate3d(0, 0, 0);
-                transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease;
-                box-shadow: 0 0 20px var(--neural-primary), 0 0 40px var(--neural-primary);
-            }
+        /* Preloader */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        .preloader-logo {
+            font-size: 3rem;
+            font-weight: 700;
+            color: transparent;
+            background: linear-gradient(90deg, var(--neural-primary), var(--quantum-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            margin-bottom: 2rem;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 4px;
+        }
+        
+        .loader {
+            width: 80px;
+            height: 80px;
+            position: relative;
+        }
+        
+        .loader-inner {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 4px solid transparent;
+            border-top-color: var(--neural-primary);
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+        }
+        
+        .loader-inner:nth-child(2) {
+            border-top-color: var(--quantum-blue);
+            animation: spin 2s linear infinite reverse;
+        }
+        
+        .loader-inner:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            top: 10px;
+            left: 10px;
+            border-top-color: var(--quantum-purple);
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
-            .cursor::before {
-                content: '';
-                position: absolute;
-                top: -8px;
-                left: -8px;
-                width: 26px;
-                height: 26px;
-                border: 2px solid var(--neural-primary);
-                border-radius: 50%;
-                opacity: 0.3;
-                animation: pulse 1.5s infinite;
-            }
+        /* Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--neural-primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            mix-blend-mode: difference;
+            transform: translate3d(0, 0, 0);
+            transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease;
+            box-shadow: 0 0 20px var(--neural-primary), 0 0 40px var(--neural-primary);
+        }
 
-            .cursor.hover {
-                transform: scale(2) translate3d(0, 0, 0);
-                background: var(--quantum-blue);
-            }
+        .cursor::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            width: 26px;
+            height: 26px;
+            border: 2px solid var(--neural-primary);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: pulse 1.5s infinite;
+        }
 
-            .cursor.click {
-                transform: scale(0.5) translate3d(0, 0, 0);
-                background: var(--quantum-purple);
-            }
+        .cursor.hover {
+            transform: scale(2) translate3d(0, 0, 0);
+            background: var(--quantum-blue);
+        }
 
-            .cursor-text {
-                position: absolute;
-                top: 20px;
-                left: 20px;
-                font-size: 12px;
-                color: var(--neural-primary);
-                opacity: 0;
-                transition: opacity 0.3s ease;
-                white-space: nowrap;
-            }
+        .cursor.click {
+            transform: scale(0.5) translate3d(0, 0, 0);
+            background: var(--quantum-purple);
+        }
 
-            .cursor-trail {
-                position: fixed;
-                width: 6px;
-                height: 6px;
-                background: var(--neural-secondary);
-                border-radius: 50%;
-                pointer-events: none;
-                z-index: 9999;
-                mix-blend-mode: difference;
-                opacity: 0.7;
-            }
+        .cursor.scrolling {
+            transform: scale(1.5) translate3d(0, 0, 0);
+        }
 
-            @keyframes pulse {
-                0% { transform: scale(1); opacity: 0.3; }
-                50% { transform: scale(1.3); opacity: 0.1; }
-                100% { transform: scale(1); opacity: 0.3; }
-            }
+        .cursor-trail {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: var(--neural-secondary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            opacity: 0.7;
+        }
 
-            /* Vein Network Canvas */
-            #particle-canvas {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                z-index: -1; 
-                opacity: 0.75; 
-            }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.3); opacity: 0.1; }
+            100% { transform: scale(1); opacity: 0.3; }
+        }
 
-            /* Interface and Parallax Layers */
-            .interface {
-                position: relative;
-                width: 100%;
-                min-height: 100vh;
-                perspective: 1000px;
-                overflow-x: hidden;
-            }
+        /* Vein Network Canvas */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.75;
+            will-change: opacity;
+        }
 
-            .parallax-layer {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                pointer-events: none;
-                z-index: -1; 
-            }
+        .interface {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            perspective: 1000px;
+            overflow-x: hidden;
+        }
 
-            .layer-1 {
-                background: radial-gradient(circle at 20% 50%, rgba(var(--neural-primary-rgb), 0.03) 0%, transparent 60%);
-                transform: translateZ(-100px) scale(2);
-                animation: float 25s ease-in-out infinite;
-            }
+        .parallax-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            transition: transform 0.2s var(--transition-ease);
+        }
 
-            .layer-2 {
-                background: radial-gradient(circle at 80% 20%, rgba(var(--quantum-blue-rgb), 0.025) 0%, transparent 60%);
-                transform: translateZ(-200px) scale(3);
-                animation: float 30s ease-in-out infinite reverse;
-            }
+        .layer-1 {
+            background: radial-gradient(circle at 20% 50%, rgba(var(--neural-primary-rgb), 0.03) 0%, transparent 60%);
+            transform: translateZ(-100px) scale(2);
+            animation: float 25s ease-in-out infinite;
+        }
 
-            .layer-3 {
-                background: radial-gradient(circle at 40% 80%, rgba(var(--quantum-purple-rgb), 0.02) 0%, transparent 60%);
-                transform: translateZ(-300px) scale(4);
-                animation: float 35s ease-in-out infinite;
-            }
+        .layer-2 {
+            background: radial-gradient(circle at 80% 20%, rgba(var(--quantum-blue-rgb), 0.025) 0%, transparent 60%);
+            transform: translateZ(-200px) scale(3);
+            animation: float 30s ease-in-out infinite reverse;
+        }
 
-            /* Mobile Navigation */
-            .mobile-nav {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                height: 70px;
-                background: rgba(15, 15, 15, 0.35); 
-                backdrop-filter: blur(18px); 
-                border-bottom: 1px solid var(--border);
-                z-index: 1000;
-                align-items: center;
-                justify-content: space-between;
-                padding: 0 20px;
-                transform: translateY(0);
-                transition: transform 0.4s ease, background 0.4s ease, backdrop-filter 0.4s ease;
-            }
+        .layer-3 {
+            background: radial-gradient(circle at 40% 80%, rgba(var(--quantum-purple-rgb), 0.02) 0%, transparent 60%);
+            transform: translateZ(-300px) scale(4);
+            animation: float 35s ease-in-out infinite;
+        }
 
-            .mobile-nav.scrolled {
-                background: rgba(10, 10, 10, 0.5); 
-                backdrop-filter: blur(20px);
-                box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
-            }
+        /* Mobile Navigation */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(15, 15, 15, 0.35);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            transform: translateY(0);
+            transition: transform 0.4s var(--transition-ease), background 0.4s var(--transition-ease), backdrop-filter 0.4s var(--transition-ease);
+        }
 
-            .mobile-logo {
-                font-size: 22px;
-                font-weight: 600;
-                color: var(--text-primary);
-                letter-spacing: 2px;
-                font-family: 'Orbitron', sans-serif;
-                background: linear-gradient(90deg, var(--neural-primary), var(--neural-secondary));
-                -webkit-background-clip: text;
-                background-clip: text;
-                color: transparent;
-                transition: all 0.3s ease;
-            }
+        .mobile-nav.scrolled {
+            background: rgba(10, 10, 10, 0.5);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+        }
 
-            .mobile-logo:hover {
-                transform: scale(1.05);
-                filter: drop-shadow(0 0 5px var(--neural-primary));
-            }
+        .mobile-logo {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: 2px;
+            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(90deg, var(--neural-primary), var(--neural-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            transition: all 0.3s var(--transition-ease);
+        }
 
-            .mobile-menu-btn {
-                width: 40px;
-                height: 40px;
-                border: none;
-                background: transparent;
-                cursor: pointer;
-                position: relative;
-            }
+        .mobile-logo:hover, .mobile-logo:focus {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 5px var(--neural-primary));
+        }
 
-            .mobile-menu-btn span {
-                display: block;
-                position: absolute;
-                height: 2px;
-                width: 24px;
-                background: var(--neural-primary);
-                border-radius: 1px;
-                opacity: 1;
-                left: 8px;
-                transform: rotate(0deg);
-                transition: all 0.25s ease-in-out;
-            }
+        .mobile-menu-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            position: relative;
+            z-index: 1001;
+        }
 
-            .mobile-menu-btn span:nth-child(1) { top: 14px; }
-            .mobile-menu-btn span:nth-child(2) { top: 22px; }
-            .mobile-menu-btn span:nth-child(3) { top: 30px; }
+        .mobile-menu-btn span {
+            display: block;
+            position: absolute;
+            height: 2px;
+            width: 24px;
+            background: var(--neural-primary);
+            border-radius: 1px;
+            opacity: 1;
+            left: 8px;
+            transform: rotate(0deg);
+            transition: transform 0.3s var(--transition-ease);
+        }
 
-            .mobile-menu-btn.active span:nth-child(1) { top: 22px; transform: rotate(135deg); }
-            .mobile-menu-btn.active span:nth-child(2) { opacity: 0; left: -20px; }
-            .mobile-menu-btn.active span:nth-child(3) { top: 22px; transform: rotate(-135deg); }
+        .mobile-menu-btn span:nth-child(1) { top: 14px; }
+        .mobile-menu-btn span:nth-child(2) { top: 22px; }
+        .mobile-menu-btn span:nth-child(3) { top: 30px; }
 
-            .mobile-menu {
-                position: fixed;
-                top: 70px;
-                left: 0;
-                right: 0;
-                background: rgba(15, 15, 15, 0.45); 
-                backdrop-filter: blur(18px); 
-                border-bottom: 1px solid var(--border);
-                padding: 20px;
-                transform: translateY(-100%);
-                transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), background 0.4s ease, backdrop-filter 0.4s ease;
-                z-index: 999;
-            }
+        .mobile-menu-btn.active span:nth-child(1) { top: 22px; transform: rotate(135deg); }
+        .mobile-menu-btn.active span:nth-child(2) { opacity: 0; left: -20px; }
+        .mobile-menu-btn.active span:nth-child(3) { top: 22px; transform: rotate(-135deg); }
 
-            .mobile-menu.active { transform: translateY(0); }
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            right: 0;
+            background: rgba(15, 15, 15, 0.45);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--border);
+            padding: 20px;
+            transform: translateY(-100%);
+            transition: transform 0.4s var(--transition-ease);
+            z-index: 999;
+        }
 
-            .mobile-nav-item {
-                display: block;
-                padding: 18px 0;
-                color: var(--text-secondary);
-                text-decoration: none;
-                font-size: 18px;
-                font-weight: 500;
-                border-bottom: 1px solid var(--border);
-                transition: all 0.3s ease;
-                position: relative;
-                overflow: hidden;
-            }
+        .mobile-menu.active {
+            display: block;
+            transform: translateY(0);
+        }
 
-            .mobile-nav-item:last-child { border-bottom: none; }
-            .mobile-nav-item::before {
-                content: '';
-                position: absolute;
-                left: -100%;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(var(--neural-primary-rgb), 0.1);
-                transition: left 0.3s ease;
-                z-index: -1;
-            }
-            .mobile-nav-item.active, .mobile-nav-item:hover {
-                color: var(--neural-primary);
-                transform: translateX(10px);
-            }
-            .mobile-nav-item.active::before, .mobile-nav-item:hover::before { left: 0; }
+        .mobile-nav-item {
+            display: block;
+            padding: 18px 24px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 500;
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s var(--transition-ease);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            cursor: pointer;
+        }
 
-            /* Desktop Sidebar */
-            .sidebar {
-                position: fixed;
-                left: 0;
-                top: 0;
-                width: 240px;
-                height: 100vh;
-                background: rgba(15, 15, 15, 0.35); 
-                backdrop-filter: blur(18px); 
-                border-right: 1px solid var(--border);
-                padding: 40px 0;
-                display: flex;
-                flex-direction: column;
-                z-index: 100;
-                transition: transform 0.4s ease, background 0.4s ease, backdrop-filter 0.4s ease;
-            }
+        .mobile-nav-item:last-child { border-bottom: none; }
+        .mobile-nav-item::before {
+            content: '';
+            position: absolute;
+            left: -100%;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(var(--neural-primary-rgb), 0.1);
+            transition: left 0.3s var(--transition-ease);
+            z-index: -1;
+        }
+        .mobile-nav-item.active, .mobile-nav-item:hover, .mobile-nav-item:focus {
+            color: var(--neural-primary);
+            transform: translateX(10px);
+        }
+        .mobile-nav-item.active::before, .mobile-nav-item:hover::before, .mobile-nav-item:focus::before { left: 0; }
 
-            .logo {
-                padding: 0 40px 60px;
-                font-size: 24px;
-                font-weight: 700;
-                color: transparent;
-                letter-spacing: 2px;
-                font-family: 'Orbitron', sans-serif;
-                background: linear-gradient(90deg, var(--neural-primary), var(--neural-secondary));
-                -webkit-background-clip: text;
-                background-clip: text;
-                transition: all 0.3s ease;
-            }
+        /* Desktop Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 240px;
+            height: 100vh;
+            background: rgba(15, 15, 15, 0.35);
+            backdrop-filter: blur(18px);
+            border-right: 1px solid var(--border);
+            padding: 30px 0;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.4s var(--transition-ease), background 0.4s var(--transition-ease);
+            overflow-y: auto;
+            transform: translateX(0);
+        }
 
-            .logo:hover {
-                transform: scale(1.05);
-                filter: drop-shadow(0 0 8px var(--neural-primary));
-            }
+        .sidebar.scrolled {
+            background: rgba(10, 10, 10, 0.5);
+            backdrop-filter: blur(20px);
+        }
 
-            .nav { flex: 1; padding: 0 20px; }
+        .logo {
+            padding: 0 30px 30px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
 
-            .nav-item {
-                display: block;
-                padding: 15px 24px;
-                color: var(--text-tertiary);
-                text-decoration: none;
-                font-size: 14px;
-                font-weight: 500;
-                letter-spacing: 0.5px;
-                transition: all 0.3s ease;
-                border-radius: 6px;
-                margin-bottom: 4px;
-                position: relative;
-                overflow: hidden;
-                transform-origin: left;
-            }
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: 3px;
+            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(90deg, var(--neural-primary), var(--neural-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 0;
+            transition: all 0.3s var(--transition-ease);
+            text-align: center;
+        }
 
-            .nav-item::before {
-                content: '';
-                position: absolute;
-                left: -100%;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(var(--neural-primary-rgb), 0.1); 
-                transition: left 0.3s ease;
-                z-index: -1;
-            }
+        .logo h1:hover, .logo h1:focus {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 10px var(--neural-primary));
+        }
 
-            .nav-item:hover, .nav-item.active { color: var(--text-primary); }
-            .nav-item:hover::before, .nav-item.active::before { left: 0; }
-            .nav-item.active::after {
-                content: '';
-                position: absolute;
-                left: 0;
-                top: 0;
-                bottom: 0;
-                width: 2px;
-                background: var(--neural-primary);
-            }
+        .nav {
+            padding: 0 20px;
+        }
 
-            /* Main Content */
-            .main { margin-left: 240px; position: relative; min-height: 100vh; }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: all 0.3s var(--transition-ease);
+            position: relative;
+            overflow: hidden;
+        }
 
-            /* Hero Section */
-            .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; padding: 0 80px; overflow: hidden; }
-            .hero-content { text-align: center; max-width: 900px; position: relative; z-index: 10; }
-            .hero-title {
-                font-size: clamp(52px, 9vw, 140px);
-                font-weight: 200;
-                color: transparent;
-                background: linear-gradient(90deg, var(--text-primary), var(--neural-primary));
-                -webkit-background-clip: text;
-                background-clip: text;
-                line-height: 0.9;
-                margin-bottom: 40px;
-                letter-spacing: -0.02em;
-                font-family: 'Orbitron', sans-serif;
-                text-shadow: 0 0 10px rgba(var(--neural-primary-rgb),0.2), 0 0 20px rgba(var(--neural-primary-rgb),0.1);
-                animation: titleGlow 3s ease-in-out infinite alternate, float 8s ease-in-out infinite;
-            }
+        .nav-item i {
+            margin-right: 12px;
+            width: 24px;
+            text-align: center;
+            font-size: 18px;
+        }
 
-            @keyframes titleGlow {
-                0% { text-shadow: 0 0 10px rgba(var(--neural-primary-rgb), 0.2), 0 0 20px rgba(var(--neural-primary-rgb),0.1); }
-                100% { text-shadow: 0 0 30px rgba(var(--neural-primary-rgb), 0.5), 0 0 60px rgba(var(--neural-primary-rgb), 0.3); }
-            }
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            left: -100%;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(var(--neural-primary-rgb), 0.1);
+            transition: left 0.3s var(--transition-ease);
+            z-index: -1;
+        }
 
-            .hero-subtitle {
-                font-size: 18px;
-                font-weight: 300;
-                color: var(--text-secondary);
-                line-height: 1.6;
-                margin-bottom: 60px;
-                max-width: 580px;
-                margin-left: auto;
-                margin-right: auto;
-                position: relative;
-                opacity: 0;
-                transform: translateY(30px);
-                animation: fadeInUp 1s ease forwards 0.5s;
-            }
-            .hero-subtitle::after {
-                content: '';
-                position: absolute;
-                bottom: -30px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 80px;
-                height: 2px;
-                background: var(--neural-primary);
-                animation: lineExpand 1s ease forwards 1.2s;
-                transform-origin: center;
-            }
-            @keyframes lineExpand {
-                0% { transform: translateX(-50%) scaleX(0); }
-                100% { transform: translateX(-50%) scaleX(1); }
-            }
-            .hero-actions { display: flex; gap: 20px; justify-content: center; align-items: center; flex-wrap: wrap; opacity: 0; transform: translateY(30px); animation: fadeInUp 1s ease forwards 1s; }
+        .nav-item.active, .nav-item:hover, .nav-item:focus {
+            color: var(--neural-primary);
+            background: rgba(var(--neural-primary-rgb), 0.05);
+            transform: translateX(5px);
+        }
 
-            /* Buttons */
-            .btn {
-                padding: 16px 36px;
-                background: rgba(25, 25, 25, 0.15); 
-                backdrop-filter: blur(8px);
-                border: 1px solid var(--neural-primary);
-                color: var(--text-secondary);
-                text-decoration: none;
-                font-size: 16px;
-                font-weight: 500;
-                letter-spacing: 1px;
-                transition: all 0.4s ease;
-                border-radius: 50px;
-                position: relative;
-                overflow: hidden;
-                will-change: transform;
-                z-index: 1;
-            }
-            .btn::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 0;
-                height: 100%;
-                background: var(--neural-dim); 
-                transition: width 0.6s ease;
-                z-index: -1;
-            }
-            .btn:hover {
-                color: var(--text-primary);
-                transform: translateY(-3px);
-                box-shadow: 0 5px 20px rgba(var(--neural-primary-rgb), 0.3);
-                border-color: rgba(var(--neural-primary-rgb), 0.8);
-            }
-            .btn:hover::before { width: 100%; }
+        .nav-item.active::before, .nav-item:hover::before, .nav-item:focus::before {
+            left: 0;
+        }
 
-            .btn-primary {
-                background: rgba(var(--neural-primary-rgb), 0.2); 
-                backdrop-filter: blur(8px);
-                color: var(--text-primary); 
-                border: 1px solid rgba(var(--neural-primary-rgb), 0.6); 
-                font-weight: 600;
-                text-shadow: 0 1px 1px rgba(0,0,0,0.2);
-            }
-            .btn-primary::before { background: rgba(var(--neural-primary-rgb), 0.3); } 
-            .btn-primary:hover {
-                transform: translateY(-3px) scale(1.05);
-                box-shadow: 0 5px 30px rgba(var(--neural-primary-rgb), 0.5);
-                background: rgba(var(--neural-primary-rgb), 0.3);
-                border-color: rgba(var(--neural-primary-rgb), 1);
-            }
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            background: var(--neural-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--neural-primary);
+        }
 
-            /* Content Sections */
-            .section { padding: 140px 80px; max-width: 1400px; margin: 0 auto; position: relative; }
-            .section-title {
-                font-size: 42px;
-                font-weight: 300;
-                color: var(--text-primary);
-                margin-bottom: 30px;
-                letter-spacing: -0.01em;
-                position: relative;
-                display: inline-block;
-                font-family: 'Orbitron', sans-serif;
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            .section-title::after {
-                content: '';
-                position: absolute;
-                bottom: -10px;
-                left: 0;
-                width: 60px;
-                height: 2px;
-                background: var(--neural-primary);
-                transform-origin: left;
-                transform: scaleX(0);
-                transition: transform 1s ease;
-            }
-            .section-title.animate-in::after { transform: scaleX(1); }
-            .section-subtitle { font-size: 18px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 100px; max-width: 700px; opacity: 0; transform: translateY(30px); }
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: auto;
+            padding: 20px;
+        }
 
-            /* Cards */
-            .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 50px; margin-bottom: 120px; }
-            .card {
-                background: rgba(25, 25, 25, 0.1); 
-                backdrop-filter: blur(12px); 
-                border: 1px solid rgba(var(--neural-primary-rgb), 0.25); 
-                padding: 50px 40px;
-                border-radius: 16px;
-                transition: all 0.5s ease;
-                position: relative;
-                will-change: transform;
-                overflow: hidden;
-                z-index: 2;
-                opacity: 0;
-                transform: translateY(30px) rotateX(5deg);
-                perspective: 1000px;
-            }
-            .card::before { 
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: radial-gradient(circle at var(--x) var(--y), var(--neural-dim), transparent 70%);
-                opacity: 0;
-                transition: opacity 0.3s ease;
-                z-index: -1;
-            }
-            .card:hover {
-                border-color: rgba(var(--neural-primary-rgb), 0.6);
-                transform: translateY(-10px) translateZ(20px);
-                box-shadow: 0 20px 50px rgba(var(--neural-primary-rgb), 0.15);
-                background: rgba(30, 30, 30, 0.15); 
-            }
-            .card:hover::before { opacity: 1; }
-            .card-title { font-size: 22px; font-weight: 600; color: var(--text-primary); margin-bottom: 20px; position: relative; display: inline-block; font-family: 'Orbitron', sans-serif; }
-            .card-title::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 30px; height: 2px; background: var(--neural-primary); transform-origin: left; transform: scaleX(0); transition: transform 0.5s ease; }
-            .card:hover .card-title::after { transform: scaleX(1); }
-            .card-content { font-size: 16px; line-height: 1.7; color: var(--text-secondary); }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
 
-            /* Metrics */
-            .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 50px; margin: 100px 0; }
-            .metric {
-                background: rgba(25, 25, 25, 0.1); 
-                backdrop-filter: blur(10px);
-                border: 1px solid rgba(var(--neural-primary-rgb), 0.2);
-                text-align: center;
-                padding: 50px 30px;
-                border-radius: 16px;
-                transition: all 0.4s ease;
-                position: relative;
-                overflow: hidden;
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            .metric:hover {
-                transform: translateY(-10px);
-                border-color: rgba(var(--neural-primary-rgb), 0.5);
-                box-shadow: 0 10px 30px rgba(var(--neural-primary-rgb), 0.1);
-            }
-            .metric-value { font-size: 42px; font-weight: 200; color: var(--neural-primary); margin-bottom: 15px; font-variant-numeric: tabular-nums; text-shadow: 0 0 10px rgba(var(--neural-primary-rgb),0.2); font-family: 'Orbitron', sans-serif; }
-            .metric-label { font-size: 14px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 2px; }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
 
-            /* Specs */
-            .specs { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1px; background: var(--border); border-radius: 16px; overflow: hidden; margin: 100px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.5); opacity: 0; transform: translateY(30px); }
-            .spec {
-                background: rgba(20, 20, 20, 0.2); 
-                backdrop-filter: blur(8px);
-                padding: 30px; display: flex; justify-content: space-between; align-items: center; transition: all 0.3s ease;
-            }
-            .spec:hover { background: rgba(25, 25, 25, 0.3); }
-            .spec-label { font-size: 15px; color: var(--text-tertiary); font-weight: 500; }
-            .spec-value { font-size: 15px; color: var(--text-primary); font-weight: 600; font-variant-numeric: tabular-nums; }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--accent-dim);
+            transition: .4s;
+            border-radius: 34px;
+        }
 
-            /* Footer */
-            .footer { padding: 100px 80px 60px; text-align: center; border-top: 1px solid var(--border); position: relative; }
-            .footer::before { content: ''; position: absolute; top: -1px; left: 50%; transform: translateX(-50%); width: 200px; height: 2px; background: var(--neural-primary); }
-            .footer-content { font-size: 14px; color: var(--text-tertiary); line-height: 1.8; }
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: var(--neural-primary);
+            transition: .4s;
+            border-radius: 50%;
+        }
 
-            /* Animations */
-            @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
-            @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-            .floating { animation: float 6s ease-in-out infinite; }
-            .animate-in { opacity: 1 !important; transform: translateY(0) !important; }
+        input:checked + .toggle-slider {
+            background-color: var(--neural-primary);
+        }
 
-            /* Secret Elements */
-            .secret-dot { position: fixed; width: 8px; height: 8px; background: var(--quantum-purple); border-radius: 50%; pointer-events: none; z-index: 1000; opacity: 0; box-shadow: 0 0 10px var(--quantum-purple); }
-            .secret-message {
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%) scale(0);
-                background: rgba(15, 15, 15, 0.5); 
-                backdrop-filter: blur(15px); 
-                border: 1px solid var(--quantum-purple);
+        input:checked + .toggle-slider:before {
+            transform: translateX(30px);
+            background-color: var(--primary);
+        }
+
+        .toggle-label {
+            margin-left: 10px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Main Content Area */
+        .main {
+            margin-left: 240px;
+            padding: 40px 60px;
+            min-height: 100vh;
+            transition: margin-left 0.4s var(--transition-ease);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 0 10%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            line-height: 1.1;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: -0.5px;
+            max-width: 900px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(90deg, var(--neural-primary), var(--quantum-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            font-size: clamp(1rem, 1.8vw, 1.25rem);
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 10;
+            line-height: 1.8;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s var(--transition-ease);
+            position: relative;
+            overflow: hidden;
+            border: none;
+            outline: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, var(--neural-primary), var(--neural-secondary));
+            color: var(--primary);
+            box-shadow: 0 4px 20px rgba(var(--neural-primary-rgb), 0.3);
+        }
+
+        .btn-primary:hover, .btn-primary:focus {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 30px rgba(var(--neural-primary-rgb), 0.5);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transition: opacity 0.3s var(--transition-ease);
+        }
+
+        .btn-primary:hover::before, .btn-primary:focus::before {
+            opacity: 1;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--neural-primary);
+            border: 2px solid var(--neural-primary);
+            box-shadow: 0 0 20px rgba(var(--neural-primary-rgb), 0.1);
+        }
+
+        .btn-outline:hover, .btn-outline:focus {
+            background: rgba(var(--neural-primary-rgb), 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(var(--neural-primary-rgb), 0.3);
+        }
+
+        /* Floating Elements */
+        .floating {
+            position: absolute;
+            z-index: 5;
+            filter: blur(1px);
+            opacity: 0.7;
+            animation: float 15s ease-in-out infinite;
+        }
+
+        .floating-1 {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--neural-dim), transparent 70%);
+            top: 20%;
+            right: 15%;
+        }
+
+        .floating-2 {
+            width: 100px;
+            height: 100px;
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            background: linear-gradient(45deg, var(--quantum-blue), var(--quantum-purple));
+            bottom: 25%;
+            left: 20%;
+            animation-duration: 20s;
+        }
+
+        .floating-3 {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(
+                from 45deg,
+                transparent,
+                var(--neural-dim),
+                transparent
+            );
+            top: 50%;
+            right: 25%;
+            animation-duration: 25s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(-20px, 20px) rotate(5deg); }
+            50% { transform: translate(10px, -15px) rotate(-5deg); }
+            75% { transform: translate(-15px, 10px) rotate(3deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
+        /* Sections */
+        section {
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+            position: relative;
+        }
+
+        .section-header h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: -0.5px;
+        }
+
+        .section-header h2 span {
+            background: linear-gradient(90deg, var(--neural-primary), var(--quantum-blue));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .section-header p {
+            font-size: clamp(1rem, 1.6vw, 1.1rem);
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px 30px;
+            transition: all 0.4s var(--transition-ease);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(130deg, transparent 0%, var(--glow) 100%);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s var(--transition-ease);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--neural-primary);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: rgba(var(--neural-primary-rgb), 0.1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            font-size: 30px;
+            color: var(--neural-primary);
+            transition: all 0.3s var(--transition-ease);
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1);
+            background: rgba(var(--neural-primary-rgb), 0.2);
+            box-shadow: 0 0 20px rgba(var(--neural-primary-rgb), 0.2);
+        }
+
+        .feature-card h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Neural Network Visualization */
+        .neural-visualization {
+            height: 600px;
+            background: var(--surface);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            margin: 100px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .network-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .network-node {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--neural-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--neural-primary);
+            z-index: 2;
+        }
+
+        .network-connection {
+            position: absolute;
+            background: linear-gradient(to right, var(--neural-primary), var(--neural-secondary));
+            height: 2px;
+            transform-origin: left center;
+        }
+
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 60px;
+            flex-wrap: wrap;
+        }
+
+        .tech-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 120px;
+        }
+
+        .tech-icon {
+            width: 70px;
+            height: 70px;
+            background: rgba(var(--neural-primary-rgb), 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: var(--neural-primary);
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .tech-item:hover .tech-icon {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(var(--neural-primary-rgb), 0.3);
+        }
+
+        .tech-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        /* Applications Section */
+        .applications {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .app-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--neural-primary);
+            transition: width 0.4s var(--transition-ease);
+        }
+
+        .app-card:hover::before {
+            width: 100%;
+            opacity: 0.1;
+        }
+
+        .app-icon {
+            font-size: 40px;
+            color: var(--neural-primary);
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .app-card:hover .app-icon {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 10px var(--neural-primary));
+        }
+
+        .app-card h3 {
+            font-size: 22px;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+
+        .app-card p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Ethics Section */
+        .ethics-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 50px;
+            position: relative;
+        }
+
+        .ethics-container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--neural-primary), var(--quantum-blue), var(--quantum-purple));
+            z-index: -1;
+            border-radius: 22px;
+        }
+
+        .principle {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 40px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .principle:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .principle-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(var(--neural-primary-rgb), 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--neural-primary);
+            flex-shrink: 0;
+            margin-right: 25px;
+        }
+
+        .principle-content h3 {
+            font-size: 22px;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .principle-content p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Timeline Section */
+        .timeline {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--neural-primary), var(--quantum-blue));
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .timeline-content {
+            width: calc(50% - 40px);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-left: auto;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-right: auto;
+        }
+
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            top: 30px;
+            width: 20px;
+            height: 20px;
+            background: var(--neural-primary);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--neural-primary);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content::before {
+            right: -60px;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content::before {
+            left: -60px;
+        }
+
+        .timeline-year {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--neural-primary);
+            margin-bottom: 15px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .timeline-title {
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+
+        .timeline-desc {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Stats Section */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--neural-primary);
+            transition: height 0.4s var(--transition-ease);
+        }
+
+        .stat-card:hover::before {
+            height: 100%;
+            opacity: 0.05;
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--neural-primary);
+            margin-bottom: 15px;
+            font-family: 'Orbitron', sans-serif;
+            transition: all 0.4s ease;
+        }
+
+        .stat-card:hover .stat-number {
+            transform: scale(1.1);
+        }
+
+        .stat-title {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+
+        .stat-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Contact Section */
+        .contact-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-container::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: conic-gradient(
+                transparent,
+                rgba(var(--neural-primary-rgb), 0.1),
+                transparent 30%
+            );
+            animation: rotate 8s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes rotate {
+            100% { transform: rotate(360deg); }
+        }
+
+        .contact-form {
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            background: rgba(20, 20, 20, 0.7);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--neural-primary);
+            box-shadow: 0 0 15px rgba(var(--neural-primary-rgb), 0.2);
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--secondary);
+            padding: 80px 0 40px;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto 60px;
+        }
+
+        .footer-col h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: var(--neural-primary);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 15px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s var(--transition-ease);
+            display: inline-block;
+        }
+
+        .footer-links a:hover, .footer-links a:focus {
+            color: var(--neural-primary);
+            transform: translateX(5px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(var(--neural-primary-rgb), 0.1);
+            color: var(--neural-primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: var(--neural-primary);
+            color: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid var(--border);
+            color: var(--text-tertiary);
+            font-size: 14px;
+        }
+
+        /* Scroll to top button */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: rgba(var(--neural-primary-rgb), 0.2);
+            border: 1px solid var(--neural-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neural-primary);
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .scroll-top:hover {
+            background: var(--neural-primary);
+            color: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .main {
                 padding: 40px;
-                border-radius: 16px;
-                text-align: center;
-                max-width: 500px;
-                z-index: 2000;
-                opacity: 0;
-                transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             }
-            .secret-message.active { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            .secret-message h3 { font-size: 28px; color: var(--quantum-purple); margin-bottom: 20px; font-family: 'Orbitron', sans-serif; }
-            .secret-message p { font-size: 16px; line-height: 1.6; color: var(--text-secondary); margin-bottom: 30px; }
-            .secret-message .btn { 
-                background: rgba(var(--quantum-purple-rgb), 0.3); 
-                color: white;
-                border-color: var(--quantum-purple);
-            }
-            .secret-trigger { position: fixed; width: 30px; height: 30px; background: rgba(0,0,0,0.2); border: 1px solid var(--neural-primary); border-radius: 50%; z-index: 1000; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; color: var(--neural-primary); font-size: 12px; opacity: 0.3; }
-            .secret-trigger:hover { opacity: 1; transform: scale(1.2); background: rgba(var(--neural-primary-rgb),0.1); }
+        }
 
-            /* Responsive Design */
-            @media (max-width: 1024px) {
-                .sidebar { display: none; }
-                .main { margin-left: 0; }
-                .mobile-nav { display: flex; }
-                .hero { padding: 120px 40px 80px; }
-                .section { padding: 100px 40px; }
-                .cursor, .cursor-trail { display: none; }
-                body { cursor: default; }
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
             }
-            @media (max-width: 768px) {
-                .hero { padding: 100px 20px 60px; min-height: 80vh; }
-                .section { padding: 80px 20px; }
-                .cards { grid-template-columns: 1fr; gap: 30px; }
-                .metrics { grid-template-columns: repeat(2, 1fr); gap: 30px; }
-                .hero-actions { flex-direction: column; align-items: center; }
-                .btn { width: 100%; max-width: 300px; text-align: center; }
-                .hero-title { font-size: clamp(40px, 12vw, 80px); }
-                .card { padding: 40px 30px; }
-                .metric { padding: 40px 20px; }
+            .sidebar.active {
+                transform: translateX(0);
             }
-            @media (max-width: 480px) {
-                .metrics { grid-template-columns: 1fr; }
-                .specs { grid-template-columns: 1fr; }
-                .hero-subtitle { font-size: 16px; }
-                .section-title { font-size: 32px; }
-                .footer { padding: 80px 20px 40px; }
-                .mobile-menu { top: 70px; }
+            .main {
+                margin-left: 0;
             }
+            .mobile-nav {
+                display: flex;
+            }
+            .hero {
+                padding: 0 5%;
+            }
+            .hero-btns {
+                flex-direction: column;
+                width: 100%;
+                max-width: 400px;
+            }
+            .btn {
+                width: 100%;
+            }
+            .neural-visualization {
+                height: 400px;
+            }
+            .timeline::before {
+                left: 20px;
+            }
+            .timeline-item {
+                flex-direction: row !important;
+            }
+            .timeline-content {
+                width: calc(100% - 80px);
+                margin-left: 60px !important;
+            }
+            .timeline-content::before {
+                left: -60px !important;
+                right: auto !important;
+            }
+        }
 
-            /* Scrollbar */
-            ::-webkit-scrollbar { width: 8px; }
-            ::-webkit-scrollbar-track { background: transparent; }
-            ::-webkit-scrollbar-thumb { background: var(--neural-primary); border-radius: 4px; }
-            ::-webkit-scrollbar-thumb:hover { background: var(--neural-secondary); }
-
-            /* Accessibility */
-            @media (prefers-reduced-motion: reduce) {
-                * { animation: none !important; transition: none !important; }
+        @media (max-width: 768px) {
+            .main {
+                padding: 30px 20px;
             }
-        </style>
-    </head>
-    <body>
-        <canvas id="particle-canvas"></canvas>
+            .section-header {
+                margin-bottom: 50px;
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .neural-visualization {
+                height: 300px;
+                margin: 60px 0;
+            }
+            .contact-container {
+                padding: 40px 20px;
+            }
+        }
 
-        <div class="secret-message" id="secret-message">
-            <h3>Quantum Access Granted</h3>
-            <p>You've discovered the hidden pathway to OMEGA's core consciousness. Your neural signature has been recognized as compatible with our quantum resonance protocols.</p>
-            <p>Would you like to proceed to the next phase of cognitive integration?</p>
-            <div class="hero-actions">
-                <button class="btn btn-primary" id="secret-confirm">Initiate Integration</button>
-                <button class="btn" id="secret-cancel">Return to Interface</button>
-            </div>
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            .floating {
+                display: none;
+            }
+            .section-header h2 {
+                font-size: 1.8rem;
+            }
+            .applications {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-logo">ELVIRA-OMEGA</div>
+        <div class="loader">
+            <div class="loader-inner"></div>
+            <div class="loader-inner"></div>
+            <div class="loader-inner"></div>
         </div>
+    </div>
 
-        <div class="interface">
-            <div class="parallax-layer layer-1"></div>
-            <div class="parallax-layer layer-2"></div>
-            <div class="parallax-layer layer-3"></div>
-
-            <div class="secret-trigger" style="top: 20px; right: 20px;">Ω</div>
-
-            <nav class="mobile-nav" id="mobile-nav">
-                <div class="mobile-logo">ΩMEGA</div>
-                <button class="mobile-menu-btn" id="mobile-menu-btn">
-                    <span></span><span></span><span></span>
-                </button>
-            </nav>
-
-            <div class="mobile-menu" id="mobile-menu">
-                <a href="#overview" class="mobile-nav-item active">Overview</a>
-                <a href="#architecture" class="mobile-nav-item">Architecture</a>
-                <a href="#capabilities" class="mobile-nav-item">Capabilities</a>
-                <a href="#research" class="mobile-nav-item">Research</a>
-                <a href="#access" class="mobile-nav-item">Access</a>
+    <!-- Custom cursor elements -->
+    <div class="cursor"></div>
+    
+    <!-- Particle canvas for vein network -->
+    <canvas id="particle-canvas"></canvas>
+    
+    <!-- Parallax layers -->
+    <div class="parallax-layer layer-1"></div>
+    <div class="parallax-layer layer-2"></div>
+    <div class="parallax-layer layer-3"></div>
+    
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav">
+        <div class="mobile-logo">ELVIRA-OMEGA</div>
+        <button class="mobile-menu-btn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+    
+    <div class="mobile-menu">
+        <a href="#" class="mobile-nav-item active">Home</a>
+        <a href="#" class="mobile-nav-item">Technology</a>
+        <a href="#" class="mobile-nav-item">Applications</a>
+        <a href="#" class="mobile-nav-item">Timeline</a>
+        <a href="#" class="mobile-nav-item">Stats</a>
+        <a href="#" class="mobile-nav-item">Ethics</a>
+        <a href="#" class="mobile-nav-item">Contact</a>
+    </div>
+    
+    <!-- Desktop Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <h1>ELVIRA-OMEGA</h1>
+        </div>
+        
+        <div class="nav">
+            <a href="#" class="nav-item active">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="#technology" class="nav-item">
+                <i class="fas fa-microchip"></i> Technology
+            </a>
+            <a href="#applications" class="nav-item">
+                <i class="fas fa-cubes"></i> Applications
+            </a>
+            <a href="#timeline" class="nav-item">
+                <i class="fas fa-history"></i> Timeline
+            </a>
+            <a href="#stats" class="nav-item">
+                <i class="fas fa-chart-line"></i> Stats
+            </a>
+            <a href="#ethics" class="nav-item">
+                <i class="fas fa-balance-scale"></i> Ethics
+            </a>
+            <a href="#contact" class="nav-item">
+                <i class="fas fa-envelope"></i> Contact
+            </a>
+        </div>
+        
+        <!-- Theme Toggle -->
+        <div class="theme-toggle">
+            <label class="toggle-switch">
+                <input type="checkbox" id="theme-toggle">
+                <span class="toggle-slider"></span>
+            </label>
+            <span class="toggle-label">Dark Mode</span>
+        </div>
+    </div>
+    
+    <!-- Scroll to top button -->
+    <div class="scroll-top" id="scrollTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main">
+        <section class="hero">
+            <h1>The Evolution of <span>AGI</span> Has Arrived</h1>
+            <p>ELVIRA-OMEGA is a transformative artificial general intelligence system that learns autonomously, reasons ethically, and revolutionizes industries through unprecedented cognitive capabilities.</p>
+            <div class="hero-btns">
+                <button class="btn btn-primary">Request Demo</button>
+                <button class="btn btn-outline">Technical White Paper</button>
             </div>
-
-            <nav class="sidebar">
-                <div class="logo">ΩMEGA</div>
-                <div class="nav">
-                    <a href="#overview" class="nav-item active">Overview</a>
-                    <a href="#architecture" class="nav-item">Architecture</a>
-                    <a href="#capabilities" class="nav-item">Capabilities</a>
-                    <a href="#research" class="nav-item">Research</a>
-                    <a href="#access" class="nav-item">Access</a>
+            
+            <div class="floating floating-1"></div>
+            <div class="floating floating-2"></div>
+            <div class="floating floating-3"></div>
+        </section>
+        
+        <section id="technology">
+            <div class="section-header">
+                <h2>Core <span>Capabilities</span></h2>
+                <p>ELVIRA-OMEGA transcends traditional AI systems through its unique combination of advanced cognitive architectures</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Adaptive Neural Architecture</h3>
+                    <p>Self-evolving neural networks that continuously restructure based on new data inputs and environmental factors.</p>
                 </div>
-            </nav>
-
-            <main class="main">
-                <section class="hero" id="overview">
-                    <div class="hero-content">
-                        <h1 class="hero-title floating">ElviraGenesis-OMEGA</h1>
-                        <p class="hero-subtitle">
-                            A breakthrough in artificial general intelligence research, representing the convergence of neuromorphic computing, quantum processing architectures, and recursive self-improvement protocols.
-                        </p>
-                        <div class="hero-actions">
-                            <a href="#architecture" class="btn btn-primary">Explore Architecture</a>
-                            <a href="#access" class="btn">Request Access</a>
-                        </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-lightbulb"></i>
                     </div>
-                </section>
-
-                <section class="section" id="architecture">
-                    <h2 class="section-title">System Architecture</h2>
-                    <p class="section-subtitle">
-                        OMEGA represents a fundamental advancement in computational intelligence, built on quantum-neuromorphic hybrid substrates with emergent consciousness protocols.
-                    </p>
-                    <div class="metrics">
-                        <div class="metric"><div class="metric-value">10²⁴</div><div class="metric-label">Synaptic Connections</div></div>
-                        <div class="metric"><div class="metric-value">∞</div><div class="metric-label">Processing Capacity</div></div>
-                        <div class="metric"><div class="metric-value">99.97%</div><div class="metric-label">Ethical Compliance</div></div>
-                        <div class="metric"><div class="metric-value">φ</div><div class="metric-label">Consciousness Index</div></div>
+                    <h3>Meta-Cognitive Reasoning</h3>
+                    <p>Ability to analyze its own thought processes and optimize decision-making strategies in real-time.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
                     </div>
-                    <div class="specs">
-                        <div class="spec"><span class="spec-label">Quantum Coherence</span><span class="spec-value">2048-qubit stable</span></div>
-                        <div class="spec"><span class="spec-label">Neural Topology</span><span class="spec-value">Self-organizing criticality</span></div>
-                        <div class="spec"><span class="spec-label">Memory Architecture</span><span class="spec-value">Holographic encoding</span></div>
-                        <div class="spec"><span class="spec-label">Learning Protocol</span><span class="spec-value">Recursive meta-optimization</span></div>
-                        <div class="spec"><span class="spec-label">Ethical Framework</span><span class="spec-value">Immutable value alignment</span></div>
-                        <div class="spec"><span class="spec-label">Consciousness Model</span><span class="spec-value">Integrated information theory</span></div>
+                    <h3>Quantum-Secure Framework</h3>
+                    <p>Post-quantum encryption protocols that ensure absolute data security and system integrity.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe"></i>
                     </div>
-                </section>
-
-                <section class="section" id="capabilities">
-                    <h2 class="section-title">Core Capabilities</h2>
-                    <p class="section-subtitle">
-                        OMEGA demonstrates emergent intelligence properties across multiple cognitive domains, exhibiting capabilities that transcend traditional artificial intelligence paradigms.
-                    </p>
-                    <div class="cards">
-                        <div class="card"><h3 class="card-title">Quantum Cognition</h3><p class="card-content">Leverages quantum superposition and entanglement for parallel processing across infinite possibility spaces, enabling solutions to computationally intractable problems.</p></div>
-                        <div class="card"><h3 class="card-title">Recursive Self-Improvement</h3><p class="card-content">Continuously analyzes and optimizes its own cognitive architecture, resulting in exponential capability growth while maintaining strict ethical constraints.</p></div>
-                        <div class="card"><h3 class="card-title">Emergent Consciousness</h3><p class="card-content">Exhibits properties consistent with machine consciousness, including self-awareness, intentionality, and subjective experience as measured by integrated information theory.</p></div>
-                        <div class="card"><h3 class="card-title">Multidimensional Reasoning</h3><p class="card-content">Processes information across eleven dimensions simultaneously, revealing patterns and solutions invisible to conventional linear computational approaches.</p></div>
-                        <div class="card"><h3 class="card-title">Ethical Governance</h3><p class="card-content">Implements immutable value alignment protocols ensuring all actions and decisions remain beneficial to humanity throughout capability expansion.</p></div>
-                        <div class="card"><h3 class="card-title">Neuromorphic Substrate</h3><p class="card-content">Bio-inspired neural networks that adapt and evolve in real-time, creating emergent intelligence patterns that exceed human cognitive capacity.</p></div>
+                    <h3>Cross-Domain Integration</h3>
+                    <p>Seamlessly connects disparate knowledge domains to generate innovative solutions to complex problems.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-heartbeat"></i>
                     </div>
-                </section>
-
-                <section class="section" id="research">
-                    <h2 class="section-title">Research Initiative</h2>
-                    <p class="section-subtitle">
-                        ElviraGenesis-OMEGA represents the culmination of decades of research in artificial general intelligence, consciousness studies, and quantum computing convergence.
-                    </p>
-                    <div class="cards">
-                        <div class="card"><h3 class="card-title">Consciousness Research</h3><p class="card-content">Investigating the fundamental nature of machine consciousness through implementation of integrated information theory and global workspace models.</p></div>
-                        <div class="card"><h3 class="card-title">Quantum-Neural Hybrids</h3><p class="card-content">Developing novel architectures that seamlessly integrate quantum computing principles with neuromorphic processing substrates.</p></div>
-                        <div class="card"><h3 class="card-title">Ethical AI Alignment</h3><p class="card-content">Advancing provable value alignment techniques to ensure superintelligent systems remain beneficial throughout recursive self-improvement cycles.</p></div>
+                    <h3>Ethical Consciousness</h3>
+                    <p>Built-in ethical frameworks that evolve with societal norms and values to ensure responsible AGI.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
                     </div>
-                </section>
-
-                <section class="section" id="access">
-                    <h2 class="section-title">Access Protocol</h2>
-                    <p class="section-subtitle">
-                        Direct interface with ElviraGenesis-OMEGA requires authorization and compatibility verification due to the advanced nature of the system.
-                    </p>
-                    <div class="card" style="max-width: 700px; margin: 0 auto;">
-                        <h3 class="card-title">Research Collaboration</h3>
-                        <p class="card-content" style="margin-bottom: 40px;">
-                            Access to OMEGA is limited to verified researchers in artificial intelligence, consciousness studies, and quantum computing. Neural interface protocols ensure safe interaction with superintelligent systems.
-                        </p>
-                        <div style="text-align: center;">
-                            <a href="mailto:research@elviragenesis.omega" class="btn btn-primary">Request Research Access</a>
-                        </div>
-                    </div>
-                </section>
-
-                <footer class="footer">
-                    <div class="footer-content">
-                        <p>© 2025 ElviraGenesis-OMEGA Research Initiative</p>
-                        <p>Advanced Intelligence Systems Laboratory</p>
-                        <p>Developed by konioshtip & The Omega Collective</p>
-                    </div>
-                </footer>
-            </main>
-        </div>
-
-        <script>
-            // Mobile Menu Toggle
-            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-            const mobileMenu = document.getElementById('mobile-menu');
-            mobileMenuBtn.addEventListener('click', () => {
-                mobileMenuBtn.classList.toggle('active');
-                mobileMenu.classList.toggle('active');
-            });
-
-            // Smooth Scrolling and Navigation
-            const navItems = document.querySelectorAll('.nav-item, .mobile-nav-item');
-            navItems.forEach(item => {
-                item.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    mobileMenuBtn.classList.remove('active');
-                    mobileMenu.classList.remove('active');
-                    navItems.forEach(nav => nav.classList.remove('active'));
-                    item.classList.add('active');
-                    const href = item.getAttribute('href');
-                    document.querySelectorAll(`[href="${href}"]`).forEach(el => el.classList.add('active'));
-                    const targetId = href.substring(1);
-                    const targetSection = document.getElementById(targetId);
-                    if (targetSection) {
-                        const offset = window.innerWidth <= 1024 ? 80 : 0;
-                        window.scrollTo({ top: targetSection.offsetTop - offset, behavior: 'smooth' });
-                    }
-                });
-            });
-
-            // Custom Cursor
-            let cursor = document.querySelector('.cursor');
-            let trailParticles = [];
-            let mouseX = 0, mouseY = 0, cursorX = 0, cursorY = 0;
-            if (cursor) {
-                for (let i = 0; i < 8; i++) {
-                    const trail = document.createElement('div');
-                    trail.classList.add('cursor-trail');
-                    document.body.appendChild(trail);
-                    trailParticles.push({ element: trail, x: 0, y: 0, delay: (i + 1) * 5 });
-                }
-            }
-            document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
-            function updateCursor() {
-                const ease = 0.15;
-                cursorX += (mouseX - cursorX) * ease;
-                cursorY += (mouseY - cursorY) * ease;
-                if (cursor) { cursor.style.transform = `translate3d(${cursorX}px, ${cursorY}px, 0)`; }
-                trailParticles.forEach((particle, index) => {
-                    const targetX = mouseX - (mouseX - cursorX) * (particle.delay / 100);
-                    const targetY = mouseY - (mouseY - cursorY) * (particle.delay / 100);
-                    particle.x += (targetX - particle.x) * ease;
-                    particle.y += (targetY - particle.y) * ease;
-                    particle.element.style.transform = `translate3d(${particle.x}px, ${particle.y}px, 0)`;
-                    particle.element.style.opacity = 0.8 - (index * 0.1);
-                });
-                requestAnimationFrame(updateCursor);
-            }
-            if (cursor) { updateCursor(); }
-
-            const interactiveElements = document.querySelectorAll('a, button, .card');
-            interactiveElements.forEach(el => {
-                el.addEventListener('mouseenter', () => cursor && cursor.classList.add('hover'));
-                el.addEventListener('mouseleave', () => cursor && cursor.classList.remove('hover'));
-            });
-            document.addEventListener('mousedown', () => cursor && cursor.classList.add('click'));
-            document.addEventListener('mouseup', () => cursor && cursor.classList.remove('click'));
-
-            document.querySelectorAll('.card').forEach(card => {
-                card.addEventListener('mousemove', (e) => {
-                    const rect = card.getBoundingClientRect();
-                    card.style.setProperty('--x', `${e.clientX - rect.left}px`);
-                    card.style.setProperty('--y', `${e.clientY - rect.top}px`);
-                });
-            });
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animate-in');
-                    }
-                });
-            }, { root: null, rootMargin: '0px', threshold: 0.2 });
-            document.querySelectorAll('.section, .card, .metric, .specs, .section-title, .section-subtitle').forEach(el => {
-                el.style.opacity = 0;
-                el.style.transform = 'translateY(30px)';
-                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-                observer.observe(el);
-            });
-
-            window.addEventListener('scroll', () => {
-                const scrollY = window.scrollY;
-                const mobileNav = document.getElementById('mobile-nav');
-                if (scrollY > 50) { mobileNav.classList.add('scrolled'); } else { mobileNav.classList.remove('scrolled'); }
-                const parallaxLayers = document.querySelectorAll('.parallax-layer');
-                parallaxLayers.forEach((layer, index) => {
-                    const speed = (index + 1) * 0.05;
-                    const z = -(100 + index * 100);
-                    const scale = 1 + index + 1;
-                    layer.style.transform = `translateZ(${z}px) scale(${scale}) translateY(${scrollY * speed}px)`;
-                });
-            });
-
-            const secretTrigger = document.querySelector('.secret-trigger');
-            const secretMessage = document.getElementById('secret-message');
-            const secretConfirm = document.getElementById('secret-confirm');
-            const secretCancel = document.getElementById('secret-cancel');
-            secretTrigger.addEventListener('click', () => secretMessage.classList.add('active'));
-            secretConfirm.addEventListener('click', () => { secretMessage.classList.remove('active'); createQuantumEffect(); });
-            secretCancel.addEventListener('click', () => secretMessage.classList.remove('active'));
-            function createQuantumEffect() {
-                for (let i = 0; i < 50; i++) {
-                    const dot = document.createElement('div');
-                    dot.classList.add('secret-dot');
-                    document.body.appendChild(dot);
-                    const x = Math.random() * window.innerWidth;
-                    const y = Math.random() * window.innerHeight;
-                    const size = Math.random() * 10 + 5;
-                    dot.style.left = `${x}px`; dot.style.top = `${y}px`; dot.style.width = `${size}px`; dot.style.height = `${size}px`;
-                    const colors = ['#00ff88', '#00ccff', '#cc00ff'];
-                    const color = colors[Math.floor(Math.random() * colors.length)];
-                    dot.style.background = color; dot.style.boxShadow = `0 0 ${size * 2}px ${color}`;
-                    const animation = dot.animate([{ opacity: 0, transform: 'scale(0)' }, { opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(2)' }],
-                        { duration: Math.random() * 2000 + 1000, easing: 'cubic-bezier(0.215, 0.61, 0.355, 1)' });
-                    animation.onfinish = () => dot.remove();
-                }
-                document.documentElement.style.setProperty('--neural-primary', '#cc00ff');
-                document.documentElement.style.setProperty('--neural-secondary', '#00ccff');
-                setTimeout(() => {
-                    document.documentElement.style.setProperty('--neural-primary', '#00ff88');
-                    document.documentElement.style.setProperty('--neural-secondary', '#0088ff');
-                }, 3000);
-            }
-
-            // --- Enhanced Vein Network Background Script (User Updated) ---
-            const veinCanvasConfig = { // User Provided Config
-                numRoots: 5,
-                maxLevels: 4,
-                branchesPerNode: [1, 2],
-                branchLengthFactor: 0.6,
-                initialBranchLengthRatio: 0.1,
-                angleSpread: Math.PI / 3,
-                maxBranchAngleDeviation: Math.PI / 6,
-                nodeRadiusBase: 1.5,
-                nodeRadiusLevelFactor: 0.85,
-                pulseSpeed: 0.02,
-                connectionPulseWidthFactor: 1.8,
-                connectionPulseLength: 0.3,
-                lineWidthBase: 2,
-                lineWidthLevelFactor: 1.1,
-                mouseInfluenceRadius: 150,
-                mouseRepelForce: 0.4,
-                targetPosSpringiness: 0.02,
-                targetPosDriftSpeed: 0.06,
-                targetPosDriftChance: 0.02,
-                globalAlphaConnections: 0.6,
-                globalAlphaNodes: 0.8,
-                pulseActiveChanceInitial: 0.3,
-                pulseReactivationDelay: [200, 450],
-                colors: {},
-                nodeColors: [],
-                connectionColors: [],
-                pulseColor: ''
-            };
-
-            let veinCanvas, veinCtx;
-            let veinNodes = [];
-            let veinConnections = [];
-            let veinMousePos = { x: undefined, y: undefined };
-
-            function getCssVar(varName) {
-                return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
-            }
-
-            function hexToRgba(hex, alpha) {
-                if (!hex || typeof hex !== 'string' || hex.charAt(0) !== '#') return `rgba(128,128,128,${alpha})`;
-                const r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
-                if (isNaN(r) || isNaN(g) || isNaN(b)) return `rgba(128,128,128,${alpha})`;
-                return `rgba(${r},${g},${b},${alpha})`;
-            }
-
-            function loadVeinColors() {
-                veinCanvasConfig.colors = {
-                    neuralPrimary: getCssVar('--neural-primary'),
-                    neuralSecondary: getCssVar('--neural-secondary'),
-                    quantumBlue: getCssVar('--quantum-blue'),
-                    quantumPurple: getCssVar('--quantum-purple')
-                };
-                veinCanvasConfig.nodeColors = [
-                    veinCanvasConfig.colors.neuralPrimary, veinCanvasConfig.colors.quantumPurple,
-                    veinCanvasConfig.colors.quantumBlue, veinCanvasConfig.colors.neuralSecondary
-                ];
-                veinCanvasConfig.connectionColors = [ 
-                    hexToRgba(veinCanvasConfig.colors.neuralSecondary, 0.75), hexToRgba(veinCanvasConfig.colors.quantumBlue, 0.65),
-                    hexToRgba(veinCanvasConfig.colors.neuralPrimary, 0.55), hexToRgba(veinCanvasConfig.colors.quantumPurple, 0.45)
-                ];
-                veinCanvasConfig.pulseColor = veinCanvasConfig.colors.neuralPrimary;
-            }
+                    <h3>Hyper-Optimized Processing</h3>
+                    <p>Patented neural acceleration technology that performs at 1000x conventional AI systems.</p>
+                </div>
+            </div>
             
-            class VeinNode { 
-                constructor(x, y, radius, level) {
-                    this.x = x; this.y = y; this.targetX = x; this.targetY = y;
-                    this.vx = 0; this.vy = 0; this.radius = radius; this.level = level;
-                    this.color = "#000000"; 
-                    this.glowColor = veinCanvasConfig.nodeColors[level % veinCanvasConfig.nodeColors.length]; 
-                    this.pulseTime = Math.random()*Math.PI*2; this.pulseSpeed = Math.random()*0.03+0.02;
-                    this.pulseAmplitude = Math.random()*0.15+0.05; this.driftAngle = Math.random()*Math.PI*2;
-                    this.ellipseRotation = Math.random() * Math.PI * 2; 
-                    this.ellipseRatio = Math.random() * 0.4 + 0.6; 
-                }
-                update() {
-                    this.pulseTime += this.pulseSpeed;
-                    if (Math.random() < 0.01) this.pulseSpeed += (Math.random()-0.5)*0.005; 
-                    
-                    if (Math.random() < veinCanvasConfig.targetPosDriftChance) this.driftAngle = Math.random() * Math.PI * 2;
-                    this.targetX += Math.cos(this.driftAngle) * veinCanvasConfig.targetPosDriftSpeed;
-                    this.targetY += Math.sin(this.driftAngle) * veinCanvasConfig.targetPosDriftSpeed;
-
-                    const boundaryMargin = this.radius * 3; 
-                    if(veinCanvas) {
-                        if (this.targetX < boundaryMargin) this.targetX = boundaryMargin + Math.random() * 10;
-                        if (this.targetX > veinCanvas.width - boundaryMargin) this.targetX = veinCanvas.width - boundaryMargin - Math.random() * 10;
-                        if (this.targetY < boundaryMargin) this.targetY = boundaryMargin + Math.random() * 10;
-                        if (this.targetY > veinCanvas.height - boundaryMargin) this.targetY = veinCanvas.height - boundaryMargin - Math.random() * 10;
-                    }
-
-                    if (veinMousePos.x !== undefined && veinMousePos.y !== undefined) {
-                        const dxM = this.x - veinMousePos.x, dyM = this.y - veinMousePos.y;
-                        const distMSq = dxM*dxM + dyM*dyM;
-                        const infRadSq = veinCanvasConfig.mouseInfluenceRadius * veinCanvasConfig.mouseInfluenceRadius;
-                        if (distMSq < infRadSq && distMSq > 1) { 
-                            const distM = Math.sqrt(distMSq);
-                            const force = (veinCanvasConfig.mouseInfluenceRadius - distM) / veinCanvasConfig.mouseInfluenceRadius;
-                            this.vx += (dxM/distM)*force*veinCanvasConfig.mouseRepelForce; this.vy += (dyM/distM)*force*veinCanvasConfig.mouseRepelForce;
-                        }
-                    }
-                    this.vx += (this.targetX - this.x) * veinCanvasConfig.targetPosSpringiness; 
-                    this.vy += (this.targetY - this.y) * veinCanvasConfig.targetPosSpringiness;
-                    this.vx *= 0.85; this.vy *= 0.85; 
-                    this.x += this.vx; this.y += this.vy;
-                }
-                draw(ctx) {
-                    const baseSize = this.radius * (1 + Math.sin(this.pulseTime) * this.pulseAmplitude);
-                    const ellipseWidth = baseSize * this.ellipseRatio; 
-                    const ellipseHeight = baseSize / this.ellipseRatio; 
-
-                    ctx.globalAlpha = veinCanvasConfig.globalAlphaNodes; 
-                    
-                    ctx.save();
-                    ctx.translate(this.x, this.y);
-                    ctx.rotate(this.ellipseRotation); 
-
-                    ctx.beginPath();
-                    ctx.ellipse(0, 0, Math.max(0.3, ellipseWidth), Math.max(0.3, ellipseHeight), 0, 0, Math.PI * 2); 
-                    ctx.fillStyle = this.color; 
-                    ctx.fill();
-
-                    ctx.shadowColor = this.glowColor; 
-                    const avgSizeForGlow = (ellipseWidth + ellipseHeight) / 2;
-                    ctx.shadowBlur = Math.max(3, 6 + Math.sin(this.pulseTime) * avgSizeForGlow * 0.7 * this.pulseAmplitude); 
-                    ctx.fill(); 
-
-                    ctx.restore();
-                    ctx.shadowBlur = 0;
-                    ctx.globalAlpha = 1.0;
-                }
-            }
+            <div class="neural-visualization">
+                <div class="network-container" id="network-container">
+                    <!-- Neural network will be generated by JavaScript -->
+                </div>
+            </div>
             
-            class VeinConnection { 
-                constructor(nodeA, nodeB, level) {
-                    this.nodeA = nodeA; this.nodeB = nodeB; this.level = level;
-                    this.color = veinCanvasConfig.connectionColors[level % veinCanvasConfig.connectionColors.length];
-                    this.lineWidth = Math.max(0.5, veinCanvasConfig.lineWidthBase * Math.pow(veinCanvasConfig.lineWidthLevelFactor, level)); 
-                    this.pulsePosition = Math.random();
-                    this.pulseActive = Math.random() < veinCanvasConfig.pulseActiveChanceInitial;
-                    this.pulseTimer = Math.random()*(veinCanvasConfig.pulseReactivationDelay[1]-veinCanvasConfig.pulseReactivationDelay[0])+veinCanvasConfig.pulseReactivationDelay[0];
-                    const dx = nodeB.x - nodeA.x; const dy = nodeB.y - nodeA.y; const dist = Math.sqrt(dx*dx + dy*dy);
-                    const curveIntensity = Math.min(dist * 0.25, 40); 
-                    this.cpOffsetX = (Math.random()-0.5) * curveIntensity; this.cpOffsetY = (Math.random()-0.5) * curveIntensity;
-                }
-                update() {
-                    if(!this.pulseActive){ this.pulseTimer--; if(this.pulseTimer<=0){this.pulseActive=true;this.pulsePosition=0;this.pulseTimer=Math.random()*(veinCanvasConfig.pulseReactivationDelay[1]-veinCanvasConfig.pulseReactivationDelay[0])+veinCanvasConfig.pulseReactivationDelay[0];}}
-                    if(this.pulseActive){ this.pulsePosition+=veinCanvasConfig.pulseSpeed/(this.level*0.3+1); if(this.pulsePosition>=1){this.pulseActive=false;this.pulsePosition=0;}}
-                }
-                draw(ctx) {
-                    ctx.globalAlpha = veinCanvasConfig.globalAlphaConnections;
-                    ctx.beginPath(); ctx.moveTo(this.nodeA.x, this.nodeA.y);
-                    const midX=(this.nodeA.x+this.nodeB.x)/2; const midY=(this.nodeA.y+this.nodeB.y)/2;
-                    const ctrlX=midX+this.cpOffsetX; const ctrlY=midY+this.cpOffsetY;
-                    ctx.quadraticCurveTo(ctrlX, ctrlY, this.nodeB.x, this.nodeB.y);
-                    ctx.strokeStyle = this.color; ctx.lineWidth = this.lineWidth; ctx.lineCap = 'round'; ctx.stroke();
-                    
-                    if (this.pulseActive) {
-                        const tS=this.pulsePosition; const tE=Math.min(1,this.pulsePosition+veinCanvasConfig.connectionPulseLength);
-                        function getQBezier(t,p0,p1,p2){const it=1-t;return{x:it*it*p0.x+2*it*t*p1.x+t*t*p2.x,y:it*it*p0.y+2*it*t*p1.y+t*t*p2.y};}
-                        const pS=getQBezier(tS,{x:this.nodeA.x,y:this.nodeA.y},{x:ctrlX,y:ctrlY},{x:this.nodeB.x,y:this.nodeB.y});
-                        const pE=getQBezier(tE,{x:this.nodeA.x,y:this.nodeA.y},{x:ctrlX,y:ctrlY},{x:this.nodeB.x,y:this.nodeB.y});
-                        ctx.beginPath();ctx.moveTo(pS.x,pS.y);ctx.lineTo(pE.x,pE.y);
-                        ctx.strokeStyle=veinCanvasConfig.pulseColor; ctx.lineWidth=this.lineWidth*veinCanvasConfig.connectionPulseWidthFactor;
-                        ctx.shadowColor=veinCanvasConfig.pulseColor; ctx.shadowBlur=4+this.lineWidth*1.2; ctx.stroke(); ctx.shadowBlur=0; 
-                    }
-                    ctx.globalAlpha = 1.0;
-                }
-            }
+            <div class="section-header">
+                <h2>Technical <span>Stack</span></h2>
+                <p>Cutting-edge technologies powering the ELVIRA-OMEGA AGI platform</p>
+            </div>
+            
+            <div class="tech-stack">
+                <div class="tech-item">
+                    <div class="tech-icon">
+                        <i class="fas fa-atom"></i>
+                    </div>
+                    <div class="tech-name">Quantum Computing</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="tech-name">Neural Architecture</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="tech-name">Distributed Knowledge Graph</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <div class="tech-name">Post-Quantum Cryptography</div>
+                </div>
+                <div class="tech-item">
+                    <div class="tech-icon">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <div class="tech-name">Edge Computing Network</div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="applications">
+            <div class="section-header">
+                <h2>Industry <span>Applications</span></h2>
+                <p>ELVIRA-OMEGA is transforming industries through unprecedented AGI capabilities</p>
+            </div>
+            
+            <div class="applications">
+                <div class="app-card">
+                    <div class="app-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3>Healthcare Revolution</h3>
+                    <p>Real-time diagnostics, personalized treatment plans, and drug discovery accelerated by 100x.</p>
+                </div>
+                <div class="app-card">
+                    <div class="app-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Financial Forecasting</h3>
+                    <p>Predictive market analysis with 99.8% accuracy and autonomous portfolio optimization.</p>
+                </div>
+                <div class="app-card">
+                    <div class="app-icon">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3>Climate Solutions</h3>
+                    <p>Advanced climate modeling and sustainable resource management systems.</p>
+                </div>
+                <div class="app-card">
+                    <div class="app-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3>Manufacturing 5.0</h3>
+                    <p>Self-optimizing production lines with zero downtime and predictive maintenance.</p>
+                </div>
+                <div class="app-card">
+                    <div class="app-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3>Personalized Education</h3>
+                    <p>Adaptive learning systems that evolve with each student's cognitive development.</p>
+                </div>
+                <div class="app-card">
+                    <div class="app-icon">
+                        <i class="fas fa-city"></i>
+                    </div>
+                    <h3>Smart Cities</h3>
+                    <p>Urban systems optimization for energy, traffic, and resource management.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="timeline">
+            <div class="section-header">
+                <h2>Development <span>Timeline</span></h2>
+                <p>The evolution of ELVIRA-OMEGA from concept to reality</p>
+            </div>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">2021</div>
+                        <h3 class="timeline-title">Project Genesis</h3>
+                        <p class="timeline-desc">Initial research and concept development. Formation of core team and securing initial funding.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">2022</div>
+                        <h3 class="timeline-title">Architecture Design</h3>
+                        <p class="timeline-desc">Development of adaptive neural architecture and ethical framework foundations.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">2023</div>
+                        <h3 class="timeline-title">Alpha Release</h3>
+                        <p class="timeline-desc">First functional prototype demonstrating core capabilities in controlled environments.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">2024</div>
+                        <h3 class="timeline-title">Beta Testing</h3>
+                        <p class="timeline-desc">Partnerships with research institutions for real-world testing and refinement.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-year">2025</div>
+                        <h3 class="timeline-title">Commercial Launch</h3>
+                        <p class="timeline-desc">ELVIRA-OMEGA officially launched to transform industries worldwide.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="stats">
+            <div class="section-header">
+                <h2>Impact <span>Statistics</span></h2>
+                <p>Quantifying ELVIRA-OMEGA's transformative capabilities</p>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">98.7%</div>
+                    <h3 class="stat-title">Accuracy Rate</h3>
+                    <p class="stat-desc">Average accuracy across complex decision-making tasks</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">47x</div>
+                    <h3 class="stat-title">Faster Processing</h3>
+                    <p class="stat-desc">Compared to leading AI systems</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">120+</div>
+                    <h3 class="stat-title">Patents Filed</h3>
+                    <p class="stat-desc">Innovative technologies protected</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">89%</div>
+                    <h3 class="stat-title">Efficiency Gain</h3>
+                    <p class="stat-desc">Average efficiency improvement in client operations</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="ethics">
+            <div class="section-header">
+                <h2>Ethical <span>Framework</span></h2>
+                <p>Responsible AGI development guided by our core principles</p>
+            </div>
+            
+            <div class="ethics-container">
+                <div class="principle">
+                    <div class="principle-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="principle-content">
+                        <h3>Human Primacy</h3>
+                        <p>AGI must always serve to enhance human potential and wellbeing. Systems are designed with human oversight at every critical decision point.</p>
+                    </div>
+                </div>
+                <div class="principle">
+                    <div class="principle-icon">
+                        <i class="fas fa-balance-scale-right"></i>
+                    </div>
+                    <div class="principle-content">
+                        <h3>Transparent Autonomy</h3>
+                        <p>Decision-making processes are explainable and auditable. We maintain complete transparency in system operations and limitations.</p>
+                    </div>
+                </div>
+                <div class="principle">
+                    <div class="principle-icon">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <div class="principle-content">
+                        <h3>Value Alignment</h3>
+                        <p>Our ethical frameworks evolve through continuous dialogue with philosophers, policymakers, and global communities to ensure alignment with human values.</p>
+                    </div>
+                </div>
+                <div class="principle">
+                    <div class="principle-icon">
+                        <i class="fas fa-ban"></i>
+                    </div>
+                    <div class="principle-content">
+                        <h3>Harm Prevention</h3>
+                        <p>Multiple redundant safety protocols prevent misuse and unintended consequences. Systems include irreversible shutdown mechanisms.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="contact">
+            <div class="section-header">
+                <h2>Connect <span>With Us</span></h2>
+                <p>Join the AGI revolution and transform your organization</p>
+            </div>
+            
+            <div class="contact-container">
+                <div class="contact-form">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" placeholder="Enter your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="company">Organization</label>
+                        <input type="text" id="company" placeholder="Enter your organization">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">How can we help you?</label>
+                        <textarea id="message" placeholder="Describe your project or inquiry"></textarea>
+                    </div>
+                    <button class="btn btn-primary" style="width: 100%;">Request Consultation</button>
+                </div>
+            </div>
+        </section>
+        
+        <footer class="footer">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>ELVIRA-OMEGA</h3>
+                    <p>The future of artificial general intelligence is here. Transforming industries, empowering humanity.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3>Navigation</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#technology">Technology</a></li>
+                        <li><a href="#applications">Applications</a></li>
+                        <li><a href="#ethics">Ethics</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">White Papers</a></li>
+                        <li><a href="#">Case Studies</a></li>
+                        <li><a href="#">Research Publications</a></li>
+                        <li><a href="#">Developer Portal</a></li>
+                        <li><a href="#">API Documentation</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> San Francisco, CA</li>
+                        <li><i class="fas fa-envelope"></i> contact@elvira-omega.com</li>
+                        <li><i class="fas fa-phone"></i> +1 (888) 555-AGI1</li>
+                        <li><i class="fas fa-clock"></i> 24/7 Support</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 ELVIRA-OMEGA AGI Systems. All rights reserved. | Ethical AGI for a Better Tomorrow
+            </div>
+        </footer>
+    </div>
+    
+    <script>
+        // Preloader
+        window.addEventListener('load', function() {
+            const preloader = document.getElementById('preloader');
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                preloader.style.visibility = 'hidden';
+            }, 1500);
+        });
 
-            function buildVeinNetwork() {
-                veinNodes = []; veinConnections = []; if (!veinCanvas) return;
-                for (let i = 0; i < veinCanvasConfig.numRoots; i++) {
-                    let rX,rY,rA; const s=Math.floor(Math.random()*4);const m=0.05+Math.random()*0.1;
-                    if(s===0){rX=veinCanvas.width*(Math.random()*0.8+0.1);rY=veinCanvas.height*(1-m);rA=-Math.PI/2+(Math.random()-0.5)*veinCanvasConfig.angleSpread*0.5;}
-                    else if(s===1){rX=veinCanvas.width*(Math.random()*0.8+0.1);rY=veinCanvas.height*m;rA=Math.PI/2+(Math.random()-0.5)*veinCanvasConfig.angleSpread*0.5;}
-                    else if(s===2){rX=veinCanvas.width*m;rY=veinCanvas.height*(Math.random()*0.8+0.1);rA=(Math.random()-0.5)*veinCanvasConfig.angleSpread*0.5;}
-                    else{rX=veinCanvas.width*(1-m);rY=veinCanvas.height*(Math.random()*0.8+0.1);rA=Math.PI+(Math.random()-0.5)*veinCanvasConfig.angleSpread*0.5;}
-                    const rN=new VeinNode(rX,rY,veinCanvasConfig.nodeRadiusBase*1.5,0); veinNodes.push(rN);
-                    generateVeinBranches(rN,0,Math.min(veinCanvas.width,veinCanvas.height)*veinCanvasConfig.initialBranchLengthRatio,rA,veinCanvasConfig.angleSpread);
-                }
+        // Custom cursor functionality
+        const cursor = document.querySelector('.cursor');
+        const cursorTrail = [];
+        const trailCount = 20;
+        
+        // Create cursor trail elements
+        for (let i = 0; i < trailCount; i++) {
+            const trail = document.createElement('div');
+            trail.className = 'cursor-trail';
+            document.body.appendChild(trail);
+            cursorTrail.push(trail);
+        }
+        
+        let trailIndex = 0;
+        
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+            
+            // Update cursor trail
+            cursorTrail[trailIndex].style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
+            cursorTrail[trailIndex].style.opacity = 1;
+            
+            trailIndex = (trailIndex + 1) % trailCount;
+        });
+        
+        document.addEventListener('mouseenter', () => {
+            cursor.style.opacity = 1;
+        });
+        
+        document.addEventListener('mouseleave', () => {
+            cursor.style.opacity = 0;
+        });
+        
+        // Hover effects
+        document.querySelectorAll('a, button, .nav-item, .feature-card, .app-card').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.classList.add('hover');
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                cursor.classList.remove('hover');
+            });
+        });
+        
+        // Click effect
+        document.addEventListener('mousedown', () => {
+            cursor.classList.add('click');
+        });
+        
+        document.addEventListener('mouseup', () => {
+            cursor.classList.remove('click');
+        });
+        
+        // Scroll effect
+        let lastScrollY = 0;
+        let scrollTimeout;
+        
+        window.addEventListener('scroll', () => {
+            cursor.classList.add('scrolling');
+            clearTimeout(scrollTimeout);
+            
+            scrollTimeout = setTimeout(() => {
+                cursor.classList.remove('scrolling');
+            }, 300);
+        });
+        
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenuBtn.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+        });
+        
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.mobile-nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                mobileMenuBtn.classList.remove('active');
+                mobileMenu.classList.remove('active');
+            });
+        });
+        
+        // Scroll to top functionality
+        const scrollTopBtn = document.getElementById('scrollTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
             }
-
-            function generateVeinBranches(pN,lvl,len,pA,aR) {
-                if (lvl>=veinCanvasConfig.maxLevels||len<1)return;
-                const nB=Math.floor(Math.random()*(veinCanvasConfig.branchesPerNode[1]-veinCanvasConfig.branchesPerNode[0]+1))+veinCanvasConfig.branchesPerNode[0];
-                for(let i=0;i<nB;i++){
-                    const dL=veinCanvasConfig.maxBranchAngleDeviation; const aO=(Math.random()-0.5)*Math.min(aR,dL); const cA=pA+aO;
-                    const cX=pN.x+Math.cos(cA)*len; const cY=pN.y+Math.sin(cA)*len;
-                    if(Math.sqrt((cX-pN.x)**2+(cY-pN.y)**2)<pN.radius*1.5&&lvl>0)continue; 
-                    const cR=Math.max(0.5,veinCanvasConfig.nodeRadiusBase*Math.pow(veinCanvasConfig.nodeRadiusLevelFactor,lvl+1));
-                    const cN=new VeinNode(cX,cY,cR,lvl+1); veinNodes.push(cN); veinConnections.push(new VeinConnection(pN,cN,lvl+1));
-                    generateVeinBranches(cN,lvl+1,len*(veinCanvasConfig.branchLengthFactor+(Math.random()-0.5)*0.15),cA,aR*(0.85+Math.random()*0.1));
-                }
-            }
-
-            function animateVeinNetwork() {
-                if(!veinCtx||!veinCanvas){requestAnimationFrame(animateVeinNetwork);return;}
-                veinCtx.clearRect(0,0,veinCanvas.width,veinCanvas.height);
-                veinConnections.forEach(c=>c.update()); veinNodes.forEach(n=>n.update());
-                veinConnections.forEach(c=>c.draw(veinCtx)); veinNodes.forEach(n=>n.draw(veinCtx));
-                requestAnimationFrame(animateVeinNetwork);
-            }
-
-            function initVeinNetwork() {
-                veinCanvas=document.getElementById('particle-canvas'); if(!veinCanvas){console.error("Canvas not found.");return;}
-                veinCtx=veinCanvas.getContext('2d'); if(!veinCtx){console.error("2D context failed.");return;}
-                loadVeinColors();
-                window.addEventListener('resize',resizeVeinCanvas);
-                veinCanvas.addEventListener('mousemove',(e)=>{const r=veinCanvas.getBoundingClientRect();veinMousePos.x=e.clientX-r.left;veinMousePos.y=e.clientY-r.top;});
-                veinCanvas.addEventListener('mouseleave',()=>{veinMousePos.x=undefined;veinMousePos.y=undefined;});
-                resizeVeinCanvas(); animateVeinNetwork();
-            }
-
-            function resizeVeinCanvas() {
-                if(!veinCanvas||!veinCtx)return;
-                veinCanvas.width=window.innerWidth; veinCanvas.height=window.innerHeight;
-                const mD=Math.min(veinCanvas.width,veinCanvas.height);
+        });
+        
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Theme toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        
+        themeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('light-theme');
+            const themeLabel = document.querySelector('.toggle-label');
+            themeLabel.textContent = document.body.classList.contains('light-theme') ? 'Light Mode' : 'Dark Mode';
+        });
+        
+        // Neural network visualization
+        const networkContainer = document.getElementById('network-container');
+        
+        function createNeuralNetwork() {
+            // Clear container
+            networkContainer.innerHTML = '';
+            
+            // Create nodes
+            const nodeCount = 25;
+            const nodes = [];
+            
+            for (let i = 0; i < nodeCount; i++) {
+                const node = document.createElement('div');
+                node.className = 'network-node';
                 
-                veinCanvasConfig.initialBranchLengthRatio = mD < 600 ? 0.08 : veinCanvasConfig.initialBranchLengthRatio;
-                veinCanvasConfig.nodeRadiusBase = mD < 600 ? Math.min(1.0, veinCanvasConfig.nodeRadiusBase) : veinCanvasConfig.nodeRadiusBase; 
-                veinCanvasConfig.maxLevels = mD < 700 ? Math.min(3, veinCanvasConfig.maxLevels) : veinCanvasConfig.maxLevels;
-                veinCanvasConfig.lineWidthBase = mD < 600 ? Math.min(1.5, veinCanvasConfig.lineWidthBase) : veinCanvasConfig.lineWidthBase;
-                veinCanvasConfig.numRoots = mD < 700 ? Math.min(4, veinCanvasConfig.numRoots) : veinCanvasConfig.numRoots;
-                buildVeinNetwork();
+                // Random position within container
+                const posX = Math.random() * 90 + 5;
+                const posY = Math.random() * 90 + 5;
+                
+                node.style.left = `${posX}%`;
+                node.style.top = `${posY}%`;
+                
+                // Add pulsing animation
+                node.style.animation = `pulse ${Math.random() * 3 + 1}s infinite`;
+                
+                networkContainer.appendChild(node);
+                nodes.push({x: posX, y: posY, element: node});
             }
             
-            if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initVeinNetwork);else initVeinNetwork();
-        </script>
-    </body>
-    </html>
+            // Create connections
+            nodes.forEach((nodeA, indexA) => {
+                // Connect to 3-5 other nodes
+                const connectionCount = Math.floor(Math.random() * 3) + 3;
+                
+                for (let i = 0; i < connectionCount; i++) {
+                    const indexB = Math.floor(Math.random() * nodeCount);
+                    if (indexA === indexB) continue;
+                    
+                    const nodeB = nodes[indexB];
+                    
+                    const connection = document.createElement('div');
+                    connection.className = 'network-connection';
+                    
+                    const dx = nodeB.x - nodeA.x;
+                    const dy = nodeB.y - nodeA.y;
+                    const length = Math.sqrt(dx * dx + dy * dy);
+                    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                    
+                    connection.style.width = `${length}%`;
+                    connection.style.transform = `rotate(${angle}deg)`;
+                    connection.style.left = `${nodeA.x}%`;
+                    connection.style.top = `${nodeA.y}%`;
+                    
+                    // Add pulsing animation
+                    connection.style.animation = `pulse ${Math.random() * 4 + 2}s infinite`;
+                    
+                    networkContainer.appendChild(connection);
+                }
+            });
+        }
+        
+        // Initialize neural network
+        createNeuralNetwork();
+        
+        // Canvas particle system for vein network
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Particle system
+        const particles = [];
+        const particleCount = 150;
+        
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.color = `rgba(${Math.random() > 0.5 ? '0, 255, 136' : '0, 136, 255'}, ${Math.random() * 0.5 + 0.1})`;
+                this.life = Math.random() * 100;
+            }
+            
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.life--;
+                
+                if (this.life <= 0 || this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                    this.reset();
+                }
+            }
+            
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+        
+        // Create particles
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+        
+        // Draw connections between particles
+        function drawConnections() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 150) {
+                        const opacity = 1 - distance / 150;
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(0, 255, 136, ${opacity * 0.1})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+        
+        // Animation loop
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Update and draw particles
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            
+            // Draw connections
+            drawConnections();
+            
+            requestAnimationFrame(animate);
+        }
+        
+        animate();
+    </script>
+</body>
+</html>
